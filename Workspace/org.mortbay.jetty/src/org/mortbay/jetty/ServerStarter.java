@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.jxse.petitioner.IServerStarter;
+import net.jxse.service.IServerStarter;
 import net.jxta.logging.Logging;
 
 import org.mortbay.http.HttpContext;

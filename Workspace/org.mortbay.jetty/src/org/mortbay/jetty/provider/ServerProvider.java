@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.mortbay.jetty.provider;
 
-import net.jxse.petitioner.IServerStarter;
+import net.jxse.service.IServerStarter;
 
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
 import org.eclipselabs.osgi.ds.broker.service.AbstractProvider;

@@ -17,7 +17,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.jxse.petitioner.IServerStarter;
+import net.jxse.service.IServerStarter;
 import net.jxta.logging.Logging;
 
 import org.eclipse.jetty.server.Server;
