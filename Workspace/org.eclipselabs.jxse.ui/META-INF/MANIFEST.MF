@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: General UI Helper Functions
+Bundle-SymbolicName: org.eclipselabs.jxse.ui
+Bundle-Version: 1.0.0.v20130819
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.eclipse.ui.views.properties
+Export-Package: org.condast.eclipse.uii.image,
+ org.eclipselabs.jxse.ui.celleditors,
+ org.eclipselabs.jxse.ui.property.descriptors,
+ org.eclipselabs.jxse.ui.provider,
+ org.eclipselabs.jxse.ui.utils
