@@ -36,7 +36,7 @@ import net.osgi.jxse.factory.IComponentFactory;
 public abstract class AbstractServiceContext<T extends Object> extends AbstractActivator<IComponentFactory<T>> implements
 		IJxseServiceContext<T>{
 
-	public static final String S_SERVICE_CONTAINER = "JXTA Service Container";
+	public static final String S_SERVICE_CONTAINER = "JXSE Container";
 	
 	private IJxseComponent<?> parent;
 	private Collection<IJxseComponent<?>> children;

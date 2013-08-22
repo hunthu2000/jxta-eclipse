@@ -1,8 +1,10 @@
-package org.eclipselabs.jxse.ui.utils;
+package org.eclipselabs.jxse.ui.image;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import net.osgi.jxse.utils.Utils;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -11,6 +13,8 @@ import org.osgi.framework.Bundle;
 
 public abstract class AbstractImages {
 
+	private static final String S_ERR_INVALID_BUNDLE_NAME = "The bundle name is invalid: ";
+	
 	private Collection<ImageData> imageMap;
 	private String path;
 	
@@ -21,6 +25,9 @@ public abstract class AbstractImages {
 	}
 
 	protected AbstractImages( String path, String bundleName ) {
+		Bundle bundle = Platform.getBundle( bundleName );
+		if( bundle == null )
+			throw new NullPointerException( S_ERR_INVALID_BUNDLE_NAME + bundleName);
 		imageMap = new ArrayList<ImageData>();
 		this.path = path;
 		this.bundleName = bundleName;

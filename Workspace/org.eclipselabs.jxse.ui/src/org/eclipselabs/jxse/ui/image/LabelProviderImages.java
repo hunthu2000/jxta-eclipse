@@ -1,8 +1,9 @@
 package org.eclipselabs.jxse.ui.image;
 
+import net.osgi.jxse.utils.StringStyler;
+
 import org.eclipse.swt.graphics.Image;
-import org.eclipselabs.jxse.ui.utils.AbstractImages;
-import org.eclipselabs.jxse.ui.utils.StringStyler;
+import org.eclipselabs.jxse.ui.Activator;
 
 public class LabelProviderImages extends AbstractImages{
 
@@ -31,10 +32,8 @@ public class LabelProviderImages extends AbstractImages{
 	
 	private static LabelProviderImages images = new LabelProviderImages();
 	
-	private static final String PLUGIN_ID = "org.condast.eclipse.ui";
-	
 	public LabelProviderImages() {
-		super( S_ICON_PATH, PLUGIN_ID );
+		super( S_ICON_PATH, Activator.PLUGIN_ID );
 	}
 
 	/**

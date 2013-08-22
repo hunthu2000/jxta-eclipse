@@ -1,10 +1,10 @@
 package org.eclipselabs.jxse.ui.provider;
 
 
-import org.condast.eclipse.uii.image.LabelProviderImages;
-import org.condast.eclipse.uii.image.LabelProviderImages.Images;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.eclipselabs.jxse.ui.image.LabelProviderImages;
+import org.eclipselabs.jxse.ui.image.LabelProviderImages.Images;
 
 public class CheckBoxLabelProvider extends LabelProvider {
 

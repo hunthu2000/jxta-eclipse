@@ -1,52 +1,50 @@
 package org.eclipselabs.jxse.ui;
 
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.log.LogService;
+import org.osgi.util.tracker.ServiceTracker;
 
-/**
- * The activator class controls the plug-in life cycle
- */
-public class Activator extends AbstractUIPlugin {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.condast.eclipse.ui"; //$NON-NLS-1$
+public class Activator implements BundleActivator {
 
-	// The shared instance
-	private static Activator plugin;
+	public static final String PLUGIN_ID = "org.eclipselabs.jxse.ui";
 	
-	/**
-	 * The constructor
-	 */
-	public Activator() {
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
+	private static Activator plugin;
+	private ServiceTracker<BundleContext,LogService> logServiceTracker;
+	private LogService logService;
+	
 	@Override
 	public void start(BundleContext context) throws Exception {
-		super.start(context);
 		plugin = this;
+		// create a tracker and track the log service
+		logServiceTracker = 
+			new ServiceTracker<BundleContext,LogService>(context, LogService.class.getName(), null);
+		logServiceTracker.open();
+		
+		// grab the service
+		logService = logServiceTracker.getService();
+
+		if(logService != null)
+			logService.log(LogService.LOG_INFO, "Logging service started");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		if(logService != null)
+			logService.log(LogService.LOG_INFO, "Logging service Stopped");
+		
+		// close the service tracker
+		logServiceTracker.close();
+		logServiceTracker = null;
 		plugin = null;
-		super.stop(context);
+	}	
+	
+	public LogService getLog(){
+		return this.logService;
 	}
-
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
+	
+	public static Activator getDefault(){
 		return plugin;
 	}
-
 }

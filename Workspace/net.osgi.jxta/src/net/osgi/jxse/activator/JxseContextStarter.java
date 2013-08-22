@@ -13,12 +13,14 @@ package net.osgi.jxse.activator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import net.osgi.jxse.context.IJxseServiceContext;
+
 /**
  * Starts the JXTA service container
  * @author keesp
  *
  */
-public class JxseContextStarter<T extends AbstractActivator<U>, U extends Object> implements Runnable{
+public class JxseContextStarter<T extends IJxseServiceContext<U>, U extends Object> implements Runnable{
 
 	private T activator;
 	
@@ -32,8 +34,6 @@ public class JxseContextStarter<T extends AbstractActivator<U>, U extends Object
 	}
 
 	public T createContext(){
-
-		activator.initialise();
 		executor.execute(this);
 		return activator;
 	}

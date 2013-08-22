@@ -53,14 +53,16 @@ public interface IComponentFactory<T extends Object> {
 		AUTO_START,
 		CLEAR_CONFIG,
 		CREATE_PARENT,
-		ACTIVATE_PARENT;
+		ACTIVATE_PARENT,
+		PASS1,
+		PASS2;
 
 		@Override
 		public String toString() {
 			return StringStyler.prettyString( super.toString() );
 		}
 
-		public static boolean isGroup( String str ){
+		public static boolean isDirective( String str ){
 			str = StringStyler.styleToEnum(str);
 			if(( str == null ) || ( str.length() == 0 ))
 				return false;
