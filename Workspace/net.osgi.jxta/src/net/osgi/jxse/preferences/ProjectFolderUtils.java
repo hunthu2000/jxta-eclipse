@@ -106,7 +106,7 @@ public class ProjectFolderUtils {
 	 * @param aieon
 	 * @return 
 	 */
-	public static URI getDefaultJxtaDir( String folder, String name )
+	public static URI getDefaultJxseDir( String folder, String name )
 	{
 		File file = new File( System.getProperty( S_USER_HOME_PROPERTY ) + File.separator + 
 				folder + File.separator + StringStyler.prettyString( name ) + File.separator + S_JXTA_CACHE);

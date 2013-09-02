@@ -19,7 +19,7 @@ import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
 import net.jxta.platform.NetworkManager;
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.osgi.jxse.preferences.IJxseContextProperties.ContextProperties;
+import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.osgi.service.prefs.Preferences;
@@ -36,7 +36,7 @@ public class JxsePreferences implements IJxsePreferences
 	{
 		preferences = ConfigurationScope.INSTANCE.getNode( plugin_id );
 		jxtaPreferences = preferences.node(JXTA_SETTINGS);
-		jxtaPreferences.put( ContextProperties.NAME.toString(), name );
+		jxtaPreferences.put( ContextProperties.IDENTIFIER.toString(), name );
 		this.name = name;
 		this.plugin_id = plugin_id;
 	}
@@ -46,11 +46,11 @@ public class JxsePreferences implements IJxsePreferences
 	 */
 	@Override
 	public String getIdentifier( ){
-		return this.jxtaPreferences.get( ContextProperties.NAME.toString() , name );
+		return this.jxtaPreferences.get( ContextProperties.IDENTIFIER.toString() , name );
 	}
 
 	public void setName( String nm ){
-		this.jxtaPreferences.put( ContextProperties.NAME.toString() , nm );
+		this.jxtaPreferences.put( ContextProperties.IDENTIFIER.toString() , nm );
 	}
 
 	@Override
@@ -122,5 +122,17 @@ public class JxsePreferences implements IJxsePreferences
 
 	public void setPeerID( PeerID peerID ){
 		this.jxtaPreferences.put( ContextProperties.PEER_ID.toString(), peerID.toString() );
+	}
+	
+	/**
+	 * Get the config modes as String
+	 * @return
+	 */
+	public static String[] getConfigModes(){
+		ConfigMode[] modes = ConfigMode.values();
+		String[] results = new String[ modes.length ];
+		for( int i=0; i<modes.length; i++ )
+			results[i] = modes[i].toString();
+		return results;	
 	}
 }
