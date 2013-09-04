@@ -19,6 +19,9 @@ import net.osgi.jxse.utils.StringStyler;
 
 public class MessageBoxPetitioner extends AbstractPetitioner<String, String[], String> {
 
+	static final String S_IDENTIFIER = "JXTAMessage";
+	static final String S_TOKEN = "messageBoxToken";
+	
 	public enum MessageTypes{
 		INFO,
 		QUESTION,
@@ -67,12 +70,12 @@ public class MessageBoxPetitioner extends AbstractPetitioner<String, String[], S
 class MessagePalaver extends AbstractPalaver<String>{
 
 	protected MessagePalaver() {
-		super("JXTAMessage", false);
+		super( MessageBoxPetitioner.S_IDENTIFIER, false);
 	}
 
 	@Override
 	public String giveToken() {
-		return "messageBoxToken";
+		return MessageBoxPetitioner.S_TOKEN;
 	}
 
 	@Override

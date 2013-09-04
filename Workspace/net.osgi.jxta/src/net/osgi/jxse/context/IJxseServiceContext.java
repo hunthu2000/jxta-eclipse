@@ -23,7 +23,9 @@ public interface IJxseServiceContext<T extends Object> extends IJxseComponentNod
 		CONFIG_MODE,
 		PORT,
 		PEER_ID,
-		RENDEZVOUZ_AUTOSTART;
+		RENDEZVOUZ_AUTOSTART,
+		PASS_1,
+		PASS_2;
 
 		@Override
 		public String toString() {

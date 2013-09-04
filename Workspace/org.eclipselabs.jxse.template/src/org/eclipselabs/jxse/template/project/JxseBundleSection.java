@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 import java.util.logging.Logger;
 
 import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
@@ -36,9 +35,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.pde.core.plugin.IPluginBase;
-import org.eclipse.pde.core.plugin.IPluginModelFactory;
 import org.eclipse.pde.core.plugin.IPluginReference;
+import org.eclipse.pde.internal.core.ibundle.IBundle;
+import org.eclipse.pde.internal.core.ibundle.IBundlePluginModelBase;
 import org.eclipse.pde.ui.IFieldData;
 import org.eclipse.pde.ui.templates.OptionTemplateSection;
 import org.eclipse.pde.ui.templates.OptionTemplateWizardPage;
@@ -50,6 +49,7 @@ import org.eclipselabs.jxse.template.TemplateUtil;
  * @author Marine
  *
  */
+@SuppressWarnings("restriction")
 public class JxseBundleSection extends OptionTemplateSection {
 
 	public static final String TEMPLATE_ROOT = "jxse";
@@ -73,20 +73,19 @@ public class JxseBundleSection extends OptionTemplateSection {
 	public static final String FILE_OSGI_XML = "OSGI-INF/attendees.xml";
 	public static final String FOLDER_OSGI = "OSGI-INF/";
 
+	public static final String JXSE_NET_OSGI_JXSE = "net.osgi.jxse";
+	public static final String JXSE_NET_OSGI_JXSE_SERVICE = JXSE_NET_OSGI_JXSE + ".service";
+	public static final String ORG_ECLIPSELABS_OSGI_BROKER = "org.eclipselabs.osgi.ds.broker";
+
+	public static final String S_META_INF = "META-INF/";
+	public static final String S_MANIFEST_MF = "MANIFEST.MF";
 	public static final String S_JXSE_INF = "JXSE-INF/";
 	public static final String S_JXSE_FILE = "jxse.xml";
 
 	public static final String S_OSGI_INF = "OSGI-INF/";
 	public static final String S_ATTENDESS_XML = "attendees.xml";
 
-	public static final String S_META_INF = "META-INF/";
-	public static final String S_MANIFEST_MF = "MANIFEST.MF";
-	public static final String S_PRIOR_ELEMENT = "Bundle-RequiredExecutionEnvironment:";
-	public static final String S_SERVICE_COMPONENT = "Service-Component: OSGI-INF/attendees.xml\n";
-
-	public static final String JXSE_NET_OSGI_JXSE = "net.osgi.jxse";
-	public static final String JXSE_NET_OSGI_JXSE_SERVICE = JXSE_NET_OSGI_JXSE + ".service";
-	public static final String ORG_ECLIPSELABS_OSGI_BROKER = "org.eclipselabs.osgi.ds.broker";
+	private final String DS_MANIFEST_KEY = "Service-Component"; //$NON-NLS-1$
 
 	private String packageName             = null;
 	private String packagePath             = null;
@@ -99,7 +98,7 @@ public class JxseBundleSection extends OptionTemplateSection {
 	
 	private String pluginName;
 	
-	private ContextWizardView view;
+	private ContextWizardOption view;
 	
 	private Logger logger = Logger.getLogger( JxseBundleSection.class.getName() );
 
@@ -110,10 +109,8 @@ public class JxseBundleSection extends OptionTemplateSection {
 	}
 
 	public void createOptions() {
-		view = new ContextWizardView( this, S_MSG_JXSE_CONTEXT_PROPS, S_MSG_SET_JXSE_CONTEXT_PROPS );
+		view = new ContextWizardOption( this, S_MSG_JXSE_CONTEXT_PROPS, S_MSG_SET_JXSE_CONTEXT_PROPS );
 		this.registerOption(view, null,  0 );
-		//if(( page != null ) && ( page.getControl() != null ))
- 		//	page.setVisible(true);
 	}
 	
 	
@@ -239,24 +236,49 @@ public class JxseBundleSection extends OptionTemplateSection {
 				new IPluginReference[result.size()]);
 	}
 
+	
+	@Override
+	protected void generateFiles(IProgressMonitor monitor) throws CoreException {
+		// TODO Auto-generated method stub
+		super.generateFiles(monitor);
+	}
+
+	@Override
+	protected void generateFiles(IProgressMonitor monitor, URL locationUrl)
+			throws CoreException {
+		// TODO Auto-generated method stub
+		super.generateFiles(monitor, locationUrl);
+	}
+
 	@Override
 	protected void updateModel(IProgressMonitor monitor) throws CoreException {
 		logger.info("Updating model");
-		IPluginBase plugin = model.getPluginBase();
-		IPluginModelFactory factory = model.getPluginFactory();
-		IProject project = super.project;
-		//IResource resource = project.get
-
+		try {
+			view.complete();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		IBundlePluginModelBase mb = (IBundlePluginModelBase) model;
+		IBundle bundle = mb.getBundleModel().getBundle();
+		bundle.setHeader( DS_MANIFEST_KEY, FILE_OSGI_XML );
+		createComponent(monitor);
+	}
+	
+	
+	private void createComponent( IProgressMonitor monitor ){
 		JxseXmlBuilder<ContextProperties, ContextDirectives> builder = 
 				new JxseXmlBuilder<ContextProperties, ContextDirectives>();
-		JxseContextPropertySource ps = view.getPropertySource();
 		InputStream source = null;
+		JxseContextPropertySource ps = this.view.getPropertySource();
 		try{
 			source = new ByteArrayInputStream( builder.build( ps ).getBytes()); 
 			this.createFile(project, S_JXSE_INF + "/", S_JXSE_FILE, source, monitor);
 			IOUtils.closeInputStream(source);
+			monitor.worked(3);
 			source = new ByteArrayInputStream( builder.build( ps ).getBytes()); 
 			this.createFile(project, S_OSGI_INF + "/", S_ATTENDESS_XML, source, monitor);
+			monitor.worked(4);
 		}
 		finally{
 			IOUtils.closeInputStream(source);
@@ -268,9 +290,9 @@ public class JxseBundleSection extends OptionTemplateSection {
 			logger.severe( e.getMessage() );
 			e.printStackTrace();
 		}
-		modifyManifest(project, S_PRIOR_ELEMENT, S_SERVICE_COMPONENT, monitor);
+
 	}
-	
+
 	/**
 	 * Create the given file from the inputstream
 	 * @param project
@@ -294,49 +316,4 @@ public class JxseBundleSection extends OptionTemplateSection {
 		}
 	}
 
-	/**
-	 * Create the given file from the inputstream
-	 * @param project
-	 * @param directory
-	 * @param name
-	 * @param source
-	 * @param monitor
-	 */
-	protected boolean modifyManifest( IProject project, String priorElement, String include, IProgressMonitor monitor ){
-		String directory = S_META_INF;
-		String name = S_MANIFEST_MF; 
-		IFile file = project.getFile(directory + name );
-		while( !file.exists() ){
-			try{
-				Thread.sleep(100);
-			}
-			catch( InterruptedException ex ){
-				
-			}
-		}
-
-		Scanner scanner = null;
-		InputStream in = null;
-		try {
-			StringBuffer buffer = new StringBuffer();
-			scanner = new Scanner( file.getContents() );
-			while( scanner.hasNext()){
-				String line = scanner.next();
-				if( line.startsWith( priorElement ))
-					buffer.append( include );
-				buffer.append( line );
-			}
-			file.delete(true, monitor);
-			in = new ByteArrayInputStream( buffer.toString().getBytes() );
-			this.createFile(project, directory, name, in, monitor);
-			return true;			
-		} catch (CoreException e) {
-			e.printStackTrace();
-			return false;
-		}finally{
-			scanner.close();
-			IOUtils.closeInputStream(in);
-		}
-	}
-	
 }

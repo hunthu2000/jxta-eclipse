@@ -16,9 +16,6 @@ package org.eclipselabs.jxse.template.fragment;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.Scanner;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.utils.io.IOUtils;
@@ -30,6 +27,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
+import org.eclipse.pde.internal.core.ibundle.IBundle;
+import org.eclipse.pde.internal.core.ibundle.IBundlePluginModelBase;
 import org.eclipse.pde.ui.IPluginContentWizard;
 import org.eclipse.pde.ui.templates.AbstractNewPluginTemplateWizard;
 import org.eclipse.pde.ui.templates.ITemplateSection;
@@ -38,6 +37,7 @@ import org.eclipse.pde.ui.templates.ITemplateSection;
  * @author Marine
  *
  */
+@SuppressWarnings("restriction")
 public class JxseFragmentWizard extends AbstractNewPluginTemplateWizard  implements IPluginContentWizard{
 
 	public static final String S_MSG_SETUP_FRAGMENT = "Set up JXSE Fragment Project";
@@ -51,14 +51,11 @@ public class JxseFragmentWizard extends AbstractNewPluginTemplateWizard  impleme
 
 	public static final String S_META_INF = "META-INF/";
 	public static final String S_MANIFEST_MF = "MANIFEST.MF";
-	public static final String S_PRIOR_ELEMENT = "Bundle-RequiredExecutionEnvironment:";
-	public static final String S_FRAGMENT_TEXT = "Fragment-Host: org.eclipselabs.jxse.ui;bundle-version=\"1.0.0\"\n";
+	private static final String S_FRAGMENT_HOST = "Fragment-Host";
+	private static final String S_FRAGMENT_VALUE = "org.eclipselabs.jxse.ui;bundle-version=\"1.0.0\"";
 
 	private FragmentWizardPage fragmentPage;
 
-	private Executor executor;
-	
-	
 	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
 		fragmentPage = (FragmentWizardPage) page;
@@ -80,17 +77,11 @@ public class JxseFragmentWizard extends AbstractNewPluginTemplateWizard  impleme
 		finally{
 			IOUtils.closeInputStream(source);
 		}
-
+		IBundlePluginModelBase mb = (IBundlePluginModelBase) model;
+        IBundle bundle = mb.getBundleModel().getBundle();
+        bundle.setHeader( S_FRAGMENT_HOST, S_FRAGMENT_VALUE );
 		boolean retval = super.performFinish(project, model, monitor);
-		executor = Executors.newSingleThreadExecutor();
-		executor.execute( new Runnable(){
 
-			@Override
-			public void run() {
-				modifyManifest(project, S_PRIOR_ELEMENT, S_FRAGMENT_TEXT, monitor);
-			}
-			
-		});
 		return retval;
 	}
 
@@ -114,51 +105,6 @@ public class JxseFragmentWizard extends AbstractNewPluginTemplateWizard  impleme
 			}finally{
 				IOUtils.closeInputStream( source);
 			}
-		}
-	}
-
-	/**
-	 * Create the given file from the inputstream
-	 * @param project
-	 * @param directory
-	 * @param name
-	 * @param source
-	 * @param monitor
-	 */
-	protected boolean modifyManifest( IProject project, String priorElement, String include, IProgressMonitor monitor ){
-		String directory = S_META_INF;
-		String name = S_MANIFEST_MF; 
-		IFile file = project.getFile(directory + name );
-		while( !file.exists() ){
-			try{
-				Thread.sleep(100);
-			}
-			catch( InterruptedException ex ){
-				
-			}
-		}
-
-		Scanner scanner = null;
-		InputStream in = null;
-		try {
-			StringBuffer buffer = new StringBuffer();
-			scanner = new Scanner( file.getContents() );
-			while( scanner.hasNext()){
-				String line = scanner.next();
-				if( line.startsWith( priorElement ))
-					buffer.append( include );
-				buffer.append( line );
-			}
-			file.delete(true, monitor);
-			in = new ByteArrayInputStream( buffer.toString().getBytes() );
-			this.createFile(project, directory, name, in, monitor);
-			return true;			
-		} catch (CoreException e) {
-			e.printStackTrace();
-			return false;
-		}finally{
-			scanner.close();
-			IOUtils.closeInputStream(in);
 		}
 	}
 

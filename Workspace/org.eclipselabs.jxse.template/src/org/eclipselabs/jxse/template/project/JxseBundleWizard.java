@@ -23,6 +23,7 @@ import org.eclipse.pde.ui.templates.ITemplateSection;
 import org.eclipse.pde.ui.templates.NewPluginTemplateWizard;
 import org.eclipse.pde.ui.templates.TemplateOption;
 
+
 /**
  * @author Marine
  *
@@ -45,6 +46,8 @@ public class JxseBundleWizard extends NewPluginTemplateWizard  implements IPlugi
 	@Override
 	public boolean performFinish(final IProject project, IPluginModelBase model,
 			IProgressMonitor monitor) {
+		if( !super.performFinish(project, model, monitor))
+			return false;
 		try {
 			ITemplateSection[] sections = super.getTemplateSections();
 			monitor.beginTask("perform finish", sections.length);
@@ -61,7 +64,7 @@ public class JxseBundleWizard extends NewPluginTemplateWizard  implements IPlugi
 			if (allOptions != null) {
 				for (int i = 0; i < allOptions.length; i++) {
 					TemplateOption option = allOptions[i];
-					if (option != null && option instanceof ContextWizardView) {
+					if (option != null && option instanceof ContextWizardOption) {
 						contextSection.execute(project, model, new SubProgressMonitor(
 								monitor, 1));
 					}

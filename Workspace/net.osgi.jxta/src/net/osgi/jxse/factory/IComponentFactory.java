@@ -17,14 +17,14 @@ import net.osgi.jxse.utils.StringStyler;
 public interface IComponentFactory<T extends Object> {
 
 	public enum Components{
-		JXTA_CONTEXT,
+		JXSE_CONTEXT,
 		NETWORK_MANAGER,
 		NETWORK_CONFIGURATOR,
 		PEERGROUP_SERVICE,
 		DISCOVERY_SERVICE,
 		RENDEZVOUS_SERVICE,
-		JXTA_SOCKET,
-		JXTA_SERVER_SOCKET,
+		JXSE_SOCKET,
+		JXSE_SERVER_SOCKET,
 		ADVERTISEMENT;
 
 		@Override

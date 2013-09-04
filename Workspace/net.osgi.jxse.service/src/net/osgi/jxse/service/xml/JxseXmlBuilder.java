@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2013 Condast and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Kees Pieters - initial API and implementation
- *******************************************************************************/
 package net.osgi.jxse.service.xml;
 
 import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
@@ -43,14 +33,14 @@ public class JxseXmlBuilder<T extends Enum<T>, U extends Enum<U>> {
 	 */
 	protected void buildContext( IJxsePropertySource< ContextProperties, ContextDirectives> source ){
 		buffer.append( getLeadingSpaces(source));
-		buffer.append( xmlBeginTag( source.getComponentName() ));
+		buffer.append( xmlBeginTag( source.getComponentName(), true));
 		String str = null;
 		buffer.append( getLeadingSpaces(source, 2));
 		buffer.append( DOC_DIRECTIVE );
 		for( ContextDirectives directive: ContextDirectives.values() ){
 			if( source.getDirective( directive ) == null )
 				continue;
-			str =  xmlBeginTag( toXmlStyle( directive ));
+			str =  xmlBeginTag( toXmlStyle( directive ), false );
 			str += source.getDirective( directive );
 			str += xmlEndTag( toXmlStyle( directive ));
 
@@ -68,9 +58,9 @@ public class JxseXmlBuilder<T extends Enum<T>, U extends Enum<U>> {
 		for( ContextProperties props: ContextProperties.values() ){
 			if( source.getProperty( props ) == null )
 				continue;
-			str = "<" + toXmlStyle( props ) + ">";
+			str = xmlBeginTag( toXmlStyle( props ), false);
 			str += source.getProperty( props );
-			str += "<" + toXmlStyle( props ) + "/>\n";
+			str += xmlEndTag( toXmlStyle( props ));
 			if( !Utils.isNull( str )){
 				buffer.append( getLeadingSpaces(source, 4));
 				buffer.append( str );
@@ -127,8 +117,11 @@ public class JxseXmlBuilder<T extends Enum<T>, U extends Enum<U>> {
 	 * @param str
 	 * @return
 	 */
-	public static String xmlBeginTag( String str ){
-		return "<" + str + ">";
+	public static String xmlBeginTag( String str, boolean eol ){
+		String newstr = "<" + str + ">";
+		if( eol )
+			newstr += "\n";
+		return newstr;
 	}
 
 	/**

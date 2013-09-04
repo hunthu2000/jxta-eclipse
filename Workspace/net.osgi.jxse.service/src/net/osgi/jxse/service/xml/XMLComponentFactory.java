@@ -1,30 +1,28 @@
-/*******************************************************************************
- * Copyright (c) 2013 Condast and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Kees Pieters - initial API and implementation
- *******************************************************************************/
 package net.osgi.jxse.service.xml;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import net.jxta.platform.NetworkManager;
@@ -53,7 +51,17 @@ import net.osgi.jxse.utils.io.IOUtils;
 
 public class XMLComponentFactory implements IComponentFactory<NetworkManager>, ICompositeFactory<NetworkManager>, ICompositeFactoryListener {
 
+	public static final String S_ERR_NO_SCHEMA_FOUND = "The XML Schema was not found";
+	
+	static final String S_DOCUMENT_ROOT = "DOCUMENT_ROOT";
+
+	static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+	static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";	
+	static final String JAXP_SCHEMA_SOURCE =
+		    "http://java.sun.com/xml/jaxp/properties/schemaSource";
+	
 	public static String S_DEFAULT_LOCATION = "/JXSE-INF/jxse-context.xml";
+	public static String S_SCHEMA_LOCATION = "/JXSE-INF/jxse-schema.xsd";
 	
 	public enum Groups{
 		PROPERTIES,
@@ -86,13 +94,15 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager>, I
 	
 	private Collection<ICompositeFactoryListener> listeners;
 	
+	//private Logger logger = Logger.getLogger(XMLComponentFactory.class.getName() );
+	
 	private NetworkManager module;
 	
 	public XMLComponentFactory( String pluginId, Class<?> clss) {
 		this( pluginId, clss, S_DEFAULT_LOCATION );
 	}
 
-	public XMLComponentFactory( String pluginId, Class<?> clss, String location ) {
+	protected XMLComponentFactory( String pluginId, Class<?> clss, String location ) {
 		this.pluginId = pluginId;
 		this.clss = clss;
 		this.location = location;
@@ -154,17 +164,38 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager>, I
 	@Override
 	public NetworkManager createModule() {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
+		factory.setValidating(true);
+		URL schema_in = XMLComponentFactory.class.getResource( S_SCHEMA_LOCATION); 
+		if( schema_in == null )
+			throw new NullPointerException( S_ERR_NO_SCHEMA_FOUND );
+		
+		factory.setNamespaceAware( true );
 		InputStream in = clss.getResourceAsStream( location );
 		try {
 			SAXParser saxParser = factory.newSAXParser();
+			saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA); 
+
+			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			// associate the schema factory with the resource resolver, which is responsible for resolving the imported XSD's
+			//factory.setResourceResolver(new ResourceResolver());
+
+			// note that if your XML already declares the XSD to which it has to conform, then there's no need to create a validator from a Schema object
+			Source schemaFile = new StreamSource(getClass().getClassLoader().getResourceAsStream( S_SCHEMA_LOCATION ));
+			Schema schema = schemaFactory.newSchema(schemaFile);
+			factory.setSchema(schema);//saxParser.
 			JxtaHandler handler = new JxtaHandler( this );
 			saxParser.parse( in, handler);
 			this.completed = true;
+			if( handler.getNode() == null )
+				return null;
 			CompositeFactory<NetworkManager> cf = new CompositeFactory<NetworkManager>( handler.getNode() );
 			cf.addListener( this );
 			module = cf.createModule();
 			cf.removeListener(this);
 			return module;
+		} catch( SAXNotRecognizedException e ){
+			failed = true;
+			e.printStackTrace();			
 		} catch (ParserConfigurationException e) {
 			failed = true;
 			e.printStackTrace();
@@ -248,7 +279,7 @@ class JxtaHandler extends DefaultHandler{
 			current = Components.valueOf( StringStyler.styleToEnum( qName ));
 
 			switch( current ){
-			case JXTA_CONTEXT:
+			case JXSE_CONTEXT:
 				PreferenceStore store = new PreferenceStore( owner.getPluginId() );
 				preferences = new JxseXMLPreferences( store  );
 				break;
@@ -279,7 +310,7 @@ class JxtaHandler extends DefaultHandler{
 				this.sdf = new SeedListFactory();
 		}else{
 			String str =  StringStyler.styleToEnum( qName );
-			if( this.groupValue == null )
+			if(( this.groupValue == null ) ||( this.groupValue.equals(XMLComponentFactory.S_DOCUMENT_ROOT )))
 				this.groupValue = str;
 			else
 				this.groupValue += "." + str;
@@ -300,6 +331,8 @@ class JxtaHandler extends DefaultHandler{
 				if(( sdf != null ) && !sdf.isEmpty() )
 					ncf.addSeedlist(this.sdf);
 				break;
+			case JXSE_CONTEXT:
+				this.group = null;
 			default:
 				break;
 			}
@@ -310,7 +343,7 @@ class JxtaHandler extends DefaultHandler{
 				owner.notifyListeners( new FactoryEvent( owner, this.currentNode.getFactory(), FactoryEvents.FACTORY_CREATED ));
 			this.currentNode = this.currentNode.getParent();
 		}else if( Groups.isGroup( qName )){
-			if( Groups.PROPERTIES.equals( group ))
+			if( Groups.PROPERTIES.equals( group ) || Groups.DIRECTIVES.equals( group ))
 				this.groupValue = null;
 			group = null;
 			
@@ -355,7 +388,7 @@ class JxtaHandler extends DefaultHandler{
 		if(( value == null ) || ( value.trim().length() == 0))
 			return;
 		
-		Components component = Components.JXTA_CONTEXT;
+		Components component = Components.JXSE_CONTEXT;
 		if(( this.currentNode != null ) && ( this.currentNode.getFactory() != null )){
 			component = this.currentNode.getFactory().getComponentName();
 		}
@@ -385,12 +418,12 @@ class JxtaHandler extends DefaultHandler{
 		
 		Directives directive = Directives.valueOf(this.groupValue);
 		
-		Components component = Components.JXTA_CONTEXT;
+		Components component = Components.JXSE_CONTEXT;
 		if(( this.currentNode != null ) && ( this.currentNode.getFactory() != null )){
 			component = this.currentNode.getFactory().getComponentName();
 		}
 		switch( component ){
-		case JXTA_CONTEXT:
+		case JXSE_CONTEXT:
 			this.owner.getDirectives().put(directive, value);
 			break;
 		default:
@@ -416,14 +449,14 @@ class JxtaHandler extends DefaultHandler{
 		Map<SupportedAttributes, String> attrs =  JxseXMLPreferences.parseAttributes(attributes); 
 		this.preferences.putProperty( attrs, StringStyler.prettyString( this.groupValue ), value);
 		
-		Components component = Components.JXTA_CONTEXT;
+		Components component = Components.JXSE_CONTEXT;
 		if(( this.currentNode != null ) && ( this.currentNode.getFactory() != null )){
 			component = this.currentNode.getFactory().getComponentName();
 		}
 		
 		String key = this.groupValue.replace(".", "_8" );
 		switch( component ){
-		case JXTA_CONTEXT:
+		case JXSE_CONTEXT:
 			if( this.groupValue.toUpperCase().equals( ContextProperties.IDENTIFIER.name() ))
 				this.owner.setIdentifier( value );
 			break;
@@ -459,4 +492,10 @@ class JxtaHandler extends DefaultHandler{
 		return new PreferenceStore( pluginId);
 	}
 
+	@Override
+	public void error(SAXParseException e) throws SAXException {
+		throw( e );
+	}
+
+	
 }

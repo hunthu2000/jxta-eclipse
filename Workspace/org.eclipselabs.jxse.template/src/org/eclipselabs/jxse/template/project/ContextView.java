@@ -16,10 +16,9 @@ import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.preferences.JxsePreferences;
 import net.osgi.jxse.preferences.properties.JxseContextPropertySource;
 
-import org.eclipse.pde.ui.templates.BaseOptionTemplateSection;
-import org.eclipse.pde.ui.templates.TemplateOption;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -30,8 +29,9 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipselabs.jxse.template.project.ContextWizardOption.TemplateOptions;
 
-public class ContextWizardView extends TemplateOption implements IPropertySourceView {
+public class ContextView extends Composite {
 	
 	private Text text_identifier;
 	private Label lbl_plugin_id;
@@ -48,26 +48,22 @@ public class ContextWizardView extends TemplateOption implements IPropertySource
 	private JxseContextPropertySource ps;
 	private Label lblPort;
 	private Spinner spinner;
-
-	/**
-	 * @wbp.parser.constructor
-	 * @wbp.parser.entryPoint
-	 */
-	public ContextWizardView( BaseOptionTemplateSection section, String name, String label) {
-		super( section, name, label);
+	private Group grpSecurity;
+	private Group grpTemplate;
+	private Combo combo_template;
+	private Label lblPass;
+	private Text text_pass1;
+	private Label lblPass_1;
+	private Text text_pass2;
+	
+	public ContextView(Composite parent, int span) {
+		super( parent, span);
+		this.createControl(parent, span);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipselabs.jxse.template.project.IPropertySourceView#getPs()
-	 */
-	@Override
-	public JxseContextPropertySource getPropertySource() {
-		return ps;
-	}
-
-	@Override
-	public void createControl(Composite parent, int span ) {
-		Composite container = parent;
+	private void createControl(Composite parent, int span ) {
+		parent.setLayout( new FillLayout());
+		Composite container = this;
 		container.setLayout(new GridLayout(2, false));
 				
 		Label lblNewLabel = new Label(container, SWT.NONE);
@@ -129,8 +125,42 @@ public class ContextWizardView extends TemplateOption implements IPropertySource
 		
 		btnPersist = new Button(grpPeerId, SWT.CHECK);
 		btnPersist.setText("Persist");
+
+		grpSecurity = new Group(this, SWT.NONE);
+		grpSecurity.setText("Security:");
+		grpSecurity.setLayout(new GridLayout(2, false));
+		grpSecurity.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
+		
+		lblPass = new Label(grpSecurity, SWT.NONE);
+		lblPass.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblPass.setText("Pass 1:");
+		
+		text_pass1 = new Text(grpSecurity, SWT.BORDER);
+		text_pass1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		lblPass_1 = new Label(grpSecurity, SWT.NONE);
+		lblPass_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblPass_1.setText("Pass 2:");
+		
+		text_pass2 = new Text(grpSecurity, SWT.BORDER);
+		text_pass2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+
+		grpTemplate = new Group(this, SWT.NONE);
+		grpTemplate.setText("Template:");
+		grpTemplate.setLayout(new GridLayout(1, false));
+		grpTemplate.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
+		
+		combo_template = new Combo(grpTemplate, SWT.NONE);
+		combo_template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		new Label(this, SWT.NONE);
+		new Label(this, SWT.NONE);
 	}
 	
+	
+	public JxseContextPropertySource getPropertySource() {
+		return ps;
+	}
+
 	public void init(){
 		ps = new JxseContextPropertySource( this.plugin_id, this.identifier);
 		Object obj = ps.getDefault( ContextProperties.HOME_FOLDER ).toString();
@@ -154,6 +184,9 @@ public class ContextWizardView extends TemplateOption implements IPropertySource
 		boolean create = (boolean) ps.getDefaultDirectives( ContextDirectives.PEER_ID_CREATE );
 		this.btnGenerate.setSelection(create);
 		this.combo_peer_id.setEnabled(!create);
+		
+		this.combo_template.setItems( TemplateOptions.getValues() );
+		this.combo_template.select(0);
 	}
 
 	public void setPlugin_id(String plugin_id) {
@@ -163,7 +196,11 @@ public class ContextWizardView extends TemplateOption implements IPropertySource
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}	
-	
+
+	public TemplateOptions getSelectedOption() {
+		return TemplateOptions.values()[ this.combo_template.getSelectionIndex() ];
+	}
+
 	/**
 	 * Complete the view by filling in the properties and directives
 	 */
@@ -177,6 +214,10 @@ public class ContextWizardView extends TemplateOption implements IPropertySource
 		if( !ps.setProperty( ContextProperties.CONFIG_MODE, this.combo.getText() ))
 			return false;
 		if( !ps.setProperty( ContextProperties.PORT, this.spinner.getText() ))
+			return false;
+		if( !ps.setProperty( ContextProperties.PASS_1, this.text_pass1.getText() ))
+			return false;
+		if( !ps.setProperty( ContextProperties.PASS_2, this.text_pass2.getText() ))
 			return false;
 		if( !ps.setDirective( ContextDirectives.AUTO_START, this.btnAutoStart.getSelection() ))
 			return false;

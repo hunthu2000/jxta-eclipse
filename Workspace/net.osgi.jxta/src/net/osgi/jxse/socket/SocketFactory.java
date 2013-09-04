@@ -37,7 +37,7 @@ public class SocketFactory extends AbstractServiceComponentFactory<JxtaSocket> {
 	private PipeAdvertisementFactory pipeFactory;
 
 	public SocketFactory( NetworkManager manager ) {
-		super( Components.JXTA_SOCKET );
+		super( Components.JXSE_SOCKET );
 		this.manager = manager;
 		this.fillDefaultValues();
 	}
