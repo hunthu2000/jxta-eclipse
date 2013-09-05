@@ -57,6 +57,13 @@ implements IJxseService<T>{
 	}
 
 	/**
+	 * Get the id
+	 */
+	public String getId(){
+		return (String) this.properties.get(ModuleProperties.ID );
+	}
+
+	/**
 	 * Get the create date
 	 */
 	public Date getCreateDate(){

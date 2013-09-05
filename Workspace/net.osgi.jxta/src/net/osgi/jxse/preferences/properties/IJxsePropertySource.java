@@ -17,6 +17,12 @@ public interface IJxsePropertySource< T extends Enum<T>, U extends Enum<U>> {
 	 * @return
 	 */
 	public String getComponentName();
+
+	/**
+	 * Get the id of the component that this property source is bound to
+	 * @return
+	 */
+	public String getId();
 	
 	/**
 	 * Get the depth of the component (root = 0)

@@ -29,6 +29,8 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ibundle.IBundle;
 import org.eclipse.pde.internal.core.ibundle.IBundlePluginModelBase;
+import org.eclipse.pde.internal.ui.wizards.plugin.PluginFieldData;
+import org.eclipse.pde.ui.IFieldData;
 import org.eclipse.pde.ui.IPluginContentWizard;
 import org.eclipse.pde.ui.templates.AbstractNewPluginTemplateWizard;
 import org.eclipse.pde.ui.templates.ITemplateSection;
@@ -55,6 +57,16 @@ public class JxseFragmentWizard extends AbstractNewPluginTemplateWizard  impleme
 	private static final String S_FRAGMENT_VALUE = "org.eclipselabs.jxse.ui;bundle-version=\"1.0.0\"";
 
 	private FragmentWizardPage fragmentPage;
+
+	@Override
+	public void init(IFieldData data) {
+		super.init(data);
+		//Override creation of an activator by making the plugin simple
+		if( data instanceof PluginFieldData ){
+			PluginFieldData fData = (PluginFieldData) data;
+			fData.setSimple(true);
+		}
+	}
 
 	@Override
 	public IWizardPage getNextPage(IWizardPage page) {

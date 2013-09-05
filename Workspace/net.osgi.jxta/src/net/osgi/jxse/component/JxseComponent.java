@@ -71,6 +71,12 @@ public class JxseComponent<T extends Object> implements IJxseComponent<T>, Compa
 		}
 	}
 
+	
+	@Override
+	public String getId() {
+		return ( String )this.properties.get(ModuleProperties.ID);
+	}
+
 	/**
 	 * Get the create date
 	 */

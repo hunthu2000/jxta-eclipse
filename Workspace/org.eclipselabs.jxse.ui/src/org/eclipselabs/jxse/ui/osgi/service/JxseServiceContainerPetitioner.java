@@ -62,6 +62,12 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
 		  System.out.println("Container added");
 	}
 
+	
+	@Override
+	public String getId() {
+		return this.getClass().getPackage().getName() + ".petitioner";
+	}
+
 	/**
 	 * Get the create date
 	 */

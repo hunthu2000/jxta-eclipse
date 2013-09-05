@@ -1,5 +1,6 @@
 package net.osgi.jxse.service.xml;
 
+import net.osgi.jxse.component.IJxseComponent.ModuleProperties;
 import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.preferences.properties.IJxsePropertySource;
@@ -33,12 +34,16 @@ public class JxseXmlBuilder<T extends Enum<T>, U extends Enum<U>> {
 	 */
 	protected void buildContext( IJxsePropertySource< ContextProperties, ContextDirectives> source ){
 		buffer.append( getLeadingSpaces(source));
-		buffer.append( xmlBeginTag( source.getComponentName(), true));
+		
+		String attributes = null;
+		if( !Utils.isNull( source.getId()))
+			attributes = ModuleProperties.ID.toString().toLowerCase() + "=" + source.getId();
+		buffer.append( xmlBeginTag( source.getComponentName(), attributes, true));
 		String str = null;
 		buffer.append( getLeadingSpaces(source, 2));
 		buffer.append( DOC_DIRECTIVE );
 		for( ContextDirectives directive: ContextDirectives.values() ){
-			if( source.getDirective( directive ) == null )
+			if(( source.getDirective( directive ) == null ) || ( Utils.isNull( source.getDirective( directive ).toString() )))
 				continue;
 			str =  xmlBeginTag( toXmlStyle( directive ), false );
 			str += source.getDirective( directive );
@@ -56,7 +61,7 @@ public class JxseXmlBuilder<T extends Enum<T>, U extends Enum<U>> {
 		buffer.append( getLeadingSpaces(source,2));
 		buffer.append( DOC_PROPERTY );
 		for( ContextProperties props: ContextProperties.values() ){
-			if( source.getProperty( props ) == null )
+			if(( source.getProperty(props ) == null ) || ( Utils.isNull( source.getProperty( props ).toString() )))
 				continue;
 			str = xmlBeginTag( toXmlStyle( props ), false);
 			str += source.getProperty( props );
@@ -110,6 +115,18 @@ public class JxseXmlBuilder<T extends Enum<T>, U extends Enum<U>> {
 		for( int i=0; i<source.getDepth() + offset; i++ )
 			buffer.append(" ");
 		return buffer.toString();
+	}
+
+	/**
+	 * Create an XML begin tag for the given string 
+	 * @param str
+	 * @return
+	 */
+	public static String xmlBeginTag( String str, String attributes,  boolean eol ){
+		if( Utils.isNull(attributes ))
+			return xmlBeginTag( str, eol );
+		else
+			return xmlBeginTag( str + " " + attributes, eol );
 	}
 
 	/**

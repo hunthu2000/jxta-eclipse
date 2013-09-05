@@ -32,6 +32,14 @@ public class JxseComponentNode<T extends Object> implements IJxseComponentNode<T
 	}
 
 	/**
+	 * Get the id
+	 */
+	@Override
+	public String getId(){
+		return component.getId();
+	}
+
+	/**
 	 * Get the create date
 	 */
 	@Override

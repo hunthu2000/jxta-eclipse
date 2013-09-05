@@ -65,6 +65,20 @@ public abstract class AbstractServiceContext<T extends Object> extends AbstractA
 		this.identifier = identifier;
 	}
 
+	@Override
+	public String getId() {
+		return (String) this.properties.get( ModuleProperties.ID );
+	}
+
+	@Override
+	protected boolean onInitialising() {
+		return false;
+	}
+
+	@Override
+	protected void onFinalising() {
+	}
+
 	protected AbstractServiceContext( IComponentFactory<T> factory ) {
 		this( factory, false );
 	}

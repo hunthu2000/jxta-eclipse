@@ -74,6 +74,8 @@ public class JxseContextPropertySource extends AbstractJxsePropertySource<Contex
 			return plugin_id;
 		case PORT:
 			return DEF_PORT;
+		default:
+			break;
 		}
 		return null;
 	}

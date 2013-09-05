@@ -15,6 +15,7 @@ import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.preferences.JxsePreferences;
 import net.osgi.jxse.preferences.properties.JxseContextPropertySource;
+import net.osgi.jxse.utils.Utils;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -33,6 +34,7 @@ import org.eclipselabs.jxse.template.project.ContextWizardOption.TemplateOptions
 
 public class ContextView extends Composite {
 	
+	private static final String S_JXSE_CONTEXT_1 = ".jxse.context1";
 	private Text text_identifier;
 	private Label lbl_plugin_id;
 	private Text text_home_folder;
@@ -55,6 +57,8 @@ public class ContextView extends Composite {
 	private Text text_pass1;
 	private Label lblPass_1;
 	private Text text_pass2;
+	private Label lblId;
+	private Text text_id;
 	
 	public ContextView(Composite parent, int span) {
 		super( parent, span);
@@ -72,10 +76,17 @@ public class ContextView extends Composite {
 		
 		lbl_plugin_id = new Label(container, SWT.BORDER);
 		lbl_plugin_id.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		lblId = new Label(this, SWT.NONE);
+		lblId.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblId.setText("id:");
+		
+		text_id = new Text(this, SWT.BORDER);
+		text_id.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		Label lblName = new Label(container, SWT.NONE);
 		lblName.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblName.setText("Identifier:");
+		lblName.setText("Name:");
 		
 		text_identifier = new Text(container, SWT.BORDER);
 		text_identifier.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -167,8 +178,10 @@ public class ContextView extends Composite {
 		if( obj != null )
 			this.text_home_folder.setText( obj.toString() );
 		obj = ps.getDefault( ContextProperties.PLUGIN_ID );
-		if( obj != null )
+		if( obj != null ){
 			this.lbl_plugin_id.setText( " " + obj.toString() );
+			this.text_id.setText( obj.toString() + S_JXSE_CONTEXT_1 );
+		}
 		obj = ps.getDefault( ContextProperties.IDENTIFIER );
 		if( obj != null )
 			this.text_identifier.setText( obj.toString() );
@@ -205,6 +218,9 @@ public class ContextView extends Composite {
 	 * Complete the view by filling in the properties and directives
 	 */
 	public boolean complete() throws Exception{
+		if( Utils.isNull( this.text_id.getText()))
+			return false;
+		ps.setId( this.text_id.getText() );
 		if( !ps.setProperty( ContextProperties.HOME_FOLDER, this.text_home_folder.getText() ))
 			return false;
 		if( !ps.setProperty( ContextProperties.PLUGIN_ID, this.lbl_plugin_id.getText() ))

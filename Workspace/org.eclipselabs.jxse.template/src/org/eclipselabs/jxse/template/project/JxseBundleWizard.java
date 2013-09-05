@@ -18,6 +18,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
+import org.eclipse.pde.internal.ui.wizards.plugin.PluginFieldData;
+import org.eclipse.pde.ui.IFieldData;
 import org.eclipse.pde.ui.IPluginContentWizard;
 import org.eclipse.pde.ui.templates.ITemplateSection;
 import org.eclipse.pde.ui.templates.NewPluginTemplateWizard;
@@ -28,6 +30,7 @@ import org.eclipse.pde.ui.templates.TemplateOption;
  * @author Marine
  *
  */
+@SuppressWarnings("restriction")
 public class JxseBundleWizard extends NewPluginTemplateWizard  implements IPluginContentWizard{
 
 	public static final String S_MSG_SETUP_CONTEXT = "Set up JXSE Bundle Project";
@@ -35,6 +38,16 @@ public class JxseBundleWizard extends NewPluginTemplateWizard  implements IPlugi
 
 	private JxseBundleSection acs1;
 	
+	@Override
+	public void init(IFieldData data) {
+		super.init(data);
+		//Override creation of an activator by making the plugin simple
+		if( data instanceof PluginFieldData ){
+			PluginFieldData fData = (PluginFieldData) data;
+			fData.setSimple(true);
+		}
+	}
+
 	@Override
 	public ITemplateSection[] createTemplateSections() {
 		ITemplateSection[] sections = new ITemplateSection[1];
@@ -44,8 +57,7 @@ public class JxseBundleWizard extends NewPluginTemplateWizard  implements IPlugi
 	}
 	
 	@Override
-	public boolean performFinish(final IProject project, IPluginModelBase model,
-			IProgressMonitor monitor) {
+	public boolean performFinish(final IProject project, IPluginModelBase model, IProgressMonitor monitor) {
 		if( !super.performFinish(project, model, monitor))
 			return false;
 		try {

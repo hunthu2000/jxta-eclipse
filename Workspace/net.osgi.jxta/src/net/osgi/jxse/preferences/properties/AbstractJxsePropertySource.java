@@ -22,7 +22,8 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends E
 	private Collection<IJxsePropertySource<?,?>> children;
 
 	private int depth = 0;
-
+	private String context_id;
+	
 	public AbstractJxsePropertySource() {
 		this(0);
 	}
@@ -32,6 +33,14 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends E
 		directives = new HashMap<U,Object>();
 		children = new ArrayList<IJxsePropertySource<?,?>>();
 		this.depth = depth;
+	}
+
+	public String getId() {
+		return context_id;
+	}
+
+	public void setId(String id) {
+		this.context_id = id;
 	}
 
 	@Override

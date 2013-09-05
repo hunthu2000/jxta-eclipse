@@ -19,6 +19,7 @@ import net.osgi.jxse.utils.StringStyler;
 public interface IJxseComponent<T extends Object>{
 	
 	public enum ModuleProperties{
+		ID,
 		CREATE_DATE;
 
 		@Override
@@ -27,6 +28,12 @@ public interface IJxseComponent<T extends Object>{
 		}	
 	}
 
+	/**
+	 * Get the id of the component
+	 * @return
+	 */
+	public String getId();
+	
 	public Date getCreateDate();
 	
 	/**
