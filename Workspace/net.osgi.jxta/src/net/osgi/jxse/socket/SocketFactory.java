@@ -14,10 +14,10 @@ import net.jxta.platform.NetworkManager;
 import net.jxta.protocol.PipeAdvertisement;
 import net.jxta.socket.JxtaSocket;
 import net.osgi.jxse.advertisement.PipeAdvertisementFactory;
-import net.osgi.jxse.factory.AbstractServiceComponentFactory;
+import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.utils.StringStyler;
 
-public class SocketFactory extends AbstractServiceComponentFactory<JxtaSocket> {
+public class SocketFactory extends AbstractComponentFactory<JxtaSocket> {
 
 	public static final String S_JXSE_SOCKET_SERVICE = "JxtaSocketService";
 	

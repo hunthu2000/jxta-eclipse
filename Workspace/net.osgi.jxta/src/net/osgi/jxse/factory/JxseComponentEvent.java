@@ -12,26 +12,18 @@ package net.osgi.jxse.factory;
 
 import java.util.EventObject;
 
-import net.osgi.jxse.factory.ICompositeFactoryListener.FactoryEvents;
+public class JxseComponentEvent<T extends Object> extends EventObject {
 
-public class FactoryEvent extends EventObject {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 302931451825865288L;
 
-	private FactoryEvents factoryEvent;
+	private T module;
 	
-	private IComponentFactory<?> factory;
-	
-	public FactoryEvent(Object arg0, IComponentFactory<?> factory, FactoryEvents factoryEvent ){
-		super(arg0);
-		this.factory = factory;
-		this.factoryEvent = factoryEvent;
-	}
-	
-	public IComponentFactory<?> getFactory() {
-		return factory;
+	public JxseComponentEvent( IComponentFactory<T> source, T module ) {
+		super(source);
+		this.module = module;
 	}
 
-	public FactoryEvents getFactoryEvent() {
-		return factoryEvent;
+	public T getModule(){
+		return module;
 	}
 }

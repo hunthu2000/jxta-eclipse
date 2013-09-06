@@ -10,20 +10,6 @@
  *******************************************************************************/
 package net.osgi.jxse.factory;
 
-import java.util.EventObject;
-
-public class ServiceComponentEvent<T extends Object> extends EventObject {
-
-	private static final long serialVersionUID = 302931451825865288L;
-
-	private T module;
-	
-	public ServiceComponentEvent( IComponentFactory<T> source, T module ) {
-		super(source);
-		this.module = module;
-	}
-
-	public T getModule(){
-		return module;
-	}
+public interface IComponentFactoryListener<T extends Object> {
+	public void notifyComponentCompleted( JxseComponentEvent<T> event );
 }

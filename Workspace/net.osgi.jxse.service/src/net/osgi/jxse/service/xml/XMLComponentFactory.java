@@ -26,16 +26,16 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import net.jxta.platform.NetworkManager;
+import net.osgi.jxse.builder.CompositeBuilder;
+import net.osgi.jxse.builder.ComponentNode;
+import net.osgi.jxse.builder.ICompositeBuilder;
+import net.osgi.jxse.builder.ICompositeBuilderListener;
+import net.osgi.jxse.builder.ICompositeBuilderListener.FactoryEvents;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
-import net.osgi.jxse.factory.CompositeFactory;
-import net.osgi.jxse.factory.FactoryEvent;
-import net.osgi.jxse.factory.FactoryNode;
+import net.osgi.jxse.factory.ComponentFactoryEvent;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.factory.ICompositeFactory;
-import net.osgi.jxse.factory.ICompositeFactoryListener;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.factory.IComponentFactory.Directives;
-import net.osgi.jxse.factory.ICompositeFactoryListener.FactoryEvents;
 import net.osgi.jxse.network.NetworkConfigurationFactory;
 import net.osgi.jxse.network.NetworkManagerFactory;
 import net.osgi.jxse.network.NetworkConfigurationFactory.NetworkConfiguratorProperties;
@@ -49,7 +49,7 @@ import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.utils.io.IOUtils;
 
-public class XMLComponentFactory implements IComponentFactory<NetworkManager>, ICompositeFactory<NetworkManager>, ICompositeFactoryListener {
+public class XMLComponentFactory implements IComponentFactory<NetworkManager>, ICompositeBuilder<NetworkManager>, ICompositeBuilderListener {
 
 	public static final String S_ERR_NO_SCHEMA_FOUND = "The XML Schema was not found";
 	
@@ -92,7 +92,7 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager>, I
 	private boolean completed, failed;
 	private Map<Directives,String> directives;
 	
-	private Collection<ICompositeFactoryListener> listeners;
+	private Collection<ICompositeBuilderListener> listeners;
 	
 	//private Logger logger = Logger.getLogger(XMLComponentFactory.class.getName() );
 	
@@ -109,7 +109,7 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager>, I
 		this.completed = false;
 		this.failed = false;
 		directives = new HashMap<Directives, String>();
-		this.listeners = new ArrayList<ICompositeFactoryListener>();
+		this.listeners = new ArrayList<ICompositeBuilderListener>();
 	}
 
 	String getPluginId() {
@@ -137,7 +137,7 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager>, I
 	 * @see net.osgi.jxta.factory.ICompositeFactory#addListener(net.osgi.jxta.factory.ICompositeFactoryListener)
 	 */
 	@Override
-	public void addListener( ICompositeFactoryListener listener ){
+	public void addListener( ICompositeBuilderListener listener ){
 		this.listeners.add( listener);
 	}
 
@@ -145,12 +145,12 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager>, I
 	 * @see net.osgi.jxta.factory.ICompositeFactory#removeListener(net.osgi.jxta.factory.ICompositeFactoryListener)
 	 */
 	@Override
-	public void removeListener( ICompositeFactoryListener listener ){
+	public void removeListener( ICompositeBuilderListener listener ){
 		this.listeners.remove( listener);
 	}
 
-	void notifyListeners( FactoryEvent event ){
-		for( ICompositeFactoryListener listener: listeners )
+	void notifyListeners( ComponentFactoryEvent event ){
+		for( ICompositeBuilderListener listener: listeners )
 			listener.notifyFactoryCreated(event);
 	}
 
@@ -188,7 +188,7 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager>, I
 			this.completed = true;
 			if( handler.getNode() == null )
 				return null;
-			CompositeFactory<NetworkManager> cf = new CompositeFactory<NetworkManager>( handler.getNode() );
+			CompositeBuilder<NetworkManager> cf = new CompositeBuilder<NetworkManager>( handler.getNode() );
 			cf.addListener( this );
 			module = cf.createModule();
 			cf.removeListener(this);
@@ -233,7 +233,7 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager>, I
 	}
 
 	@Override
-	public void notifyFactoryCreated(FactoryEvent event) {
+	public void notifyFactoryCreated(ComponentFactoryEvent event) {
 		this.notifyListeners(event);
 	}
 
@@ -246,8 +246,8 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager>, I
 class JxtaHandler extends DefaultHandler{
 
 	private XMLComponentFactory owner;
-	private FactoryNode<NetworkManager> root;
-	private FactoryNode<?> currentNode;
+	private ComponentNode<NetworkManager> root;
+	private ComponentNode<?> currentNode;
 	private Components current;
 	private Groups group;
 	private String groupValue;
@@ -263,7 +263,7 @@ class JxtaHandler extends DefaultHandler{
 		this.owner = owner;
 	}
 
-	FactoryNode<NetworkManager> getNode() {
+	ComponentNode<NetworkManager> getNode() {
 		return root;
 	}
 
@@ -288,7 +288,7 @@ class JxtaHandler extends DefaultHandler{
 					factory = new NetworkManagerFactory( );
 				else
 					factory = new NetworkManagerFactory( this.preferences );
-				this.root = new FactoryNode( factory );
+				this.root = new ComponentNode( factory );
 				break;
 			case NETWORK_CONFIGURATOR:
 				factory = new NetworkConfigurationFactory(( NetworkManagerFactory )this.currentNode.getFactory() );
@@ -340,7 +340,7 @@ class JxtaHandler extends DefaultHandler{
 			if( this.currentNode == null )
 				return;
 			if( this.currentNode.getFactory() != null )
-				owner.notifyListeners( new FactoryEvent( owner, this.currentNode.getFactory(), FactoryEvents.FACTORY_CREATED ));
+				owner.notifyListeners( new ComponentFactoryEvent( owner, this.currentNode.getFactory(), FactoryEvents.FACTORY_CREATED ));
 			this.currentNode = this.currentNode.getParent();
 		}else if( Groups.isGroup( qName )){
 			if( Groups.PROPERTIES.equals( group ) || Groups.DIRECTIVES.equals( group ))

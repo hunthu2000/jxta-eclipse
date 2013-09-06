@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 import net.jxta.rendezvous.RendezVousService;
 import net.jxta.rendezvous.RendezvousEvent;
 import net.jxta.rendezvous.RendezvousListener;
-import net.osgi.jxse.factory.AbstractServiceComponentFactory;
+import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.log.JxseLevel;
 import net.osgi.jxse.service.ServiceEventDispatcher;
 import net.osgi.jxse.service.core.AbstractJxtaService;
@@ -113,7 +113,7 @@ public class RendezVousServiceComponent extends AbstractJxtaService<RendezVousSe
 	}
 }
 
-class RendezvousServiceFactory extends AbstractServiceComponentFactory<RendezVousService>{
+class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousService>{
 
 	private NetPeerGroupService parent;
 	

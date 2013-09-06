@@ -8,32 +8,36 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.factory;
+package net.osgi.jxse.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
 import net.osgi.jxse.activator.IActivator;
-import net.osgi.jxse.factory.ICompositeFactoryListener.FactoryEvents;
+import net.osgi.jxse.builder.ICompositeBuilderListener.FactoryEvents;
+import net.osgi.jxse.factory.AbstractComponentFactory;
+import net.osgi.jxse.factory.ComponentFactoryEvent;
+import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.factory.IComponentFactory.Directives;
 
-public class CompositeFactory<T extends Object> extends AbstractServiceComponentFactory<T> implements ICompositeFactory<T> {
+public class CompositeBuilder<T extends Object> extends AbstractComponentFactory<T> implements ICompositeBuilder<T> {
 
-	private FactoryNode<T> node;
+	private ComponentNode<T> node;
 	
-	private Collection<ICompositeFactoryListener> factoryListeners;
+	private Collection<ICompositeBuilderListener> factoryListeners;
 	
-	public CompositeFactory( FactoryNode<T> node) {
+	public CompositeBuilder( ComponentNode<T> node) {
 		super( node.getFactory().getComponentName() );
 		this.node = node;
-		this.factoryListeners = new ArrayList<ICompositeFactoryListener>();
+		this.factoryListeners = new ArrayList<ICompositeBuilderListener>();
 	}
 
 	/* (non-Javadoc)
 	 * @see net.osgi.jxta.factory.ICompositeFactory#addListener(net.osgi.jxta.factory.ICompositeFactoryListener)
 	 */
 	@Override
-	public void addListener( ICompositeFactoryListener listener ){
+	public void addListener( ICompositeBuilderListener listener ){
 		this.factoryListeners.add( listener);
 	}
 
@@ -41,12 +45,12 @@ public class CompositeFactory<T extends Object> extends AbstractServiceComponent
 	 * @see net.osgi.jxta.factory.ICompositeFactory#removeListener(net.osgi.jxta.factory.ICompositeFactoryListener)
 	 */
 	@Override
-	public void removeListener( ICompositeFactoryListener listener ){
+	public void removeListener( ICompositeBuilderListener listener ){
 		this.factoryListeners.remove( listener);
 	}
 
-	protected void notifyListeners( FactoryEvent event ){
-		for( ICompositeFactoryListener listener: factoryListeners )
+	protected void notifyListeners( ComponentFactoryEvent event ){
+		for( ICompositeBuilderListener listener: factoryListeners )
 			listener.notifyFactoryCreated(event);
 	}
  
@@ -55,7 +59,7 @@ public class CompositeFactory<T extends Object> extends AbstractServiceComponent
 		this.onParseDirectivePriorToCreation(node, directive, value );
 	}
 
-	protected void onParseDirectivePriorToCreation( FactoryNode<T> node, Directives directive, String value) {
+	protected void onParseDirectivePriorToCreation( ComponentNode<T> node, Directives directive, String value) {
 		IComponentFactory<?> parentFactory = null;
 		switch( directive ){
 			case ACTIVATE_PARENT:
@@ -90,7 +94,7 @@ public class CompositeFactory<T extends Object> extends AbstractServiceComponent
 	 * Parse the directives for this factory
 	 * @param node
 	 */
-	private final void parseDirectives( FactoryNode<T> node ){
+	private final void parseDirectives( ComponentNode<T> node ){
 		Map<Directives,String> directives = node.getFactory().getDirectives();
 		if(( directives == null ) || ( directives.isEmpty()))
 			return;
@@ -104,12 +108,12 @@ public class CompositeFactory<T extends Object> extends AbstractServiceComponent
 	}
 
 	@SuppressWarnings("unchecked")
-	private T createModule( FactoryNode<T> node ){
+	private T createModule( ComponentNode<T> node ){
 		this.parseDirectives(node);
 		T component = node.getFactory().createModule();
-		this.notifyListeners( new FactoryEvent( this, node.getFactory(), FactoryEvents.COMPONENT_CREATED ));
-		for( FactoryNode<?> child: node.getChildren())
-			createModule( (FactoryNode<T>) child );
+		this.notifyListeners( new ComponentFactoryEvent( this, node.getFactory(), FactoryEvents.COMPONENT_CREATED ));
+		for( ComponentNode<?> child: node.getChildren())
+			createModule( (ComponentNode<T>) child );
 		return component;
 		
 	}

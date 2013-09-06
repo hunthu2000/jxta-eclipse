@@ -8,8 +8,22 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.factory;
+package net.osgi.jxse.builder;
 
-public interface IServiceComponentFactoryListener<T extends Object> {
-	public void notifyComponentCompleted( ServiceComponentEvent<T> event );
+import net.osgi.jxse.factory.ComponentFactoryEvent;
+import net.osgi.jxse.utils.StringStyler;
+
+public interface ICompositeBuilderListener {
+
+	public enum FactoryEvents{
+		FACTORY_CREATED,
+		COMPONENT_CREATED;
+
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString() );
+		}
+	}
+	
+	public void notifyFactoryCreated( ComponentFactoryEvent event );
 }

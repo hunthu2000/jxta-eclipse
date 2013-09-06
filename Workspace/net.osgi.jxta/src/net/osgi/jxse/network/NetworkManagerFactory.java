@@ -23,12 +23,12 @@ import java.util.logging.Logger;
 
 import net.jxta.platform.NetworkManager;
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.osgi.jxse.factory.AbstractServiceComponentFactory;
+import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.preferences.IJxsePreferences;
 import net.osgi.jxse.preferences.ProjectFolderUtils;
 import net.osgi.jxse.utils.StringStyler;
 
-public class NetworkManagerFactory extends AbstractServiceComponentFactory<NetworkManager> {
+public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager> {
 		
 	public static final String S_NETWORK_MANAGER_SERVICE = "NetworkManagerService";
 

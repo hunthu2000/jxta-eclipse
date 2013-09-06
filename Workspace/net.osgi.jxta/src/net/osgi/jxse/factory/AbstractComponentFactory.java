@@ -17,9 +17,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class AbstractServiceComponentFactory<T extends Object> implements IComponentFactory<T>{
+public abstract class AbstractComponentFactory<T extends Object> implements IComponentFactory<T>{
 
-	private Collection<IServiceComponentFactoryListener<T>> listeners;
+	private Collection<IComponentFactoryListener<T>> listeners;
 	private T module;
 	private Map<Object,Object> properties;
 	private Map<Directives,String> directives;
@@ -29,12 +29,12 @@ public abstract class AbstractServiceComponentFactory<T extends Object> implemen
 	private boolean completed;
 	private boolean failed;
 	
-	protected AbstractServiceComponentFactory( Components componentName) {
+	protected AbstractComponentFactory( Components componentName) {
 		this( componentName, true );
 	}
 
-	protected AbstractServiceComponentFactory( Components componentName, boolean fillValues ) {
-		listeners = new ArrayList<IServiceComponentFactoryListener<T>>();
+	protected AbstractComponentFactory( Components componentName, boolean fillValues ) {
+		listeners = new ArrayList<IComponentFactoryListener<T>>();
 		properties = new HashMap<Object, Object>();
 		directives = new HashMap<Directives, String>();
 		this.completed = false;
@@ -173,11 +173,11 @@ public abstract class AbstractServiceComponentFactory<T extends Object> implemen
 		return module;
 	}
 
-	public void addComponentListener( IServiceComponentFactoryListener<T> listener ){
+	public void addComponentListener( IComponentFactoryListener<T> listener ){
 		this.listeners.add(listener);
 	}
 
-	public void removeComponentListener( IServiceComponentFactoryListener<T> listener ){
+	public void removeComponentListener( IComponentFactoryListener<T> listener ){
 		this.listeners.remove(listener);
 	}
 
@@ -186,8 +186,8 @@ public abstract class AbstractServiceComponentFactory<T extends Object> implemen
 	 * @param component
 	 */
 	protected void notifyServiceComponentCompleted( T component ) {
-		ServiceComponentEvent<T> event = new ServiceComponentEvent<T>( this, component );
-		for( IServiceComponentFactoryListener<T> listener: listeners)
+		JxseComponentEvent<T> event = new JxseComponentEvent<T>( this, component );
+		for( IComponentFactoryListener<T> listener: listeners)
 			listener.notifyComponentCompleted(event);
 	}
 }

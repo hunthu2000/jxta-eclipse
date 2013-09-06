@@ -18,11 +18,11 @@ import net.jxta.platform.NetworkManager;
 import net.jxta.protocol.PipeAdvertisement;
 import net.jxta.socket.JxtaServerSocket;
 import net.osgi.jxse.advertisement.PipeAdvertisementFactory;
-import net.osgi.jxse.factory.AbstractServiceComponentFactory;
+import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.utils.IOUtils;
 import net.osgi.jxse.utils.StringStyler;
 
-public class ServerSocketFactory extends AbstractServiceComponentFactory<JxtaServerSocket> {
+public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSocket> {
 
 	public static final String S_JXSE_SERVER_SOCKET_SERVICE = "JxtaServerSocketService";
 	

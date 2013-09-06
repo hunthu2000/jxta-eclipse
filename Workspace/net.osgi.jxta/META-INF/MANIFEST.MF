@@ -22,6 +22,7 @@ Import-Package: net.jxta.discovery,
  org.osgi.service.prefs;version="1.1.1"
 Export-Package: net.osgi.jxse.activator,
  net.osgi.jxse.advertisement,
+ net.osgi.jxse.builder,
  net.osgi.jxse.component,
  net.osgi.jxse.context,
  net.osgi.jxse.factory,

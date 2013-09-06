@@ -15,18 +15,18 @@ import java.util.logging.Logger;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager;
+import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.context.AbstractServiceContext;
-import net.osgi.jxse.factory.FactoryEvent;
+import net.osgi.jxse.factory.ComponentFactoryEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Directives;
-import net.osgi.jxse.factory.ICompositeFactoryListener;
 import net.osgi.jxse.network.NetworkConfigurationFactory;
 import net.osgi.jxse.seeds.AbstractResourceSeedListFactory;
 import net.osgi.jxse.seeds.ISeedListFactory;
 import net.osgi.jxse.service.network.NetPeerGroupService;
 import net.osgi.jxse.utils.Utils;
 
-public class XMLServiceContext extends AbstractServiceContext<NetworkManager> implements ICompositeFactoryListener{
+public class XMLServiceContext extends AbstractServiceContext<NetworkManager> implements ICompositeBuilderListener{
 
 	public static final String S_ERR_NO_SERVICE_LOADED = "\n\t!!! No service is loaded. Not starting context:  ";
 	
@@ -114,7 +114,7 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager> im
 	}
 
 	@Override
-	public void notifyFactoryCreated(FactoryEvent event) {
+	public void notifyFactoryCreated(ComponentFactoryEvent event) {
 		FactoryEvents fe = event.getFactoryEvent();
 		switch( fe ){
 		case FACTORY_CREATED:

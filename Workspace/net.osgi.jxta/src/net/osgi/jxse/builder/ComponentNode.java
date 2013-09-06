@@ -8,30 +8,32 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.factory;
+package net.osgi.jxse.builder;
 
 import java.util.Collection;
 import java.util.TreeSet;
 
-public class FactoryNode<T extends Object> implements Comparable<FactoryNode<?>> {
+import net.osgi.jxse.factory.IComponentFactory;
+
+public class ComponentNode<T extends Object> implements Comparable<ComponentNode<?>> {
 
 	private IComponentFactory<T> factory;
 	
-	private FactoryNode<?> parent;
+	private ComponentNode<?> parent;
 	
-	private Collection<FactoryNode<IComponentFactory<?>>> children;
+	private Collection<ComponentNode<IComponentFactory<?>>> children;
 	
-	public FactoryNode( IComponentFactory<T> factory ) {
+	public ComponentNode( IComponentFactory<T> factory ) {
 		this.factory = factory;
-		children = new TreeSet<FactoryNode<IComponentFactory<? extends Object>>>();
+		children = new TreeSet<ComponentNode<IComponentFactory<? extends Object>>>();
 	}
 
-	FactoryNode( IComponentFactory<T> factory, FactoryNode<?> parent ) {
+	ComponentNode( IComponentFactory<T> factory, ComponentNode<?> parent ) {
 		this( factory );
 		this.parent = parent;
 	}
 
-	public FactoryNode<?> getParent() {
+	public ComponentNode<?> getParent() {
 		return parent;
 	}
 
@@ -41,14 +43,14 @@ public class FactoryNode<T extends Object> implements Comparable<FactoryNode<?>>
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public FactoryNode<IComponentFactory<?>> addChild( IComponentFactory<?> factory ){
-		FactoryNode<IComponentFactory<?>> node = new FactoryNode( factory, this );
+	public ComponentNode<IComponentFactory<?>> addChild( IComponentFactory<?> factory ){
+		ComponentNode<IComponentFactory<?>> node = new ComponentNode( factory, this );
 		children.add( node );
 		return node;
 	}
 
 	public boolean removeChild( IComponentFactory<?> factory ){
-		for( FactoryNode<IComponentFactory<?>> nd: children ){
+		for( ComponentNode<IComponentFactory<?>> nd: children ){
 			if( nd.getFactory().equals( factory )){
 				return children.remove(nd);
 			}
@@ -60,12 +62,12 @@ public class FactoryNode<T extends Object> implements Comparable<FactoryNode<?>>
 		return this.children.size();
 	}
 	
-	public FactoryNode<?>[] getChildren(){
-		return this.children.toArray( new FactoryNode<?>[ this.children.size() ] );
+	public ComponentNode<?>[] getChildren(){
+		return this.children.toArray( new ComponentNode<?>[ this.children.size() ] );
 	}
 
 	@Override
-	public int compareTo(FactoryNode<?> arg0) {
+	public int compareTo(ComponentNode<?> arg0) {
 		if( arg0 == null )
 			return 1;
 		if(( this.factory == null ) && ( arg0.getFactory() == null ))

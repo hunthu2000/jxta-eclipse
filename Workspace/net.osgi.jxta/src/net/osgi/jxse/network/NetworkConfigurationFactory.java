@@ -21,13 +21,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jxta.platform.NetworkConfigurator;
-import net.osgi.jxse.factory.AbstractServiceComponentFactory;
+import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.preferences.IJxsePreferences;
 import net.osgi.jxse.seeds.ISeedListFactory;
 import net.osgi.jxse.utils.StringStyler;
 
 public class NetworkConfigurationFactory extends
-		AbstractServiceComponentFactory<NetworkConfigurator> {
+		AbstractComponentFactory<NetworkConfigurator> {
 
 	public enum NetworkConfiguratorProperties{
 		AUTHENTICATION_TYPE,

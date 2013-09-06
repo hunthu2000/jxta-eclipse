@@ -20,10 +20,10 @@ import net.jxta.id.IDFactory;
 import net.jxta.pipe.PipeID;
 import net.jxta.pipe.PipeService;
 import net.jxta.protocol.PipeAdvertisement;
-import net.osgi.jxse.factory.AbstractServiceComponentFactory;
+import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.utils.StringStyler;
 
-public class PipeAdvertisementFactory extends AbstractServiceComponentFactory<PipeAdvertisement> {
+public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdvertisement> {
 
 	public static final String S_PIPE_ADVERTISEMENT_SERVICE = "PipeAdvertisementService";
 

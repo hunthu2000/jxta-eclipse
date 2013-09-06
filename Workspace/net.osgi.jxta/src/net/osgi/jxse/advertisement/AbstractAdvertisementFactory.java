@@ -17,10 +17,10 @@ import net.jxta.protocol.ModuleClassAdvertisement;
 import net.jxta.protocol.ModuleSpecAdvertisement;
 import net.jxta.protocol.PeerGroupAdvertisement;
 import net.jxta.protocol.PipeAdvertisement;
-import net.osgi.jxse.factory.AbstractServiceComponentFactory;
+import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.utils.StringStyler;
 
-public abstract class AbstractAdvertisementFactory<T extends Advertisement> extends AbstractServiceComponentFactory<T> {
+public abstract class AbstractAdvertisementFactory<T extends Advertisement> extends AbstractComponentFactory<T> {
 
 	public enum AdvertisementTypes{
 		ADV,

@@ -8,21 +8,13 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.factory;
+package net.osgi.jxse.builder;
 
-import net.osgi.jxse.utils.StringStyler;
 
-public interface ICompositeFactoryListener {
+public interface ICompositeBuilder<T extends Object> {
 
-	public enum FactoryEvents{
-		FACTORY_CREATED,
-		COMPONENT_CREATED;
+	public abstract void addListener(ICompositeBuilderListener listener);
 
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString() );
-		}
-	}
-	
-	public void notifyFactoryCreated( FactoryEvent event );
+	public abstract void removeListener(ICompositeBuilderListener listener);
+
 }

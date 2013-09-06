@@ -10,27 +10,28 @@
  *******************************************************************************/
 package net.osgi.jxse.factory;
 
-public abstract class AbstractFactoryConvertor<T, U extends Object> extends
-		AbstractServiceComponentFactory<U> {
- 
-	private IComponentFactory<T> factory;
+import java.util.EventObject;
+
+import net.osgi.jxse.builder.ICompositeBuilderListener.FactoryEvents;
+
+public class ComponentFactoryEvent extends EventObject {
+	private static final long serialVersionUID = 1L;
+
+	private FactoryEvents factoryEvent;
 	
-	public AbstractFactoryConvertor( IComponentFactory<T> factory ){
-		super( factory.getComponentName() );
+	private IComponentFactory<?> factory;
+	
+	public ComponentFactoryEvent(Object arg0, IComponentFactory<?> factory, FactoryEvents factoryEvent ){
+		super(arg0);
 		this.factory = factory;
+		this.factoryEvent = factoryEvent;
 	}
-
-	public AbstractFactoryConvertor( Components componentName, IComponentFactory<T> factory ){
-		super( componentName );
-		this.factory = factory;
-	}
-
-	protected IComponentFactory<T> getFactory() {
+	
+	public IComponentFactory<?> getFactory() {
 		return factory;
 	}
 
-	@Override
-	protected void fillDefaultValues() {
-		// USUALLY NOT NEEDED, SO WE IMPLEMENT A DEFAULT
+	public FactoryEvents getFactoryEvent() {
+		return factoryEvent;
 	}
 }
