@@ -19,7 +19,7 @@ public class JxseLabelProvider extends LabelProvider{
 		IJxseComponent<?> component = (IJxseComponent<?> )element;
 		StatusImages images = new StatusImages();
 		if( component instanceof AbstractJxtaService ){
-			AbstractJxtaService<?> service = (net.osgi.jxse.service.core.AbstractJxtaService<Object> )component;
+			AbstractJxtaService<?,?,?> service = (net.osgi.jxse.service.core.AbstractJxtaService<Object,?,?> )component;
 			return images.getImage( service.getStatus() );
 		}
 		return images.getImage( Images.COMPONENT );

@@ -21,6 +21,7 @@ import net.jxta.pipe.PipeID;
 import net.jxta.pipe.PipeService;
 import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jxse.advertisement.PipeAdvertisementFactory;
+import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
 public class SocketPipeAdvertisementFactory extends PipeAdvertisementFactory {
@@ -46,31 +47,33 @@ public class SocketPipeAdvertisementFactory extends PipeAdvertisementFactory {
 
 	@Override
 	protected void fillDefaultValues() {
+		IJxsePropertySource<Properties, Directives> source = null;//TODOsuper.getPropertySource();		
 		try {
-			super.addProperty( Properties.SOCKET_ID, new URI( SOCKETIDSTR ));
+			source.setProperty( Properties.SOCKET_ID, new URI( SOCKETIDSTR ));
 		} catch (URISyntaxException e) {
 			Logger log = Logger.getLogger( this.getClass().getName() );
 			log.log( Level.SEVERE, e.getMessage() );
 			e.printStackTrace();
 		}
-		super.addProperty( Properties.NAME, DEFAULT_SOCKET_NAME );
-		super.addProperty( Properties.TYPE, PipeService.UnicastType );		
+		source.setProperty( Properties.NAME, DEFAULT_SOCKET_NAME );
+		source.setProperty( Properties.TYPE, PipeService.UnicastType );		
 	}
 
 
 	@Override
 	public PipeAdvertisement createModule() {
 		PipeID socketID = null;
+		IJxsePropertySource<Properties, Directives> source = null;//TODOsuper.getPropertySource();		
 		try {
-			socketID = (PipeID) IDFactory.fromURI( (URI) super.getProperty( Properties.SOCKET_ID ));
+			socketID = (PipeID) IDFactory.fromURI( (URI) source.getProperty( Properties.SOCKET_ID ));
 		} catch (URISyntaxException use) {
 			use.printStackTrace();
 		}
 		PipeAdvertisement advertisement = (PipeAdvertisement)
 				AdvertisementFactory.newAdvertisement(PipeAdvertisement.getAdvertisementType());
 		advertisement.setPipeID(socketID);
-		advertisement.setType( (String) super.getProperty( Properties.TYPE ));
-		advertisement.setName( (String) super.getProperty( Properties.NAME ));
+		advertisement.setType( (String) source.getProperty( Properties.TYPE ));
+		advertisement.setName( (String) source.getProperty( Properties.NAME ));
 		super.setCompleted(true);
 		return advertisement;
 	}

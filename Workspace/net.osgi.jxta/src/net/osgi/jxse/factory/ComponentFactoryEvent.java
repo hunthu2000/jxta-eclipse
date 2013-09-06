@@ -19,15 +19,15 @@ public class ComponentFactoryEvent extends EventObject {
 
 	private FactoryEvents factoryEvent;
 	
-	private IComponentFactory<?> factory;
+	private IComponentFactory<?,?,?> factory;
 	
-	public ComponentFactoryEvent(Object arg0, IComponentFactory<?> factory, FactoryEvents factoryEvent ){
+	public ComponentFactoryEvent(Object arg0, IComponentFactory<?,?,?> factory, FactoryEvents factoryEvent ){
 		super(arg0);
 		this.factory = factory;
 		this.factoryEvent = factoryEvent;
 	}
 	
-	public IComponentFactory<?> getFactory() {
+	public IComponentFactory<?,?,?> getFactory() {
 		return factory;
 	}
 

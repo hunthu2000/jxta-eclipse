@@ -10,7 +10,6 @@
  *******************************************************************************/
 package net.osgi.jxse.service.xml;
 
-import java.util.Map;
 import java.util.logging.Logger;
 
 import net.jxta.platform.NetworkConfigurator;
@@ -19,18 +18,18 @@ import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.factory.ComponentFactoryEvent;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.factory.IComponentFactory.Directives;
 import net.osgi.jxse.network.NetworkConfigurationFactory;
 import net.osgi.jxse.seeds.AbstractResourceSeedListFactory;
 import net.osgi.jxse.seeds.ISeedListFactory;
 import net.osgi.jxse.service.network.NetPeerGroupService;
-import net.osgi.jxse.utils.Utils;
+import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
+import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 
-public class XMLServiceContext extends AbstractServiceContext<NetworkManager> implements ICompositeBuilderListener{
+public class XMLServiceContext extends AbstractServiceContext<NetworkManager,ContextProperties, ContextDirectives> implements ICompositeBuilderListener{
 
 	public static final String S_ERR_NO_SERVICE_LOADED = "\n\t!!! No service is loaded. Not starting context:  ";
 	
-	private IComponentFactory<NetworkManager> factory;
+	private IComponentFactory<NetworkManager, ContextProperties, ContextDirectives> factory;
 	private NetPeerGroupService service;
 	private AbstractResourceSeedListFactory seeds;
 	
@@ -44,17 +43,17 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager> im
 		this.seeds = seeds;
 	}
 
-	public XMLServiceContext( IComponentFactory<NetworkManager> factory ) {
+	public XMLServiceContext( IComponentFactory<NetworkManager, ContextProperties, ContextDirectives> factory ) {
 		super( factory, true );
 	}
 
-	public XMLServiceContext( IComponentFactory<NetworkManager> factory, AbstractResourceSeedListFactory seeds ) {
+	public XMLServiceContext( IComponentFactory<NetworkManager, ContextProperties, ContextDirectives> factory, AbstractResourceSeedListFactory seeds ) {
 		super( factory );
 		this.seeds = seeds;
 	}
 
 	@Override
-	protected boolean onSetAvailable( IComponentFactory<NetworkManager> factory) {
+	protected boolean onSetAvailable( IComponentFactory<NetworkManager, ContextProperties, ContextDirectives> factory) {
 		if( !factory.canCreate() )
 			return false;
 		this.factory = factory;	
@@ -77,14 +76,7 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager> im
 			xmlFactory.addListener(this);
 			xmlFactory.createModule();
 			xmlFactory.removeListener(this);
-			super.setIdentifier( xmlFactory.getIdentifier());
-			Map<Directives, String> directives = xmlFactory.getDirectives();
-			String str = directives.get( Directives.PASS1 );
-			if( !Utils.isNull(str))
-				super.putProperty( Directives.PASS1, str);
-			str = directives.get( Directives.PASS2 );
-			if( !Utils.isNull(str))
-				super.putProperty( Directives.PASS2, str);
+			super.setIdentifier( xmlFactory.getPropertySource().getComponentName() );
 		}
 		return true;
 	}

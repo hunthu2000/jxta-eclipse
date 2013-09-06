@@ -18,37 +18,28 @@ import net.jxta.rendezvous.RendezVousService;
 import net.jxta.rendezvous.RendezvousEvent;
 import net.jxta.rendezvous.RendezvousListener;
 import net.osgi.jxse.factory.AbstractComponentFactory;
+import net.osgi.jxse.factory.IComponentFactory.Directives;
 import net.osgi.jxse.log.JxseLevel;
 import net.osgi.jxse.service.ServiceEventDispatcher;
 import net.osgi.jxse.service.core.AbstractJxtaService;
-import net.osgi.jxse.utils.StringStyler;
 
-public class RendezVousServiceComponent extends AbstractJxtaService<RendezVousService> implements RendezvousListener{
+public class RendezVousComponent extends AbstractJxtaService<RendezVousService, IRendezVousComponent.RendezVousServiceProperties, Directives> implements RendezvousListener, IRendezVousComponent{
 
 	public static final String S_RENDEZ_VOUS_SERVICE = "RendezVous Service";
 
 	public static final String S_ERR_SERVICE_NOT_STARTED = "The RendezVous Service is not started. Please do this first";
 
-	public enum RendezVousServiceProperties{
-		STATUS,
-		AUTO_START,
-		IS_RENDEZVOUS,
-		IS_CONNECTED_TO_RENDEZVOUS,
-		RENDEZVOUS_STATUS;
-
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString() );
-		}	
-	}
-
 	private ServiceEventDispatcher dispatcher;
 
-	public RendezVousServiceComponent( RendezVousService module ) {
+	public RendezVousComponent( RendezVousService module ) {
 		super( module );
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see net.osgi.jxse.service.network.IRendezVousComponent#getProperty(net.osgi.jxse.service.network.RendezVousServiceComponent.RendezVousServiceProperties)
+	 */
+	@Override
 	public Object getProperty( RendezVousServiceProperties key) {
 		if( super.getModule() == null )
 			return super.getProperty(key);
@@ -67,6 +58,10 @@ public class RendezVousServiceComponent extends AbstractJxtaService<RendezVousSe
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see net.osgi.jxse.service.network.IRendezVousComponent#putProperty(net.osgi.jxse.service.network.RendezVousServiceComponent.RendezVousServiceProperties, java.lang.Object)
+	 */
+	@Override
 	public void putProperty( RendezVousServiceProperties key, Object value) {
 		if(( key == null ) || ( value == null ))
 			return;
@@ -113,12 +108,12 @@ public class RendezVousServiceComponent extends AbstractJxtaService<RendezVousSe
 	}
 }
 
-class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousService>{
+class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousService, IRendezVousComponent.RendezVousServiceProperties, Directives>{
 
 	private NetPeerGroupService parent;
 	
 	public RendezvousServiceFactory( NetPeerGroupService parent ) {
-		super( Components.RENDEZVOUS_SERVICE );
+		super( null );//Components.RENDEZVOUS_SERVICE );
 		this.parent = parent;
 	}
 
@@ -128,19 +123,15 @@ class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousServic
 	}
 
 	@Override
-	protected void fillDefaultValues() {
-	}
-
-	@Override
 	protected void onParseDirectivePriorToCreation(
 			net.osgi.jxse.factory.IComponentFactory.Directives directive,
-			String value) {
+			Object value) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void onParseDirectiveAfterCreation( RendezVousService component, Directives directive,String value) {
+	protected void onParseDirectiveAfterCreation( RendezVousService component, Directives directive, Object value) {
 		// TODO Auto-generated method stub
 		
 	}

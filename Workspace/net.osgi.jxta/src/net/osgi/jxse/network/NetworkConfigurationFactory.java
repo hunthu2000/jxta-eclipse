@@ -16,18 +16,20 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.factory.AbstractComponentFactory;
+import net.osgi.jxse.factory.IComponentFactory.Directives;
+import net.osgi.jxse.network.NetworkConfigurationFactory.NetworkConfiguratorProperties;
 import net.osgi.jxse.preferences.IJxsePreferences;
 import net.osgi.jxse.seeds.ISeedListFactory;
 import net.osgi.jxse.utils.StringStyler;
 
 public class NetworkConfigurationFactory extends
-		AbstractComponentFactory<NetworkConfigurator> {
+		AbstractComponentFactory<NetworkConfigurator, NetworkConfiguratorProperties, Directives> {
 
 	public enum NetworkConfiguratorProperties{
 		AUTHENTICATION_TYPE,
@@ -100,7 +102,7 @@ public class NetworkConfigurationFactory extends
 	private NetworkManagerFactory nmFactory;
 
 	public NetworkConfigurationFactory( NetworkManagerFactory nmFactory ) {
-		super( Components.NETWORK_CONFIGURATOR, false );
+		super( null );//nmFactory.getPropertySource() );
 		this.nmFactory = nmFactory;
 		this.preferences = nmFactory.getPreferences();
 		this.seedLists = new ArrayList<ISeedListFactory>();
@@ -108,7 +110,6 @@ public class NetworkConfigurationFactory extends
 		this.fillDefaultValues();
 	}
 
-	@Override
 	protected void fillDefaultValues() {
 		
 		if( this.preferences == null)
@@ -122,7 +123,6 @@ public class NetworkConfigurationFactory extends
 		}
 	}
 
-	@Override
 	public void addProperty(Object key, Object value) {
 		if(!( key instanceof NetworkConfiguratorProperties) || ( value == null ))
 			return;
@@ -134,7 +134,7 @@ public class NetworkConfigurationFactory extends
 			if( UseConfiguration.addStringProperty(this, (NetworkConfiguratorProperties)key, (String )value))
 				return;
 		}
-		super.addProperty(key, value);
+		//super.addProperty(key, value);
 	}
 
 	public boolean addSeedlist( ISeedListFactory factory ){
@@ -146,12 +146,11 @@ public class NetworkConfigurationFactory extends
 	}
 
 	@Override
-	protected void onParseDirectivePriorToCreation(Directives directive,
-			String value) {
+	protected void onParseDirectivePriorToCreation(Directives directive, Object value) {
 	}
 
 	@Override
-	protected void onParseDirectiveAfterCreation( NetworkConfigurator module, Directives directive, String value) {
+	protected void onParseDirectiveAfterCreation( NetworkConfigurator module, Directives directive, Object value) {
 	}
 
 	@Override
@@ -159,7 +158,7 @@ public class NetworkConfigurationFactory extends
 		NetworkConfigurator configurator = null;
 		try {
 			configurator = nmFactory.getModule().getConfigurator();
-			URI home = (URI)super.getProperty( NetworkConfiguratorProperties.HOME );
+			URI home = (URI)super.getPropertySource().getProperty( NetworkConfiguratorProperties.HOME );
 			if( home != null )
 				configurator.setHome( new File( home ));
 			configurator.clearRelaySeeds();
@@ -184,12 +183,13 @@ public class NetworkConfigurationFactory extends
 	}
 	
 	protected void fillConfigurator( NetworkConfigurator configurator ){
-		Map<Object, Object> properties = super.getProperties();
-		for( Object property: properties.keySet() ){
+		Iterator<NetworkConfiguratorProperties> properties = super.getPropertySource().propertyIterator();
+		while( properties.hasNext() ){
+			NetworkConfiguratorProperties property = properties.next();
 			if(!( property instanceof NetworkConfiguratorProperties ))
 				continue;
 			NetworkConfiguratorProperties key = ( NetworkConfiguratorProperties )property;
-			Object value = super.getProperty(key); 
+			Object value = super.getPropertySource().getProperty( key); 
 			TcpConfiguration.fillConfigurator(configurator, key,  value );
 			HttpConfiguration.fillConfigurator(configurator, key, value );
 			UseConfiguration.fillConfigurator(configurator, key, value);

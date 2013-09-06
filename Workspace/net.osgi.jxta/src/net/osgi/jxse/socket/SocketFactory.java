@@ -13,31 +13,21 @@ package net.osgi.jxse.socket;
 import net.jxta.platform.NetworkManager;
 import net.jxta.protocol.PipeAdvertisement;
 import net.jxta.socket.JxtaSocket;
+import net.osgi.jxse.advertisement.IPipeAdvertisementFactory;
 import net.osgi.jxse.advertisement.PipeAdvertisementFactory;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.utils.StringStyler;
+import net.osgi.jxse.factory.IComponentFactory.Directives;
+import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 
-public class SocketFactory extends AbstractComponentFactory<JxtaSocket> {
+public class SocketFactory extends AbstractComponentFactory<JxtaSocket, ISocketFactory.Properties, Directives> implements ISocketFactory{
 
 	public static final String S_JXSE_SOCKET_SERVICE = "JxtaSocketService";
-	
-
-	public enum Properties{
-		TIME_OUT,
-		SO_TIME_OUT,
-		WAIT_FOR_RENDEZ_VOUS;
-
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString() );
-		}
-	}
 	
 	private NetworkManager manager;
 	private PipeAdvertisementFactory pipeFactory;
 
 	public SocketFactory( NetworkManager manager ) {
-		super( Components.JXSE_SOCKET );
+		super( null );
 		this.manager = manager;
 		this.fillDefaultValues();
 	}
@@ -48,36 +38,34 @@ public class SocketFactory extends AbstractComponentFactory<JxtaSocket> {
 	}
 
 
-	public PipeAdvertisementFactory getPipeFactory() {
+	public IPipeAdvertisementFactory getPipeFactory() {
 		return pipeFactory;
 	}
 
 
-	@Override
 	protected void fillDefaultValues() {
-		super.addProperty( Properties.TIME_OUT, 5000 );
-		super.addProperty( Properties.SO_TIME_OUT, 0 );
-		super.addProperty( Properties.WAIT_FOR_RENDEZ_VOUS, false );
+		IJxsePropertySource<Properties, Directives> source = super.getPropertySource();
+		source.setProperty( Properties.TIME_OUT, 5000 );
+		source.setProperty( Properties.SO_TIME_OUT, 0 );
+		source.setProperty( Properties.WAIT_FOR_RENDEZ_VOUS, false );
 	}
 
 	
 	@Override
-	protected void onParseDirectivePriorToCreation(Directives directive,
-			String value) {
+	protected void onParseDirectivePriorToCreation(Directives directive, Object value) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
 	@Override
-	protected void onParseDirectiveAfterCreation( JxtaSocket component, Directives directive, String value) {}
+	protected void onParseDirectiveAfterCreation( JxtaSocket component, Directives directive, Object value) {}
 
 
-	@Override
 	protected JxtaSocket onCreateModule() {
 		this.pipeFactory = new SocketPipeAdvertisementFactory();
 		JxtaSocket socket = this.createSocket();
-		super.setCompleted(true);
+		//super.setCompleted(true);
 		return socket;
 	}
 		

@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.preferences.properties;
+package net.osgi.jxse.context;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -20,13 +20,14 @@ import net.jxta.platform.NetworkManager;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
+import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.preferences.IJxsePreferences;
 import net.osgi.jxse.preferences.ProjectFolderUtils;
+import net.osgi.jxse.preferences.properties.AbstractJxsePropertySource;
 import net.osgi.jxse.utils.Utils;
 
 public class JxseContextPropertySource extends AbstractJxsePropertySource<ContextProperties, ContextDirectives>{
 
-	public static final String JXSE_CONTEXT = "JxseContext";
 	public static final String DEF_HOME_FOLDER = "${user.home}/.jxta/${plugin-id}";
 
 	public static final int DEF_MIN_PORT = 1000;
@@ -36,13 +37,9 @@ public class JxseContextPropertySource extends AbstractJxsePropertySource<Contex
 	private String plugin_id, identifier;
 	
 	public JxseContextPropertySource( String plugin_id, String identifier) {
+		super( Components.JXSE_CONTEXT.toString() );
 		this.plugin_id = plugin_id;
 		this.identifier = identifier;
-	}
-
-	@Override
-	public String getComponentName() {
-		return JXSE_CONTEXT;
 	}
 
 	@Override

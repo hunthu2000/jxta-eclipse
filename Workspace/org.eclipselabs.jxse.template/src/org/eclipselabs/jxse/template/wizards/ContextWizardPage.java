@@ -11,10 +11,10 @@
 package org.eclipselabs.jxse.template.wizards;
 
 import net.jxta.platform.NetworkManager.ConfigMode;
+import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.preferences.JxsePreferences;
-import net.osgi.jxse.preferences.properties.JxseContextPropertySource;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;

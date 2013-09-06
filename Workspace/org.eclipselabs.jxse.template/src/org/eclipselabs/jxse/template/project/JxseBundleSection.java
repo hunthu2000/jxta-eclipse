@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
-import net.osgi.jxse.preferences.properties.JxseContextPropertySource;
 import net.osgi.jxse.service.xml.JxseXmlBuilder;
 import net.osgi.jxse.utils.io.IOUtils;
 

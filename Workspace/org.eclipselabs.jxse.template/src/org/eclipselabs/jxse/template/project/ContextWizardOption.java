@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipselabs.jxse.template.project;
 
-import net.osgi.jxse.preferences.properties.JxseContextPropertySource;
+import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
 import org.eclipse.pde.ui.templates.BaseOptionTemplateSection;

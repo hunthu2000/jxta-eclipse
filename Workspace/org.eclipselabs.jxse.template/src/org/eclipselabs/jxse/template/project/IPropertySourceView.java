@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipselabs.jxse.template.project;
 
-import net.osgi.jxse.preferences.properties.JxseContextPropertySource;
+import net.osgi.jxse.context.JxseContextPropertySource;
 
 public interface IPropertySourceView {
 

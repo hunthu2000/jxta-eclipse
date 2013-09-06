@@ -20,10 +20,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.jxta.socket.JxtaServerSocket;
+import net.osgi.jxse.factory.IComponentFactory.Directives;
 import net.osgi.jxse.service.core.AbstractJxtaService;
+import net.osgi.jxse.socket.IServerSocketFactory;
 import net.osgi.jxse.utils.IOUtils;
 
-public class ServerSocketService extends AbstractJxtaService<JxtaServerSocket> implements Runnable{
+public class ServerSocketService extends AbstractJxtaService<JxtaServerSocket, IServerSocketFactory.Properties, Directives> implements Runnable{
 
 	private ExecutorService service;
 	

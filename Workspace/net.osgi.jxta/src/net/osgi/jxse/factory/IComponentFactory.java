@@ -10,11 +10,10 @@
  *******************************************************************************/
 package net.osgi.jxse.factory;
 
-import java.util.Map;
-
+import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public interface IComponentFactory<T extends Object> {
+public interface IComponentFactory<T extends Object, U extends Enum<U>, V extends Enum<V>> {
 
 	public enum Components{
 		JXSE_CONTEXT,
@@ -87,10 +86,10 @@ public interface IComponentFactory<T extends Object> {
 	public boolean canCreate();
 
 	/**
-	 * Get the directives
+	 * Get the property source
 	 * @return
 	 */
-	public Map<Directives,String> getDirectives();
+	public IJxsePropertySource<U,V> getPropertySource();
 
 	/**
 	 * First time creation of the service component.

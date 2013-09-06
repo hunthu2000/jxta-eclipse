@@ -23,21 +23,21 @@ import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
-import net.osgi.jxse.preferences.IJxsePreferences;
+import net.osgi.jxse.factory.IComponentFactory.Directives;
 import net.osgi.jxse.preferences.ProjectFolderUtils;
+import net.osgi.jxse.preferences.properties.AbstractJxsePropertySource;
+import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 import net.osgi.jxse.service.xml.PreferenceStore.Persistence;
 import net.osgi.jxse.service.xml.PreferenceStore.SupportedAttributes;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
-public class JxseXMLPreferences implements IJxsePreferences {
-
-	public static final String S_IDENTIFIER = "Identifier";
-	public static final String S_PLUGIN_ID = "PluginId";
+public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProperties, Directives> implements IJxsePropertySource<ContextProperties, Directives> {
 
 	private PreferenceStore store;
 	
-	public JxseXMLPreferences( PreferenceStore store ) {
+	public JxseXMLPreferences( String identifier, PreferenceStore store ) {
+		super( identifier );
 		this. store = store;
 	}
 
@@ -48,28 +48,20 @@ public class JxseXMLPreferences implements IJxsePreferences {
 	boolean containsOnlyIdentifierAtBest(){
 		if( store.isEmpty() )
 			return false;
-		String identifier = getIdentifier();
+		String identifier = getComponentName();
 		if(( identifier == null ) || ( identifier.trim().length() == 0 ))
 			return false;
 		return store.size() <= 2;
 	}
 
-	@Override
-	public String getIdentifier() {
-		return store.getValue(  S_IDENTIFIER );
-	}
-
-	@Override
 	public String getPluginId() {
-		return store.getValue(  S_PLUGIN_ID );
+		return store.getValue(  ContextProperties.PLUGIN_ID.toString() );
 	}
 
-	@Override
 	public boolean getRendezVousAutostart() {
 		return Boolean.valueOf( store.getValue( ContextProperties.RENDEZVOUZ_AUTOSTART.toString()));
 	}
 
-	@Override
 	public ConfigMode getConfigMode() {
 		String value = store.getValue( ContextProperties.CONFIG_MODE.toString());
 		if( Utils.isNull(value ))
@@ -77,7 +69,6 @@ public class JxseXMLPreferences implements IJxsePreferences {
 		return ConfigMode.valueOf( value );
 	}
 
-	@Override
 	public URI getHomeFolder() throws URISyntaxException {
 		String str = store.getValue( ContextProperties.HOME_FOLDER.toString() );
 		if(( str == null ) || ( str.trim().length() == 0 ))
@@ -86,7 +77,6 @@ public class JxseXMLPreferences implements IJxsePreferences {
 		return file.toURI();
 	}
 
-	@Override
 	public PeerID getPeerID() throws URISyntaxException {
 		PersistentAttribute pa = store.getAttribute( ContextProperties.PEER_ID.toString());
 		String value = store.getValue( pa.getKey());
@@ -95,7 +85,7 @@ public class JxseXMLPreferences implements IJxsePreferences {
 		switch( pa.getPersistence() ){
 		case GENERATED:
 			if( value == null ){
-				  String name = getIdentifier();
+				  String name = getComponentName();
 				  pgId = IDFactory.newPeerID( PeerGroupID.defaultNetPeerGroupID, name.getBytes() );
 				  store.setValue( pa.getKey(), pgId.toString() );
 			}
@@ -159,4 +149,26 @@ public class JxseXMLPreferences implements IJxsePreferences {
 		return Persistence.valueOf( sa.get( SupportedAttributes.PERSIST ));
 	}
 
+	@Override
+	public String getComponentName() {
+		return store.getValue( ContextProperties.IDENTIFIER.toString() );
+	}
+
+	@Override
+	public Object getDefault(ContextProperties id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean validate(ContextProperties id, Object value) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Object getDefaultDirectives(Directives id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

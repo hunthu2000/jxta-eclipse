@@ -13,6 +13,7 @@ package net.osgi.jxse.preferences.properties;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends Enum<U>> implements IJxsePropertySource<T, U> {
@@ -23,14 +24,16 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends E
 
 	private int depth = 0;
 	private String context_id;
+	private String componentName;
 	
-	public AbstractJxsePropertySource() {
-		this(0);
+	public AbstractJxsePropertySource( String componentName) {
+		this( componentName, 0);
 	}
 
-	protected AbstractJxsePropertySource( int depth ) {
+	protected AbstractJxsePropertySource( String componentName, int depth ) {
 		properties = new HashMap<T,Object>();
 		directives = new HashMap<U,Object>();
+		this.componentName = componentName;
 		children = new ArrayList<IJxsePropertySource<?,?>>();
 		this.depth = depth;
 	}
@@ -41,6 +44,11 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends E
 
 	public void setId(String id) {
 		this.context_id = id;
+	}
+
+	@Override
+	public String getComponentName() {
+		return this.componentName;
 	}
 
 	@Override
@@ -61,6 +69,12 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends E
 		return true;
 	}
 
+	
+	@Override
+	public Iterator<T> propertyIterator() {
+		return this.properties.keySet().iterator();
+	}
+
 	@Override
 	public Object getDirective(U id) {
 		return directives.get( id );
@@ -73,6 +87,12 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends E
 		directives.put( id, value );
 		return true;
 	}
+
+	@Override
+	public Iterator<U> directiveIterator() {
+		return directives.keySet().iterator();
+	}
+
 
 	protected void addChild( IJxsePropertySource<?, ?> child ){
 		this.children.add( child );

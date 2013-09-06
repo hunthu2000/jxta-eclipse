@@ -31,11 +31,11 @@ public class JxsePublishService extends JxseDiscoveryService{
 		return StringStyler.prettyString( super.toString() );
 	}}
 
-	private Collection<AbstractAdvertisementFactory<?>> adfactories;
+	private Collection<AbstractAdvertisementFactory<?,?,?>> adfactories;
 	
 	public JxsePublishService( DiscoveryService component ) {
 		super( component );
-		adfactories = new ArrayList<AbstractAdvertisementFactory<?>>();
+		adfactories = new ArrayList<AbstractAdvertisementFactory<?,?,?>>();
 	}
 
 	@Override
@@ -46,17 +46,17 @@ public class JxsePublishService extends JxseDiscoveryService{
 		super.fillDefaultValues();
 	}
 
-	public void addAdvertisement( AbstractAdvertisementFactory<?> advertisement ){
+	public void addAdvertisement( AbstractAdvertisementFactory<?,?,?> advertisement ){
 		this.adfactories.add(advertisement);
 	}
 
-	public void removeAdvertisement( AbstractAdvertisementFactory<?> advertisement ){
+	public void removeAdvertisement( AbstractAdvertisementFactory<?,?,?> advertisement ){
 		this.adfactories.remove(advertisement);
 	}
 	
 	@Override
 	protected boolean onInitialising() {
-		for( AbstractAdvertisementFactory<?> factory: this.adfactories ){
+		for( AbstractAdvertisementFactory<?,?,?> factory: this.adfactories ){
 			Advertisement ad = factory.createModule();
 			if( ad != null )
 				super.addAdvertisement( ad);

@@ -2,10 +2,13 @@
            targetNamespace="urn:jxse-namespace-schema-1.00"
            xmlns:tns="urn:jxse-namespace-schema-1.00"
            elementFormDefault="qualified">
-  <xs:element name="JxseContext">
+  <xs:element name="jxse-context">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="directives" type="tns:container">
+        <xs:element name="directives" type="sequence">
+          <xs:element name="auto-start" type="xs:string"/>
+          <xs:element name="pass1" type="xs:string"/>
+          <xs:element name="pass2" type="xs:string"/>
         </xs:element>
         <xs:element name="properties" type="tns:container">
         </xs:element>

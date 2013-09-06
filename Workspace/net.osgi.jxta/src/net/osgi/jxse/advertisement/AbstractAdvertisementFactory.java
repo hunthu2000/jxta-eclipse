@@ -12,15 +12,15 @@ package net.osgi.jxse.advertisement;
 
 import net.jxta.document.Advertisement;
 import net.jxta.document.AdvertisementFactory;
-import net.jxta.id.IDFactory;
 import net.jxta.protocol.ModuleClassAdvertisement;
 import net.jxta.protocol.ModuleSpecAdvertisement;
 import net.jxta.protocol.PeerGroupAdvertisement;
 import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jxse.factory.AbstractComponentFactory;
+import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public abstract class AbstractAdvertisementFactory<T extends Advertisement> extends AbstractComponentFactory<T> {
+public abstract class AbstractAdvertisementFactory<T extends Advertisement, U extends Enum<U>, V extends Enum<V>> extends AbstractComponentFactory<T,U,V> {
 
 	public enum AdvertisementTypes{
 		ADV,
@@ -89,37 +89,26 @@ public abstract class AbstractAdvertisementFactory<T extends Advertisement> exte
 
 	public static final String S_ADVERTISEMENT_SERVICE = "AdvertisementService";
 	
-	private boolean createId;
-
-	public AbstractAdvertisementFactory() {
-		this( true );
-	}
-
-	protected AbstractAdvertisementFactory( boolean createId ) {
-		super( Components.ADVERTISEMENT );
-		this.createId = createId;
+	protected AbstractAdvertisementFactory( IJxsePropertySource<U,V> source ) {
+		super( source );
 		this.fillDefaultValues();	
 	}
 
 	
-	protected boolean createId() {
-		return createId;
-	}
-
-	@Override
+	@SuppressWarnings("unchecked")
 	protected void fillDefaultValues() {
-		super.addProperty( AdvertisementProperties.ADVERTISEMENT_TYPE, AdvertisementTypes.ADV);
-		super.addProperty( AdvertisementProperties.NAME, S_DEFAULT_NAME);
-		if( this.createId )
-			super.addProperty( AdvertisementProperties.ID, IDFactory.newPipeID(net.jxta.peergroup.PeerGroupID.defaultNetPeerGroupID));
+		super.getPropertySource().setProperty((U) AdvertisementProperties.ADVERTISEMENT_TYPE, AdvertisementTypes.ADV);
+		super.getPropertySource().setProperty((U) AdvertisementProperties.NAME, S_DEFAULT_NAME);
+		//if( this.createId )
+		//	super.addProperty( AdvertisementProperties.ID, IDFactory.newPipeID(net.jxta.peergroup.PeerGroupID.defaultNetPeerGroupID));
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public T createModule() {
-		if( this.createId && ( super.getProperty( AdvertisementProperties.ID ) == null ))
-			throw new IllegalStateException( S_ERR_MUST_CREATE_ID );
-		AdvertisementTypes adType = ( AdvertisementTypes )super.getProperty( AdvertisementProperties.ADVERTISEMENT_TYPE );
+		//if( this.createId && ( super.getProperty( AdvertisementProperties.ID ) == null ))
+		//	throw new IllegalStateException( S_ERR_MUST_CREATE_ID );
+		AdvertisementTypes adType = ( AdvertisementTypes )super.getPropertySource().getProperty((U) AdvertisementProperties.ADVERTISEMENT_TYPE );
 		T advertisement = (T)AdvertisementFactory.newAdvertisement( AdvertisementTypes.convert(adType));
 		return advertisement;
 	}

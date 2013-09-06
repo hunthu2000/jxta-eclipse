@@ -26,7 +26,7 @@ import net.osgi.jxse.component.ComponentEventDispatcher;
 import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
 import net.osgi.jxse.factory.IComponentFactory;
 
-public abstract class AbstractJxtaService<T extends Object> extends AbstractActivator<IComponentFactory<T>> 
+public abstract class AbstractJxtaService<T extends Object, U extends Enum<U>, V extends Enum<V>> extends AbstractActivator<IComponentFactory<T,U,V>> 
 implements IJxseService<T>{
 
 	public static final String S_SERVICE = "Service";
@@ -71,7 +71,7 @@ implements IJxseService<T>{
 	}
 
 	@Override
-	protected boolean onSetAvailable( IComponentFactory<T> factory ) 
+	protected boolean onSetAvailable( IComponentFactory<T,U,V> factory ) 
 	{
 		if( !factory.canCreate() )
 			return false;

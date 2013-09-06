@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -31,16 +31,18 @@ import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilder;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.builder.ICompositeBuilderListener.FactoryEvents;
+import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
+import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.factory.ComponentFactoryEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.factory.IComponentFactory.Directives;
 import net.osgi.jxse.network.NetworkConfigurationFactory;
 import net.osgi.jxse.network.NetworkManagerFactory;
 import net.osgi.jxse.network.NetworkConfigurationFactory.NetworkConfiguratorProperties;
 import net.osgi.jxse.network.NetworkManagerFactory.NetworkManagerProperties;
 import net.osgi.jxse.preferences.ProjectFolderUtils;
+import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 import net.osgi.jxse.seeds.SeedListFactory;
 import net.osgi.jxse.service.xml.PreferenceStore.Persistence;
 import net.osgi.jxse.service.xml.PreferenceStore.SupportedAttributes;
@@ -49,16 +51,19 @@ import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.utils.io.IOUtils;
 
-public class XMLComponentFactory implements IComponentFactory<NetworkManager>, ICompositeBuilder<NetworkManager>, ICompositeBuilderListener {
+public class XMLComponentFactory implements IComponentFactory<NetworkManager, ContextProperties, ContextDirectives>, ICompositeBuilder<NetworkManager>, ICompositeBuilderListener {
 
-	public static final String S_ERR_NO_SCHEMA_FOUND = "The XML Schema was not found";
+	private static final String JAXP_SCHEMA_SOURCE =
+		    "http://java.sun.com/xml/jaxp/properties/schemaSource";
+	private static final String JXSE_XSD_SCHEMA = "http://www.condast.com/saight/jxse-schema.xsd";
+
+	private static final String S_ERR_NO_SCHEMA_FOUND = "The XML Schema was not found";
+	private static final String S_WRN_NOT_NAMESPACE_AWARE = "The parser is not validating or is not namespace aware";
 	
 	static final String S_DOCUMENT_ROOT = "DOCUMENT_ROOT";
 
 	static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 	static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";	
-	static final String JAXP_SCHEMA_SOURCE =
-		    "http://java.sun.com/xml/jaxp/properties/schemaSource";
 	
 	public static String S_DEFAULT_LOCATION = "/JXSE-INF/jxse-context.xml";
 	public static String S_SCHEMA_LOCATION = "/JXSE-INF/jxse-schema.xsd";
@@ -85,12 +90,10 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager>, I
 		}
 	}
 	
-	private String pluginId;
-	private String identifier;
 	private Class<?> clss;
-	private String location;
 	private boolean completed, failed;
-	private Map<Directives,String> directives;
+	private JxseContextPropertySource properties;
+	private String location;
 	
 	private Collection<ICompositeBuilderListener> listeners;
 	
@@ -98,31 +101,23 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager>, I
 	
 	private NetworkManager module;
 	
+	private Logger logger = Logger.getLogger( XMLComponentFactory.class.getName() );
+	
 	public XMLComponentFactory( String pluginId, Class<?> clss) {
 		this( pluginId, clss, S_DEFAULT_LOCATION );
 	}
 
 	protected XMLComponentFactory( String pluginId, Class<?> clss, String location ) {
-		this.pluginId = pluginId;
 		this.clss = clss;
 		this.location = location;
 		this.completed = false;
 		this.failed = false;
-		directives = new HashMap<Directives, String>();
+		properties = new JxseContextPropertySource( pluginId, location);
 		this.listeners = new ArrayList<ICompositeBuilderListener>();
 	}
 
-	String getPluginId() {
-		return pluginId;
-	}
-
-	
-	public String getIdentifier() {
-		return identifier;
-	}
-
 	void setIdentifier(String identifier) {
-		this.identifier = identifier;
+		this.properties.setProperty( ContextProperties.IDENTIFIER, identifier );
 	}
 
 	/**
@@ -130,7 +125,7 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager>, I
 	 * @return
 	 */
 	public boolean isAutostart(){
-		return Boolean.parseBoolean( directives.get( Directives.AUTO_START ));
+		return Boolean.parseBoolean( (String) properties.getDirective( ContextDirectives.AUTO_START ));
 	}
 	
 	/* (non-Javadoc)
@@ -164,31 +159,33 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager>, I
 	@Override
 	public NetworkManager createModule() {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
-		factory.setValidating(true);
 		URL schema_in = XMLComponentFactory.class.getResource( S_SCHEMA_LOCATION); 
 		if( schema_in == null )
-			throw new NullPointerException( S_ERR_NO_SCHEMA_FOUND );
+			throw new RuntimeException( S_ERR_NO_SCHEMA_FOUND );
 		
 		factory.setNamespaceAware( true );
+		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+		// note that if your XML already declares the XSD to which it has to conform, then there's no need to create a validator from a Schema object
+		Source schemaFile = new StreamSource( JxtaHandler.class.getResourceAsStream( S_SCHEMA_LOCATION ));
 		InputStream in = clss.getResourceAsStream( location );
 		try {
-			SAXParser saxParser = factory.newSAXParser();
-			saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA); 
-
-			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			// associate the schema factory with the resource resolver, which is responsible for resolving the imported XSD's
-			//factory.setResourceResolver(new ResourceResolver());
-
-			// note that if your XML already declares the XSD to which it has to conform, then there's no need to create a validator from a Schema object
-			Source schemaFile = new StreamSource(getClass().getClassLoader().getResourceAsStream( S_SCHEMA_LOCATION ));
 			Schema schema = schemaFactory.newSchema(schemaFile);
 			factory.setSchema(schema);//saxParser.
+			
+			SAXParser saxParser = factory.newSAXParser();
+			if( !saxParser.isNamespaceAware() )
+				logger.warning( S_WRN_NOT_NAMESPACE_AWARE );
+			
+			//saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA); 
+			//saxParser.setProperty(JAXP_SCHEMA_SOURCE, new File(JXSE_XSD_SCHEMA)); 
 			JxtaHandler handler = new JxtaHandler( this );
 			saxParser.parse( in, handler);
 			this.completed = true;
 			if( handler.getNode() == null )
 				return null;
-			CompositeBuilder<NetworkManager> cf = new CompositeBuilder<NetworkManager>( handler.getNode() );
+			CompositeBuilder<NetworkManager, ContextProperties, ContextDirectives> cf = 
+					new CompositeBuilder<NetworkManager, ContextProperties, ContextDirectives>( handler.getNode() );
 			cf.addListener( this );
 			module = cf.createModule();
 			cf.removeListener(this);
@@ -238,22 +235,21 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager>, I
 	}
 
 	@Override
-	public Map<Directives, String> getDirectives() {
-		return directives;
+	public IJxsePropertySource<ContextProperties, ContextDirectives> getPropertySource() {
+		return this.properties;
 	}
 }
 
 class JxtaHandler extends DefaultHandler{
 
 	private XMLComponentFactory owner;
-	private ComponentNode<NetworkManager> root;
-	private ComponentNode<?> currentNode;
+	private ComponentNode<NetworkManager, ContextProperties, ContextDirectives> root;
+	private ComponentNode<?,?,?> currentNode;
 	private Components current;
 	private Groups group;
 	private String groupValue;
 	private boolean newProperty = false;
 	private SeedListFactory sdf;
-	private JxseXMLPreferences preferences;
 	private Attributes attributes;
 
 	private static Logger logger = Logger.getLogger( XMLComponentFactory.class.getName() );
@@ -263,7 +259,7 @@ class JxtaHandler extends DefaultHandler{
 		this.owner = owner;
 	}
 
-	ComponentNode<NetworkManager> getNode() {
+	ComponentNode<NetworkManager, ContextProperties, ContextDirectives> getNode() {
 		return root;
 	}
 
@@ -273,21 +269,20 @@ class JxtaHandler extends DefaultHandler{
 	public void startElement(String uri, String localName,String qName, 
 			Attributes attributes) throws SAXException {
 
-		IComponentFactory<?> factory = null;
+		IComponentFactory<?,?,?> factory = null;
 		this.attributes = attributes;
 		if( Components.isComponent( qName )){
 			current = Components.valueOf( StringStyler.styleToEnum( qName ));
 
 			switch( current ){
 			case JXSE_CONTEXT:
-				PreferenceStore store = new PreferenceStore( owner.getPluginId() );
-				preferences = new JxseXMLPreferences( store  );
+				PreferenceStore store = new PreferenceStore(( String )owner.getPropertySource().getProperty( ContextProperties.PLUGIN_ID ));
 				break;
 			case NETWORK_MANAGER:
-				if( this.preferences.containsOnlyIdentifierAtBest() )
-					factory = new NetworkManagerFactory( );
-				else
-					factory = new NetworkManagerFactory( this.preferences );
+				//if( this.preferences.containsOnlyIdentifierAtBest() )
+				//	factory = new NetworkManagerFactory( );
+				//else
+				//	factory = new NetworkManagerFactory( this.preferences );
 				this.root = new ComponentNode( factory );
 				break;
 			case NETWORK_CONFIGURATOR:
@@ -351,7 +346,7 @@ class JxtaHandler extends DefaultHandler{
 			if( this.newProperty ){
 				if(( this.attributes != null ) && ( this.attributes.getLength() > 0 )){
 					Map<SupportedAttributes, String> attrs =  JxseXMLPreferences.parseAttributes(attributes); 
-					this.preferences.putProperty( attrs, StringStyler.prettyString( this.groupValue ), null);
+					//this.preferences.putProperty( attrs, StringStyler.prettyString( this.groupValue ), null);
 					
 				}
 				this.newProperty = false;
@@ -416,7 +411,7 @@ class JxtaHandler extends DefaultHandler{
 		if(( value == null ) || ( value.trim().length() == 0))
 			return;
 		
-		Directives directive = Directives.valueOf(this.groupValue);
+		ContextDirectives directive = ContextDirectives.valueOf(this.groupValue);
 		
 		Components component = Components.JXSE_CONTEXT;
 		if(( this.currentNode != null ) && ( this.currentNode.getFactory() != null )){
@@ -424,10 +419,10 @@ class JxtaHandler extends DefaultHandler{
 		}
 		switch( component ){
 		case JXSE_CONTEXT:
-			this.owner.getDirectives().put(directive, value);
+			this.owner.getPropertySource().setDirective( directive, value);
 			break;
 		default:
-			this.currentNode.getFactory().getDirectives().put(directive, value );
+			//this.currentNode.getFactory().getPropertySource().setDirective( directive, value );
 		}
 	}
 
@@ -447,7 +442,7 @@ class JxtaHandler extends DefaultHandler{
 			return;
 
 		Map<SupportedAttributes, String> attrs =  JxseXMLPreferences.parseAttributes(attributes); 
-		this.preferences.putProperty( attrs, StringStyler.prettyString( this.groupValue ), value);
+		//owner.getPropertySource().putProperty( attrs, StringStyler.prettyString( this.groupValue ), value);
 		
 		Components component = Components.JXSE_CONTEXT;
 		if(( this.currentNode != null ) && ( this.currentNode.getFactory() != null )){
@@ -465,7 +460,7 @@ class JxtaHandler extends DefaultHandler{
 			NetworkManagerProperties nmp = NetworkManagerProperties.valueOf( key );
 			switch( nmp ){
 			case INSTANCE_HOME:
-				File file = new File( ProjectFolderUtils.getParsedUserDir( value, this.owner.getPluginId() ));
+				File file = new File( ProjectFolderUtils.getParsedUserDir( value, (String) this.owner.getPropertySource().getProperty( ContextProperties.PLUGIN_ID ) ));
 				nmf.setInstanceHomeFolder( file.getAbsolutePath() );
 				break;
 			default:
@@ -494,8 +489,35 @@ class JxtaHandler extends DefaultHandler{
 
 	@Override
 	public void error(SAXParseException e) throws SAXException {
+		print(e);
 		throw( e );
 	}
 
+	@Override
+	public void fatalError(SAXParseException arg0) throws SAXException {
+		print(arg0);
+		super.fatalError(arg0);
+	}
+
+	@Override
+	public void warning(SAXParseException arg0) throws SAXException {
+		print(arg0);
+		super.warning(arg0);
+	}
+
+
+	private MessageFormat message =
+		      new MessageFormat("({0}: {1}, {2}): {3}");
 	
+	private void print(SAXParseException x)
+	   {
+	      String msg = message.format(new Object[]
+	                                  {
+	                                     x.getSystemId(),
+	                                     new Integer(x.getLineNumber()),
+	                                     new Integer(x.getColumnNumber()),
+	                                     x.getMessage()
+	                                  });
+	      Logger.getLogger( this.getClass().getName()).info(msg);
+	   }	
 }

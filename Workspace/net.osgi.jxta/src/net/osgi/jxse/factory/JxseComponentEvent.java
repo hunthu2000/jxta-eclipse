@@ -12,13 +12,13 @@ package net.osgi.jxse.factory;
 
 import java.util.EventObject;
 
-public class JxseComponentEvent<T extends Object> extends EventObject {
+public class JxseComponentEvent<T extends Object, U extends Enum<U>, V extends Enum<V>> extends EventObject {
 
 	private static final long serialVersionUID = 302931451825865288L;
 
 	private T module;
 	
-	public JxseComponentEvent( IComponentFactory<T> source, T module ) {
+	public JxseComponentEvent( IComponentFactory<T,U,V> source, T module ) {
 		super(source);
 		this.module = module;
 	}

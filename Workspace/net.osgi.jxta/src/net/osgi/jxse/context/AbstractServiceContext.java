@@ -33,7 +33,7 @@ import net.osgi.jxse.component.JxseComponentNode;
 import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
 import net.osgi.jxse.factory.IComponentFactory;
 
-public abstract class AbstractServiceContext<T extends Object> extends AbstractActivator<IComponentFactory<T>> implements
+public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>, V extends Enum<V>> extends AbstractActivator<IComponentFactory<T,U,V>> implements
 		IJxseServiceContext<T>{
 
 	public static final String S_SERVICE_CONTAINER = "JXSE Container";
@@ -79,11 +79,11 @@ public abstract class AbstractServiceContext<T extends Object> extends AbstractA
 	protected void onFinalising() {
 	}
 
-	protected AbstractServiceContext( IComponentFactory<T> factory ) {
+	protected AbstractServiceContext( IComponentFactory<T,U,V> factory ) {
 		this( factory, false );
 	}
 
-	protected AbstractServiceContext( IComponentFactory<T> factory, boolean skipAvailable ) {
+	protected AbstractServiceContext( IComponentFactory<T,U,V> factory, boolean skipAvailable ) {
 		super( factory, skipAvailable );
 		this.properties = new Properties();
 		this.children = new ArrayList<IJxseComponent<?>>();
@@ -107,7 +107,7 @@ public abstract class AbstractServiceContext<T extends Object> extends AbstractA
 	}
 
 	@Override
-	protected boolean onSetAvailable( IComponentFactory<T> obj ) {
+	protected boolean onSetAvailable( IComponentFactory<T,U,V> obj ) {
 		return true;
 	}
 
@@ -211,7 +211,7 @@ public abstract class AbstractServiceContext<T extends Object> extends AbstractA
 	 * @param component
 	 * @return
 	 */
-	protected boolean validateComponent( IComponentFactory<?> factory, IJxseComponent<?> component ){
+	protected boolean validateComponent( IComponentFactory<?,?,?> factory, IJxseComponent<?> component ){
 		if( !factory.isCompleted() ){
 			super.setStatus( Status.AVAILABLE );
 			return false;
@@ -230,7 +230,7 @@ public abstract class AbstractServiceContext<T extends Object> extends AbstractA
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static IJxseComponent<?> addModule( AbstractServiceContext<?> context, Object module ){
+	public static IJxseComponent<?> addModule( AbstractServiceContext<?,?,?> context, Object module ){
 		if( module instanceof Advertisement ){
 			context.addAdvertisement( (Advertisement) module );
 			return new JxseComponent<Advertisement>( context, (Advertisement)module );
@@ -258,7 +258,7 @@ public abstract class AbstractServiceContext<T extends Object> extends AbstractA
 		}
 	}
 
-	protected static void removeModule( AbstractServiceContext<?> context, Object module ){
+	protected static void removeModule( AbstractServiceContext<?,?,?> context, Object module ){
 		if( module instanceof Advertisement ){
 			context.removeAdvertisement( (Advertisement) module );
 			return;

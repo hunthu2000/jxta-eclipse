@@ -12,75 +12,51 @@ package net.osgi.jxse.factory;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class AbstractComponentFactory<T extends Object> implements IComponentFactory<T>{
+import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 
-	private Collection<IComponentFactoryListener<T>> listeners;
+public abstract class AbstractComponentFactory<T extends Object, U extends Enum<U>, V extends Enum<V>> implements IComponentFactory<T,U,V>{
+
+	private Collection<IComponentFactoryListener<T,U,V>> listeners;
 	private T module;
-	private Map<Object,Object> properties;
-	private Map<Directives,String> directives;
-	
-	private Components componentName;
+	private IJxsePropertySource<U,V> properties;
 	
 	private boolean completed;
 	private boolean failed;
 	
-	protected AbstractComponentFactory( Components componentName) {
-		this( componentName, true );
-	}
-
-	protected AbstractComponentFactory( Components componentName, boolean fillValues ) {
-		listeners = new ArrayList<IComponentFactoryListener<T>>();
-		properties = new HashMap<Object, Object>();
-		directives = new HashMap<Directives, String>();
+	protected AbstractComponentFactory( IJxsePropertySource<U,V> properties ) {
+		listeners = new ArrayList<IComponentFactoryListener<T,U,V>>();
+		this.properties = properties;
 		this.completed = false;
 		this.failed = false;
-		this.componentName = componentName;
-		if( fillValues )
-			this.fillDefaultValues();
 	}
 
 	@Override
 	public Components getComponentName() {
-		return componentName;
+		return Components.valueOf( this.properties.getComponentName());
 	}
 	
-	public void addProperty( Object key, Object value ){
-		if( value != null )
-		  this.properties.put(key, value);
+	public void addProperty( U id, Object value ){
+		this.properties.setProperty( id, value);
 	}
 	
-	protected Object getProperty( Object key ){
-		return this.properties.get(key);
-	}
-
-	protected Map<Object,Object> getProperties() {
-		return properties;
-	}
-
-	protected void addDirective( Directives directive, String value ){
-		if( value != null )
-		  this.directives.put(directive, value);
-	}
-	
-	protected Object getDirective( Directives directive ){
-		return this.directives.get( directive);
-	}
-
 	@Override
-	public Map<Directives,String> getDirectives() {
-		return directives;
+	public IJxsePropertySource<U,V> getPropertySource(){
+		return this.properties;
 	}
 
-	/**
-	 * Fill the properties with default values
-	 */
-	protected abstract void fillDefaultValues();
+	protected void addDirective( V directive, String value ){
+		if( value != null )
+		  this.properties.setDirective(directive, value);
+	}
 	
+	protected Object getDirective( V directive ){
+		return this.properties.getDirective( directive);
+	}
+
 	@Override
 	public boolean isCompleted(){
 		return this.completed;
@@ -92,30 +68,33 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 		return true;
 	}
 
-	protected abstract void onParseDirectivePriorToCreation( Directives directive, String value );
+	protected abstract void onParseDirectivePriorToCreation( V directive, Object value );
 	
 	/**
 	 * Parse the directives for this factory
 	 * @param node
 	 */
 	private final void parseDirectives( ){
-		if(( directives == null ) || ( directives.isEmpty()))
-			return;
-		for( Directives directive: directives.keySet())
-			this.onParseDirectivePriorToCreation( directive, directives.get( directive ));
+		Iterator<V> iterator = this.properties.directiveIterator();
+		V directive;
+		while( iterator.hasNext()){
+			directive = iterator.next();
+			this.onParseDirectivePriorToCreation( directive, properties.getDirective( directive ));
+		}
 	}
 
-	protected abstract void onParseDirectiveAfterCreation( T module, Directives directive, String value );
+	protected abstract void onParseDirectiveAfterCreation( T module, V directive, Object value );
 	
 	/**
 	 * Parse the directives for this factory
 	 * @param node
 	 */
 	private final void parseDirectives( T module ){
-		if(( directives == null ) || ( directives.isEmpty()))
-			return;
-		for( Directives directive: directives.keySet()){
-			this.onParseDirectiveAfterCreation( module, directive, directives.get( directive ));
+		Iterator<V> iterator = this.properties.directiveIterator();
+		V directive;
+		while( iterator.hasNext()){
+			directive = iterator.next();
+			this.onParseDirectiveAfterCreation( module, directive, properties.getDirective( directive ));
 		}
 	}
 
@@ -173,11 +152,11 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 		return module;
 	}
 
-	public void addComponentListener( IComponentFactoryListener<T> listener ){
+	public void addComponentListener( IComponentFactoryListener<T,U,V> listener ){
 		this.listeners.add(listener);
 	}
 
-	public void removeComponentListener( IComponentFactoryListener<T> listener ){
+	public void removeComponentListener( IComponentFactoryListener<T,U,V> listener ){
 		this.listeners.remove(listener);
 	}
 
@@ -186,8 +165,8 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	 * @param component
 	 */
 	protected void notifyServiceComponentCompleted( T component ) {
-		JxseComponentEvent<T> event = new JxseComponentEvent<T>( this, component );
-		for( IComponentFactoryListener<T> listener: listeners)
+		JxseComponentEvent<T,U,V> event = new JxseComponentEvent<T,U,V>( this, component );
+		for( IComponentFactoryListener<T,U,V> listener: listeners)
 			listener.notifyComponentCompleted(event);
 	}
 }

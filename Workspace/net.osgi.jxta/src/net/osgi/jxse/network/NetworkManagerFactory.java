@@ -24,11 +24,14 @@ import java.util.logging.Logger;
 import net.jxta.platform.NetworkManager;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.factory.AbstractComponentFactory;
+import net.osgi.jxse.factory.IComponentFactory.Directives;
+import net.osgi.jxse.network.NetworkManagerFactory.NetworkManagerProperties;
 import net.osgi.jxse.preferences.IJxsePreferences;
 import net.osgi.jxse.preferences.ProjectFolderUtils;
+import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager> {
+public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager, NetworkManagerProperties, Directives> {
 		
 	public static final String S_NETWORK_MANAGER_SERVICE = "NetworkManagerService";
 
@@ -48,18 +51,13 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 
 	private IJxsePreferences preferences;
 	
-	public NetworkManagerFactory() {
-		super( Components.NETWORK_MANAGER, false );
-	}
-
-	public NetworkManagerFactory( IJxsePreferences preferences ) {
-		super( Components.NETWORK_MANAGER, false );
-		this.preferences = preferences;
+	public NetworkManagerFactory( IJxsePropertySource<NetworkManagerProperties, Directives> propertySource ) {
+		super( propertySource );
 		this.fillDefaultValues();
 	}
 
 	public String getInstanceName(){
-		return (String) super.getProperty( NetworkManagerProperties.INSTANCE_NAME );
+		return (String) super.getPropertySource().getProperty( NetworkManagerProperties.INSTANCE_NAME );
 	}
 	
 	public void setInstanceName( String instanceName ){
@@ -67,7 +65,7 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 	}
 
 	public String getInstanceHomeFolder(){
-		URI uri = ( URI )super.getProperty( NetworkManagerProperties.INSTANCE_HOME );
+		URI uri = ( URI )super.getPropertySource().getProperty( NetworkManagerProperties.INSTANCE_HOME );
 		return uri.getPath();
 	}
 	
@@ -77,7 +75,7 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 	}
 
 	public String getConfigMode(){
-		ConfigMode mode = (ConfigMode) super.getProperty( NetworkManagerProperties.MODE );
+		ConfigMode mode = (ConfigMode) super.getPropertySource().getProperty( NetworkManagerProperties.MODE );
 		return mode.name();
 	}
 	
@@ -90,7 +88,7 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 		return preferences;
 	}
 
-	@Override
+	
 	protected void fillDefaultValues() {
 		this.addProperty( NetworkManagerProperties.INSTANCE_NAME, preferences.getIdentifier() );
 		try {
@@ -101,12 +99,11 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 		this.addProperty( NetworkManagerProperties.MODE, preferences.getConfigMode() );	
 	}
 
-	@Override
-	public void addProperty( Object key, Object value ){
+	public void addProperty( NetworkManagerProperties key, Object value ){
 		if(!( key instanceof NetworkManagerProperties) || ( value == null ))
 			return;
 		if(!( value instanceof String )){
-			super.addProperty(key, value);
+			super.getPropertySource().setProperty(key, value);
 			return;
 		}
 		String str = ( String )value;
@@ -128,11 +125,10 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 	}
 
 	@Override
-	protected void onParseDirectivePriorToCreation(Directives directive,
-			String value) {
+	protected void onParseDirectivePriorToCreation(Directives directive, Object value) {
 		switch( directive ){
 		case CLEAR_CONFIG:
-			Path path = Paths.get(( URI )super.getProperty( NetworkManagerProperties.INSTANCE_HOME ));
+			Path path = Paths.get(( URI )super.getPropertySource().getProperty( NetworkManagerProperties.INSTANCE_HOME ));
 			if(Files.exists(path, LinkOption.NOFOLLOW_LINKS )){
 				File file = path.toFile();
 				NetworkManager.RecursiveDelete( file );
@@ -145,15 +141,15 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 	}
 
 	@Override
-	protected void onParseDirectiveAfterCreation( NetworkManager component,	Directives directive, String value) {
+	protected void onParseDirectiveAfterCreation( NetworkManager component,	Directives directive, Object value) {
 	}
 
 	@Override
 	protected NetworkManager onCreateModule() {
 		// Removing any existing configuration?
-		String name = (String)super.getProperty( NetworkManagerProperties.INSTANCE_NAME );
+		String name = (String)super.getPropertySource().getProperty( NetworkManagerProperties.INSTANCE_NAME );
 		super.addProperty( NetworkManagerProperties.INSTANCE_NAME, name );
-		Path path = Paths.get(( URI )super.getProperty( NetworkManagerProperties.INSTANCE_HOME ));
+		Path path = Paths.get(( URI )super.getPropertySource().getProperty( NetworkManagerProperties.INSTANCE_HOME ));
 		if(!Files.exists(path, LinkOption.NOFOLLOW_LINKS ))
 			try {
 				Files.createDirectories( path );
@@ -166,7 +162,7 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 		NetworkManager manager = null;
 		try {
 			manager = new NetworkManager(( 
-					NetworkManager.ConfigMode )super.getProperty( NetworkManagerProperties.MODE ), 
+					NetworkManager.ConfigMode )super.getPropertySource().getProperty( NetworkManagerProperties.MODE ), 
 					name, file.toURI());
 			return manager;
 		} catch (Exception e) {

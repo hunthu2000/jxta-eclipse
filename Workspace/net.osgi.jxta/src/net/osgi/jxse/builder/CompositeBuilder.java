@@ -12,23 +12,23 @@ package net.osgi.jxse.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
+import java.util.Iterator;
 
 import net.osgi.jxse.activator.IActivator;
 import net.osgi.jxse.builder.ICompositeBuilderListener.FactoryEvents;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.factory.ComponentFactoryEvent;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.factory.IComponentFactory.Directives;
+import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 
-public class CompositeBuilder<T extends Object> extends AbstractComponentFactory<T> implements ICompositeBuilder<T> {
+public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends Enum<V>> extends AbstractComponentFactory<T,U,V> implements ICompositeBuilder<T> {
 
-	private ComponentNode<T> node;
+	private ComponentNode<T,U,V> node;
 	
 	private Collection<ICompositeBuilderListener> factoryListeners;
 	
-	public CompositeBuilder( ComponentNode<T> node) {
-		super( node.getFactory().getComponentName() );
+	public CompositeBuilder( ComponentNode<T,U,V> node) {
+		super( node.getFactory().getPropertySource() );
 		this.node = node;
 		this.factoryListeners = new ArrayList<ICompositeBuilderListener>();
 	}
@@ -55,12 +55,12 @@ public class CompositeBuilder<T extends Object> extends AbstractComponentFactory
 	}
  
 	@Override
-	protected void onParseDirectivePriorToCreation(Directives directive, String value) {
-		this.onParseDirectivePriorToCreation(node, directive, value );
+	protected void onParseDirectivePriorToCreation( V directive, Object value) {
+		this.onParseDirectivePriorToCreation( node, ( Directives )directive, ( String )value );
 	}
 
-	protected void onParseDirectivePriorToCreation( ComponentNode<T> node, Directives directive, String value) {
-		IComponentFactory<?> parentFactory = null;
+	protected void onParseDirectivePriorToCreation( ComponentNode<T,U,V> node, Directives directive, String value) {
+		IComponentFactory<?,?,?> parentFactory = null;
 		switch( directive ){
 			case ACTIVATE_PARENT:
 				boolean ap = Boolean.parseBoolean( value );
@@ -88,18 +88,20 @@ public class CompositeBuilder<T extends Object> extends AbstractComponentFactory
 	 * Do nothing
 	 */
 	@Override
-	protected void onParseDirectiveAfterCreation( T component, Directives directive, String value) {}
+	protected void onParseDirectiveAfterCreation( T component, V directive, Object value) {}
 
 	/**
 	 * Parse the directives for this factory
 	 * @param node
 	 */
-	private final void parseDirectives( ComponentNode<T> node ){
-		Map<Directives,String> directives = node.getFactory().getDirectives();
-		if(( directives == null ) || ( directives.isEmpty()))
-			return;
-		for( Directives directive: directives.keySet())
-			this.onParseDirectivePriorToCreation( node, directive, directives.get( directive ));
+	private final void parseDirectives( ComponentNode<T,U,V> node ){
+		IJxsePropertySource<U, V> ps = node.getFactory().getPropertySource();
+		Iterator<V> iterator = ps.directiveIterator();
+		V directive;
+		while( iterator.hasNext()) {
+			directive = iterator.next();
+			this.onParseDirectivePriorToCreation( node, ( Directives )directive, ( String )ps.getDirective( directive ));
+		}
 	}
 
 	@Override
@@ -108,16 +110,13 @@ public class CompositeBuilder<T extends Object> extends AbstractComponentFactory
 	}
 
 	@SuppressWarnings("unchecked")
-	private T createModule( ComponentNode<T> node ){
+	private T createModule( ComponentNode<T,U,V> node ){
 		this.parseDirectives(node);
 		T component = node.getFactory().createModule();
 		this.notifyListeners( new ComponentFactoryEvent( this, node.getFactory(), FactoryEvents.COMPONENT_CREATED ));
-		for( ComponentNode<?> child: node.getChildren())
-			createModule( (ComponentNode<T>) child );
+		for( ComponentNode<?,?,?> child: node.getChildren())
+			createModule( (ComponentNode<T,U,V>) child );
 		return component;
 		
 	}
-	
-	@Override
-	protected void fillDefaultValues() {/* NOTHING NEEDED */}
 }

@@ -27,45 +27,12 @@ import net.jxta.discovery.DiscoveryService;
 import net.jxta.document.Advertisement;
 import net.jxta.protocol.DiscoveryResponseMsg;
 import net.osgi.jxse.advertisement.AbstractAdvertisementFactory.AdvertisementTypes;
+import net.osgi.jxse.factory.IComponentFactory.Directives;
 import net.osgi.jxse.log.JxseLevel;
 import net.osgi.jxse.service.core.AbstractJxtaService;
-import net.osgi.jxse.utils.StringStyler;
 
-public class JxseDiscoveryService extends AbstractJxtaService<DiscoveryService> implements Runnable, DiscoveryListener {
+public class JxseDiscoveryService extends AbstractJxtaService<DiscoveryService, IDiscoveryService.DiscoveryProperties, Directives> implements Runnable, DiscoveryListener, IDiscoveryService {
 
-	public enum Services{
-		DISCOVERY_SERVICE,
-		ENDPOINT_SERVICE;
-
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString() );
-		}	
-	}
-	public enum DiscoveryProperties{
-		STATUS,
-		MODE,
-		WAIT_TIME,
-		PEER_ID,
-		ADVERTISEMENT_TYPE,
-		ATTRIBUTE,
-		WILDCARD,
-		THRESHOLD;
-
-	@Override
-	public String toString() {
-		return StringStyler.prettyString( super.toString() );
-	}}
-	
-	public enum Mode{
-		DISCOVERY,
-		PUBLISH,
-		DISCOVERY_AND_PUBLISH;
-
-	@Override
-	public String toString() {
-		return StringStyler.prettyString( super.toString() );
-	}}
 	
 	private ExecutorService executor;
 	

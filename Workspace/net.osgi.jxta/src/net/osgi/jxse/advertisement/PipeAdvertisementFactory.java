@@ -21,83 +21,63 @@ import net.jxta.pipe.PipeID;
 import net.jxta.pipe.PipeService;
 import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.utils.StringStyler;
+import net.osgi.jxse.factory.IComponentFactory.Directives;
+import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 
-public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdvertisement> {
+public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdvertisement, net.osgi.jxse.advertisement.IPipeAdvertisementFactory.Properties, Directives> implements IPipeAdvertisementFactory {
 
 	public static final String S_PIPE_ADVERTISEMENT_SERVICE = "PipeAdvertisementService";
 
 	public final static String SOCKETIDSTR = "urn:jxta:uuid-59616261646162614E5047205032503393B5C2F6CA7A41FBB0F890173088E79404";
 	public final static String DEFAULT_SOCKET_NAME = "Default Socket Server";
 
-	public enum Properties{
-		SOCKET_ID,
-		NAME,
-		TYPE;
-
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString());
-		}
-	}
-	
-	public enum PipeTypes{
-		PROPAGATE_TYPE,
-		UNICAST_TYPE,
-		UNICAST_SECURE_TYPE;
-	
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString());
-		}		
-	}
-
-
 	public PipeAdvertisementFactory() {
-		super( Components.ADVERTISEMENT );
+		super( null );
 		this.fillDefaultValues();
 	}
 
-	@Override
 	protected void fillDefaultValues() {
+		IJxsePropertySource<Properties, Directives> source = super.getPropertySource();
 		try {
-			super.addProperty( Properties.SOCKET_ID, new URI( SOCKETIDSTR ));
+			source.setProperty( Properties.SOCKET_ID, new URI( SOCKETIDSTR ));
 		} catch (URISyntaxException e) {
 			Logger log = Logger.getLogger( this.getClass().getName() );
 			log.log( Level.SEVERE, e.getMessage() );
 			e.printStackTrace();
 		}
-		super.addProperty( Properties.NAME, DEFAULT_SOCKET_NAME );
-		super.addProperty( Properties.TYPE, PipeService.UnicastType );		
+		source.setProperty( Properties.NAME, DEFAULT_SOCKET_NAME );
+		source.setProperty( Properties.TYPE, PipeService.UnicastType );		
 	}
 
-
-	@Override
-	protected void onParseDirectivePriorToCreation(Directives directive,
-			String value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void onParseDirectiveAfterCreation(PipeAdvertisement component,Directives directive, String value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	protected PipeAdvertisement onCreateModule() {
 		PipeID socketID = null;
+		IJxsePropertySource<Properties, Directives> source = super.getPropertySource();
 		try {
-			socketID = (PipeID) IDFactory.fromURI( (URI) super.getProperty( Properties.SOCKET_ID ));
+			socketID = (PipeID) IDFactory.fromURI( (URI) source.getProperty( Properties.SOCKET_ID ));
 		} catch (URISyntaxException use) {
 			use.printStackTrace();
 		}
 		PipeAdvertisement advertisement = (PipeAdvertisement)
 				AdvertisementFactory.newAdvertisement(PipeAdvertisement.getAdvertisementType());
 		advertisement.setPipeID(socketID);
-		advertisement.setType( (String) super.getProperty( Properties.TYPE ));
-		advertisement.setName( (String) super.getProperty( Properties.NAME ));
+		advertisement.setType( (String) source.getProperty( Properties.TYPE ));
+		advertisement.setName( (String) source.getProperty( Properties.NAME ));
 		return advertisement;
+	}
+
+	@Override
+	protected void onParseDirectivePriorToCreation(
+			net.osgi.jxse.factory.IComponentFactory.Directives directive,
+			Object value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onParseDirectiveAfterCreation(PipeAdvertisement module,
+			net.osgi.jxse.factory.IComponentFactory.Directives directive,
+			Object value) {
+		// TODO Auto-generated method stub
+		
 	}
 }

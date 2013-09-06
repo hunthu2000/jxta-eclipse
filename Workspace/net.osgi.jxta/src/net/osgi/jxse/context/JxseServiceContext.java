@@ -16,8 +16,10 @@ import java.util.Map;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.context.AbstractServiceContext;
+import net.osgi.jxse.factory.IComponentFactory.Directives;
+import net.osgi.jxse.network.NetworkManagerFactory.NetworkManagerProperties;
 
-public class JxseServiceContext extends AbstractServiceContext<NetworkManager>{
+public class JxseServiceContext extends AbstractServiceContext<NetworkManager, NetworkManagerProperties, Directives>{
 
 	private NetworkManager manager;
 	

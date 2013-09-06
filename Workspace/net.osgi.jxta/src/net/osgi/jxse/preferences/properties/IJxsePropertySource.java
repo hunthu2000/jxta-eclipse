@@ -10,6 +10,8 @@
  *******************************************************************************/
 package net.osgi.jxse.preferences.properties;
 
+import java.util.Iterator;
+
 public interface IJxsePropertySource< T extends Enum<T>, U extends Enum<U>> {
 
 	/**
@@ -51,6 +53,12 @@ public interface IJxsePropertySource< T extends Enum<T>, U extends Enum<U>> {
 	public boolean setProperty( T id, Object value );
 	
 	/**
+	 * Get an iterator over the properties
+	 * @return
+	 */
+	public Iterator<T> propertyIterator();
+	
+	/**
 	 * Validate the given property
 	 * @param id
 	 * @return
@@ -70,7 +78,13 @@ public interface IJxsePropertySource< T extends Enum<T>, U extends Enum<U>> {
 	 * @return
 	 */
 	public Object getDefaultDirectives( U id);
-	
+
+	/**
+	 * Get an iterator over the directives
+	 * @return
+	 */
+	public Iterator<U> directiveIterator();
+
 	/**
 	 * Get the children of the property source
 	 * @return
