@@ -10,6 +10,8 @@
  *******************************************************************************/
 package net.osgi.jxse.factory;
 
-public interface IComponentFactoryListener<T extends Object, U extends Enum<U>, V extends Enum<V>> {
+import net.osgi.jxse.preferences.properties.IJxseDirectives;
+
+public interface IComponentFactoryListener<T extends Object, U extends Enum<U>, V extends IJxseDirectives> {
 	public void notifyComponentCompleted( JxseComponentEvent<T,U,V> event );
 }

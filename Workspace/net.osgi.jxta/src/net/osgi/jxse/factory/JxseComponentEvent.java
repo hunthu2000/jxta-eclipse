@@ -12,7 +12,9 @@ package net.osgi.jxse.factory;
 
 import java.util.EventObject;
 
-public class JxseComponentEvent<T extends Object, U extends Enum<U>, V extends Enum<V>> extends EventObject {
+import net.osgi.jxse.preferences.properties.IJxseDirectives;
+
+public class JxseComponentEvent<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends EventObject {
 
 	private static final long serialVersionUID = 302931451825865288L;
 

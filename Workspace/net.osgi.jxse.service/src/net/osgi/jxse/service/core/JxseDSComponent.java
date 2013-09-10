@@ -17,7 +17,7 @@ import org.eclipselabs.osgi.ds.broker.service.AbstractAttendeeProviderComponent;
 
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.context.IJxseServiceContext;
-import net.osgi.jxse.factory.IComponentFactory.Directives;
+import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
 import org.eclipselabs.osgi.ds.broker.service.AbstractProvider;
@@ -52,9 +52,9 @@ public class JxseDSComponent extends AbstractAttendeeProviderComponent {
 		try{
 			IJxseServiceContext<NetworkManager> context = activator.getServiceContext();
 			if( Utils.isNull( this.introduction))
-					this.introduction = (String) context.getProperty( Directives.PASS1);
+					this.introduction = (String) context.getProperty( ContextProperties.PASS_1);
 			if( Utils.isNull( this.token ))
-				this.token = (String) context.getProperty( Directives.PASS2);
+				this.token = (String) context.getProperty( ContextProperties.PASS_2);
 			provider = new JxseContextProvider( introduction, token );
 			this.provider.setContainer( context );
 		}

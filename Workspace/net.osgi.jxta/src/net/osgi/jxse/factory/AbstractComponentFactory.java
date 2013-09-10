@@ -16,9 +16,10 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.osgi.jxse.preferences.properties.IJxseDirectives;
 import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 
-public abstract class AbstractComponentFactory<T extends Object, U extends Enum<U>, V extends Enum<V>> implements IComponentFactory<T,U,V>{
+public abstract class AbstractComponentFactory<T extends Object, U extends Enum<U>, V extends IJxseDirectives> implements IComponentFactory<T,U,V>{
 
 	private Collection<IComponentFactoryListener<T,U,V>> listeners;
 	private T module;

@@ -13,7 +13,6 @@ package net.osgi.jxse.network;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -23,80 +22,14 @@ import java.util.logging.Logger;
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Directives;
-import net.osgi.jxse.network.NetworkConfigurationFactory.NetworkConfiguratorProperties;
-import net.osgi.jxse.preferences.IJxsePreferences;
+import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.seeds.ISeedListFactory;
-import net.osgi.jxse.utils.StringStyler;
 
 public class NetworkConfigurationFactory extends
 		AbstractComponentFactory<NetworkConfigurator, NetworkConfiguratorProperties, Directives> {
 
-	public enum NetworkConfiguratorProperties{
-		AUTHENTICATION_TYPE,
-		CERTFICATE,
-		CERTIFICATE_CHAIN,
-		DESCRIPTION,
-		HOME,
-		HTTP_8ENABLED,
-		HTTP_8START_PORT,
-		HTTP_8END_PORT,
-		HTTP_8INCOMING_STATUS,
-		HTTP_8INTERFACE_ADDRESS,
-		HTTP_8OUTGOING_STATUS,
-		HTTP_8PORT,
-		HTTP_8PUBLIC_ADDRESS,
-		HTTP_8TO_PUBLIC_ADDRESS_EXCLUSIVE,
-		HTTP_8PUBLIC_ADDRESS_EXCLUSIVE,
-		INFRASTRUCTURE_8NAME,
-		INFRASTRUCTURE_8DESCRIPTION,
-		INFRASTRUCTURE_8ID,
-		KEY_STORE_LOCATION,
-		MODE,
-		MULTICAST_8ADDRESS,
-		MULTICAST_8INTERFACE,
-		MULTICAST_8POOL_SIZE,
-		MULTICAST_8PORT,
-		MULTICAST_8SIZE,
-		MULTICAST_8STATUS,
-		NAME,
-		PASSWORD,
-		PEER_ID,
-		PRINCIPAL,
-		PRIVATE_KEY,
-		RELAY_8MAX_CLIENTS,
-		RELAY_8SEEDING_URIS,
-		RELAY_8SEED_URIS,
-		RENDEZVOUS_8MAX_CLIENTS,
-		RENDEZVOUS_8SEEDING_URIS,
-		RENDEZVOUS_8SEED_URIS,
-		STORE_HOME,
-		TCP_8ENABLED,
-		TCP_8END_PORT,
-		TCP_8INCOMING_STATUS,
-		TCP_8INTERFACE_ADDRESS,
-		TCP_8OUTGOING_STATUS,
-		TCP_8PORT,
-		TCP_8PUBLIC_ADDRESS,
-		TCP_8PUBLIC_ADDRESS_EXCLUSIVE,
-		TCP_8START_PORT,
-		USE_MULTICAST,
-		USE_ONLY_RELAY_SEEDS,
-		USE_ONLY_RENDEZVOUS_SEEDS;
-	
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString() );
-		}	
-		
-		public static NetworkConfiguratorProperties convertTo( String str ){
-			String enumStr = StringStyler.styleToEnum( str );
-			return valueOf( enumStr );
-		}
-	}
-
 	public static final String S_NETWORK_CONFIGURATION_SERVICE = "NetworkConfigurationService";
 
-	private IJxsePreferences preferences;
 	private Collection<ISeedListFactory> seedLists;
 	
 	private NetworkManagerFactory nmFactory;
@@ -104,16 +37,13 @@ public class NetworkConfigurationFactory extends
 	public NetworkConfigurationFactory( NetworkManagerFactory nmFactory ) {
 		super( null );//nmFactory.getPropertySource() );
 		this.nmFactory = nmFactory;
-		this.preferences = nmFactory.getPreferences();
 		this.seedLists = new ArrayList<ISeedListFactory>();
 		super.addDirective( Directives.CREATE_PARENT, "true" );
 		this.fillDefaultValues();
 	}
 
-	protected void fillDefaultValues() {
-		
-		if( this.preferences == null)
-			return;
+	protected void fillDefaultValues() {	
+		/*
 		try {
 			this.addProperty( NetworkConfiguratorProperties.PEER_ID, preferences.getPeerID());
 			this.addProperty( NetworkConfiguratorProperties.NAME, preferences.getIdentifier() );
@@ -121,6 +51,7 @@ public class NetworkConfigurationFactory extends
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
+		*/
 	}
 
 	public void addProperty(Object key, Object value) {

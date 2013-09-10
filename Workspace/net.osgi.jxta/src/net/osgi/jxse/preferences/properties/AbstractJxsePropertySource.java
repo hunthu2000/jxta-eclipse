@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends Enum<U>> implements IJxsePropertySource<T, U> {
+public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends IJxseDirectives> implements IJxsePropertySource<T, U> {
 
 	private Map<T,Object> properties;
 	private Map<U,Object> directives;
@@ -24,15 +24,17 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends E
 
 	private int depth = 0;
 	private String context_id;
-	private String componentName;
+	private String bundleId, identifier, componentName;
 	
-	public AbstractJxsePropertySource( String componentName) {
-		this( componentName, 0);
+	public AbstractJxsePropertySource( String bundleId, String identifier, String componentName) {
+		this( bundleId, identifier, componentName, 0);
 	}
 
-	protected AbstractJxsePropertySource( String componentName, int depth ) {
+	protected AbstractJxsePropertySource( String bundleId, String identifier, String componentName, int depth ) {
 		properties = new HashMap<T,Object>();
 		directives = new HashMap<U,Object>();
+		this.bundleId = bundleId;
+		this.identifier = identifier;
 		this.componentName = componentName;
 		children = new ArrayList<IJxsePropertySource<?,?>>();
 		this.depth = depth;
@@ -44,6 +46,20 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends E
 
 	public void setId(String id) {
 		this.context_id = id;
+	}
+
+	@Override
+	public String getBundleId() {
+		return this.bundleId;
+	}
+
+	@Override
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	protected void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 
 	@Override

@@ -14,7 +14,7 @@ import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
-import net.osgi.jxse.preferences.JxsePreferences;
+import net.osgi.jxse.preferences.AbstractJxsePreferences;
 
 import org.eclipse.pde.ui.templates.BaseOptionTemplateSection;
 import org.eclipse.pde.ui.templates.TemplateOption;
@@ -121,7 +121,7 @@ public class ContextOption extends TemplateOption {
 		if( obj != null )
 			this.text_identifier.setText( obj.toString() );
 		obj = ps.getDefault( ContextProperties.PEER_ID );
-		this.combo.setItems( JxsePreferences.getConfigModes());
+		this.combo.setItems( AbstractJxsePreferences.getConfigModes());
 		this.combo.select(ConfigMode.EDGE.ordinal());
 		
 		this.btnAutoStart.setSelection((boolean) ps.getDefaultDirectives( ContextDirectives.AUTO_START ));

@@ -32,8 +32,9 @@ import net.osgi.jxse.component.JxseComponent;
 import net.osgi.jxse.component.JxseComponentNode;
 import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
 import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.preferences.properties.IJxseDirectives;
 
-public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>, V extends Enum<V>> extends AbstractActivator<IComponentFactory<T,U,V>> implements
+public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends AbstractActivator<IComponentFactory<T,U,V>> implements
 		IJxseServiceContext<T>{
 
 	public static final String S_SERVICE_CONTAINER = "JXSE Container";

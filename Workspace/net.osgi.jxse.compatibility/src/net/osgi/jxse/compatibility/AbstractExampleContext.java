@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.Platform;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.factory.IComponentFactory.Directives;
-import net.osgi.jxse.network.NetworkManagerFactory.NetworkManagerProperties;
+import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 
 public abstract class AbstractExampleContext extends AbstractServiceContext<NetworkManager, NetworkManagerProperties, Directives>{
 

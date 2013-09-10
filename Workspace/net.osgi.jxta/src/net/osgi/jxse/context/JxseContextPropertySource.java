@@ -21,9 +21,8 @@ import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.preferences.IJxsePreferences;
-import net.osgi.jxse.preferences.ProjectFolderUtils;
 import net.osgi.jxse.preferences.properties.AbstractJxsePropertySource;
+import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.Utils;
 
 public class JxseContextPropertySource extends AbstractJxsePropertySource<ContextProperties, ContextDirectives>{
@@ -34,20 +33,40 @@ public class JxseContextPropertySource extends AbstractJxsePropertySource<Contex
 	public static final int DEF_MAX_PORT = 9999;
 	public static final int DEF_PORT = 9715;
 	
-	private String plugin_id, identifier;
-	
-	public JxseContextPropertySource( String plugin_id, String identifier) {
-		super( Components.JXSE_CONTEXT.toString() );
-		this.plugin_id = plugin_id;
-		this.identifier = identifier;
+	public JxseContextPropertySource( String bundleId, String identifier) {
+		super( bundleId, identifier, Components.JXSE_CONTEXT.toString() );
+		this.setProperty( ContextProperties.PLUGIN_ID, bundleId );
+		this.setProperty( ContextProperties.IDENTIFIER, identifier );
 	}
 
+	/**
+	 * Get the plugin ID
+	 * @return
+	 */
+	public String getBundleId(){
+		return (String) this.getProperty( ContextProperties.PLUGIN_ID );
+	}
+
+	/**
+	 * Get the identifier
+	 * @return
+	 */
+	public String getIdentifier(){
+		return (String) this.getProperty( ContextProperties.IDENTIFIER );
+	}
+
+	public void setIdentifier( String identifier ){
+		this.setProperty( ContextProperties.IDENTIFIER, identifier );	
+		super.setIdentifier(identifier);
+	}
+	
 	@Override
 	public Object getDefault(ContextProperties id) {
 		String str = null;
 		switch( id ){
 		case HOME_FOLDER:
-			str = ProjectFolderUtils.getDefaultJxseDir( IJxsePreferences.S_JXTA, plugin_id ).getPath();
+			String plugin_id = (String) super.getProperty( ContextProperties.PLUGIN_ID );
+			str = ProjectFolderUtils.getDefaultJxseDir( AbstractJxsePropertySource.S_JXTA, plugin_id ).getPath();
 			File file = new File( str );
 			return file.toURI();
 		case CONFIG_MODE:
@@ -66,9 +85,9 @@ public class JxseContextPropertySource extends AbstractJxsePropertySource<Contex
 			}
 			break;
 		case IDENTIFIER:
-			return identifier;
+			return (String) super.getProperty( ContextProperties.IDENTIFIER );
 		case PLUGIN_ID:
-			return plugin_id;
+			return (String) super.getProperty( ContextProperties.PLUGIN_ID );
 		case PORT:
 			return DEF_PORT;
 		default:
@@ -86,6 +105,10 @@ public class JxseContextPropertySource extends AbstractJxsePropertySource<Contex
 			return true;
 		case PEER_ID_PERSIST:
 			return true;
+		case CLEAR_CONFIG:
+			break;
+		default:
+			break;
 		}
 		return null;
 	}

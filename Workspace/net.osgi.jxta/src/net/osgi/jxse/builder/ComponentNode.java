@@ -14,8 +14,9 @@ import java.util.Collection;
 import java.util.TreeSet;
 
 import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.preferences.properties.IJxseDirectives;
 
-public class ComponentNode<T extends Object, U extends Enum<U>, V extends Enum<V>> implements Comparable<ComponentNode<?,?,?>> {
+public class ComponentNode<T extends Object, U extends Enum<U>, V extends IJxseDirectives> implements Comparable<ComponentNode<?,?,?>> {
 
 	private IComponentFactory<T,U,V> factory;
 	

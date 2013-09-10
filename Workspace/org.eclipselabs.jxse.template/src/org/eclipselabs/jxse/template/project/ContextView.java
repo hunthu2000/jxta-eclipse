@@ -14,7 +14,7 @@ import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
-import net.osgi.jxse.preferences.JxsePreferences;
+import net.osgi.jxse.preferences.AbstractJxsePreferences;
 import net.osgi.jxse.utils.Utils;
 
 import org.eclipse.swt.SWT;
@@ -186,7 +186,7 @@ public class ContextView extends Composite {
 		if( obj != null )
 			this.text_identifier.setText( obj.toString() );
 		obj = ps.getDefault( ContextProperties.PEER_ID );
-		this.combo.setItems( JxsePreferences.getConfigModes());
+		this.combo.setItems( AbstractJxsePreferences.getConfigModes());
 		this.combo.select(ConfigMode.EDGE.ordinal());
 		this.spinner.setMinimum( JxseContextPropertySource.DEF_MIN_PORT );
 		this.spinner.setMaximum( JxseContextPropertySource.DEF_MAX_PORT );

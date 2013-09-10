@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.preferences;
+package net.osgi.jxse.context;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,15 +16,7 @@ import java.net.URISyntaxException;
 import net.jxta.peer.PeerID;
 import net.jxta.platform.NetworkManager.ConfigMode;
 
-public interface IJxsePreferences {
-
-	public static final String JXTA_SETTINGS = "jxta.settings";
-	public static final String S_USER_HOME = "user.home";
-	public static final String S_JXTA = ".jxta";
-
-	public abstract String getIdentifier();
-
-	public abstract String getPluginId();
+public interface IJxseContextPreferences {
 
 	public abstract boolean getRendezVousAutostart();
 

@@ -23,21 +23,22 @@ import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
-import net.osgi.jxse.factory.IComponentFactory.Directives;
-import net.osgi.jxse.preferences.ProjectFolderUtils;
 import net.osgi.jxse.preferences.properties.AbstractJxsePropertySource;
+import net.osgi.jxse.preferences.properties.IJxseDirectives;
 import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 import net.osgi.jxse.service.xml.PreferenceStore.Persistence;
 import net.osgi.jxse.service.xml.PreferenceStore.SupportedAttributes;
+import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
-public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProperties, Directives> implements IJxsePropertySource<ContextProperties, Directives> {
+public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProperties, IJxseDirectives> implements IJxsePropertySource<ContextProperties, IJxseDirectives> {
 
+	public static final String S_XML_ROOT = "JXSE Component Root";
 	private PreferenceStore store;
 	
-	public JxseXMLPreferences( String identifier, PreferenceStore store ) {
-		super( identifier );
+	public JxseXMLPreferences( String pluginId, String identifier, PreferenceStore store ) {
+		super( pluginId, identifier, S_XML_ROOT );
 		this. store = store;
 	}
 
@@ -54,7 +55,7 @@ public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProper
 		return store.size() <= 2;
 	}
 
-	public String getPluginId() {
+	public String getBundleId() {
 		return store.getValue(  ContextProperties.PLUGIN_ID.toString() );
 	}
 
@@ -73,7 +74,7 @@ public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProper
 		String str = store.getValue( ContextProperties.HOME_FOLDER.toString() );
 		if(( str == null ) || ( str.trim().length() == 0 ))
 			return null;
-		File file = new File( ProjectFolderUtils.getParsedUserDir( str, this.getPluginId() ));
+		File file = new File( ProjectFolderUtils.getParsedUserDir( str, this.getBundleId() ));
 		return file.toURI();
 	}
 
@@ -167,7 +168,13 @@ public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProper
 	}
 
 	@Override
-	public Object getDefaultDirectives(Directives id) {
+	public Object getDefaultDirectives(IJxseDirectives id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getIdentifier() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -11,7 +11,7 @@
 package net.osgi.jxse.network;
 
 import net.jxta.platform.NetworkConfigurator;
-import net.osgi.jxse.network.NetworkConfigurationFactory.NetworkConfiguratorProperties;
+import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
 public class TcpConfiguration {
 

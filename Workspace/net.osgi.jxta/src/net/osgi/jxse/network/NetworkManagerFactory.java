@@ -22,75 +22,25 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jxta.platform.NetworkManager;
-import net.jxta.platform.NetworkManager.ConfigMode;
+import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.factory.IComponentFactory.Directives;
-import net.osgi.jxse.network.NetworkManagerFactory.NetworkManagerProperties;
-import net.osgi.jxse.preferences.IJxsePreferences;
-import net.osgi.jxse.preferences.ProjectFolderUtils;
+import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jxse.preferences.properties.IJxsePropertySource;
-import net.osgi.jxse.utils.StringStyler;
 
-public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager, NetworkManagerProperties, Directives> {
+public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager, NetworkManagerProperties, ContextDirectives> {
 		
 	public static final String S_NETWORK_MANAGER_SERVICE = "NetworkManagerService";
 
-	public enum NetworkManagerProperties{
-		CONFIG_PERSISTENT,
-		INFRASTRUCTURE_ID,
-		INSTANCE_HOME,
-		INSTANCE_NAME,
-		MODE,
-		PEER_ID;
-
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString() );
-		}
-	}
-
-	private IJxsePreferences preferences;
+	private NetworkManagerPreferences<ContextDirectives> preferences;
 	
-	public NetworkManagerFactory( IJxsePropertySource<NetworkManagerProperties, Directives> propertySource ) {
+	public NetworkManagerFactory( IJxsePropertySource<NetworkManagerProperties, ContextDirectives> propertySource ) {
 		super( propertySource );
+		preferences = new NetworkManagerPreferences<ContextDirectives>( propertySource );
 		this.fillDefaultValues();
 	}
 
-	public String getInstanceName(){
-		return (String) super.getPropertySource().getProperty( NetworkManagerProperties.INSTANCE_NAME );
-	}
-	
-	public void setInstanceName( String instanceName ){
-		super.addProperty( NetworkManagerProperties.INSTANCE_NAME, instanceName );
-	}
-
-	public String getInstanceHomeFolder(){
-		URI uri = ( URI )super.getPropertySource().getProperty( NetworkManagerProperties.INSTANCE_HOME );
-		return uri.getPath();
-	}
-	
-	public void setInstanceHomeFolder( String instanceHomeFolder ){
-		URI uri = ProjectFolderUtils.getParsedUserDir( instanceHomeFolder, this.preferences.getPluginId() );
-		super.addProperty( NetworkManagerProperties.INSTANCE_HOME, uri );
-	}
-
-	public String getConfigMode(){
-		ConfigMode mode = (ConfigMode) super.getPropertySource().getProperty( NetworkManagerProperties.MODE );
-		return mode.name();
-	}
-	
-	public void setConfigMode( String mode ){
-		ConfigMode cm = ConfigMode.valueOf( mode );
-		super.addProperty( NetworkManagerProperties.MODE, cm );
-	}
-
-	public IJxsePreferences getPreferences() {
-		return preferences;
-	}
-
-	
 	protected void fillDefaultValues() {
-		this.addProperty( NetworkManagerProperties.INSTANCE_NAME, preferences.getIdentifier() );
+		this.addProperty( NetworkManagerProperties.INSTANCE_NAME, super.getPropertySource().getIdentifier() );
 		try {
 			this.addProperty( NetworkManagerProperties.INSTANCE_HOME, preferences.getHomeFolder() );
 		} catch (URISyntaxException e) {
@@ -109,13 +59,13 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 		String str = ( String )value;
 		switch(( NetworkManagerProperties )key ){
 		case INSTANCE_HOME:
-			this.setInstanceHomeFolder( str );
+			this.preferences.setHomeFolder( str );
 			break;
 		case INSTANCE_NAME:
-			this.setInstanceName( str );
+			this.preferences.setInstanceName( str );
 			break;
 		case MODE:
-			this.setConfigMode( str );
+			this.preferences.setConfigMode( str );
 			break;
 		default:
 			super.addProperty(key, value);
@@ -125,7 +75,7 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 	}
 
 	@Override
-	protected void onParseDirectivePriorToCreation(Directives directive, Object value) {
+	protected void onParseDirectivePriorToCreation( ContextDirectives directive, Object value) {
 		switch( directive ){
 		case CLEAR_CONFIG:
 			Path path = Paths.get(( URI )super.getPropertySource().getProperty( NetworkManagerProperties.INSTANCE_HOME ));
@@ -141,7 +91,7 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 	}
 
 	@Override
-	protected void onParseDirectiveAfterCreation( NetworkManager component,	Directives directive, Object value) {
+	protected void onParseDirectiveAfterCreation( NetworkManager component,	ContextDirectives directive, Object value) {
 	}
 
 	@Override

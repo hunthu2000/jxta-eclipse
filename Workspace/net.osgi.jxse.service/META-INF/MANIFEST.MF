@@ -5,7 +5,8 @@ Bundle-SymbolicName: net.osgi.jxse.service;singleton:=true
 Bundle-Version: 1.0.0.v20130117
 Bundle-Vendor: Condast
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: net.osgi.jxse.service,
+Export-Package: net.osgi.jxse.preferences,
+ net.osgi.jxse.service,
  net.osgi.jxse.service.activator,
  net.osgi.jxse.service.comparator,
  net.osgi.jxse.service.core,

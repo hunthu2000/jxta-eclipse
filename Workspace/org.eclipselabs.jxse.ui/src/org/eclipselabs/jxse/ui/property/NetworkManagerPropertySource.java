@@ -12,7 +12,7 @@ import net.jxta.peergroup.PeerGroupID;
 import net.jxta.platform.NetworkManager;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.component.IJxseComponent;
-import net.osgi.jxse.network.NetworkManagerFactory.NetworkManagerProperties;
+import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jxse.utils.EnumUtils;
 
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;

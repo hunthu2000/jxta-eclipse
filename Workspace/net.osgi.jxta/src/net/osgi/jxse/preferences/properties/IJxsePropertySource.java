@@ -12,7 +12,23 @@ package net.osgi.jxse.preferences.properties;
 
 import java.util.Iterator;
 
-public interface IJxsePropertySource< T extends Enum<T>, U extends Enum<U>> {
+public interface IJxsePropertySource< T extends Enum<T>, U extends IJxseDirectives> {
+
+	public static final String JXTA_SETTINGS = "jxta.settings";
+	public static final String S_USER_HOME = "user.home";
+	public static final String S_JXTA = ".jxta";
+
+	/**
+	 * Get the plugin ID
+	 * @return
+	 */
+	public String getBundleId();
+
+	/**
+	 * Get the identifier
+	 * @return
+	 */
+	public String getIdentifier();
 
 	/**
 	 * Get the component name

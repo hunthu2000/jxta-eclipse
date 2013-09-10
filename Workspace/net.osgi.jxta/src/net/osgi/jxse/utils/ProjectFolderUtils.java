@@ -8,12 +8,10 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.preferences;
+package net.osgi.jxse.utils;
 
 import java.io.File;
 import java.net.URI;
-
-import net.osgi.jxse.utils.StringStyler;
 
 public class ProjectFolderUtils {
 

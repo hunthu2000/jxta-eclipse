@@ -10,10 +10,11 @@
  *******************************************************************************/
 package net.osgi.jxse.factory;
 
+import net.osgi.jxse.preferences.properties.IJxseDirectives;
 import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public interface IComponentFactory<T extends Object, U extends Enum<U>, V extends Enum<V>> {
+public interface IComponentFactory<T extends Object, U extends Enum<U>, V extends IJxseDirectives> {
 
 	public enum Components{
 		JXSE_CONTEXT,
@@ -48,13 +49,11 @@ public interface IComponentFactory<T extends Object, U extends Enum<U>, V extend
 	 * @author Kees
 	 *
 	 */
-	public enum Directives{
+	public enum Directives implements IJxseDirectives{
 		AUTO_START,
 		CLEAR_CONFIG,
 		CREATE_PARENT,
-		ACTIVATE_PARENT,
-		PASS1,
-		PASS2;
+		ACTIVATE_PARENT;
 
 		@Override
 		public String toString() {

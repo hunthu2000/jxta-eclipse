@@ -1,0 +1,103 @@
+package net.osgi.jxse.network;
+
+import java.util.Iterator;
+
+import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
+import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
+import net.osgi.jxse.context.JxseContextPropertySource;
+import net.osgi.jxse.preferences.properties.AbstractJxsePropertySource;
+import net.osgi.jxse.utils.StringStyler;
+
+public class NetworkManagerPropertySource extends AbstractJxsePropertySource<NetworkManagerPropertySource.NetworkManagerProperties, ContextDirectives>{
+
+	public enum NetworkManagerProperties{
+		CONFIG_PERSISTENT,
+		INFRASTRUCTURE_ID,
+		INSTANCE_HOME,
+		INSTANCE_NAME,
+		MODE,
+		PEER_ID;
+	
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString() );
+		}
+	}
+
+	private JxseContextPropertySource source;
+	
+	public NetworkManagerPropertySource( JxseContextPropertySource source) {
+		super( source.getBundleId(), source.getIdentifier(), NetworkManagerFactory.S_NETWORK_MANAGER_SERVICE );
+		this.fill( source );
+		this.source = source;
+	}
+
+	private void fill( JxseContextPropertySource source ){
+		Iterator<ContextProperties> iterator = source.propertyIterator();
+		while( iterator.hasNext() ){
+			ContextProperties cp = iterator.next();
+			NetworkManagerProperties nmp = convertFrom( cp );
+			if( nmp == null )
+				continue;
+			super.setProperty(nmp, source.getProperty( cp ));
+		}	
+	}
+
+
+	@Override
+	public Object getDefault(NetworkManagerProperties id) {
+		return source.getDefault( convertTo( id ));
+	}
+
+	@Override
+	public boolean validate(NetworkManagerProperties id, Object value) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Object getDefaultDirectives(ContextDirectives id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * convert the given context property to a networkManagerProperty, or null if there is
+	 * no relation between them
+	 * @param context
+	 * @return
+	 */
+	public NetworkManagerProperties convertFrom( ContextProperties context ){
+		switch( context ){
+		case CONFIG_MODE:
+			return NetworkManagerProperties.MODE;
+		case HOME_FOLDER:
+			return NetworkManagerProperties.INSTANCE_HOME;
+		case PEER_ID:
+			return NetworkManagerProperties.PEER_ID;
+		default:
+			break;
+		}
+		return null;
+	}
+
+	/**
+	 * convert the given context property to a networkManagerProperty, or null if there is
+	 * no relation between them
+	 * @param context
+	 * @return
+	 */
+	public ContextProperties convertTo( NetworkManagerProperties props ){
+		switch( props ){
+		case MODE:
+			return ContextProperties.CONFIG_MODE;
+		case INSTANCE_HOME:
+			return ContextProperties.HOME_FOLDER;
+		case PEER_ID:
+			return ContextProperties.PEER_ID;
+		default:
+			break;
+		}
+		return null;
+	}
+}

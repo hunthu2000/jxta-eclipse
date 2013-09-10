@@ -16,7 +16,6 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.Attributes;
@@ -38,24 +37,25 @@ import net.osgi.jxse.factory.ComponentFactoryEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.network.NetworkConfigurationFactory;
+import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.network.NetworkManagerFactory;
-import net.osgi.jxse.network.NetworkConfigurationFactory.NetworkConfiguratorProperties;
-import net.osgi.jxse.network.NetworkManagerFactory.NetworkManagerProperties;
-import net.osgi.jxse.preferences.ProjectFolderUtils;
+import net.osgi.jxse.network.NetworkManagerPropertySource;
+import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 import net.osgi.jxse.seeds.SeedListFactory;
 import net.osgi.jxse.service.xml.PreferenceStore.Persistence;
 import net.osgi.jxse.service.xml.PreferenceStore.SupportedAttributes;
 import net.osgi.jxse.service.xml.XMLComponentFactory.Groups;
+import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.utils.io.IOUtils;
 
 public class XMLComponentFactory implements IComponentFactory<NetworkManager, ContextProperties, ContextDirectives>, ICompositeBuilder<NetworkManager>, ICompositeBuilderListener {
 
-	private static final String JAXP_SCHEMA_SOURCE =
+	protected static final String JAXP_SCHEMA_SOURCE =
 		    "http://java.sun.com/xml/jaxp/properties/schemaSource";
-	private static final String JXSE_XSD_SCHEMA = "http://www.condast.com/saight/jxse-schema.xsd";
+	protected static final String JXSE_XSD_SCHEMA = "http://www.condast.com/saight/jxse-schema.xsd";
 
 	private static final String S_ERR_NO_SCHEMA_FOUND = "The XML Schema was not found";
 	private static final String S_WRN_NOT_NAMESPACE_AWARE = "The parser is not validating or is not namespace aware";
@@ -65,8 +65,9 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager, Co
 	static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 	static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";	
 	
-	public static String S_DEFAULT_LOCATION = "/JXSE-INF/jxse-context.xml";
-	public static String S_SCHEMA_LOCATION = "/JXSE-INF/jxse-schema.xsd";
+	public static String S_DEFAULT_FOLDER = "/JXSE-INF";
+	public static String S_DEFAULT_LOCATION = S_DEFAULT_FOLDER + "/jxse-1.0.0.xml";
+	public static String S_SCHEMA_LOCATION =  S_DEFAULT_FOLDER + "/jxse-schema.xsd";
 	
 	public enum Groups{
 		PROPERTIES,
@@ -116,8 +117,12 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager, Co
 		this.listeners = new ArrayList<ICompositeBuilderListener>();
 	}
 
-	void setIdentifier(String identifier) {
-		this.properties.setProperty( ContextProperties.IDENTIFIER, identifier );
+	/**
+	 * Get the properties
+	 * @return
+	 */
+	JxseContextPropertySource getProperties() {
+		return properties;
 	}
 
 	/**
@@ -163,15 +168,16 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager, Co
 		if( schema_in == null )
 			throw new RuntimeException( S_ERR_NO_SCHEMA_FOUND );
 		
-		factory.setNamespaceAware( true );
+		//factory.setNamespaceAware( true );
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
 		// note that if your XML already declares the XSD to which it has to conform, then there's no need to create a validator from a Schema object
 		Source schemaFile = new StreamSource( JxtaHandler.class.getResourceAsStream( S_SCHEMA_LOCATION ));
 		InputStream in = clss.getResourceAsStream( location );
 		try {
-			Schema schema = schemaFactory.newSchema(schemaFile);
-			factory.setSchema(schema);//saxParser.
+			logger.info("Parsing JXSE Bundle: " + this.properties.getProperty( ContextProperties.PLUGIN_ID ));
+			//Schema schema = schemaFactory.newSchema(schemaFile);
+			//factory.setSchema(schema);//saxParser.
 			
 			SAXParser saxParser = factory.newSAXParser();
 			if( !saxParser.isNamespaceAware() )
@@ -189,6 +195,7 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager, Co
 			cf.addListener( this );
 			module = cf.createModule();
 			cf.removeListener(this);
+			logger.info("JXSE Bundle Parsed: " + this.properties.getProperty( ContextProperties.PLUGIN_ID ));
 			return module;
 		} catch( SAXNotRecognizedException e ){
 			failed = true;
@@ -238,6 +245,12 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager, Co
 	public IJxsePropertySource<ContextProperties, ContextDirectives> getPropertySource() {
 		return this.properties;
 	}
+	
+	public static String getLocation( String defaultLocation ){
+		if( !Utils.isNull( defaultLocation ))
+			return defaultLocation;
+		return defaultLocation;
+	}
 }
 
 class JxtaHandler extends DefaultHandler{
@@ -251,6 +264,7 @@ class JxtaHandler extends DefaultHandler{
 	private boolean newProperty = false;
 	private SeedListFactory sdf;
 	private Attributes attributes;
+	private PreferenceStore store;
 
 	private static Logger logger = Logger.getLogger( XMLComponentFactory.class.getName() );
 	
@@ -276,13 +290,11 @@ class JxtaHandler extends DefaultHandler{
 
 			switch( current ){
 			case JXSE_CONTEXT:
-				PreferenceStore store = new PreferenceStore(( String )owner.getPropertySource().getProperty( ContextProperties.PLUGIN_ID ));
+				store = new PreferenceStore(( String )owner.getPropertySource().getProperty( ContextProperties.PLUGIN_ID ));
 				break;
 			case NETWORK_MANAGER:
-				//if( this.preferences.containsOnlyIdentifierAtBest() )
-				//	factory = new NetworkManagerFactory( );
-				//else
-				//	factory = new NetworkManagerFactory( this.preferences );
+				NetworkManagerPropertySource source = new NetworkManagerPropertySource( (JxseContextPropertySource) owner.getPropertySource() );
+				factory = new NetworkManagerFactory( source );
 				this.root = new ComponentNode( factory );
 				break;
 			case NETWORK_CONFIGURATOR:
@@ -311,7 +323,8 @@ class JxtaHandler extends DefaultHandler{
 				this.groupValue += "." + str;
 			this.newProperty = true;
 		}
-		logger.info(" Group value: " + this.groupValue );
+		if( this.groupValue != null )
+			logger.info(" Group value: " + this.groupValue );
 	}
 
 	@Override
@@ -351,13 +364,13 @@ class JxtaHandler extends DefaultHandler{
 				}
 				this.newProperty = false;
 			}
+			logger.info("Ending group value: " + this.groupValue );
 			String[] split = this.groupValue.split("[.]");
 			if( this.groupValue.equals( split[0] )){
 				this.groupValue = null; 
 			}else
 				this.groupValue = this.groupValue.replace("." + split[ split.length - 1], "");
 			}
-			logger.info("Ending group value: " + this.groupValue );
 	}
 
 	@Override
@@ -452,8 +465,11 @@ class JxtaHandler extends DefaultHandler{
 		String key = this.groupValue.replace(".", "_8" );
 		switch( component ){
 		case JXSE_CONTEXT:
+			JxseContextPropertySource source = (JxseContextPropertySource) this.owner.getPropertySource();
 			if( this.groupValue.toUpperCase().equals( ContextProperties.IDENTIFIER.name() ))
-				this.owner.setIdentifier( value );
+				source.setIdentifier( value );
+			else
+				source.setProperty( ContextProperties.valueOf(this.groupValue.toUpperCase()), value);
 			break;
 		case NETWORK_MANAGER:
 			NetworkManagerFactory nmf = (NetworkManagerFactory) this.currentNode.getFactory();
@@ -461,7 +477,7 @@ class JxtaHandler extends DefaultHandler{
 			switch( nmp ){
 			case INSTANCE_HOME:
 				File file = new File( ProjectFolderUtils.getParsedUserDir( value, (String) this.owner.getPropertySource().getProperty( ContextProperties.PLUGIN_ID ) ));
-				nmf.setInstanceHomeFolder( file.getAbsolutePath() );
+				//nmf.setInstanceHomeFolder( file.getAbsolutePath() );
 				break;
 			default:
 				nmf.addProperty(nmp, StringStyler.styleToEnum( value ));
@@ -490,7 +506,8 @@ class JxtaHandler extends DefaultHandler{
 	@Override
 	public void error(SAXParseException e) throws SAXException {
 		print(e);
-		throw( e );
+		super.error(e);
+		//throw( e );
 	}
 
 	@Override

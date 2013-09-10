@@ -4,10 +4,11 @@ import net.osgi.jxse.component.IJxseComponent.ModuleProperties;
 import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
+import net.osgi.jxse.preferences.properties.IJxseDirectives;
 import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.Utils;
 
-public class JxseXmlBuilder<T extends Enum<T>, U extends Enum<U>> {
+public class JxseXmlBuilder<T extends Enum<T>, U extends IJxseDirectives> {
 
 	public static final String DOC_HEAD = "<?xml version='1.0' encoding='UTF-8'?>\n";
 	public static final String DOC_PROPERTY = "<property>\n";
