@@ -5,8 +5,10 @@ import java.util.Iterator;
 import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.context.JxseContextPropertySource;
+import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.preferences.properties.AbstractJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
+import net.osgi.jxse.utils.Utils;
 
 public class NetworkManagerPropertySource extends AbstractJxsePropertySource<NetworkManagerPropertySource.NetworkManagerProperties, ContextDirectives>{
 
@@ -27,7 +29,7 @@ public class NetworkManagerPropertySource extends AbstractJxsePropertySource<Net
 	private JxseContextPropertySource source;
 	
 	public NetworkManagerPropertySource( JxseContextPropertySource source) {
-		super( source.getBundleId(), source.getIdentifier(), NetworkManagerFactory.S_NETWORK_MANAGER_SERVICE );
+		super( source.getBundleId(), source.getIdentifier(), Components.NETWORK_MANAGER.name() );
 		this.fill( source );
 		this.source = source;
 	}
@@ -42,7 +44,6 @@ public class NetworkManagerPropertySource extends AbstractJxsePropertySource<Net
 			super.setProperty(nmp, source.getProperty( cp ));
 		}	
 	}
-
 
 	@Override
 	public Object getDefault(NetworkManagerProperties id) {

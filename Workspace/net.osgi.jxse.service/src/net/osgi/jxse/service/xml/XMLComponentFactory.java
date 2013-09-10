@@ -302,7 +302,6 @@ class JxtaHandler extends DefaultHandler{
 				break;
 			default:
 				break;
-
 			}
 			if( factory == null )
 				return;
@@ -313,6 +312,7 @@ class JxtaHandler extends DefaultHandler{
 				this.currentNode = this.currentNode.addChild(factory);
 		}else if( Groups.isGroup( qName )){
 			group = Groups.valueOf( StringStyler.styleToEnum( qName ));
+			this.groupValue = null;
 			if( group.equals( Groups.SEEDS ))
 				this.sdf = new SeedListFactory();
 		}else{
@@ -328,8 +328,7 @@ class JxtaHandler extends DefaultHandler{
 	}
 
 	@Override
-	public void endElement(String uri, String localName,
-			String qName) throws SAXException {
+	public void endElement(String uri, String localName, String qName) throws SAXException {
 
 		if( Components.isComponent( qName )){
 			current = Components.valueOf( StringStyler.styleToEnum( qName ));
@@ -424,7 +423,7 @@ class JxtaHandler extends DefaultHandler{
 		if(( value == null ) || ( value.trim().length() == 0))
 			return;
 		
-		ContextDirectives directive = ContextDirectives.valueOf(this.groupValue);
+ 		ContextDirectives directive = ContextDirectives.valueOf(this.groupValue);
 		
 		Components component = Components.JXSE_CONTEXT;
 		if(( this.currentNode != null ) && ( this.currentNode.getFactory() != null )){

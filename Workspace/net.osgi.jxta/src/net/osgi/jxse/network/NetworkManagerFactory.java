@@ -29,8 +29,6 @@ import net.osgi.jxse.preferences.properties.IJxsePropertySource;
 
 public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager, NetworkManagerProperties, ContextDirectives> {
 		
-	public static final String S_NETWORK_MANAGER_SERVICE = "NetworkManagerService";
-
 	private NetworkManagerPreferences<ContextDirectives> preferences;
 	
 	public NetworkManagerFactory( IJxsePropertySource<NetworkManagerProperties, ContextDirectives> propertySource ) {

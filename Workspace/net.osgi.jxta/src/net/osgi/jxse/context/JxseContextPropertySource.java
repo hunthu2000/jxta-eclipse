@@ -28,7 +28,6 @@ import net.osgi.jxse.utils.Utils;
 public class JxseContextPropertySource extends AbstractJxsePropertySource<ContextProperties, ContextDirectives>{
 
 	public static final String DEF_HOME_FOLDER = "${user.home}/.jxta/${plugin-id}";
-
 	public static final int DEF_MIN_PORT = 1000;
 	public static final int DEF_MAX_PORT = 9999;
 	public static final int DEF_PORT = 9715;

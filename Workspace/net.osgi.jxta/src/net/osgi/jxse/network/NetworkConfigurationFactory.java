@@ -21,12 +21,12 @@ import java.util.logging.Logger;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.factory.IComponentFactory.Directives;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.preferences.properties.IJxseDirectives;
 import net.osgi.jxse.seeds.ISeedListFactory;
 
 public class NetworkConfigurationFactory extends
-		AbstractComponentFactory<NetworkConfigurator, NetworkConfiguratorProperties, Directives> {
+		AbstractComponentFactory<NetworkConfigurator, NetworkConfiguratorProperties, IJxseDirectives> {
 
 	public static final String S_NETWORK_CONFIGURATION_SERVICE = "NetworkConfigurationService";
 
@@ -35,7 +35,7 @@ public class NetworkConfigurationFactory extends
 	private NetworkManagerFactory nmFactory;
 
 	public NetworkConfigurationFactory( NetworkManagerFactory nmFactory ) {
-		super( null );//nmFactory.getPropertySource() );
+		super( new NetworkConfigurationPropertySource( nmFactory ));
 		this.nmFactory = nmFactory;
 		this.seedLists = new ArrayList<ISeedListFactory>();
 		super.addDirective( Directives.CREATE_PARENT, "true" );
@@ -77,11 +77,11 @@ public class NetworkConfigurationFactory extends
 	}
 
 	@Override
-	protected void onParseDirectivePriorToCreation(Directives directive, Object value) {
+	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value) {
 	}
 
 	@Override
-	protected void onParseDirectiveAfterCreation( NetworkConfigurator module, Directives directive, Object value) {
+	protected void onParseDirectiveAfterCreation( NetworkConfigurator module, IJxseDirectives directive, Object value) {
 	}
 
 	@Override

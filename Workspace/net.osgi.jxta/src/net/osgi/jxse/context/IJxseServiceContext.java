@@ -38,7 +38,9 @@ public interface IJxseServiceContext<T extends Object> extends IJxseComponentNod
 		AUTO_START,
 		CLEAR_CONFIG,
 		PEER_ID_PERSIST,
-		PEER_ID_CREATE;
+		PEER_ID_CREATE,
+		CREATE_PARENT,
+		ACTIVATE_PARENT;
 
 		@Override
 		public String toString() {
