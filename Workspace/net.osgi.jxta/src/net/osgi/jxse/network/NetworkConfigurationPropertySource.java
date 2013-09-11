@@ -5,8 +5,8 @@ import java.util.Iterator;
 import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
-import net.osgi.jxse.preferences.properties.AbstractJxsePropertySource;
-import net.osgi.jxse.preferences.properties.IJxseDirectives;
+import net.osgi.jxse.properties.AbstractJxsePropertySource;
+import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.utils.StringStyler;
 
 public class NetworkConfigurationPropertySource extends AbstractJxsePropertySource<NetworkConfigurationPropertySource.NetworkConfiguratorProperties, IJxseDirectives>
@@ -94,7 +94,8 @@ public class NetworkConfigurationPropertySource extends AbstractJxsePropertySour
 			NetworkConfiguratorProperties nmp = convertTo( cp );
 			if( nmp == null )
 				continue;
-			super.setProperty(nmp, source.getProperty( cp ));
+			Object value = source.getProperty( cp );
+			super.setProperty(nmp, value);
 		}	
 	}
 

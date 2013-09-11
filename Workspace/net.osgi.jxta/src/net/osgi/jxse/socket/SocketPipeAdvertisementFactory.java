@@ -21,7 +21,7 @@ import net.jxta.pipe.PipeID;
 import net.jxta.pipe.PipeService;
 import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jxse.advertisement.PipeAdvertisementFactory;
-import net.osgi.jxse.preferences.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
 public class SocketPipeAdvertisementFactory extends PipeAdvertisementFactory {

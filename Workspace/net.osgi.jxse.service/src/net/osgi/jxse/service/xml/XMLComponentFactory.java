@@ -1,8 +1,8 @@
 package net.osgi.jxse.service.xml;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -36,12 +36,16 @@ import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.factory.ComponentFactoryEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
+import net.osgi.jxse.network.HttpConfiguration;
 import net.osgi.jxse.network.NetworkConfigurationFactory;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.network.NetworkManagerFactory;
+import net.osgi.jxse.network.NetworkManagerPreferences;
 import net.osgi.jxse.network.NetworkManagerPropertySource;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
-import net.osgi.jxse.preferences.properties.IJxsePropertySource;
+import net.osgi.jxse.network.TcpConfiguration;
+import net.osgi.jxse.network.UseConfiguration;
+import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.seeds.SeedListFactory;
 import net.osgi.jxse.service.xml.PreferenceStore.Persistence;
 import net.osgi.jxse.service.xml.PreferenceStore.SupportedAttributes;
@@ -277,7 +281,6 @@ class JxtaHandler extends DefaultHandler{
 		return root;
 	}
 
-	
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void startElement(String uri, String localName,String qName, 
@@ -472,21 +475,33 @@ class JxtaHandler extends DefaultHandler{
 			break;
 		case NETWORK_MANAGER:
 			NetworkManagerFactory nmf = (NetworkManagerFactory) this.currentNode.getFactory();
+			NetworkManagerPreferences<ContextDirectives> preferences = new NetworkManagerPreferences<ContextDirectives>( nmf.getPropertySource() );
 			NetworkManagerProperties nmp = NetworkManagerProperties.valueOf( key );
+			Object retval = null;
 			switch( nmp ){
 			case INSTANCE_HOME:
-				File file = new File( ProjectFolderUtils.getParsedUserDir( value, (String) this.owner.getPropertySource().getProperty( ContextProperties.PLUGIN_ID ) ));
-				//nmf.setInstanceHomeFolder( file.getAbsolutePath() );
-				break;
+				retval = ProjectFolderUtils.getParsedUserDir(value, nmf.getPropertySource().getBundleId());
 			default:
-				nmf.addProperty(nmp, StringStyler.styleToEnum( value ));
+				try {
+					retval = preferences.getPropertyFromString( nmp, StringStyler.styleToEnum( value ));
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}
 				break;
 			}
+			if( retval != null )
+				nmf.getPropertySource().setProperty(nmp, retval );
 			break;
 		case NETWORK_CONFIGURATOR:
 			NetworkConfigurationFactory ncf = ( NetworkConfigurationFactory )this.currentNode.getFactory();
 			NetworkConfiguratorProperties ncp = NetworkConfiguratorProperties.valueOf( key );
-			ncf.addProperty(ncp, value);
+			boolean success = TcpConfiguration.addStringProperty(ncf, ncp, value);
+			if( !success )
+				success = HttpConfiguration.addStringProperty( ncf, ncp, value);
+			if( !success )
+				success = UseConfiguration.addStringProperty( ncf, ncp, value);
+			if(!success)
+				ncf.getPropertySource().setProperty(ncp, value);
 			break;
 		default:
 			break;

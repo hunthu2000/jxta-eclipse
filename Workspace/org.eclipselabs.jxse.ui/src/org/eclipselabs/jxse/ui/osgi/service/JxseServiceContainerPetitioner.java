@@ -181,13 +181,13 @@ class Palaver extends AbstractPalaver<String>{
 
 	private static final String[] getProvidedInfo(){
 		Class<?> clss = Palaver.class;
+		String[] info = {S_IJXTACONTAINER_PACKAGE_ID, S_IJXTA_TOKEN} ;
 		URL url = clss.getResource(S_JXSE_INF );
 		if( url == null )
-			return null;
+			return info;
 		Scanner scanner = null;
 		try{
 			scanner = new Scanner( clss.getResourceAsStream( S_JXSE_INF ));
-			String[] info = {S_IJXTACONTAINER_PACKAGE_ID, S_IJXTA_TOKEN} ;
 			String str = scanner.nextLine();
 			if( !Utils.isNull(str))
 				info[0] = str;

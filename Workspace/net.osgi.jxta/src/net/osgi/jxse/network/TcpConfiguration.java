@@ -94,22 +94,23 @@ public class TcpConfiguration {
 	 */
 	public static boolean addStringProperty( NetworkConfigurationFactory factory, NetworkConfiguratorProperties property, String value ){
 		boolean retval = false;
+		NetworkConfigurationPropertySource source = (NetworkConfigurationPropertySource) factory.getPropertySource();
 		switch( property ){
 		case TCP_8ENABLED:
 		case TCP_8INCOMING_STATUS:
 		case TCP_8OUTGOING_STATUS:
 		case TCP_8PUBLIC_ADDRESS_EXCLUSIVE:
-			factory.addProperty( property, Boolean.parseBoolean( value ));
+			source.setProperty( property, Boolean.parseBoolean( value ));
 			retval = true;
 			break;
 		case TCP_8END_PORT:
 		case TCP_8PORT:
 		case TCP_8START_PORT:
-			factory.addProperty( property, Integer.parseInt( value ));
+			source.setProperty( property, Integer.parseInt( value ));
 			retval = true;
 			break;
 		case TCP_8INTERFACE_ADDRESS:
-			factory.addProperty( property, value );
+			source.setProperty( property, value );
 			retval = true;
 			break;
 		default:
@@ -155,6 +156,31 @@ public class TcpConfiguration {
 			break;			
 		default:
 			break;
+		}	
+	}
+
+	/**
+	 * Fill the configurator with the given properties
+	 * @param configurator
+	 * @param property
+	 * @param value
+	 */
+	public static Object convertStringToCorrectType( NetworkConfiguratorProperties property, String value ){
+		switch( property ){
+		case TCP_8INTERFACE_ADDRESS:
+		case TCP_8PUBLIC_ADDRESS:
+		case TCP_8PUBLIC_ADDRESS_EXCLUSIVE:
+			return value;
+		case TCP_8ENABLED:
+		case TCP_8INCOMING_STATUS:
+		case TCP_8OUTGOING_STATUS:
+			return Boolean.parseBoolean( value );
+		case TCP_8END_PORT:
+		case TCP_8PORT:
+		case TCP_8START_PORT:
+			return Integer.parseInt( value );
+		default:
+			return null;
 		}	
 	}
 }

@@ -23,7 +23,7 @@ public class ProjectFolderUtils {
 	public static final String S_JXTA_CACHE = "cache";
 	
 	public static final String S_USER_HOME = "{user.home}";
-	public static final String S_PLUGIN_ID = "{plugin-id}";
+	public static final String S_BUNDLE_ID = "{bundle-id}";
 
 	/**
 	 * Return the default user directory. This is '%system-user%\<organisation>\'
@@ -54,10 +54,10 @@ public class ProjectFolderUtils {
 	 * @param aieon
 	 * @return
 	 */
-	public static URI getParsedUserDir( String str, String plugin_id )
+	public static URI getParsedUserDir( String str, String bundle_id )
 	{
 		String parsed = str.replace( S_USER_HOME, "");
-		parsed = parsed.replace( S_PLUGIN_ID, "");
+		parsed = parsed.replace( S_BUNDLE_ID, "");
 		if( parsed.equals(str))
 			return new File( str ).toURI();
 		
@@ -66,8 +66,8 @@ public class ProjectFolderUtils {
 		for( String line: split ){
 			if( line.equals( S_USER_HOME ))
 				buffer.append( System.getProperty( S_USER_HOME_PROPERTY ));
-			else if( line.equals( S_PLUGIN_ID ))
-				buffer.append( plugin_id );
+			else if( line.equals( S_BUNDLE_ID ))
+				buffer.append( bundle_id );
 			else
 				buffer.append( line );
 			buffer.append( File.separator );

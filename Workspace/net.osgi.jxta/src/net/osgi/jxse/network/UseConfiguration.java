@@ -94,23 +94,24 @@ public class UseConfiguration {
 	 */
 	public static boolean addStringProperty( NetworkConfigurationFactory factory, NetworkConfiguratorProperties property, String value ){
 		boolean retval = false;
+		NetworkConfigurationPropertySource source = (NetworkConfigurationPropertySource) factory.getPropertySource();
 		switch( property ){
 		case USE_MULTICAST:
 		case USE_ONLY_RELAY_SEEDS:
 		case USE_ONLY_RENDEZVOUS_SEEDS:
-			factory.addProperty( property, Boolean.parseBoolean( value ));
+			source.setProperty( property, Boolean.parseBoolean( value ));
 			retval = true;
 			break;
 		case MULTICAST_8POOL_SIZE:
 		case MULTICAST_8PORT:
 		case MULTICAST_8SIZE:
-			factory.addProperty( property, Integer.parseInt( value ));
+			source.setProperty( property, Integer.parseInt( value ));
 			retval = true;
 			break;
 		case MULTICAST_8ADDRESS:
 		case MULTICAST_8STATUS:
 		case MULTICAST_8INTERFACE:
-			factory.addProperty( property, value );
+			source.setProperty( property, value );
 			retval = true;
 			break;
 		default:

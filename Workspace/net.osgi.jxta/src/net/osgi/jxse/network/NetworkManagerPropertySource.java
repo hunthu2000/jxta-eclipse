@@ -6,7 +6,8 @@ import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.preferences.properties.AbstractJxsePropertySource;
+import net.osgi.jxse.properties.AbstractJxsePropertySource;
+import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
@@ -41,7 +42,10 @@ public class NetworkManagerPropertySource extends AbstractJxsePropertySource<Net
 			NetworkManagerProperties nmp = convertFrom( cp );
 			if( nmp == null )
 				continue;
-			super.setProperty(nmp, source.getProperty( cp ));
+			Object retval =  source.getProperty( cp );
+			if( NetworkManagerProperties.INSTANCE_HOME.equals( nmp ))
+				retval = ProjectFolderUtils.getParsedUserDir((String) retval, super.getBundleId());
+			super.setProperty(nmp, retval);
 		}	
 	}
 

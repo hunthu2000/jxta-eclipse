@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.preferences.properties;
+package net.osgi.jxse.properties;
 
 import java.util.ArrayList;
 import java.util.Collection;

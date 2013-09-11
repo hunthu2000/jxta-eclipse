@@ -1,4 +1,4 @@
-package net.osgi.jxse.preferences.properties;
+package net.osgi.jxse.properties;
 
 public interface IJxseDirectives{
 

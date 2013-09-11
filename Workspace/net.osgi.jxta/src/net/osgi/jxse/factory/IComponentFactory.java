@@ -10,8 +10,8 @@
  *******************************************************************************/
 package net.osgi.jxse.factory;
 
-import net.osgi.jxse.preferences.properties.IJxseDirectives;
-import net.osgi.jxse.preferences.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
 public interface IComponentFactory<T extends Object, U extends Enum<U>, V extends IJxseDirectives> {

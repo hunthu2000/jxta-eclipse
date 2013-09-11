@@ -20,7 +20,7 @@ Import-Package: net.jxta.platform,
  net.osgi.jxse.component,
  net.osgi.jxse.context,
  net.osgi.jxse.preferences,
- net.osgi.jxse.preferences.properties,
+ net.osgi.jxse.properties,
  net.osgi.jxse.service.xml,
  net.osgi.jxse.utils,
  net.osgi.jxse.utils.io

@@ -14,8 +14,8 @@ import java.util.Iterator;
 
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
-import net.osgi.jxse.preferences.properties.IJxseDirectives;
-import net.osgi.jxse.preferences.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxsePropertySource;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.osgi.service.prefs.Preferences;

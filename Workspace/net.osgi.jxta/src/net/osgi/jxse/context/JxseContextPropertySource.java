@@ -21,7 +21,7 @@ import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.preferences.properties.AbstractJxsePropertySource;
+import net.osgi.jxse.properties.AbstractJxsePropertySource;
 import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.Utils;
 
