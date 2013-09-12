@@ -15,6 +15,8 @@ import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfigura
 
 public class HttpConfiguration {
 
+	public static final String S_HTTP_CONFIGURATION = "Http Configuration";
+
 	private NetworkConfigurator configurator;
 	private boolean publicAddressExclusive = false;
 	

@@ -104,7 +104,7 @@ public class JxseBundleSection extends OptionTemplateSection {
 
 	public JxseBundleSection() {
 		super();
-		this.setPageCount(1);
+		this.setPageCount(2);
 		this.createOptions();
 	}
 
@@ -143,6 +143,10 @@ public class JxseBundleSection extends OptionTemplateSection {
 		WizardPage page = ( OptionTemplateWizardPage )this.createPage(0, "jxse_bundle_context_id_2");
 		page.setTitle("JXSE Configuration Page (2)");
 		page.setDescription("This page is used to configure the application");
+		wizard.addPage(page);
+		page = new NetworkConfiguratorWizardPage("Set up network configuration");
+		page.setTitle("JXSE Configuration Page (3)");
+		page.setDescription("This page is used to configure the network");
 		wizard.addPage(page);
 		this.markPagesAdded();
 	}

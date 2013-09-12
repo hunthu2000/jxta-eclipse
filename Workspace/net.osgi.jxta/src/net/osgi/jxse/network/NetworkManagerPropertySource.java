@@ -9,7 +9,6 @@ import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.AbstractJxsePropertySource;
 import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.StringStyler;
-import net.osgi.jxse.utils.Utils;
 
 public class NetworkManagerPropertySource extends AbstractJxsePropertySource<NetworkManagerPropertySource.NetworkManagerProperties, ContextDirectives>{
 

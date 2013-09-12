@@ -92,8 +92,13 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 		if( factory instanceof XMLComponentFactory ){
 			XMLComponentFactory xmlFactory = (XMLComponentFactory) factory;
 			if( xmlFactory.isAutostart()){
-				this.service.start();
-				addChild(this.service);
+				try{
+				  this.service.start();
+				  addChild(this.service);
+				}
+				catch( Exception ex ){
+					ex.printStackTrace();
+				}
 			}
 		}
 		factory = null;

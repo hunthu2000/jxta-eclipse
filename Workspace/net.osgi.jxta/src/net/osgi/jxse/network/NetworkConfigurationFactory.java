@@ -93,7 +93,7 @@ public class NetworkConfigurationFactory extends
 			Object value = super.getPropertySource().getProperty( key); 
 			TcpConfiguration.fillConfigurator(configurator, key,  value );
 			HttpConfiguration.fillConfigurator(configurator, key, value );
-			UseConfiguration.fillConfigurator(configurator, key, value);
+			MulticastConfiguration.fillConfigurator(configurator, key, value);
 		}
 	}
 }

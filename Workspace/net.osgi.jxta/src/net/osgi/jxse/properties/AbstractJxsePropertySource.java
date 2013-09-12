@@ -23,7 +23,7 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends I
 	private static final String S_CONTEXT = "context";
 	private static final String S_ERR_COMPONENT_NAME_NULL = "The component name cannot be null";
 	
-	private Map<T,Object> properties;
+	private Map<T,ManagedProperty<T,Object>> properties;
 	private Map<U,Object> directives;
 	private Collection<IJxsePropertySource<?,?>> children;
 
@@ -36,7 +36,7 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends I
 	}
 
 	protected AbstractJxsePropertySource( String bundleId, String identifier, String componentName, int depth ) {
-		properties = new HashMap<T,Object>();
+		properties = new HashMap<T,ManagedProperty<T,Object>>();
 		directives = new HashMap<U,Object>();
 		this.bundleId = bundleId;
 		this.context_id = this.bundleId + "." + componentName.toLowerCase();
@@ -52,7 +52,7 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends I
 	}
 
 	protected AbstractJxsePropertySource( String id, String bundleId, String identifier, String componentName, int depth ) {
-		properties = new HashMap<T,Object>();
+		properties = new HashMap<T,ManagedProperty<T,Object>>();
 		directives = new HashMap<U,Object>();
 		this.context_id = id;
 		if( Utils.isNull( this.context_id ))
@@ -107,17 +107,35 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends I
 
 	@Override
 	public Object getProperty(T id) {
-		return properties.get( id );
+		ManagedProperty<T,Object> select = properties.get( id );
+		if( select == null )
+			return null;
+		return select.getValue();
 	}
 
 	@Override
 	public boolean setProperty(T id, Object value) {
 		if( value == null )
 			return false;
-		properties.put( id, value );
+		ManagedProperty<T,Object> select = properties.get( id );
+		if( select == null )
+			properties.put( id, new ManagedProperty<T,Object>( id, value ));
+		else
+			select.setValue(value);
 		return true;
 	}
+	
+	@Override
+	public Object getDefault(T id) {
+		ManagedProperty<T,Object> select = properties.get( id );
+		if( select == null )
+			return null;
+		return select.getDefaultValue();
+	}
 
+	protected ManagedProperty<T,?> getManagedProperty( T id ){
+		return properties.get(id);
+	}
 	
 	@Override
 	public Iterator<T> propertyIterator() {

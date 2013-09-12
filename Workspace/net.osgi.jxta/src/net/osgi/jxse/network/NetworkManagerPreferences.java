@@ -20,7 +20,6 @@ import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
-import net.osgi.jxse.utils.ProjectFolderUtils;
 
 public class NetworkManagerPreferences<T extends IJxseDirectives> implements INetworkManagerPropertySource<T>
 {

@@ -44,7 +44,7 @@ import net.osgi.jxse.network.NetworkManagerPreferences;
 import net.osgi.jxse.network.NetworkManagerPropertySource;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jxse.network.TcpConfiguration;
-import net.osgi.jxse.network.UseConfiguration;
+import net.osgi.jxse.network.MulticastConfiguration;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.seeds.SeedListFactory;
 import net.osgi.jxse.service.xml.PreferenceStore.Persistence;
@@ -499,7 +499,7 @@ class JxtaHandler extends DefaultHandler{
 			if( !success )
 				success = HttpConfiguration.addStringProperty( ncf, ncp, value);
 			if( !success )
-				success = UseConfiguration.addStringProperty( ncf, ncp, value);
+				success = MulticastConfiguration.addStringProperty( ncf, ncp, value);
 			if(!success)
 				ncf.getPropertySource().setProperty(ncp, value);
 			break;
