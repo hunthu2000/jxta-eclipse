@@ -22,7 +22,7 @@ import net.jxta.pipe.PipeService;
 import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Directives;
-import net.osgi.jxse.preferences.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdvertisement, net.osgi.jxse.advertisement.IPipeAdvertisementFactory.Properties, Directives> implements IPipeAdvertisementFactory {
 

@@ -5,7 +5,7 @@ import java.net.URISyntaxException;
 
 import net.jxta.peer.PeerID;
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.osgi.jxse.preferences.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives;
 
 public interface INetworkManagerPropertySource<T extends IJxseDirectives> {
 

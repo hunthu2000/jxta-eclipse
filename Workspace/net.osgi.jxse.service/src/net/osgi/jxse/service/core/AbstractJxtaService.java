@@ -25,7 +25,7 @@ import net.osgi.jxse.component.ComponentChangedEvent;
 import net.osgi.jxse.component.ComponentEventDispatcher;
 import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.preferences.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives;
 
 public abstract class AbstractJxtaService<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends AbstractActivator<IComponentFactory<T,U,V>> 
 implements IJxseService<T>{

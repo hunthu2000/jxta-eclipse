@@ -12,7 +12,7 @@ package net.osgi.jxse.context;
 
 import net.osgi.jxse.activator.IJxseService;
 import net.osgi.jxse.component.IJxseComponentNode;
-import net.osgi.jxse.preferences.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.utils.StringStyler;
 
 public interface IJxseServiceContext<T extends Object> extends IJxseComponentNode<T>, IJxseService<T> {
@@ -38,7 +38,9 @@ public interface IJxseServiceContext<T extends Object> extends IJxseComponentNod
 		AUTO_START,
 		CLEAR_CONFIG,
 		PEER_ID_PERSIST,
-		PEER_ID_CREATE;
+		PEER_ID_CREATE,
+		CREATE_PARENT,
+		ACTIVATE_PARENT;
 
 		@Override
 		public String toString() {

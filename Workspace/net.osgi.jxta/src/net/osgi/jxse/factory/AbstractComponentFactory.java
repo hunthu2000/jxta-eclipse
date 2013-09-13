@@ -16,8 +16,8 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.osgi.jxse.preferences.properties.IJxseDirectives;
-import net.osgi.jxse.preferences.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxsePropertySource;
 
 public abstract class AbstractComponentFactory<T extends Object, U extends Enum<U>, V extends IJxseDirectives> implements IComponentFactory<T,U,V>{
 
@@ -38,10 +38,6 @@ public abstract class AbstractComponentFactory<T extends Object, U extends Enum<
 	@Override
 	public Components getComponentName() {
 		return Components.valueOf( this.properties.getComponentName());
-	}
-	
-	public void addProperty( U id, Object value ){
-		this.properties.setProperty( id, value);
 	}
 	
 	@Override

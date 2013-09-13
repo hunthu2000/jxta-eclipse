@@ -17,7 +17,7 @@ import net.osgi.jxse.advertisement.IPipeAdvertisementFactory;
 import net.osgi.jxse.advertisement.PipeAdvertisementFactory;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Directives;
-import net.osgi.jxse.preferences.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class SocketFactory extends AbstractComponentFactory<JxtaSocket, ISocketFactory.Properties, Directives> implements ISocketFactory{
 

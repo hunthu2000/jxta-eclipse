@@ -13,11 +13,13 @@ package net.osgi.jxse.network;
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
-public class UseConfiguration {
+public class MulticastConfiguration {
 
+	public static final String S_MULTICAST_CONFIGURATION = "Multicast Configuration";
+	
 	private NetworkConfigurator configurator;
 	
-	public UseConfiguration( NetworkConfigurator configurator ) {
+	public MulticastConfiguration( NetworkConfigurator configurator ) {
 		this.configurator = configurator;
 	}
 
@@ -40,7 +42,6 @@ public class UseConfiguration {
 	public String getMulticastInterface(){
 		return this.configurator.getMulticastInterface();
 	}
-
 	public void setMulticastInterface( String interfaceAddress ){
 		this.configurator.setMulticastInterface( interfaceAddress );
 	}
@@ -94,23 +95,22 @@ public class UseConfiguration {
 	 */
 	public static boolean addStringProperty( NetworkConfigurationFactory factory, NetworkConfiguratorProperties property, String value ){
 		boolean retval = false;
+		NetworkConfigurationPropertySource source = (NetworkConfigurationPropertySource) factory.getPropertySource();
 		switch( property ){
 		case USE_MULTICAST:
-		case USE_ONLY_RELAY_SEEDS:
-		case USE_ONLY_RENDEZVOUS_SEEDS:
-			factory.addProperty( property, Boolean.parseBoolean( value ));
+			source.setProperty( property, Boolean.parseBoolean( value ));
 			retval = true;
 			break;
 		case MULTICAST_8POOL_SIZE:
 		case MULTICAST_8PORT:
 		case MULTICAST_8SIZE:
-			factory.addProperty( property, Integer.parseInt( value ));
+			source.setProperty( property, Integer.parseInt( value ));
 			retval = true;
 			break;
 		case MULTICAST_8ADDRESS:
 		case MULTICAST_8STATUS:
 		case MULTICAST_8INTERFACE:
-			factory.addProperty( property, value );
+			source.setProperty( property, value );
 			retval = true;
 			break;
 		default:
@@ -130,12 +130,6 @@ public class UseConfiguration {
 		case USE_MULTICAST:
 		case MULTICAST_8STATUS:
 			configurator.setUseMulticast((boolean) value );
-			break;
-		case USE_ONLY_RELAY_SEEDS:
-			configurator.setUseOnlyRelaySeeds((boolean) value );
-			break;
-		case USE_ONLY_RENDEZVOUS_SEEDS:
-			configurator.setUseOnlyRendezvousSeeds((boolean)value );
 			break;
 		case MULTICAST_8ADDRESS:
 			configurator.setMulticastAddress(( String )value );

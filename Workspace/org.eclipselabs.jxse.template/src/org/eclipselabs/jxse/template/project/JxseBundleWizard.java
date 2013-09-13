@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.ui.wizards.plugin.PluginFieldData;
 import org.eclipse.pde.ui.IFieldData;
@@ -47,6 +48,14 @@ public class JxseBundleWizard extends NewPluginTemplateWizard  implements IPlugi
 			fData.setSimple(true);
 		}
 	}
+
+	
+	@Override
+	public void addPage(IWizardPage page) {
+		// TODO Auto-generated method stub
+		super.addPage(page);
+	}
+
 
 	@Override
 	public ITemplateSection[] createTemplateSections() {

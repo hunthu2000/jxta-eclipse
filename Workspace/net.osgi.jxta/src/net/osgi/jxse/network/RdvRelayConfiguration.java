@@ -10,66 +10,69 @@
  *******************************************************************************/
 package net.osgi.jxse.network;
 
+import java.util.List;
+import java.util.Set;
+
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
-public class TcpConfiguration {
+public class RdvRelayConfiguration {
 
-	public static final String S_TCP_CONFIGURATION = "Tcp Configuration";
-	
+	public static final String S_RDV_RELAY_CONFIGURATION = "Rendezvous and Relay Configuration";
+
 	private NetworkConfigurator configurator;
 	private boolean publicAddressExclusive = false;
 	
-	public TcpConfiguration( NetworkConfigurator configurator ) {
+	public RdvRelayConfiguration( NetworkConfigurator configurator ) {
 		this.configurator = configurator;
 	}
 
 	public int getStartPort(){
-		return this.configurator.getTcpStartPort();
+		return this.configurator.getHttp2StartPort();
 	}
 
 	public void setStartPort( int port ){
-		this.configurator.setTcpStartPort( port );
+		this.configurator.setHttp2StartPort( port );
 	}
 
 	public int getPort(){
-		return this.configurator.getTcpPort();
+		return this.configurator.getHttpPort();
 	}
 
 	public void setPort( int port ){
-		this.configurator.setTcpPort( port );
+		this.configurator.setHttp2Port( port );
 	}
 
 	public int getEndPort(){
-		return this.configurator.getTcpEndport();
+		return this.configurator.getHttp2EndPort();
 	}
 
 	public void setEndPort( int port ){
-		this.configurator.setTcpEndPort( port );
+		this.configurator.setHttp2EndPort( port );
 	}
 
 	public boolean getIncomingStatus(){
-		return this.configurator.getTcpIncomingStatus();
+		return this.configurator.getHttp2IncomingStatus();
 	}
 
 	public void setIncomingStatus( boolean enabled ){
-		this.configurator.setTcpIncoming( enabled );
+		this.configurator.setHttp2Incoming( enabled );
 	}
 
 	public String getInterfaceAddress(){
-		return this.configurator.getTcpInterfaceAddress();
+		return this.configurator.getHttp2InterfaceAddress();
 	}
 
 	public void setInterfaceAddress( String address ){
-		this.configurator.setTcpInterfaceAddress(address);
+		this.configurator.setHttp2InterfaceAddress(address);
 	}
 
-	public boolean getOutgoingStatus(){
-		return this.configurator.getTcpOutgoingStatus();
+	public boolean getHttpOutgoingStatus(){
+		return this.configurator.getHttp2OutgoingStatus();
 	}
 
 	public void setOutgoingStatus( boolean enabled ){
-		this.configurator.setTcpOutgoing( enabled );
+		this.configurator.setHttp2Outgoing( enabled );
 	}
 
 	public boolean getPublicAddressExclusive(){
@@ -81,13 +84,13 @@ public class TcpConfiguration {
 	}
 
 	public String getPublicAddress(){
-		return this.configurator.getTcpPublicAddress();
+		return this.configurator.getHttp2PublicAddress();
 	}
 
-	public void setPublicAddress( String address ){
-		this.configurator.setTcpPublicAddress(address, this.publicAddressExclusive);
+	public void setHttpPublicAddress( String address ){
+		this.configurator.setHttp2PublicAddress(address, this.publicAddressExclusive);
 	}
-	
+
 	/**
 	 * Create the correct type for the given property
 	 * @param factory
@@ -98,26 +101,30 @@ public class TcpConfiguration {
 		boolean retval = false;
 		NetworkConfigurationPropertySource source = (NetworkConfigurationPropertySource) factory.getPropertySource();
 		switch( property ){
-		case TCP_8ENABLED:
-		case TCP_8INCOMING_STATUS:
-		case TCP_8OUTGOING_STATUS:
-		case TCP_8PUBLIC_ADDRESS_EXCLUSIVE:
+		case USE_ONLY_RELAY_SEEDS:
+		case USE_ONLY_RENDEZVOUS_SEEDS:
 			source.setProperty( property, Boolean.parseBoolean( value ));
 			retval = true;
 			break;
-		case TCP_8END_PORT:
-		case TCP_8PORT:
-		case TCP_8START_PORT:
+		case RELAY_8MAX_CLIENTS:
+		case RENDEZVOUS_8MAX_CLIENTS:
 			source.setProperty( property, Integer.parseInt( value ));
 			retval = true;
 			break;
-		case TCP_8INTERFACE_ADDRESS:
+		case RELAY_8SEED_URIS:
+		case RENDEZVOUS_8SEED_URIS:
+			//TODO source.setProperty( property, Boolean.parseBoolean( value ));
+			retval = true;
+			break;
+		case RELAY_8SEEDING_URIS:
+		case RENDEZVOUS_8SEEDING_URIS:
+			//TODO
 			source.setProperty( property, value );
 			retval = true;
 			break;
 		default:
 			break;
-		}	
+		}
 		return retval;
 	}	
 
@@ -127,62 +134,36 @@ public class TcpConfiguration {
 	 * @param property
 	 * @param value
 	 */
+	@SuppressWarnings("unchecked")
 	public static void fillConfigurator( NetworkConfigurator configurator, NetworkConfiguratorProperties property, Object value ){
 		switch( property ){
-		case TCP_8ENABLED:
-			configurator.setTcpEnabled((boolean) value );
+		case USE_ONLY_RELAY_SEEDS:
+			configurator.setUseOnlyRelaySeeds((boolean) value );
 			break;
-		case TCP_8INCOMING_STATUS:
-			configurator.setTcpIncoming((boolean) value );
+		case RELAY_8MAX_CLIENTS:
+			configurator.setRelayMaxClients(( int )value );
 			break;
-		case TCP_8OUTGOING_STATUS:
-			configurator.setTcpOutgoing((boolean)value );
+		case RELAY_8SEEDING_URIS:
+			configurator.setRelaySeedingURIs(( Set<String> )value );
 			break;
-		case TCP_8PUBLIC_ADDRESS_EXCLUSIVE:
-			configurator.setTcpPublicAddress(( String )value, true );
+		case RELAY_8SEED_URIS:
+			configurator.setRelaySeedURIs(( List<String> ) value );
 			break;
-		case TCP_8END_PORT:
-			configurator.setTcpEndPort(( Integer ) value );
+		case USE_ONLY_RENDEZVOUS_SEEDS:
+			configurator.setUseOnlyRendezvousSeeds((boolean) value );
 			break;
-		case TCP_8PORT:
-			configurator.setTcpPort(( Integer ) value );
+		case RENDEZVOUS_8MAX_CLIENTS:
+			configurator.setRendezvousMaxClients(( int ) value );
 			break;
-		case TCP_8START_PORT:
-			configurator.setTcpStartPort(( Integer )value );
+		case RENDEZVOUS_8SEED_URIS:
+			configurator.setRendezvousSeeds(( Set<String> ) value );
 			break;
-		case TCP_8INTERFACE_ADDRESS:
-			configurator.setTcpInterfaceAddress(( String )value );
+		case RENDEZVOUS_8SEEDING_URIS:
+			configurator.setRendezvousSeedingURIs(( List<String> )value );
 			break;
-		case TCP_8PUBLIC_ADDRESS:
-			configurator.setTcpPublicAddress(( String) value, false );
-			break;			
 		default:
 			break;
 		}	
 	}
 
-	/**
-	 * Fill the configurator with the given properties
-	 * @param configurator
-	 * @param property
-	 * @param value
-	 */
-	public static Object convertStringToCorrectType( NetworkConfiguratorProperties property, String value ){
-		switch( property ){
-		case TCP_8INTERFACE_ADDRESS:
-		case TCP_8PUBLIC_ADDRESS:
-		case TCP_8PUBLIC_ADDRESS_EXCLUSIVE:
-			return value;
-		case TCP_8ENABLED:
-		case TCP_8INCOMING_STATUS:
-		case TCP_8OUTGOING_STATUS:
-			return Boolean.parseBoolean( value );
-		case TCP_8END_PORT:
-		case TCP_8PORT:
-		case TCP_8START_PORT:
-			return Integer.parseInt( value );
-		default:
-			return null;
-		}	
-	}
 }

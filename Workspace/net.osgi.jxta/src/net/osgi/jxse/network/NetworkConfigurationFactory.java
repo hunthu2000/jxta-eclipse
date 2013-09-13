@@ -21,12 +21,12 @@ import java.util.logging.Logger;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.factory.IComponentFactory.Directives;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.seeds.ISeedListFactory;
 
 public class NetworkConfigurationFactory extends
-		AbstractComponentFactory<NetworkConfigurator, NetworkConfiguratorProperties, Directives> {
+		AbstractComponentFactory<NetworkConfigurator, NetworkConfiguratorProperties, IJxseDirectives> {
 
 	public static final String S_NETWORK_CONFIGURATION_SERVICE = "NetworkConfigurationService";
 
@@ -35,37 +35,10 @@ public class NetworkConfigurationFactory extends
 	private NetworkManagerFactory nmFactory;
 
 	public NetworkConfigurationFactory( NetworkManagerFactory nmFactory ) {
-		super( null );//nmFactory.getPropertySource() );
+		super( new NetworkConfigurationPropertySource( nmFactory ));
 		this.nmFactory = nmFactory;
 		this.seedLists = new ArrayList<ISeedListFactory>();
 		super.addDirective( Directives.CREATE_PARENT, "true" );
-		this.fillDefaultValues();
-	}
-
-	protected void fillDefaultValues() {	
-		/*
-		try {
-			this.addProperty( NetworkConfiguratorProperties.PEER_ID, preferences.getPeerID());
-			this.addProperty( NetworkConfiguratorProperties.NAME, preferences.getIdentifier() );
-			this.addProperty( NetworkConfiguratorProperties.HOME, preferences.getHomeFolder() );
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		*/
-	}
-
-	public void addProperty(Object key, Object value) {
-		if(!( key instanceof NetworkConfiguratorProperties) || ( value == null ))
-			return;
-		if( value instanceof String ){
-			if( TcpConfiguration.addStringProperty(this, (NetworkConfiguratorProperties)key, (String )value))
-				return;
-			if( HttpConfiguration.addStringProperty(this, (NetworkConfiguratorProperties)key, (String )value))
-				return;
-			if( UseConfiguration.addStringProperty(this, (NetworkConfiguratorProperties)key, (String )value))
-				return;
-		}
-		//super.addProperty(key, value);
 	}
 
 	public boolean addSeedlist( ISeedListFactory factory ){
@@ -77,11 +50,11 @@ public class NetworkConfigurationFactory extends
 	}
 
 	@Override
-	protected void onParseDirectivePriorToCreation(Directives directive, Object value) {
+	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value) {
 	}
 
 	@Override
-	protected void onParseDirectiveAfterCreation( NetworkConfigurator module, Directives directive, Object value) {
+	protected void onParseDirectiveAfterCreation( NetworkConfigurator module, IJxseDirectives directive, Object value) {
 	}
 
 	@Override
@@ -89,7 +62,7 @@ public class NetworkConfigurationFactory extends
 		NetworkConfigurator configurator = null;
 		try {
 			configurator = nmFactory.getModule().getConfigurator();
-			URI home = (URI)super.getPropertySource().getProperty( NetworkConfiguratorProperties.HOME );
+			URI home = (URI) super.getPropertySource().getProperty( NetworkConfiguratorProperties.HOME );
 			if( home != null )
 				configurator.setHome( new File( home ));
 			configurator.clearRelaySeeds();
@@ -116,14 +89,11 @@ public class NetworkConfigurationFactory extends
 	protected void fillConfigurator( NetworkConfigurator configurator ){
 		Iterator<NetworkConfiguratorProperties> properties = super.getPropertySource().propertyIterator();
 		while( properties.hasNext() ){
-			NetworkConfiguratorProperties property = properties.next();
-			if(!( property instanceof NetworkConfiguratorProperties ))
-				continue;
-			NetworkConfiguratorProperties key = ( NetworkConfiguratorProperties )property;
+			NetworkConfiguratorProperties key = properties.next();
 			Object value = super.getPropertySource().getProperty( key); 
 			TcpConfiguration.fillConfigurator(configurator, key,  value );
 			HttpConfiguration.fillConfigurator(configurator, key, value );
-			UseConfiguration.fillConfigurator(configurator, key, value);
+			MulticastConfiguration.fillConfigurator(configurator, key, value);
 		}
 	}
 }

@@ -1,12 +1,17 @@
 package net.osgi.jxse.network;
 
+import java.util.Iterator;
+
 import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
-import net.osgi.jxse.context.JxseContextPropertySource;
-import net.osgi.jxse.preferences.properties.AbstractJxsePropertySource;
-import net.osgi.jxse.preferences.properties.IJxseDirectives;
+import net.osgi.jxse.factory.IComponentFactory.Components;
+import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
+import net.osgi.jxse.properties.AbstractJxsePropertySource;
+import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.utils.StringStyler;
 
-public class NetworkConfigurationPropertySource extends AbstractJxsePropertySource<NetworkConfigurationPropertySource.NetworkConfiguratorProperties, IJxseDirectives> {
+public class NetworkConfigurationPropertySource extends AbstractJxsePropertySource<NetworkConfigurationPropertySource.NetworkConfiguratorProperties, IJxseDirectives>
+
+{
 
 
 	public enum NetworkConfiguratorProperties{
@@ -72,11 +77,26 @@ public class NetworkConfigurationPropertySource extends AbstractJxsePropertySour
 		}
 	}
 
-	private JxseContextPropertySource source;
+	private NetworkManagerPropertySource source;
 	
-	public NetworkConfigurationPropertySource( JxseContextPropertySource source) {
-		super( source.getBundleId(), source.getIdentifier(), NetworkManagerFactory.S_NETWORK_MANAGER_SERVICE, 2 );
-		this.source = source;
+	public NetworkConfigurationPropertySource( NetworkManagerFactory factory ) {
+		super( factory.getPropertySource().getBundleId(), 
+				factory.getPropertySource().getIdentifier(),
+				Components.NETWORK_CONFIGURATOR.name(), 2 );
+		source =  (NetworkManagerPropertySource) factory.getPropertySource();
+		this.fill( source );
+	}
+
+	private void fill( NetworkManagerPropertySource source ){
+		Iterator<NetworkManagerProperties> iterator = source.propertyIterator();
+		while( iterator.hasNext() ){
+			NetworkManagerProperties cp = iterator.next();
+			NetworkConfiguratorProperties nmp = convertTo( cp );
+			if( nmp == null )
+				continue;
+			Object value = source.getProperty( cp );
+			super.setProperty(nmp, value);
+		}	
 	}
 
 	@Override
@@ -110,6 +130,46 @@ public class NetworkConfigurationPropertySource extends AbstractJxsePropertySour
 	public boolean validate(NetworkConfiguratorProperties id, Object value) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	/**
+	 * convert the given context property to a networkManagerProperty, or null if there is
+	 * no relation between them
+	 * @param context
+	 * @return
+	 */
+	public static NetworkManagerProperties convertFrom( NetworkConfiguratorProperties context ){
+		switch( context ){
+		case MODE:
+			return NetworkManagerProperties.MODE;
+		case HOME:
+			return NetworkManagerProperties.INSTANCE_HOME;
+		case PEER_ID:
+			return NetworkManagerProperties.PEER_ID;
+		default:
+			break;
+		}
+		return null;
+	}
+
+	/**
+	 * convert the given context property to a networkManagerProperty, or null if there is
+	 * no relation between them
+	 * @param context
+	 * @return
+	 */
+	public static NetworkConfiguratorProperties convertTo( NetworkManagerProperties props ){
+		switch( props ){
+		case MODE:
+			return NetworkConfiguratorProperties.MODE;
+		case INSTANCE_HOME:
+			return NetworkConfiguratorProperties.HOME;
+		case PEER_ID:
+			return NetworkConfiguratorProperties.PEER_ID;
+		default:
+			break;
+		}
+		return null;
 	}
 
 }

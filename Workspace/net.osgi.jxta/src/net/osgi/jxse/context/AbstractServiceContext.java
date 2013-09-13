@@ -32,7 +32,7 @@ import net.osgi.jxse.component.JxseComponent;
 import net.osgi.jxse.component.JxseComponentNode;
 import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.preferences.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives;
 
 public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends AbstractActivator<IComponentFactory<T,U,V>> implements
 		IJxseServiceContext<T>{

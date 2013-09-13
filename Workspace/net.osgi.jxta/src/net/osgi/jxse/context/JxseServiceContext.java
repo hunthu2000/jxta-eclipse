@@ -17,7 +17,7 @@ import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
-import net.osgi.jxse.preferences.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives;
 
 public class JxseServiceContext extends AbstractServiceContext<NetworkManager, NetworkManagerProperties,  IJxseDirectives>{
 

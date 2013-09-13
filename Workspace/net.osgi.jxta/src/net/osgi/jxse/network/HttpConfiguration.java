@@ -15,6 +15,8 @@ import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfigura
 
 public class HttpConfiguration {
 
+	public static final String S_HTTP_CONFIGURATION = "Http Configuration";
+
 	private NetworkConfigurator configurator;
 	private boolean publicAddressExclusive = false;
 	
@@ -94,24 +96,25 @@ public class HttpConfiguration {
 	 */
 	public static boolean addStringProperty( NetworkConfigurationFactory factory, NetworkConfiguratorProperties property, String value ){
 		boolean retval = false;
+		NetworkConfigurationPropertySource source = (NetworkConfigurationPropertySource) factory.getPropertySource();
 		switch( property ){
 		case HTTP_8ENABLED:
 		case HTTP_8INCOMING_STATUS:
 		case HTTP_8OUTGOING_STATUS:
 		case HTTP_8TO_PUBLIC_ADDRESS_EXCLUSIVE:
-			factory.addProperty( property, Boolean.parseBoolean( value ));
+			source.setProperty( property, Boolean.parseBoolean( value ));
 			retval = true;
 			break;
 		case HTTP_8END_PORT:
 		case HTTP_8PORT:
 		case HTTP_8START_PORT:
-			factory.addProperty( property, Integer.parseInt( value ));
+			source.setProperty( property, Integer.parseInt( value ));
 			retval = true;
 			break;
 		case HTTP_8PUBLIC_ADDRESS_EXCLUSIVE:
 		case HTTP_8PUBLIC_ADDRESS:
 		case HTTP_8INTERFACE_ADDRESS:	
-			factory.addProperty( property, value );
+			source.setProperty( property, value );
 			retval = true;
 			break;
 		default:

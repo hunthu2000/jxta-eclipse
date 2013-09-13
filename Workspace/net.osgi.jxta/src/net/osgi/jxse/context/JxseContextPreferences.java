@@ -18,8 +18,8 @@ import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
-import net.osgi.jxse.preferences.properties.IJxseDirectives;
-import net.osgi.jxse.preferences.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class JxseContextPreferences implements IJxseContextPreferences
 {

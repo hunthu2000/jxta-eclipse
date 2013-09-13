@@ -12,7 +12,7 @@ package net.osgi.jxse.factory;
 
 import java.util.EventObject;
 
-import net.osgi.jxse.preferences.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives;
 
 public class JxseComponentEvent<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends EventObject {
 

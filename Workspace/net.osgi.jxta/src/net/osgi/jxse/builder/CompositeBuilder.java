@@ -19,8 +19,8 @@ import net.osgi.jxse.builder.ICompositeBuilderListener.FactoryEvents;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.factory.ComponentFactoryEvent;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.preferences.properties.IJxseDirectives;
-import net.osgi.jxse.preferences.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends AbstractComponentFactory<T,U,V> implements ICompositeBuilder<T> {
 

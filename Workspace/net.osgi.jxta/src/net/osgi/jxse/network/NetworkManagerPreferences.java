@@ -18,9 +18,8 @@ import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
-import net.osgi.jxse.preferences.properties.IJxseDirectives;
-import net.osgi.jxse.preferences.properties.IJxsePropertySource;
-import net.osgi.jxse.utils.ProjectFolderUtils;
+import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class NetworkManagerPreferences<T extends IJxseDirectives> implements INetworkManagerPropertySource<T>
 {
@@ -66,8 +65,7 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> implements INe
 	 */
 	@Override
 	public URI getHomeFolder( ) throws URISyntaxException{
-		String str = (String) this.source.getProperty( NetworkManagerProperties.INSTANCE_HOME );
-		return ProjectFolderUtils.getParsedUserDir(str, source.getBundleId());
+		return (URI)this.source.getProperty( NetworkManagerProperties.INSTANCE_HOME );
 	}
 
 	/* (non-Javadoc)
@@ -75,7 +73,7 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> implements INe
 	 */
 	@Override
 	public void setHomeFolder( URI homeFolder ){
-		this.source.setProperty( NetworkManagerProperties.INSTANCE_HOME, homeFolder.getPath() );
+		this.source.setProperty( NetworkManagerProperties.INSTANCE_HOME, homeFolder );
 	}
 
 	/* (non-Javadoc)
@@ -128,5 +126,30 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> implements INe
 	@Override
 	public void setInstanceName( String name ){
 		this.source.setProperty( NetworkManagerProperties.INSTANCE_NAME, name );
+	}
+	
+	/**
+	 * Get the correct property from the given string
+	 * @param property
+	 * @param value
+	 * @return
+	 * @throws URISyntaxException
+	 */
+	public Object getPropertyFromString( NetworkManagerProperties property, String value ) throws URISyntaxException{
+		switch( property ){
+		case CONFIG_PERSISTENT:
+			return Boolean.parseBoolean( value );
+		case INSTANCE_NAME:
+		case INFRASTRUCTURE_ID:
+			return value;
+		case INSTANCE_HOME:
+			return this.getHomeFolder();
+		case MODE:
+			return this.getConfigMode();
+		case PEER_ID:
+			return this.getPeerID();
+		default:
+			return null;
+		}
 	}
 }

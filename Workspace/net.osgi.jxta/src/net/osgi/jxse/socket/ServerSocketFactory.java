@@ -19,7 +19,7 @@ import net.jxta.protocol.PipeAdvertisement;
 import net.jxta.socket.JxtaServerSocket;
 import net.osgi.jxse.advertisement.PipeAdvertisementFactory;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.preferences.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.IOUtils;
 
 public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSocket, net.osgi.jxse.socket.IServerSocketFactory.Properties, net.osgi.jxse.factory.IComponentFactory.Directives> implements IServerSocketFactory {
@@ -36,8 +36,8 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 	}
 
 	protected void fillDefaultValues() {
-		super.addProperty( Properties.TIME_OUT, 10 );
-		super.addProperty( Properties.SO_TIME_OUT, 0 );
+		super.getPropertySource().setProperty( Properties.TIME_OUT, 10 );
+		super.getPropertySource().setProperty( Properties.SO_TIME_OUT, 0 );
 	}
 	
 	@Override
