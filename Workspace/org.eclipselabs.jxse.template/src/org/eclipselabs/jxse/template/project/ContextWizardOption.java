@@ -37,7 +37,7 @@ public class ContextWizardOption extends TemplateOption implements IPropertySour
 	}
 	private ContextView view;
 
-	public ContextWizardOption( BaseOptionTemplateSection section, String name, String label) {
+	public ContextWizardOption( JxseBundleSection section, String name, String label) {
 		super( section, name, label);
 	}
 
@@ -58,11 +58,21 @@ public class ContextWizardOption extends TemplateOption implements IPropertySour
 	}	
 
 	/**
+	 * Get the template that is requested
+	 * @return
+	 */
+	public TemplateOptions getTemplate(){
+		return this.view.getTemplate();
+	}
+	
+	/**
 	 * @wbp.parser.entryPoint
 	 */
 	@Override
 	public void createControl(Composite parent, int span ) {
 		view = new ContextView( parent, span );
+		JxseBundleSection section = (JxseBundleSection) super.getSection();
+		//view.addTemplateOptionListener( );
 	}
 
 	public void init(){

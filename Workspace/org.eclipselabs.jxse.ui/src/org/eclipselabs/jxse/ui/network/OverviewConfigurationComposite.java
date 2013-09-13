@@ -1,6 +1,7 @@
 package org.eclipselabs.jxse.ui.network;
 
 import java.io.File;
+import java.net.URI;
 
 import net.jxta.peer.PeerID;
 import net.jxta.platform.NetworkManager.ConfigMode;
@@ -88,16 +89,27 @@ public class OverviewConfigurationComposite extends Composite {
 		return source;
 	}
 
-
 	public void init( NetworkConfigurationPropertySource source ){
 		this.source = source;
-		this.storeHomeText.setText(( String ) source.getDefault( NetworkConfiguratorProperties.HOME ));
-		this.storeText.setText((( File ) source.getDefault( NetworkConfiguratorProperties.STORE_HOME )).toString() );
-		this.nameText.setText(( String ) source.getDefault( NetworkConfiguratorProperties.NAME ));
-		this.descriptionText.setText(( String ) source.getDefault( NetworkConfiguratorProperties.DESCRIPTION ));
+		Object value = source.getDefault( NetworkConfiguratorProperties.HOME );
+		if( value != null)
+			this.storeHomeText.setText((( URI) value ).getPath() );
+		value = source.getDefault( NetworkConfiguratorProperties.STORE_HOME );
+		if( value != null)
+			this.storeText.setText((( File )value ).toString() );
+		value = source.getDefault( NetworkConfiguratorProperties.NAME );
+		if( value != null)
+			this.nameText.setText(( String )value );
+		value = source.getDefault( NetworkConfiguratorProperties.DESCRIPTION );
+		if( value != null)
+			this.descriptionText.setText(( String )value );
 		this.combo.setItems( AbstractJxsePreferences.getConfigModes());
-		this.combo.select((( ConfigMode )source.getDefault( NetworkConfiguratorProperties.MODE )).ordinal() );
-		this.peerIdText.setText(((PeerID)source.getDefault( NetworkConfiguratorProperties.PEER_ID )).toString());
+		value = source.getDefault( NetworkConfiguratorProperties.MODE );
+		ConfigMode mode = ( value == null )? ConfigMode.EDGE: (ConfigMode.valueOf( (String) value ));
+		this.combo.select( mode.ordinal() );
+		value = source.getDefault( NetworkConfiguratorProperties.PEER_ID );
+		if( value != null)
+			this.peerIdText.setText(((PeerID )value).toString());
 	}
 	
 	@Override

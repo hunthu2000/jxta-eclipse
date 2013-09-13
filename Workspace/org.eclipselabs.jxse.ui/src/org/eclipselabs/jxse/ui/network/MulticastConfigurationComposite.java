@@ -21,8 +21,6 @@ public class MulticastConfigurationComposite extends Composite {
 	protected Spinner spinner;
 	protected Button btnPublicAddress;
 	protected Button btnExclusive;
-	private Button btnRelayOnly;
-	private Button btnRdvOnly;
 	private Spinner poolSizeSpinner;
 	private Spinner sizeSpinner;
 	private Label lblPoolSize;
@@ -68,14 +66,6 @@ public class MulticastConfigurationComposite extends Composite {
 		sizeSpinner = new Spinner(this, SWT.BORDER);
 		sizeSpinner.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
-		btnRelayOnly = new Button(this, SWT.RADIO);
-		btnRelayOnly.setText("Relay Only");
-		new Label(this, SWT.NONE);
-		
-		btnRdvOnly = new Button(this, SWT.RADIO);
-		btnRdvOnly.setText("RDV Only");
-		new Label(this, SWT.NONE);
-		
 		btnPublicAddress = new Button(this, SWT.CHECK);
 		btnPublicAddress.setText("Public Address:");
 		
@@ -106,8 +96,6 @@ public class MulticastConfigurationComposite extends Composite {
 		this.source = source;
 		this.btnEnabled.setSelection((boolean) source.getDefault( NetworkConfiguratorProperties.USE_MULTICAST ));
 		this.btnActivated.setSelection((boolean) source.getDefault( NetworkConfiguratorProperties.MULTICAST_8STATUS));
-		this.btnRelayOnly.setSelection((boolean) source.getDefault(NetworkConfiguratorProperties.USE_ONLY_RELAY_SEEDS));
-		this.btnRdvOnly.setSelection((boolean) source.getDefault(NetworkConfiguratorProperties.USE_ONLY_RENDEZVOUS_SEEDS));
 		this.addressText.setText((String) source.getDefault(NetworkConfiguratorProperties.MULTICAST_8ADDRESS));
 		this.spinner.setSelection((int) source.getDefault(NetworkConfiguratorProperties.MULTICAST_8PORT));
 		this.poolSizeSpinner.setSelection((int) source.getDefault(NetworkConfiguratorProperties.MULTICAST_8POOL_SIZE));
