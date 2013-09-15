@@ -25,8 +25,8 @@ import org.eclipselabs.osgi.ds.broker.service.AbstractProvider;
 
 public class JxseDSComponent extends AbstractAttendeeProviderComponent {
 
-	static final String S_IJXTACONTAINER_PACKAGE_ID = "org.osgi.jxta.service.ijxtaservicecomponent";
-	static final String S_IJXTA_TOKEN = "org.osgi.jxta.token";
+	public static final String S_IJXSE_CONTAINER_PACKAGE_ID = "org.osgi.jxse.service.core";
+	public static final String S_IJXSE_TOKEN = "org.osgi.jxse.token";
 	
 	private JxseContextProvider provider;
 	private String introduction;
@@ -35,7 +35,7 @@ public class JxseDSComponent extends AbstractAttendeeProviderComponent {
 	protected JxseDSComponent() {}
 
 	protected JxseDSComponent( AbstractJxseBundleActivator activator ) {
-		this.setActivator(activator);
+		this( S_IJXSE_CONTAINER_PACKAGE_ID, S_IJXSE_TOKEN, activator);
 	}
 
 	protected JxseDSComponent( String introduction, String token, AbstractJxseBundleActivator activator ) {
@@ -51,10 +51,12 @@ public class JxseDSComponent extends AbstractAttendeeProviderComponent {
 	private final void setActivator(AbstractJxseBundleActivator activator) {
 		try{
 			IJxseServiceContext<NetworkManager> context = activator.getServiceContext();
-			if( Utils.isNull( this.introduction))
-					this.introduction = (String) context.getProperty( ContextProperties.PASS_1);
-			if( Utils.isNull( this.token ))
-				this.token = (String) context.getProperty( ContextProperties.PASS_2);
+			String pass = (String) context.getProperty( ContextProperties.PASS_1);
+			if( !Utils.isNull( pass ))
+				this.introduction = pass;
+			pass = (String) context.getProperty( ContextProperties.PASS_2);
+			if( !Utils.isNull( pass ))
+				this.token = pass;
 			provider = new JxseContextProvider( introduction, token );
 			this.provider.setContainer( context );
 		}
@@ -126,7 +128,7 @@ class Palaver extends AbstractPalaver<String>{
 	private String providedToken;
 	
 	protected Palaver() {
-		super( JxseDSComponent.S_IJXTACONTAINER_PACKAGE_ID);
+		super( JxseDSComponent.S_IJXSE_CONTAINER_PACKAGE_ID);
 	}
 
 	protected Palaver( String introduction, String token ) {
@@ -137,7 +139,7 @@ class Palaver extends AbstractPalaver<String>{
 	@Override
 	public String giveToken() {
 		if( providedToken == null )
-			return JxseDSComponent.S_IJXTA_TOKEN;
+			return JxseDSComponent.S_IJXSE_TOKEN;
 		return providedToken;
 	}
 
@@ -145,7 +147,7 @@ class Palaver extends AbstractPalaver<String>{
 	public boolean confirm(Object token) {
 		boolean retval = false;
 		if( providedToken == null )
-			retval = JxseDSComponent.S_IJXTA_TOKEN .equals( token );
+			retval = JxseDSComponent.S_IJXSE_TOKEN .equals( token );
 		else
 			retval = providedToken.equals(token);
 		return retval;

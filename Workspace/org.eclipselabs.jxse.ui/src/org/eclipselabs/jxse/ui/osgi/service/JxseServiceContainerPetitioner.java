@@ -18,6 +18,7 @@ import net.osgi.jxse.service.IServiceChangedListener;
 import net.osgi.jxse.service.ServiceChangedEvent;
 import net.osgi.jxse.service.ServiceEventDispatcher;
 import net.osgi.jxse.service.comparator.JxtaServiceComparator;
+import net.osgi.jxse.service.core.JxseDSComponent;
 import net.osgi.jxse.utils.Utils;
 
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
@@ -28,7 +29,7 @@ import org.eclipselabs.osgi.ds.broker.service.ParlezEvent;
 public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, String, IJxseServiceContext<?>>
 	implements IJxseComponentNode<Collection<IJxseServiceContext<?>>>, IServiceChangedListener
 {
-	public static final String S_JXTA = "Jxta";
+	public static final String S_JXSE = "Jxse";
 
 	private static JxseServiceContainerPetitioner attendee = new JxseServiceContainerPetitioner();
 	
@@ -167,9 +168,6 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
  */
 class Palaver extends AbstractPalaver<String>{
 
-	private static final String S_IJXTACONTAINER_PACKAGE_ID = "org.osgi.jxta.service.ijxtaservicecomponent";
-	private static final String S_IJXTA_TOKEN = "org.osgi.jxta.token";
-
 	private static final String S_JXSE_INF = "/JXSE-INF/token.txt";
 	
 	private String providedToken;
@@ -181,7 +179,7 @@ class Palaver extends AbstractPalaver<String>{
 
 	private static final String[] getProvidedInfo(){
 		Class<?> clss = Palaver.class;
-		String[] info = {S_IJXTACONTAINER_PACKAGE_ID, S_IJXTA_TOKEN} ;
+		String[] info = { JxseDSComponent.S_IJXSE_CONTAINER_PACKAGE_ID, JxseDSComponent.S_IJXSE_TOKEN} ;
 		URL url = clss.getResource(S_JXSE_INF );
 		if( url == null )
 			return info;
@@ -208,7 +206,7 @@ class Palaver extends AbstractPalaver<String>{
 	@Override
 	public String giveToken() {
 		if( this.providedToken == null )
-			return S_IJXTA_TOKEN;
+			return  JxseDSComponent.S_IJXSE_TOKEN;
 		return this.providedToken;	
 	}
 
@@ -216,7 +214,7 @@ class Palaver extends AbstractPalaver<String>{
 	public boolean confirm(Object token) {
 		if( token == null )
 			return false;
-		boolean retval = token.equals(S_IJXTA_TOKEN ); 
+		boolean retval = token.equals( JxseDSComponent.S_IJXSE_TOKEN ); 
 		if( retval )
 			return ( retval );
 		return token.equals(this.providedToken );

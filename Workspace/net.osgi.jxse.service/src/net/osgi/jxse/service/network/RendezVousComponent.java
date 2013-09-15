@@ -105,7 +105,7 @@ public class RendezVousComponent extends AbstractJxtaService<RendezVousService, 
 	public void rendezvousEvent(RendezvousEvent event) {
 		if( dispatcher == null ){
 			Logger log = Logger.getLogger( this.getClass().getName() );
-			log.log( JxseLevel.JXTALEVEL, S_ERR_SERVICE_NOT_STARTED );
+			log.log( JxseLevel.JXSELEVEL, S_ERR_SERVICE_NOT_STARTED );
 		}
 	}
 }

@@ -16,14 +16,14 @@ import net.osgi.jxse.service.xml.XMLServiceContext;
 
 public class JxseBundleActivator extends AbstractJxseBundleActivator {
 
-	String plugin_id;
+	String bundle_id;
 	
-	public JxseBundleActivator(String plugin_id) {
-		this.plugin_id = plugin_id;
+	public JxseBundleActivator(String bundle_id) {
+		this.bundle_id = bundle_id;
 	}
 
 	@Override
 	protected IJxseServiceContext<NetworkManager> createContext() {
-		return 	new XMLServiceContext( plugin_id, this.getClass() );
+		return 	new XMLServiceContext( bundle_id, this.getClass() );
 	}
 }

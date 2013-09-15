@@ -32,6 +32,7 @@ public abstract class AbstractJxseBundleActivator implements BundleActivator {
 
 	private static final String S_MSG_NOT_A_JXSE_BUNDLE = "\n\nThis bundle is not a valid JXSE Bundle. A JXSE-INF directory is required!\n\n";
 	private static final String S_JXSE_INF = "/JXSE-INF";
+	private static final String S_MSG_LOG = "Logging at JXSE LEVEL!!!!";
 	
 	private JxseActivator jxtaActivator;
 	private ServiceTracker<BundleContext,LogService> logServiceTracker;
@@ -54,7 +55,7 @@ public abstract class AbstractJxseBundleActivator implements BundleActivator {
 		
 		Level level = JxseLevel.getJxtaLevel();
 		Logger log = Logger.getLogger( this.getClass().getName() );
-		log.log( level, " Logging at JXTA LEVEL!!!!");
+		log.log( level, S_MSG_LOG );
 		// create a tracker and track the log service
 		logServiceTracker = 
 				new ServiceTracker<BundleContext,LogService>(bundleContext, LogService.class.getName(), null);

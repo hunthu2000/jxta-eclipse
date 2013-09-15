@@ -150,7 +150,7 @@ public class JxseDiscoveryService extends AbstractJxtaService<DiscoveryService, 
 				Thread.sleep(wait_time);
 			} catch (Exception e) {
 				Logger log = Logger.getLogger( this.getClass().getName() );
-				log.log( JxseLevel.JXTALEVEL, this.getClass().getSimpleName() + "Interrupted" );
+				log.log( JxseLevel.JXSELEVEL, this.getClass().getSimpleName() + "Interrupted" );
 			}
 		}
 	}

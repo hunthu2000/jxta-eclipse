@@ -18,7 +18,7 @@ public class JxseLevel extends Level {
 	 * 
 	 */
 	private static final long serialVersionUID = -4215501769316462679L;
-	public static final Level JXTALEVEL = new JxseLevel("JXTALEVEL", Level.WARNING.intValue()+10);  
+	public static final Level JXSELEVEL = new JxseLevel("JXSELEVEL", Level.WARNING.intValue()+10);  
 	
 	public JxseLevel(String arg0, int arg1) {
 		super(arg0, arg1);
@@ -29,6 +29,6 @@ public class JxseLevel extends Level {
 	}
 
 	public static Level getJxtaLevel() {    
-	    return JXTALEVEL;    
+	    return JXSELEVEL;    
 	  } 
 }

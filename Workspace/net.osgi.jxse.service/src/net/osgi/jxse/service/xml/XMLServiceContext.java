@@ -76,7 +76,11 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 			xmlFactory.addListener(this);
 			xmlFactory.createModule();
 			xmlFactory.removeListener(this);
-			super.setIdentifier( xmlFactory.getPropertySource().getComponentName() );
+			super.setIdentifier( xmlFactory.getPropertySource().getIdentifier() );
+			super.putProperty( ContextProperties.PASS_1, 
+					xmlFactory.getPropertySource().getProperty( ContextProperties.PASS_1 ));
+			super.putProperty( ContextProperties.PASS_2, 
+					xmlFactory.getPropertySource().getProperty( ContextProperties.PASS_2 ));
 		}
 		return true;
 	}
