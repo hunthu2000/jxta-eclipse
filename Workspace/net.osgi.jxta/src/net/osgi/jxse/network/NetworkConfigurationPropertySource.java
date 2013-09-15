@@ -12,8 +12,6 @@ import net.osgi.jxse.utils.StringStyler;
 public class NetworkConfigurationPropertySource extends AbstractJxsePropertySource<NetworkConfigurationPropertySource.NetworkConfiguratorProperties, IJxseDirectives>
 
 {
-
-
 	public enum NetworkConfiguratorProperties{
 		AUTHENTICATION_TYPE,
 		CERTFICATE,
@@ -80,10 +78,13 @@ public class NetworkConfigurationPropertySource extends AbstractJxsePropertySour
 	private NetworkManagerPropertySource source;
 	
 	public NetworkConfigurationPropertySource( NetworkManagerFactory factory ) {
-		super( factory.getPropertySource().getBundleId(), 
-				factory.getPropertySource().getIdentifier(),
-				Components.NETWORK_CONFIGURATOR.name(), 2 );
-		source =  (NetworkManagerPropertySource) factory.getPropertySource();
+		this( (NetworkManagerPropertySource) factory.getPropertySource() );
+		this.fill( source );
+	}
+
+	public NetworkConfigurationPropertySource( NetworkManagerPropertySource nmps ) {
+		super( nmps.getBundleId(), nmps.getIdentifier(), Components.NETWORK_CONFIGURATOR.name(), 2 );
+		source =  nmps;
 		this.fill( source );
 	}
 
@@ -96,7 +97,8 @@ public class NetworkConfigurationPropertySource extends AbstractJxsePropertySour
 				continue;
 			Object value = source.getProperty( cp );
 			super.setProperty(nmp, value);
-		}	
+		}
+		super.setProperty( NetworkConfiguratorProperties.TCP_8PORT, source.getTcpPort());
 	}
 
 	@Override
@@ -121,12 +123,6 @@ public class NetworkConfigurationPropertySource extends AbstractJxsePropertySour
 	}
 
 	@Override
-	public Object getDefault(NetworkConfiguratorProperties id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean validate(NetworkConfiguratorProperties id, Object value) {
 		// TODO Auto-generated method stub
 		return false;
@@ -140,6 +136,8 @@ public class NetworkConfigurationPropertySource extends AbstractJxsePropertySour
 	 */
 	public static NetworkManagerProperties convertFrom( NetworkConfiguratorProperties context ){
 		switch( context ){
+		case NAME:
+			return NetworkManagerProperties.INSTANCE_NAME;
 		case MODE:
 			return NetworkManagerProperties.MODE;
 		case HOME:
@@ -160,6 +158,8 @@ public class NetworkConfigurationPropertySource extends AbstractJxsePropertySour
 	 */
 	public static NetworkConfiguratorProperties convertTo( NetworkManagerProperties props ){
 		switch( props ){
+		case INSTANCE_NAME:
+			return NetworkConfiguratorProperties.NAME;			
 		case MODE:
 			return NetworkConfiguratorProperties.MODE;
 		case INSTANCE_HOME:

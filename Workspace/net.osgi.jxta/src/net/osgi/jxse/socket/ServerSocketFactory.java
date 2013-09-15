@@ -53,8 +53,10 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 		
 	}
 
+	
 	@Override
-	protected JxtaServerSocket onCreateModule() {
+	protected JxtaServerSocket onCreateModule(
+			IJxsePropertySource<Properties, Directives> properties) {
 		this.pipeFactory = new SocketPipeAdvertisementFactory();
 		JxtaServerSocket socket = this.createSocket();
 		super.setCompleted(true);

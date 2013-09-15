@@ -20,8 +20,10 @@ import net.jxta.rendezvous.RendezvousListener;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Directives;
 import net.osgi.jxse.log.JxseLevel;
+import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.service.ServiceEventDispatcher;
 import net.osgi.jxse.service.core.AbstractJxtaService;
+import net.osgi.jxse.service.network.IRendezVousComponent.RendezVousServiceProperties;
 
 public class RendezVousComponent extends AbstractJxtaService<RendezVousService, IRendezVousComponent.RendezVousServiceProperties, Directives> implements RendezvousListener, IRendezVousComponent{
 
@@ -136,8 +138,11 @@ class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousServic
 		
 	}
 
+	
 	@Override
-	protected RendezVousService onCreateModule() {
+	protected RendezVousService onCreateModule(
+			IJxsePropertySource<RendezVousServiceProperties, Directives> properties) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	

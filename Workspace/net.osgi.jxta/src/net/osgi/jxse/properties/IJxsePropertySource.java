@@ -16,7 +16,7 @@ public interface IJxsePropertySource< T extends Enum<T>, U extends IJxseDirectiv
 
 	public static final String JXTA_SETTINGS = "jxta.settings";
 	public static final String S_USER_HOME = "user.home";
-	public static final String S_JXTA = ".jxta";
+	public static final String S_JXSE = ".jxse";
 
 	/**
 	 * Get the plugin ID

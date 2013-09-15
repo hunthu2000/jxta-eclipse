@@ -42,18 +42,24 @@ import org.eclipse.pde.ui.IFieldData;
 import org.eclipse.pde.ui.templates.OptionTemplateSection;
 import org.eclipse.pde.ui.templates.OptionTemplateWizardPage;
 import org.eclipse.pde.ui.templates.PluginReference;
+import org.eclipse.swt.widgets.Button;
 import org.eclipselabs.jxse.template.Activator;
 import org.eclipselabs.jxse.template.TemplateUtil;
+import org.eclipselabs.jxse.template.project.ContextWizardOption.TemplateOptions;
 
 /**
  * @author Marine
  *
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings("restriction")//Needed to use the IBundle interface
 public class JxseBundleSection extends OptionTemplateSection {
 
 	public static final String TEMPLATE_ROOT = "jxse";
 
+	private static final String S_JXSE_CONFIGURATION_PAGE = "JXSE Configuration Page";
+	private static final String S_JXSE_CONFIGURATION_DESC_1 = "Configure the global properties of the JXSE bundle";
+	private static final String S_JXSE_CONFIGURATION_DESC_2 = "The network configuration of the JXSE bundle";
+	
 	private static final String S_MSG_JXSE_CONTEXT_PROPS = "JXSE Context Properties";
 	private static final String S_MSG_SET_JXSE_CONTEXT_PROPS = "Set JXSE Context Properties";
 	
@@ -99,6 +105,7 @@ public class JxseBundleSection extends OptionTemplateSection {
 	private String pluginName;
 	
 	private ContextWizardOption view;
+	private Button nextButton;
 	
 	private Logger logger = Logger.getLogger( JxseBundleSection.class.getName() );
 
@@ -108,11 +115,30 @@ public class JxseBundleSection extends OptionTemplateSection {
 		this.createOptions();
 	}
 
+	/**
+	 * Get the template that is requested
+	 * @return
+	 */
+	public TemplateOptions getTemplate(){
+		return view.getTemplate();
+	}
+	
 	public void createOptions() {
 		view = new ContextWizardOption( this, S_MSG_JXSE_CONTEXT_PROPS, S_MSG_SET_JXSE_CONTEXT_PROPS );
 		this.registerOption(view, null,  0 );
 	}
 	
+	public JxseContextPropertySource getPropertySource() {
+		return view.getPropertySource();
+	}
+	
+	/**
+	 * Update the view
+	 * @throws Exception
+	 */
+	public void update() throws Exception{
+		view.complete();
+	}
 	
 	@Override
 	protected void initializeFields(IFieldData data) {
@@ -141,15 +167,16 @@ public class JxseBundleSection extends OptionTemplateSection {
 	@Override
 	public void addPages(Wizard wizard) {
 		WizardPage page = ( OptionTemplateWizardPage )this.createPage(0, "jxse_bundle_context_id_2");
-		page.setTitle("JXSE Configuration Page (2)");
-		page.setDescription("This page is used to configure the application");
+		page.setTitle( S_JXSE_CONFIGURATION_PAGE + " (2)");
+		page.setDescription( S_JXSE_CONFIGURATION_DESC_1 );
 		wizard.addPage(page);
 		page = new NetworkConfiguratorWizardPage("Set up network configuration");
-		page.setTitle("JXSE Configuration Page (3)");
-		page.setDescription("This page is used to configure the network");
+		page.setTitle( S_JXSE_CONFIGURATION_PAGE +" (3)");
+		page.setDescription( S_JXSE_CONFIGURATION_DESC_2);
 		wizard.addPage(page);
 		this.markPagesAdded();
 	}
+
 	
 	@Override
 	public String getStringOption(String name) {
@@ -238,20 +265,6 @@ public class JxseBundleSection extends OptionTemplateSection {
 		result.add(new PluginReference( ORG_ECLIPSELABS_OSGI_BROKER, null, 0)); //$NON-NLS-1$
 		return result.toArray(
 				new IPluginReference[result.size()]);
-	}
-
-	
-	@Override
-	protected void generateFiles(IProgressMonitor monitor) throws CoreException {
-		// TODO Auto-generated method stub
-		super.generateFiles(monitor);
-	}
-
-	@Override
-	protected void generateFiles(IProgressMonitor monitor, URL locationUrl)
-			throws CoreException {
-		// TODO Auto-generated method stub
-		super.generateFiles(monitor, locationUrl);
 	}
 
 	@Override

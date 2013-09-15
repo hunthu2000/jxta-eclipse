@@ -26,7 +26,6 @@ import org.eclipse.pde.ui.templates.ITemplateSection;
 import org.eclipse.pde.ui.templates.NewPluginTemplateWizard;
 import org.eclipse.pde.ui.templates.TemplateOption;
 
-
 /**
  * @author Marine
  *
@@ -51,11 +50,19 @@ public class JxseBundleWizard extends NewPluginTemplateWizard  implements IPlugi
 
 	
 	@Override
-	public void addPage(IWizardPage page) {
-		// TODO Auto-generated method stub
-		super.addPage(page);
+	public IWizardPage getNextPage(IWizardPage page) {
+		if( page instanceof NetworkConfiguratorWizardPage ){
+			try {
+				this.acs1.update();
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+			NetworkConfiguratorWizardPage ncwp = ( NetworkConfiguratorWizardPage )page;
+			ncwp.init(this.acs1.getPropertySource());
+		}
+		return super.getNextPage(page);
 	}
-
 
 	@Override
 	public ITemplateSection[] createTemplateSections() {

@@ -22,8 +22,8 @@ public class ProjectFolderUtils {
 	public static final String S_USER_HOME_PROPERTY = "user.home";
 	public static final String S_JXTA_CACHE = "cache";
 	
-	public static final String S_USER_HOME = "{user.home}";
-	public static final String S_BUNDLE_ID = "{bundle-id}";
+	public static final String S_USER_HOME = "${user.home}";
+	public static final String S_BUNDLE_ID = "${bundle-id}";
 
 	/**
 	 * Return the default user directory. This is '%system-user%\<organisation>\'

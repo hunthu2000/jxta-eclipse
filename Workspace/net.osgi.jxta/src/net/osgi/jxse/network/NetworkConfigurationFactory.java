@@ -23,6 +23,7 @@ import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.seeds.ISeedListFactory;
 
 public class NetworkConfigurationFactory extends
@@ -58,7 +59,7 @@ public class NetworkConfigurationFactory extends
 	}
 
 	@Override
-	protected NetworkConfigurator onCreateModule() {
+	protected NetworkConfigurator onCreateModule( IJxsePropertySource<NetworkConfiguratorProperties, IJxseDirectives> properties) {
 		NetworkConfigurator configurator = null;
 		try {
 			configurator = nmFactory.getModule().getConfigurator();

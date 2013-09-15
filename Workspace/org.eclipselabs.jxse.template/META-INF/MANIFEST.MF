@@ -24,5 +24,4 @@ Import-Package: net.jxta.platform,
  net.osgi.jxse.service.xml,
  net.osgi.jxse.utils,
  net.osgi.jxse.utils.io,
- org.eclipse.ui.forms.editor,
  org.eclipselabs.jxse.ui.network

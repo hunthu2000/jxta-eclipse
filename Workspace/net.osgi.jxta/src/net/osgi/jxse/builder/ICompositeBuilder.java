@@ -10,11 +10,11 @@
  *******************************************************************************/
 package net.osgi.jxse.builder;
 
-
 public interface ICompositeBuilder<T extends Object> {
 
 	public abstract void addListener(ICompositeBuilderListener listener);
 
 	public abstract void removeListener(ICompositeBuilderListener listener);
 
+	public T build();
 }

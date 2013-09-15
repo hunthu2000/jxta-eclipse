@@ -56,7 +56,7 @@ public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProper
 	}
 
 	public String getBundleId() {
-		return store.getValue(  ContextProperties.PLUGIN_ID.toString() );
+		return store.getValue(  ContextProperties.BUNDLE_ID.toString() );
 	}
 
 	public boolean getRendezVousAutostart() {

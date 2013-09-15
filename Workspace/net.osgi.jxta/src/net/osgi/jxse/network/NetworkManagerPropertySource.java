@@ -41,8 +41,8 @@ public class NetworkManagerPropertySource extends AbstractJxsePropertySource<Net
 			NetworkManagerProperties nmp = convertFrom( cp );
 			if( nmp == null )
 				continue;
-			Object retval =  source.getProperty( cp );
-			if( NetworkManagerProperties.INSTANCE_HOME.equals( nmp ))
+			Object retval = source.getProperty( cp );
+			if( NetworkManagerProperties.INSTANCE_HOME.equals(nmp ) && ( retval instanceof String ))
 				retval = ProjectFolderUtils.getParsedUserDir((String) retval, super.getBundleId());
 			super.setProperty(nmp, retval);
 		}	
@@ -53,6 +53,18 @@ public class NetworkManagerPropertySource extends AbstractJxsePropertySource<Net
 		return source.getDefault( convertTo( id ));
 	}
 
+	/**
+	 * Convenience method to transport the TCP port, although it is not strictly a property of the
+	 * network manager 
+	 * @return
+	 */
+	public int getTcpPort(){
+		Object port = this.source.getProperty( ContextProperties.PORT );
+		if( port == null )
+			return 0;
+		return Integer.parseInt(( String )port );
+	}
+	
 	@Override
 	public boolean validate(NetworkManagerProperties id, Object value) {
 		// TODO Auto-generated method stub
@@ -73,6 +85,8 @@ public class NetworkManagerPropertySource extends AbstractJxsePropertySource<Net
 	 */
 	public NetworkManagerProperties convertFrom( ContextProperties context ){
 		switch( context ){
+		case IDENTIFIER:
+			return NetworkManagerProperties.INSTANCE_NAME;
 		case CONFIG_MODE:
 			return NetworkManagerProperties.MODE;
 		case HOME_FOLDER:
@@ -97,6 +111,8 @@ public class NetworkManagerPropertySource extends AbstractJxsePropertySource<Net
 			return ContextProperties.CONFIG_MODE;
 		case INSTANCE_HOME:
 			return ContextProperties.HOME_FOLDER;
+		case INSTANCE_NAME:
+			return ContextProperties.IDENTIFIER;
 		case PEER_ID:
 			return ContextProperties.PEER_ID;
 		default:

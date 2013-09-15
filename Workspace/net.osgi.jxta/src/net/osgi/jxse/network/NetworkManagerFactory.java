@@ -13,7 +13,6 @@ package net.osgi.jxse.network;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -29,46 +28,8 @@ import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager, NetworkManagerProperties, ContextDirectives> {
 		
-	private NetworkManagerPreferences<ContextDirectives> preferences;
-	
 	public NetworkManagerFactory( IJxsePropertySource<NetworkManagerProperties, ContextDirectives> propertySource ) {
 		super( propertySource );
-		preferences = new NetworkManagerPreferences<ContextDirectives>( propertySource );
-	}
-
-	protected void fillDefaultValues() {
-		preferences.setInstanceName( super.getPropertySource().getIdentifier() );
-		try {
-			this.addProperty( NetworkManagerProperties.INSTANCE_HOME, preferences.getHomeFolder() );
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		this.addProperty( NetworkManagerProperties.MODE, preferences.getConfigMode() );	
-	}
-
-	private void addProperty( NetworkManagerProperties key, Object value ){
-		if(!( key instanceof NetworkManagerProperties) || ( value == null ))
-			return;
-		if(!( value instanceof String )){
-			super.getPropertySource().setProperty(key, value);
-			return;
-		}
-		String str = ( String )value;
-		switch(( NetworkManagerProperties )key ){
-		case INSTANCE_HOME:
-			this.preferences.setHomeFolder( str );
-			break;
-		case INSTANCE_NAME:
-			this.preferences.setInstanceName( str );
-			break;
-		case MODE:
-			this.preferences.setConfigMode( str );
-			break;
-		default:
-			this.getPropertySource().setProperty( key, value );
-			break;
-
-		}
 	}
 
 	@Override
@@ -83,7 +44,6 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 			break;
 		default:
 			break;
-
 		}
 	}
 
@@ -92,10 +52,10 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 	}
 
 	@Override
-	protected NetworkManager onCreateModule() {
+	protected NetworkManager onCreateModule( IJxsePropertySource<NetworkManagerProperties, ContextDirectives> properties) {
 		// Removing any existing configuration?
 		NetworkManagerPreferences<ContextDirectives> preferences = 
-				new NetworkManagerPreferences<ContextDirectives>( super.getPropertySource() );
+				new NetworkManagerPreferences<ContextDirectives>( properties );
 		String name = preferences.getInstanceName();
 		try {
 			Path path = Paths.get( preferences.getHomeFolder() );

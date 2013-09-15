@@ -27,14 +27,14 @@ import net.osgi.jxse.utils.Utils;
 
 public class JxseContextPropertySource extends AbstractJxsePropertySource<ContextProperties, ContextDirectives>{
 
-	public static final String DEF_HOME_FOLDER = "${user.home}/.jxta/${plugin-id}";
+	public static final String DEF_HOME_FOLDER = "${user.home}/.jxse/${bundle-id}";
 	public static final int DEF_MIN_PORT = 1000;
 	public static final int DEF_MAX_PORT = 9999;
 	public static final int DEF_PORT = 9715;
 	
 	public JxseContextPropertySource( String bundleId, String identifier) {
 		super( bundleId, identifier, Components.JXSE_CONTEXT.toString() );
-		this.setProperty( ContextProperties.PLUGIN_ID, bundleId );
+		this.setProperty( ContextProperties.BUNDLE_ID, bundleId );
 		this.setProperty( ContextProperties.IDENTIFIER, identifier );
 	}
 
@@ -43,7 +43,7 @@ public class JxseContextPropertySource extends AbstractJxsePropertySource<Contex
 	 * @return
 	 */
 	public String getBundleId(){
-		return (String) this.getProperty( ContextProperties.PLUGIN_ID );
+		return (String) this.getProperty( ContextProperties.BUNDLE_ID );
 	}
 
 	/**
@@ -64,8 +64,8 @@ public class JxseContextPropertySource extends AbstractJxsePropertySource<Contex
 		String str = null;
 		switch( id ){
 		case HOME_FOLDER:
-			String plugin_id = (String) super.getProperty( ContextProperties.PLUGIN_ID );
-			str = ProjectFolderUtils.getDefaultJxseDir( AbstractJxsePropertySource.S_JXTA, plugin_id ).getPath();
+			String plugin_id = (String) super.getProperty( ContextProperties.BUNDLE_ID );
+			str = ProjectFolderUtils.getParsedUserDir( DEF_HOME_FOLDER, plugin_id ).getPath();
 			File file = new File( str );
 			return file.toURI();
 		case CONFIG_MODE:
@@ -85,8 +85,8 @@ public class JxseContextPropertySource extends AbstractJxsePropertySource<Contex
 			break;
 		case IDENTIFIER:
 			return (String) super.getProperty( ContextProperties.IDENTIFIER );
-		case PLUGIN_ID:
-			return (String) super.getProperty( ContextProperties.PLUGIN_ID );
+		case BUNDLE_ID:
+			return (String) super.getProperty( ContextProperties.BUNDLE_ID );
 		case PORT:
 			return DEF_PORT;
 		default:

@@ -18,12 +18,36 @@ public class TcpConfigurationComposite extends AbstractProtocolConfigurationComp
 
 	public void init( NetworkConfigurationPropertySource source ){
 		super.init( source );
-		this.btnEnabled.setSelection((boolean) source.getDefault( NetworkConfiguratorProperties.HTTP_8ENABLED ));
-		this.btnIncomingStatus.setSelection((boolean) source.getDefault( NetworkConfiguratorProperties.HTTP_8INCOMING_STATUS ));
-		this.btnOutgoingStatus.setSelection((boolean) source.getDefault( NetworkConfiguratorProperties.HTTP_8OUTGOING_STATUS ));
-		this.btnPublicAddress.setSelection((boolean) source.getDefault( NetworkConfiguratorProperties.HTTP_8PUBLIC_ADDRESS ));
-		this.spinner.setSelection((int) source.getDefault( NetworkConfiguratorProperties.HTTP_8PUBLIC_ADDRESS ));
-		this.text.setText((String) source.getDefault( NetworkConfiguratorProperties.HTTP_8INTERFACE_ADDRESS));
-		this.text.setText((String) source.getDefault( NetworkConfiguratorProperties.HTTP_8INTERFACE_ADDRESS));
+		Object value = source.getDefault( NetworkConfiguratorProperties.TCP_8ENABLED  );
+		if( value != null)
+			this.btnEnabled.setSelection((boolean)value );
+		value = source.getDefault( NetworkConfiguratorProperties.TCP_8INCOMING_STATUS  );
+		if( value != null)
+			this.btnIncomingStatus.setSelection((boolean) value);
+		value = source.getDefault( NetworkConfiguratorProperties.TCP_8OUTGOING_STATUS  );
+		if( value != null)
+			this.btnOutgoingStatus.setSelection((boolean)value );
+		value = source.getDefault( NetworkConfiguratorProperties.TCP_8PUBLIC_ADDRESS  );
+		if( value != null)
+			this.btnPublicAddress.setSelection((boolean) value );
+		value = source.getDefault( NetworkConfiguratorProperties.TCP_8PUBLIC_ADDRESS_EXCLUSIVE  );
+		if( value != null)
+			this.btnExclusive.setSelection((boolean) value );
+		value = source.getDefault( NetworkConfiguratorProperties.TCP_8INTERFACE_ADDRESS  );
+		if( value != null)
+			this.interfaceAddressText.setText((String)value );
+		this.portSpinner.setMaximum(65536);
+		value = source.getDefault( NetworkConfiguratorProperties.TCP_8PORT  );
+		if( value != null){
+			int port = ( int )value;
+
+			this.portSpinner.setSelection( port );
+		}
+		value = source.getDefault( NetworkConfiguratorProperties.TCP_8START_PORT  );
+		if( value != null)
+			this.portSpinner.setMinimum(( int )value );
+		value = source.getDefault( NetworkConfiguratorProperties.TCP_8END_PORT  );
+		if( value != null)
+			this.portSpinner.setMaximum(( int )value );
 	}
 }

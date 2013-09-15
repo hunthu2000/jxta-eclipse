@@ -49,13 +49,13 @@ import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.seeds.SeedListFactory;
 import net.osgi.jxse.service.xml.PreferenceStore.Persistence;
 import net.osgi.jxse.service.xml.PreferenceStore.SupportedAttributes;
-import net.osgi.jxse.service.xml.XMLComponentFactory.Groups;
+import net.osgi.jxse.service.xml.XMLComponentBuilder.Groups;
 import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.utils.io.IOUtils;
 
-public class XMLComponentFactory implements IComponentFactory<NetworkManager, ContextProperties, ContextDirectives>, ICompositeBuilder<NetworkManager>, ICompositeBuilderListener {
+public class XMLComponentBuilder implements IComponentFactory<NetworkManager, ContextProperties, ContextDirectives>, ICompositeBuilder<NetworkManager>, ICompositeBuilderListener {
 
 	protected static final String JAXP_SCHEMA_SOURCE =
 		    "http://java.sun.com/xml/jaxp/properties/schemaSource";
@@ -106,13 +106,13 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager, Co
 	
 	private NetworkManager module;
 	
-	private Logger logger = Logger.getLogger( XMLComponentFactory.class.getName() );
+	private Logger logger = Logger.getLogger( XMLComponentBuilder.class.getName() );
 	
-	public XMLComponentFactory( String pluginId, Class<?> clss) {
+	public XMLComponentBuilder( String pluginId, Class<?> clss) {
 		this( pluginId, clss, S_DEFAULT_LOCATION );
 	}
 
-	protected XMLComponentFactory( String pluginId, Class<?> clss, String location ) {
+	protected XMLComponentBuilder( String pluginId, Class<?> clss, String location ) {
 		this.clss = clss;
 		this.location = location;
 		this.completed = false;
@@ -164,11 +164,17 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager, Co
 			return false;
 		return ( clss.getResourceAsStream( location ) != null );
 	}
+
 	
+	@Override
+	public NetworkManager build() {
+		return this.createModule();
+	}
+
 	@Override
 	public NetworkManager createModule() {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
-		URL schema_in = XMLComponentFactory.class.getResource( S_SCHEMA_LOCATION); 
+		URL schema_in = XMLComponentBuilder.class.getResource( S_SCHEMA_LOCATION); 
 		if( schema_in == null )
 			throw new RuntimeException( S_ERR_NO_SCHEMA_FOUND );
 		
@@ -179,7 +185,7 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager, Co
 		Source schemaFile = new StreamSource( JxtaHandler.class.getResourceAsStream( S_SCHEMA_LOCATION ));
 		InputStream in = clss.getResourceAsStream( location );
 		try {
-			logger.info("Parsing JXSE Bundle: " + this.properties.getProperty( ContextProperties.PLUGIN_ID ));
+			logger.info("Parsing JXSE Bundle: " + this.properties.getProperty( ContextProperties.BUNDLE_ID ));
 			//Schema schema = schemaFactory.newSchema(schemaFile);
 			//factory.setSchema(schema);//saxParser.
 			
@@ -194,12 +200,11 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager, Co
 			this.completed = true;
 			if( handler.getNode() == null )
 				return null;
-			CompositeBuilder<NetworkManager, ContextProperties, ContextDirectives> cf = 
-					new CompositeBuilder<NetworkManager, ContextProperties, ContextDirectives>( handler.getNode() );
+			ICompositeBuilder<NetworkManager> cf = new CompositeBuilder<NetworkManager, ContextProperties, ContextDirectives>( handler.getNode() );
 			cf.addListener( this );
-			module = cf.createModule();
+			module = cf.build();
 			cf.removeListener(this);
-			logger.info("JXSE Bundle Parsed: " + this.properties.getProperty( ContextProperties.PLUGIN_ID ));
+			logger.info("JXSE Bundle Parsed: " + this.properties.getProperty( ContextProperties.BUNDLE_ID ));
 			return module;
 		} catch( SAXNotRecognizedException e ){
 			failed = true;
@@ -259,7 +264,7 @@ public class XMLComponentFactory implements IComponentFactory<NetworkManager, Co
 
 class JxtaHandler extends DefaultHandler{
 
-	private XMLComponentFactory owner;
+	private XMLComponentBuilder owner;
 	private ComponentNode<NetworkManager, ContextProperties, ContextDirectives> root;
 	private ComponentNode<?,?,?> currentNode;
 	private Components current;
@@ -270,9 +275,9 @@ class JxtaHandler extends DefaultHandler{
 	private Attributes attributes;
 	private PreferenceStore store;
 
-	private static Logger logger = Logger.getLogger( XMLComponentFactory.class.getName() );
+	private static Logger logger = Logger.getLogger( XMLComponentBuilder.class.getName() );
 	
-	public JxtaHandler( XMLComponentFactory owner ) {
+	public JxtaHandler( XMLComponentBuilder owner ) {
 		super();
 		this.owner = owner;
 	}
@@ -293,7 +298,7 @@ class JxtaHandler extends DefaultHandler{
 
 			switch( current ){
 			case JXSE_CONTEXT:
-				store = new PreferenceStore(( String )owner.getPropertySource().getProperty( ContextProperties.PLUGIN_ID ));
+				store = new PreferenceStore(( String )owner.getPropertySource().getProperty( ContextProperties.BUNDLE_ID ));
 				break;
 			case NETWORK_MANAGER:
 				NetworkManagerPropertySource source = new NetworkManagerPropertySource( (JxseContextPropertySource) owner.getPropertySource() );
@@ -320,7 +325,7 @@ class JxtaHandler extends DefaultHandler{
 				this.sdf = new SeedListFactory();
 		}else{
 			String str =  StringStyler.styleToEnum( qName );
-			if(( this.groupValue == null ) ||( this.groupValue.equals(XMLComponentFactory.S_DOCUMENT_ROOT )))
+			if(( this.groupValue == null ) ||( this.groupValue.equals(XMLComponentBuilder.S_DOCUMENT_ROOT )))
 				this.groupValue = str;
 			else
 				this.groupValue += "." + str;

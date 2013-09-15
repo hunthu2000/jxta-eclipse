@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipselabs.jxse.template.project;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
@@ -60,11 +64,27 @@ public class ContextView extends Composite {
 	private Label lblId;
 	private Text text_id;
 	
+	private Collection<ITemplateOptionListener> listeners;
+	
 	public ContextView(Composite parent, int span) {
 		super( parent, span);
+		listeners = new ArrayList<ITemplateOptionListener>();
 		this.createControl(parent, span);
 	}
 
+	public void addTemplateOptionListener( ITemplateOptionListener listener ){
+		this.listeners.add( listener );
+	}
+
+	public void removeTemplateOptionListener( ITemplateOptionListener listener ){
+		this.listeners.remove( listener );
+	}
+
+	protected void notifyOptionChanged( TemplateOptions option ){
+		for( ITemplateOptionListener listener: listeners )
+			listener.notifyTemplateOptionChanged( new TemplateOptionEvent(this, option));
+	}
+	
 	private void createControl(Composite parent, int span ) {
 		parent.setLayout( new FillLayout());
 		Composite container = this;
@@ -82,6 +102,12 @@ public class ContextView extends Composite {
 		lblId.setText("id:");
 		
 		text_id = new Text(this, SWT.BORDER);
+		text_id.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ps.setId((( Text )e.item ).getText() );
+			}
+		});
 		text_id.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		Label lblName = new Label(container, SWT.NONE);
@@ -89,6 +115,12 @@ public class ContextView extends Composite {
 		lblName.setText("Name:");
 		
 		text_identifier = new Text(container, SWT.BORDER);
+		text_identifier.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ps.setProperty( ContextProperties.IDENTIFIER, (( Text )e.item ).getText() );
+			}
+		});
 		text_identifier.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 
 		Label lblHomeFolder = new Label(container, SWT.NONE);
@@ -96,6 +128,12 @@ public class ContextView extends Composite {
 		lblHomeFolder.setText("Home Folder:");
 		
 		text_home_folder = new Text(container, SWT.BORDER);
+		text_home_folder.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ps.setProperty( ContextProperties.HOME_FOLDER, (( Text )e.item ).getText() );
+			}
+		});
 		text_home_folder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		
 		Label lblConfigMode = new Label(container, SWT.NONE);
@@ -103,6 +141,12 @@ public class ContextView extends Composite {
 		lblConfigMode.setText("Config Mode:");
 		
 		combo = new Combo(container, SWT.NONE);
+		combo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ps.setProperty( ContextProperties.CONFIG_MODE, ConfigMode.valueOf((( Text )e.item ).getText() ));
+			}
+		});
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		lblPort = new Label(container, SWT.NONE);
@@ -110,25 +154,38 @@ public class ContextView extends Composite {
 		lblPort.setText("Port:");
 		
 		spinner = new Spinner(container, SWT.BORDER);
+		spinner.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ps.setProperty( ContextProperties.PORT, (( Spinner )e.item ).getSelection() );
+			}
+		});
 		spinner.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		new Label(this, SWT.NONE);
 		
 		btnAutoStart = new Button(container, SWT.CHECK);
+		btnAutoStart.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ps.setDirective( ContextDirectives.AUTO_START, (( Button )e.item ).getSelection() );
+			}
+		});
 		btnAutoStart.setText("Auto Start");
-		new Label(container, SWT.NONE);
 		
 		Group grpPeerId = new Group(container, SWT.NONE);
 		grpPeerId.setText("Peer ID:");
-		grpPeerId.setLayout(new GridLayout(1, false));
+		grpPeerId.setLayout(new GridLayout(2, false));
 		grpPeerId.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
 		
 		combo_peer_id = new Combo(grpPeerId, SWT.NONE);
-		combo_peer_id.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		combo_peer_id.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
 		btnGenerate = new Button(grpPeerId, SWT.CHECK);
 		btnGenerate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Button selected = (Button) e.getSource();
+				ps.setDirective( ContextDirectives.PEER_ID_CREATE, selected.getSelection() );
 				combo_peer_id.setEnabled(!selected.getSelection());
 			}
 		});
@@ -136,6 +193,12 @@ public class ContextView extends Composite {
 		
 		btnPersist = new Button(grpPeerId, SWT.CHECK);
 		btnPersist.setText("Persist");
+		btnPersist.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ps.setDirective( ContextDirectives.PEER_ID_PERSIST, (( Button )e.item ).getSelection() );
+			}
+		});
 
 		grpSecurity = new Group(this, SWT.NONE);
 		grpSecurity.setText("Security:");
@@ -147,6 +210,12 @@ public class ContextView extends Composite {
 		lblPass.setText("Pass 1:");
 		
 		text_pass1 = new Text(grpSecurity, SWT.BORDER);
+		text_pass1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ps.setProperty( ContextProperties.PASS_1, (( Text )e.item ).getText() );
+			}
+		});
 		text_pass1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		lblPass_1 = new Label(grpSecurity, SWT.NONE);
@@ -154,6 +223,12 @@ public class ContextView extends Composite {
 		lblPass_1.setText("Pass 2:");
 		
 		text_pass2 = new Text(grpSecurity, SWT.BORDER);
+		text_pass2.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ps.setProperty( ContextProperties.PASS_1, (( Text )e.item ).getText() );
+			}
+		});
 		text_pass2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		grpTemplate = new Group(this, SWT.NONE);
@@ -162,9 +237,13 @@ public class ContextView extends Composite {
 		grpTemplate.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
 		
 		combo_template = new Combo(grpTemplate, SWT.NONE);
+		combo_template.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				notifyOptionChanged( TemplateOptions.values()[(( Combo)e.widget ).getSelectionIndex() ]);
+			}
+		});
 		combo_template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		new Label(this, SWT.NONE);
-		new Label(this, SWT.NONE);
 	}
 	
 	
@@ -177,7 +256,7 @@ public class ContextView extends Composite {
 		Object obj = ps.getDefault( ContextProperties.HOME_FOLDER ).toString();
 		if( obj != null )
 			this.text_home_folder.setText( obj.toString() );
-		obj = ps.getDefault( ContextProperties.PLUGIN_ID );
+		obj = ps.getDefault( ContextProperties.BUNDLE_ID );
 		if( obj != null ){
 			this.lbl_plugin_id.setText( " " + obj.toString() );
 			this.text_id.setText( obj.toString() + S_JXSE_CONTEXT_1 );
@@ -199,7 +278,7 @@ public class ContextView extends Composite {
 		this.combo_peer_id.setEnabled(!create);
 		
 		this.combo_template.setItems( TemplateOptions.getValues() );
-		this.combo_template.select(0);
+		this.combo_template.select(1);
 	}
 
 	public void setPlugin_id(String plugin_id) {
@@ -210,6 +289,16 @@ public class ContextView extends Composite {
 		this.identifier = identifier;
 	}	
 
+	/**
+	 * Get the template that is requested
+	 * @return
+	 */
+	public TemplateOptions getTemplate(){
+		if( this.combo_template == null )
+			return TemplateOptions.SIMPLE_NETWORK_MANAGER;
+		else
+			return TemplateOptions.values()[ this.combo_template.getSelectionIndex() ];
+	}
 	public TemplateOptions getSelectedOption() {
 		return TemplateOptions.values()[ this.combo_template.getSelectionIndex() ];
 	}
@@ -221,9 +310,9 @@ public class ContextView extends Composite {
 		if( Utils.isNull( this.text_id.getText()))
 			return false;
 		ps.setId( this.text_id.getText() );
-		if( !ps.setProperty( ContextProperties.HOME_FOLDER, this.text_home_folder.getText() ))
+		if( !ps.setProperty( ContextProperties.HOME_FOLDER, URI.create( this.text_home_folder.getText() )))
 			return false;
-		if( !ps.setProperty( ContextProperties.PLUGIN_ID, this.lbl_plugin_id.getText() ))
+		if( !ps.setProperty( ContextProperties.BUNDLE_ID, this.lbl_plugin_id.getText() ))
 			return false;
 		if( !ps.setProperty( ContextProperties.IDENTIFIER, this.text_identifier.getText() ))
 			return false;

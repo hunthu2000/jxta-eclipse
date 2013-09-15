@@ -34,12 +34,12 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 	private AbstractResourceSeedListFactory seeds;
 	
 	public XMLServiceContext( String plugin_id, Class<?> clss) {
-		super( new XMLComponentFactory( plugin_id, clss ));
+		super( new XMLComponentBuilder( plugin_id, clss ));
 		this.initialise();
 	}
 
 	public XMLServiceContext( String plugin_id, Class<?> clss, AbstractResourceSeedListFactory seeds ) {
-		this( new XMLComponentFactory( plugin_id, clss ));
+		this( new XMLComponentBuilder( plugin_id, clss ));
 		this.seeds = seeds;
 	}
 
@@ -71,8 +71,8 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 
 	@Override
 	protected boolean onInitialising() {
-		if( factory instanceof XMLComponentFactory ){
-			XMLComponentFactory xmlFactory = (XMLComponentFactory) factory;
+		if( factory instanceof XMLComponentBuilder ){
+			XMLComponentBuilder xmlFactory = (XMLComponentBuilder) factory;
 			xmlFactory.addListener(this);
 			xmlFactory.createModule();
 			xmlFactory.removeListener(this);
@@ -89,8 +89,8 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 			logger.severe( S_ERR_NO_SERVICE_LOADED + super.getIdentifier() + " !!!\n");
 			return;
 		}
-		if( factory instanceof XMLComponentFactory ){
-			XMLComponentFactory xmlFactory = (XMLComponentFactory) factory;
+		if( factory instanceof XMLComponentBuilder ){
+			XMLComponentBuilder xmlFactory = (XMLComponentBuilder) factory;
 			if( xmlFactory.isAutostart()){
 				try{
 				  this.service.start();

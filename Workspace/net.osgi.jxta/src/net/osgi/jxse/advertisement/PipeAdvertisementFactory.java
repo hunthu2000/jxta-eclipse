@@ -49,7 +49,9 @@ public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdver
 		source.setProperty( Properties.TYPE, PipeService.UnicastType );		
 	}
 
-	protected PipeAdvertisement onCreateModule() {
+	@Override
+	protected PipeAdvertisement onCreateModule(
+			IJxsePropertySource<Properties, net.osgi.jxse.factory.IComponentFactory.Directives> properties) {
 		PipeID socketID = null;
 		IJxsePropertySource<Properties, Directives> source = super.getPropertySource();
 		try {

@@ -40,6 +40,10 @@ public abstract class AbstractComponentFactory<T extends Object, U extends Enum<
 		return Components.valueOf( this.properties.getComponentName());
 	}
 	
+	protected void setPropertySource( IJxsePropertySource<U,V> properties ){
+		this.properties = properties;
+	}
+	
 	@Override
 	public IJxsePropertySource<U,V> getPropertySource(){
 		return this.properties;
@@ -95,14 +99,14 @@ public abstract class AbstractComponentFactory<T extends Object, U extends Enum<
 		}
 	}
 
-	protected abstract T onCreateModule();
+	protected abstract T onCreateModule( IJxsePropertySource<U,V> properties);
 	
 	@Override
 	public T createModule() {
 		if( this.completed )
 			return module;
 		this.parseDirectives();
-		this.module = this.onCreateModule();
+		this.module = this.onCreateModule( this.properties);
 		this.parseDirectives(module);
 		this.setCompleted( true );
 		return module;
@@ -131,6 +135,7 @@ public abstract class AbstractComponentFactory<T extends Object, U extends Enum<
 	 * @param module
 	 * @return
 	 */
+	@Deprecated
 	protected boolean setJxtaServiceComponent( T module ){
 		Logger logger = Logger.getLogger( this.getClass().getName() );
 		if( module == null ){

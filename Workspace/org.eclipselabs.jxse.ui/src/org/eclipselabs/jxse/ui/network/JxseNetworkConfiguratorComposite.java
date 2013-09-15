@@ -1,5 +1,9 @@
 package org.eclipselabs.jxse.ui.network;
 
+import net.osgi.jxse.context.JxseContextPropertySource;
+import net.osgi.jxse.network.NetworkConfigurationPropertySource;
+import net.osgi.jxse.network.NetworkManagerPropertySource;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.SWT;
@@ -9,6 +13,7 @@ import org.eclipse.swt.layout.FillLayout;
 
 public class JxseNetworkConfiguratorComposite extends Composite {
 
+	private OverviewConfigurationComposite overviewComposite;
 	private TcpConfigurationComposite tcpComposite;
 	private HttpConfigurationComposite httpComposite;
 	private MulticastConfigurationComposite multicastComposite;
@@ -25,18 +30,18 @@ public class JxseNetworkConfiguratorComposite extends Composite {
 		
 		SashForm sashForm = new SashForm(this, SWT.VERTICAL);
 		
-		Composite composite = new OverviewConfigurationComposite(sashForm, SWT.NONE);
+		overviewComposite = new OverviewConfigurationComposite(sashForm, SWT.NONE);
 		
 		TabFolder tabFolder = new TabFolder(sashForm, SWT.NONE);
 		
 		TabItem tbtmTcpItem = new TabItem(tabFolder, SWT.NONE);
-		tbtmTcpItem.setText("Tcp Configuration");
+		tbtmTcpItem.setText("Tcp");
 		tcpComposite = new TcpConfigurationComposite( tabFolder, SWT.NONE);
 		tbtmTcpItem.setControl(tcpComposite);
 		sashForm.setWeights(new int[] {1, 1});
 		
 		TabItem tbtmHttpItem = new TabItem(tabFolder, SWT.NONE);
-		tbtmHttpItem.setText("Http Configuration");
+		tbtmHttpItem.setText("Http");
 		httpComposite = new HttpConfigurationComposite( tabFolder, SWT.NONE);
 		tbtmHttpItem.setControl(httpComposite);
 		sashForm.setWeights(new int[] {1, 1});
@@ -48,13 +53,20 @@ public class JxseNetworkConfiguratorComposite extends Composite {
 		sashForm.setWeights(new int[] {1, 1});
 
 		TabItem tbtmRdvRelayItem = new TabItem(tabFolder, SWT.NONE);
-		tbtmRdvRelayItem.setText("Relay & Rendezvous");
+		tbtmRdvRelayItem.setText("Relay/Rendezvous");
 		rdvRelayComposite = new RdvRelayConfigurationComposite( tabFolder, SWT.NONE);
 		tbtmRdvRelayItem.setControl(rdvRelayComposite);
 		sashForm.setWeights(new int[] {1, 1});
-
 	}
 
+	public void init( JxseContextPropertySource source ){
+		NetworkManagerPropertySource nmps = new NetworkManagerPropertySource( source );
+		NetworkConfigurationPropertySource ncps = new NetworkConfigurationPropertySource( nmps );
+		this.overviewComposite.init(ncps);
+		this.tcpComposite.init(ncps);
+		this.httpComposite.init(ncps);
+	}
+	
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components

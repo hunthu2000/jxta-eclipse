@@ -19,7 +19,7 @@ public interface IJxseServiceContext<T extends Object> extends IJxseComponentNod
 
 	public enum ContextProperties{
 		IDENTIFIER,
-		PLUGIN_ID,
+		BUNDLE_ID,
 		HOME_FOLDER,
 		CONFIG_MODE,
 		PORT,

@@ -106,7 +106,12 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 	}
 
 	@Override
-	protected T onCreateModule() {
+	public T build() {
+		return this.createModule();
+	}
+
+	@Override
+	protected T onCreateModule( IJxsePropertySource<U, V> properties) {
 		return this.createModule( node );
 	}
 

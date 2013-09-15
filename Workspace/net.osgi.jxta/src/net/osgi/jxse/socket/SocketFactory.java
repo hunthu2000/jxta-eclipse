@@ -62,7 +62,9 @@ public class SocketFactory extends AbstractComponentFactory<JxtaSocket, ISocketF
 	protected void onParseDirectiveAfterCreation( JxtaSocket component, Directives directive, Object value) {}
 
 
-	protected JxtaSocket onCreateModule() {
+	@Override
+	protected JxtaSocket onCreateModule(
+			IJxsePropertySource<Properties, Directives> properties) {
 		this.pipeFactory = new SocketPipeAdvertisementFactory();
 		JxtaSocket socket = this.createSocket();
 		//super.setCompleted(true);
