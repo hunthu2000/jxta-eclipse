@@ -11,7 +11,7 @@
 /**
  * 
  */
-package org.eclipselabs.jxse.template.project;
+package org.eclipselabs.jxse.template.config;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -25,6 +25,8 @@ import org.eclipse.pde.ui.IPluginContentWizard;
 import org.eclipse.pde.ui.templates.ITemplateSection;
 import org.eclipse.pde.ui.templates.NewPluginTemplateWizard;
 import org.eclipse.pde.ui.templates.TemplateOption;
+import org.eclipselabs.jxse.template.project.AbstractJxseBundleSection;
+import org.eclipselabs.jxse.template.project.ContextWizardOption;
 
 /**
  * @author Marine
@@ -33,11 +35,6 @@ import org.eclipse.pde.ui.templates.TemplateOption;
 @SuppressWarnings("restriction")
 public class JxseBundleWizard extends NewPluginTemplateWizard  implements IPluginContentWizard{
 
-	public static final String S_MSG_SETUP_CONTEXT = "Set up JXSE Bundle Project";
-	public static final String S_MSG_BUNDLE_CONTEXT_PAGE = "Jxse Bundle context";
-
-	private JxseBundleSection acs1;
-	
 	@Override
 	public void init(IFieldData data) {
 		super.init(data);
@@ -48,18 +45,19 @@ public class JxseBundleWizard extends NewPluginTemplateWizard  implements IPlugi
 		}
 	}
 
-	
 	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
+		ITemplateSection[] sections = super.getTemplateSections();
+		AbstractJxseBundleSection acs1 = ( AbstractJxseBundleSection )sections[0];
 		if( page instanceof NetworkConfiguratorWizardPage ){
 			try {
-				this.acs1.update();
+				acs1.update();
 			} catch (Exception e) {
 				e.printStackTrace();
 				return null;
 			}
 			NetworkConfiguratorWizardPage ncwp = ( NetworkConfiguratorWizardPage )page;
-			ncwp.init(this.acs1.getPropertySource());
+			ncwp.init(acs1.getPropertySource());
 		}
 		return super.getNextPage(page);
 	}
@@ -67,8 +65,7 @@ public class JxseBundleWizard extends NewPluginTemplateWizard  implements IPlugi
 	@Override
 	public ITemplateSection[] createTemplateSections() {
 		ITemplateSection[] sections = new ITemplateSection[1];
-		acs1 = new JxseBundleSection();
-		sections[0] = acs1;
+		sections[0] = new JxseConfigurationBundleSection();
 		return sections;
 	}
 	
@@ -80,11 +77,11 @@ public class JxseBundleWizard extends NewPluginTemplateWizard  implements IPlugi
 			ITemplateSection[] sections = super.getTemplateSections();
 			monitor.beginTask("perform finish", sections.length);
 
-			JxseBundleSection contextSection = null;
+			AbstractJxseBundleSection contextSection = null;
 
 			for (int i = 0; i < sections.length; i++) {
-				if (sections[i] instanceof JxseBundleSection ) {
-					contextSection = (JxseBundleSection) sections[i];
+				if (sections[i] instanceof AbstractJxseBundleSection ) {
+					contextSection = (AbstractJxseBundleSection) sections[i];
 				}
 			}
 

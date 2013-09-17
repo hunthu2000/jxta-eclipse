@@ -36,6 +36,8 @@ public class JxseContextPropertySource extends AbstractJxsePropertySource<Contex
 		super( bundleId, identifier, Components.JXSE_CONTEXT.toString() );
 		this.setProperty( ContextProperties.BUNDLE_ID, bundleId );
 		this.setProperty( ContextProperties.IDENTIFIER, identifier );
+		this.setProperty( ContextProperties.CONFIG_MODE, ConfigMode.EDGE );
+		this.setProperty( ContextProperties.HOME_FOLDER, ProjectFolderUtils.getParsedUserDir(DEF_HOME_FOLDER, bundleId));
 	}
 
 	/**
@@ -64,8 +66,8 @@ public class JxseContextPropertySource extends AbstractJxsePropertySource<Contex
 		String str = null;
 		switch( id ){
 		case HOME_FOLDER:
-			String plugin_id = (String) super.getProperty( ContextProperties.BUNDLE_ID );
-			str = ProjectFolderUtils.getParsedUserDir( DEF_HOME_FOLDER, plugin_id ).getPath();
+			String bundle_id = (String) super.getProperty( ContextProperties.BUNDLE_ID );
+			str = ProjectFolderUtils.getParsedUserDir( DEF_HOME_FOLDER, bundle_id ).getPath();
 			File file = new File( str );
 			return file.toURI();
 		case CONFIG_MODE:

@@ -48,6 +48,8 @@ public class ManagedProperty<T,U extends Object> {
 	}
 
 	public U getValue() {
+		if( value == null )
+			return this.defaultValue;
 		return value;
 	}
 
@@ -59,6 +61,12 @@ public class ManagedProperty<T,U extends Object> {
 	public U getDefaultValue() {
 		return defaultValue;
 	}
+
+	public boolean isDefault() {
+		if((  this.value == null) && ( this.defaultValue == null ))
+			return true;
+		return ( this.value.equals( this.defaultValue ));
+	}	
 
 	public boolean isDirty() {
 		return dirty;

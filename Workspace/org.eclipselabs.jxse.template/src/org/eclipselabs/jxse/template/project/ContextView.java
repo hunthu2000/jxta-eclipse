@@ -49,9 +49,7 @@ public class ContextView extends Composite {
 	private Button btnGenerate;
 	private Button btnPersist;
 	
-	private String plugin_id, identifier;
-	
-	private JxseContextPropertySource ps;
+	private JxseContextPropertySource properties;
 	private Label lblPort;
 	private Spinner spinner;
 	private Group grpSecurity;
@@ -105,7 +103,7 @@ public class ContextView extends Composite {
 		text_id.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ps.setId((( Text )e.item ).getText() );
+				properties.setId((( Text )e.item ).getText() );
 			}
 		});
 		text_id.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -118,7 +116,7 @@ public class ContextView extends Composite {
 		text_identifier.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ps.setProperty( ContextProperties.IDENTIFIER, (( Text )e.item ).getText() );
+				properties.setProperty( ContextProperties.IDENTIFIER, (( Text )e.item ).getText() );
 			}
 		});
 		text_identifier.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -131,7 +129,7 @@ public class ContextView extends Composite {
 		text_home_folder.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ps.setProperty( ContextProperties.HOME_FOLDER, (( Text )e.item ).getText() );
+				properties.setProperty( ContextProperties.HOME_FOLDER, (( Text )e.item ).getText() );
 			}
 		});
 		text_home_folder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -144,7 +142,7 @@ public class ContextView extends Composite {
 		combo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ps.setProperty( ContextProperties.CONFIG_MODE, ConfigMode.valueOf((( Text )e.item ).getText() ));
+				properties.setProperty( ContextProperties.CONFIG_MODE, ConfigMode.valueOf((( Text )e.item ).getText() ));
 			}
 		});
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -157,7 +155,7 @@ public class ContextView extends Composite {
 		spinner.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ps.setProperty( ContextProperties.PORT, (( Spinner )e.item ).getSelection() );
+				properties.setProperty( ContextProperties.PORT, (( Spinner )e.item ).getSelection() );
 			}
 		});
 		spinner.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -167,7 +165,7 @@ public class ContextView extends Composite {
 		btnAutoStart.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ps.setDirective( ContextDirectives.AUTO_START, (( Button )e.item ).getSelection() );
+				properties.setDirective( ContextDirectives.AUTO_START, (( Button )e.item ).getSelection() );
 			}
 		});
 		btnAutoStart.setText("Auto Start");
@@ -185,7 +183,7 @@ public class ContextView extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Button selected = (Button) e.getSource();
-				ps.setDirective( ContextDirectives.PEER_ID_CREATE, selected.getSelection() );
+				properties.setDirective( ContextDirectives.PEER_ID_CREATE, selected.getSelection() );
 				combo_peer_id.setEnabled(!selected.getSelection());
 			}
 		});
@@ -196,7 +194,7 @@ public class ContextView extends Composite {
 		btnPersist.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ps.setDirective( ContextDirectives.PEER_ID_PERSIST, (( Button )e.item ).getSelection() );
+				properties.setDirective( ContextDirectives.PEER_ID_PERSIST, (( Button )e.item ).getSelection() );
 			}
 		});
 
@@ -213,7 +211,7 @@ public class ContextView extends Composite {
 		text_pass1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ps.setProperty( ContextProperties.PASS_1, (( Text )e.item ).getText() );
+				properties.setProperty( ContextProperties.PASS_1, (( Text )e.item ).getText() );
 			}
 		});
 		text_pass1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -226,7 +224,7 @@ public class ContextView extends Composite {
 		text_pass2.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ps.setProperty( ContextProperties.PASS_1, (( Text )e.item ).getText() );
+				properties.setProperty( ContextProperties.PASS_1, (( Text )e.item ).getText() );
 			}
 		});
 		text_pass2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -248,46 +246,43 @@ public class ContextView extends Composite {
 	
 	
 	public JxseContextPropertySource getPropertySource() {
-		return ps;
+		return properties;
 	}
 
-	public void init(){
-		ps = new JxseContextPropertySource( this.plugin_id, this.identifier);
-		Object obj = ps.getDefault( ContextProperties.HOME_FOLDER ).toString();
+	public void init( JxseContextPropertySource properties ){
+		this.properties = properties;
+		Object obj = properties.getProperty( ContextProperties.HOME_FOLDER );
 		if( obj != null )
 			this.text_home_folder.setText( obj.toString() );
-		obj = ps.getDefault( ContextProperties.BUNDLE_ID );
+		obj = properties.getProperty( ContextProperties.BUNDLE_ID );
 		if( obj != null ){
 			this.lbl_plugin_id.setText( " " + obj.toString() );
 			this.text_id.setText( obj.toString() + S_JXSE_CONTEXT_1 );
 		}
-		obj = ps.getDefault( ContextProperties.IDENTIFIER );
+		obj = properties.getProperty( ContextProperties.IDENTIFIER );
 		if( obj != null )
 			this.text_identifier.setText( obj.toString() );
-		obj = ps.getDefault( ContextProperties.PEER_ID );
+		obj = properties.getProperty( ContextProperties.CONFIG_MODE );
+		ConfigMode mode = ConfigMode.EDGE;
+		if( obj != null )
+			mode = ( ConfigMode )obj;
 		this.combo.setItems( AbstractJxsePreferences.getConfigModes());
-		this.combo.select(ConfigMode.EDGE.ordinal());
+		this.combo.select(mode.ordinal());
 		this.spinner.setMinimum( JxseContextPropertySource.DEF_MIN_PORT );
 		this.spinner.setMaximum( JxseContextPropertySource.DEF_MAX_PORT );
-		this.spinner.setSelection( (int) ps.getDefault( ContextProperties.PORT ));
+		this.spinner.setSelection( (int) properties.getDefault( ContextProperties.PORT ));
 
-		this.btnAutoStart.setSelection((boolean) ps.getDefaultDirectives( ContextDirectives.AUTO_START ));
-		this.btnPersist.setSelection((boolean) ps.getDefaultDirectives( ContextDirectives.PEER_ID_PERSIST ));
-		boolean create = (boolean) ps.getDefaultDirectives( ContextDirectives.PEER_ID_CREATE );
+		obj = properties.getProperty( ContextProperties.PEER_ID );
+		this.btnAutoStart.setSelection((boolean) properties.getDefaultDirectives( ContextDirectives.AUTO_START ));
+		this.btnPersist.setSelection((boolean) properties.getDefaultDirectives( ContextDirectives.PEER_ID_PERSIST ));
+		obj = properties.getDirective( ContextDirectives.PEER_ID_CREATE );
+		boolean create = ( obj == null )?false: (boolean )obj;
 		this.btnGenerate.setSelection(create);
 		this.combo_peer_id.setEnabled(!create);
 		
 		this.combo_template.setItems( TemplateOptions.getValues() );
 		this.combo_template.select(1);
 	}
-
-	public void setPlugin_id(String plugin_id) {
-		this.plugin_id = plugin_id;
-	}
-
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}	
 
 	/**
 	 * Get the template that is requested
@@ -299,6 +294,15 @@ public class ContextView extends Composite {
 		else
 			return TemplateOptions.values()[ this.combo_template.getSelectionIndex() ];
 	}
+	
+	/**
+	 * Set the template option
+	 * @param option
+	 */
+	public void setTemplateOption( TemplateOptions option ){
+		this.combo_template.setText( option.toString());
+	}
+	
 	public TemplateOptions getSelectedOption() {
 		return TemplateOptions.values()[ this.combo_template.getSelectionIndex() ];
 	}
@@ -309,25 +313,25 @@ public class ContextView extends Composite {
 	public boolean complete() throws Exception{
 		if( Utils.isNull( this.text_id.getText()))
 			return false;
-		ps.setId( this.text_id.getText() );
-		if( !ps.setProperty( ContextProperties.HOME_FOLDER, URI.create( this.text_home_folder.getText() )))
+		properties.setId( this.text_id.getText() );
+		if( !properties.setProperty( ContextProperties.HOME_FOLDER, URI.create( this.text_home_folder.getText() )))
 			return false;
-		if( !ps.setProperty( ContextProperties.BUNDLE_ID, this.lbl_plugin_id.getText() ))
+		if( !properties.setProperty( ContextProperties.BUNDLE_ID, this.lbl_plugin_id.getText() ))
 			return false;
-		if( !ps.setProperty( ContextProperties.IDENTIFIER, this.text_identifier.getText() ))
+		if( !properties.setProperty( ContextProperties.IDENTIFIER, this.text_identifier.getText() ))
 			return false;
-		if( !ps.setProperty( ContextProperties.CONFIG_MODE, this.combo.getText() ))
+		if( !properties.setProperty( ContextProperties.CONFIG_MODE, this.combo.getText() ))
 			return false;
-		if( !ps.setProperty( ContextProperties.PORT, this.spinner.getText() ))
+		if( !properties.setProperty( ContextProperties.PORT, this.spinner.getText() ))
 			return false;
-		if( !ps.setProperty( ContextProperties.PASS_1, this.text_pass1.getText() ))
+		if( !properties.setProperty( ContextProperties.PASS_1, this.text_pass1.getText() ))
 			return false;
-		if( !ps.setProperty( ContextProperties.PASS_2, this.text_pass2.getText() ))
+		if( !properties.setProperty( ContextProperties.PASS_2, this.text_pass2.getText() ))
 			return false;
-		if( !ps.setDirective( ContextDirectives.AUTO_START, this.btnAutoStart.getSelection() ))
+		if( !properties.setDirective( ContextDirectives.AUTO_START, this.btnAutoStart.getSelection() ))
 			return false;
-		if( !ps.setDirective( ContextDirectives.PEER_ID_CREATE, this.btnGenerate.getSelection() ))
+		if( !properties.setDirective( ContextDirectives.PEER_ID_CREATE, this.btnGenerate.getSelection() ))
 			return false;
-		return ps.setDirective( ContextDirectives.PEER_ID_PERSIST, this.btnPersist.getSelection() );
+		return properties.setDirective( ContextDirectives.PEER_ID_PERSIST, this.btnPersist.getSelection() );
 	}
 }

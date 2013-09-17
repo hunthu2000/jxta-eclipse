@@ -34,35 +34,25 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.pde.core.plugin.IPluginReference;
 import org.eclipse.pde.internal.core.ibundle.IBundle;
 import org.eclipse.pde.internal.core.ibundle.IBundlePluginModelBase;
 import org.eclipse.pde.ui.IFieldData;
 import org.eclipse.pde.ui.templates.OptionTemplateSection;
-import org.eclipse.pde.ui.templates.OptionTemplateWizardPage;
 import org.eclipse.pde.ui.templates.PluginReference;
 import org.eclipse.swt.widgets.Button;
 import org.eclipselabs.jxse.template.Activator;
 import org.eclipselabs.jxse.template.TemplateUtil;
-import org.eclipselabs.jxse.template.project.ContextWizardOption.TemplateOptions;
 
 /**
  * @author Marine
  *
  */
 @SuppressWarnings("restriction")//Needed to use the IBundle interface
-public class JxseBundleSection extends OptionTemplateSection {
+public abstract class AbstractJxseBundleSection extends OptionTemplateSection {
 
 	public static final String TEMPLATE_ROOT = "jxse";
 
-	private static final String S_JXSE_CONFIGURATION_PAGE = "JXSE Configuration Page";
-	private static final String S_JXSE_CONFIGURATION_DESC_1 = "Configure the global properties of the JXSE bundle";
-	private static final String S_JXSE_CONFIGURATION_DESC_2 = "The network configuration of the JXSE bundle";
-	
-	private static final String S_MSG_JXSE_CONTEXT_PROPS = "JXSE Context Properties";
-	private static final String S_MSG_SET_JXSE_CONTEXT_PROPS = "Set JXSE Context Properties";
-	
 	// key for input field
 	public static final String KEY_JXSE_CLASS_NAME = "jxseClassName";
 	// key for hidden field
@@ -104,41 +94,26 @@ public class JxseBundleSection extends OptionTemplateSection {
 	
 	private String pluginName;
 	
-	private ContextWizardOption view;
 	private Button nextButton;
 	
-	private Logger logger = Logger.getLogger( JxseBundleSection.class.getName() );
-
-	public JxseBundleSection() {
-		super();
-		this.setPageCount(2);
-		this.createOptions();
-	}
-
-	/**
-	 * Get the template that is requested
-	 * @return
-	 */
-	public TemplateOptions getTemplate(){
-		return view.getTemplate();
-	}
+	private JxseContextPropertySource properties;
 	
-	public void createOptions() {
-		view = new ContextWizardOption( this, S_MSG_JXSE_CONTEXT_PROPS, S_MSG_SET_JXSE_CONTEXT_PROPS );
-		this.registerOption(view, null,  0 );
+	private Logger logger = Logger.getLogger( AbstractJxseBundleSection.class.getName() );
+
+	public AbstractJxseBundleSection() {
+		super();
 	}
+
 	
 	public JxseContextPropertySource getPropertySource() {
-		return view.getPropertySource();
+		return this.properties;
 	}
 	
 	/**
-	 * Update the view
-	 * @throws Exception
+	 * allow subclasses to fill the properties after initialisation
+	 * @param properties
 	 */
-	public void update() throws Exception{
-		view.complete();
-	}
+	protected abstract void onFillProperties( JxseContextPropertySource properties );
 	
 	@Override
 	protected void initializeFields(IFieldData data) {
@@ -152,12 +127,8 @@ public class JxseBundleSection extends OptionTemplateSection {
 		initializeOption(KEY_PACKAGE_PATH, packagePath);
 		initializeOption(KEY_DOLLAR_MARK, this.dollarMark);
 		initializeOption(KEY_SOURCE_PATH, this.sourcePath);
-		
-		if( view != null ){
-			view.setPlugin_id( data.getId() );	
-			view.setIdentifier( data.getName());
-			view.init();
-		}
+		this.properties = new JxseContextPropertySource( data.getId(), data.getName());
+		this.onFillProperties(properties);
 	}
 
 	public String getPluginName() {
@@ -166,14 +137,6 @@ public class JxseBundleSection extends OptionTemplateSection {
 
 	@Override
 	public void addPages(Wizard wizard) {
-		WizardPage page = ( OptionTemplateWizardPage )this.createPage(0, "jxse_bundle_context_id_2");
-		page.setTitle( S_JXSE_CONFIGURATION_PAGE + " (2)");
-		page.setDescription( S_JXSE_CONFIGURATION_DESC_1 );
-		wizard.addPage(page);
-		page = new NetworkConfiguratorWizardPage("Set up network configuration");
-		page.setTitle( S_JXSE_CONFIGURATION_PAGE +" (3)");
-		page.setDescription( S_JXSE_CONFIGURATION_DESC_2);
-		wizard.addPage(page);
 		this.markPagesAdded();
 	}
 
@@ -267,15 +230,11 @@ public class JxseBundleSection extends OptionTemplateSection {
 				new IPluginReference[result.size()]);
 	}
 
+	public void update() throws Exception{}
+	
 	@Override
 	protected void updateModel(IProgressMonitor monitor) throws CoreException {
 		logger.info("Updating model");
-		try {
-			view.complete();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		}
 		IBundlePluginModelBase mb = (IBundlePluginModelBase) model;
 		IBundle bundle = mb.getBundleModel().getBundle();
 		bundle.setHeader( DS_MANIFEST_KEY, FILE_OSGI_XML );
@@ -287,13 +246,12 @@ public class JxseBundleSection extends OptionTemplateSection {
 		JxseXmlBuilder<ContextProperties, ContextDirectives> builder = 
 				new JxseXmlBuilder<ContextProperties, ContextDirectives>();
 		InputStream source = null;
-		JxseContextPropertySource ps = this.view.getPropertySource();
 		try{
-			source = new ByteArrayInputStream( builder.build( ps ).getBytes()); 
+			source = new ByteArrayInputStream( builder.build( this.properties ).getBytes()); 
 			this.createFile(project, S_JXSE_INF + "/", S_JXSE_FILE, source, monitor);
 			IOUtils.closeInputStream(source);
 			monitor.worked(3);
-			source = new ByteArrayInputStream( builder.build( ps ).getBytes()); 
+			source = new ByteArrayInputStream( builder.build( this.properties ).getBytes()); 
 			this.createFile(project, S_OSGI_INF + "/", S_ATTENDESS_XML, source, monitor);
 			monitor.worked(4);
 		}

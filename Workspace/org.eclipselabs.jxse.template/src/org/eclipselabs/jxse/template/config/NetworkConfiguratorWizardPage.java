@@ -1,4 +1,4 @@
-package org.eclipselabs.jxse.template.project;
+package org.eclipselabs.jxse.template.config;
 
 import net.osgi.jxse.context.JxseContextPropertySource;
 

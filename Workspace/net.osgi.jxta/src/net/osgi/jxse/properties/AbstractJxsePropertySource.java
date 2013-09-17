@@ -161,11 +161,11 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends I
 	}
 
 
-	protected void addChild( IJxsePropertySource<?, ?> child ){
+	public void addChild( IJxsePropertySource<?, ?> child ){
 		this.children.add( child );
 	}
 
-	protected void removeChild( IJxsePropertySource<?, ?> child ){
+	public void removeChild( IJxsePropertySource<?, ?> child ){
 		this.children.remove( child );
 	}
 
