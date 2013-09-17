@@ -16,6 +16,7 @@ import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.ManagedProperty;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.osgi.service.prefs.Preferences;
@@ -132,5 +133,10 @@ public class AbstractJxsePreferences< T extends Enum<T>, U extends IJxseDirectiv
 	@Override
 	public boolean setDirective(U id, Object value) {
 		return this.source.setDirective(id, value);
+	}
+
+	@Override
+	public ManagedProperty<T, Object> getManagedProperty(T id) {
+		return this.source.getManagedProperty(id);
 	}
 }

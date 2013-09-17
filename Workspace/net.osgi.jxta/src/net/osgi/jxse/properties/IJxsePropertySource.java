@@ -60,6 +60,8 @@ public interface IJxsePropertySource< T extends Enum<T>, U extends IJxseDirectiv
 	 */
 	public Object getProperty( T id );
 	
+	public ManagedProperty<T,Object> getManagedProperty( T id );
+	
 	/**
 	 * Set the value for the given property
 	 * @param id

@@ -133,7 +133,7 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends I
 		return select.getDefaultValue();
 	}
 
-	protected ManagedProperty<T,?> getManagedProperty( T id ){
+	public ManagedProperty<T,Object> getManagedProperty( T id ){
 		return properties.get(id);
 	}
 	

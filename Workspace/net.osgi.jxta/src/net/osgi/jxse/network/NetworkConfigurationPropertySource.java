@@ -99,6 +99,8 @@ public class NetworkConfigurationPropertySource extends AbstractJxsePropertySour
 			super.setProperty(nmp, value);
 		}
 		super.setProperty( NetworkConfiguratorProperties.TCP_8PORT, source.getTcpPort());
+		super.setProperty( NetworkConfiguratorProperties.TCP_8ENABLED, true );
+		super.setProperty( NetworkConfiguratorProperties.HTTP_8ENABLED, true );
 	}
 
 	@Override

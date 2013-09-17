@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jxta-OSGI Bridge
-Bundle-SymbolicName: net.osgi.jxta
+Bundle-SymbolicName: net.osgi.jxse
 Bundle-Version: 1.0.0.v20130217
 Bundle-Vendor: Condast
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

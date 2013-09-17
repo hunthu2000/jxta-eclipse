@@ -139,12 +139,6 @@ public class ContextView extends Composite {
 		lblConfigMode.setText("Config Mode:");
 		
 		combo = new Combo(container, SWT.NONE);
-		combo.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				properties.setProperty( ContextProperties.CONFIG_MODE, ConfigMode.valueOf((( Text )e.item ).getText() ));
-			}
-		});
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		lblPort = new Label(container, SWT.NONE);

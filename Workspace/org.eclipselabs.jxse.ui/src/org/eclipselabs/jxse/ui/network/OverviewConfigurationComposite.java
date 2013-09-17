@@ -16,6 +16,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipselabs.jxse.ui.property.databinding.ComboDataBinding;
+import org.eclipselabs.jxse.ui.property.databinding.StringDataBinding;
 
 public class OverviewConfigurationComposite extends Composite {
 	
@@ -60,6 +64,13 @@ public class OverviewConfigurationComposite extends Composite {
 		lblPoolSize.setText("Store Home:");
 		
 		storeHomeText = new Text(this, SWT.BORDER);
+		storeHomeText.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Text text = ( Text )e.widget;
+				source.setProperty( NetworkConfiguratorProperties.STORE_HOME, URI.create( text.getText() ));
+			}
+		});
 		storeHomeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		new Label(this, SWT.NONE);
 		
@@ -78,6 +89,13 @@ public class OverviewConfigurationComposite extends Composite {
 		lblAddress.setText("Peer ID:");
 		
 		peerIdText = new Text(this, SWT.BORDER);
+		peerIdText.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Text text = ( Text )e.widget;
+				source.setProperty( NetworkConfiguratorProperties.PEER_ID, text.getText() );
+			}
+		});
 		peerIdText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		new Label(this, SWT.NONE);
 		
@@ -100,13 +118,19 @@ public class OverviewConfigurationComposite extends Composite {
 		value = source.getDefault( NetworkConfiguratorProperties.NAME );
 		if( value != null)
 			this.nameText.setText(( String )value );
+		new StringDataBinding<NetworkConfiguratorProperties>( NetworkConfiguratorProperties.NAME, source, text);
+
 		value = source.getDefault( NetworkConfiguratorProperties.DESCRIPTION );
 		if( value != null)
 			this.descriptionText.setText(( String )value );
+		new StringDataBinding<NetworkConfiguratorProperties>( NetworkConfiguratorProperties.DESCRIPTION, source, descriptionText );
+
 		this.combo.setItems( AbstractJxsePreferences.getConfigModes());
 		value = source.getDefault( NetworkConfiguratorProperties.MODE );
 		ConfigMode mode = ( value == null )? ConfigMode.EDGE: (ConfigMode.valueOf( (String) value ));
 		this.combo.select( mode.ordinal() );
+		new ComboDataBinding<NetworkConfiguratorProperties, ConfigMode>( NetworkConfiguratorProperties.MODE, source, ConfigMode.EDGE, combo );		
+
 		value = source.getDefault( NetworkConfiguratorProperties.PEER_ID );
 		if( value != null)
 			this.peerIdText.setText(((PeerID )value).toString());
