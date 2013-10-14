@@ -12,12 +12,25 @@ package net.osgi.jxse.properties;
 
 import java.util.Iterator;
 
-public interface IJxsePropertySource< T extends Enum<T>, U extends IJxseDirectives> {
+public interface IJxsePropertySource< T extends Object, U extends IJxseDirectives> {
 
 	public static final String JXTA_SETTINGS = "jxta.settings";
 	public static final String S_USER_HOME = "user.home";
 	public static final String S_JXSE = ".jxse";
 
+	/**
+	 * Returns the parent, or null of the property source is a root
+	 * @return
+	 */
+	public IJxsePropertySource<?,?> getParent();
+	
+	/**
+	 * Get the id from a string representation
+	 * @param key
+	 * @return
+	 */
+	public T getIdFromString( String key );
+	
 	/**
 	 * Get the plugin ID
 	 * @return
@@ -59,16 +72,8 @@ public interface IJxsePropertySource< T extends Enum<T>, U extends IJxseDirectiv
 	 * Get the current value for the given property
 	 */
 	public Object getProperty( T id );
-	
+
 	public ManagedProperty<T,Object> getManagedProperty( T id );
-	
-	/**
-	 * Set the value for the given property
-	 * @param id
-	 * @param value
-	 * @return 
-	 */
-	public boolean setProperty( T id, Object value );
 	
 	/**
 	 * Get an iterator over the properties
@@ -91,6 +96,13 @@ public interface IJxsePropertySource< T extends Enum<T>, U extends IJxseDirectiv
 	public Object getDirective( U id );
 
 	/**
+	 * Get the directive from a String
+	 * @param id
+	 * @return
+	 */
+	public U getDirectiveFromString( String id);
+
+	/**
 	 * Get the default directives
 	 * @param id
 	 * @return
@@ -109,5 +121,5 @@ public interface IJxsePropertySource< T extends Enum<T>, U extends IJxseDirectiv
 	 */
 	public IJxsePropertySource<?,?>[] getChildren();
 
-	boolean setDirective(U id, Object value); 
+	public boolean isEmpty();
 }

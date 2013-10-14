@@ -10,38 +10,58 @@
  *******************************************************************************/
 package net.osgi.jxse.seeds;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Iterator;
 
 import net.jxta.platform.NetworkConfigurator;
+import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.SeedListPropertySource;
 import net.osgi.jxse.seeds.SeedInfo;
 
-public class SeedListFactory implements ISeedListFactory{
+public class SeedListFactory implements IComponentFactory<String, String, IJxseDirectives>, ISeedListFactory{
 
-	private Map<String, String> props;
+	private SeedListPropertySource<IJxseDirectives> source;
+	private NetworkConfigurator configurator;
+	private boolean completed = false;
 	
-	
-	public SeedListFactory() {
+	public SeedListFactory( SeedListPropertySource<IJxseDirectives> source ) {
 		super();
-		props = new HashMap<String, String>();
+		this.source = source;
 	}
-
 
 	public void addSeed( String name, String value ){
-		props.put( name, value);
+		source.setProperty( name, value);
 	}
 	
-	/* (non-Javadoc)
-	 * @see net.osgi.jxta.ISeedListFactory#createSeedlist(net.jxta.platform.NetworkConfigurator)
-	 */
 	@Override
-	public void createSeedlist( NetworkConfigurator configurator ) throws IOException{
-		configurator.clearRendezvousSeeds();
+	public net.osgi.jxse.factory.IComponentFactory.Components getComponentName() {
+		return Components.SEED_LIST;
+	}
+
+	@Override
+	public boolean canCreate() {
+		return true;
+	}
+
+	@Override
+	public IJxsePropertySource<String, IJxseDirectives> getPropertySource() {
+		return source;
+	}
+	
+	@Override
+	public void setConfigurator(NetworkConfigurator configurator) {
+		this.configurator = configurator;		
+	}
+
+	@Override
+	public String createModule() {
 		SeedInfo seedInfo = new SeedInfo();
 		String value;
-		for( String key: props.keySet() ){
-			value = props.get(key);
+		Iterator<String> iterator = source.propertyIterator();
+		while( iterator.hasNext() ){
+			String key = iterator.next();
+			value = (String) source.getProperty( key);
 			seedInfo.parse(key, value );
 			if( seedInfo.isCommentedOut() )
 				continue;
@@ -53,11 +73,27 @@ public class SeedListFactory implements ISeedListFactory{
 				configurator.addRelaySeedingURI( seedInfo.getUri() );						
 			}
 		}
+		return null;
+	}
+	
+	@Override
+	public boolean complete() {
+		this.completed = true;
+		return this.completed;
 	}
 
+	@Override
+	public boolean isCompleted() {
+		return completed;
+	}
 
 	@Override
-	public boolean isEmpty() {
-		return props.isEmpty();
+	public boolean hasFailed() {
+		return !this.completed;
+	}
+
+	@Override
+	public String getModule() {
+		return null;
 	}		
 }

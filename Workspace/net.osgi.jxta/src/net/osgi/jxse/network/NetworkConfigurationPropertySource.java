@@ -1,21 +1,21 @@
 package net.osgi.jxse.network;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
-import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
-import net.osgi.jxse.properties.AbstractJxsePropertySource;
+import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public class NetworkConfigurationPropertySource extends AbstractJxsePropertySource<NetworkConfigurationPropertySource.NetworkConfiguratorProperties, IJxseDirectives>
+public class NetworkConfigurationPropertySource extends AbstractJxseWritePropertySource<NetworkConfigurationPropertySource.NetworkConfiguratorProperties, IJxseDirectives>
+	implements IJxseWritePropertySource<NetworkConfigurationPropertySource.NetworkConfiguratorProperties, IJxseDirectives>
 
 {
 	public enum NetworkConfiguratorProperties{
-		AUTHENTICATION_TYPE,
-		CERTFICATE,
-		CERTIFICATE_CHAIN,
 		DESCRIPTION,
 		HOME,
 		HTTP_8ENABLED,
@@ -31,7 +31,6 @@ public class NetworkConfigurationPropertySource extends AbstractJxsePropertySour
 		INFRASTRUCTURE_8NAME,
 		INFRASTRUCTURE_8DESCRIPTION,
 		INFRASTRUCTURE_8ID,
-		KEY_STORE_LOCATION,
 		MODE,
 		MULTICAST_8ADDRESS,
 		MULTICAST_8INTERFACE,
@@ -40,10 +39,14 @@ public class NetworkConfigurationPropertySource extends AbstractJxsePropertySour
 		MULTICAST_8SIZE,
 		MULTICAST_8STATUS,
 		NAME,
-		PASSWORD,
 		PEER_ID,
-		PRINCIPAL,
-		PRIVATE_KEY,
+		SECURITY_8AUTHENTICATION_TYPE,
+		SECURITY_8CERTFICATE,
+		SECURITY_8CERTIFICATE_CHAIN,
+		SECURITY_8KEY_STORE_LOCATION,
+		SECURITY_8PASSWORD,
+		SECURITY_8PRINCIPAL,
+		SECURITY_8PRIVATE_KEY,
 		RELAY_8MAX_CLIENTS,
 		RELAY_8SEEDING_URIS,
 		RELAY_8SEED_URIS,
@@ -75,20 +78,18 @@ public class NetworkConfigurationPropertySource extends AbstractJxsePropertySour
 		}
 	}
 
-	private NetworkManagerPropertySource source;
-	
 	public NetworkConfigurationPropertySource( NetworkManagerFactory factory ) {
 		this( (NetworkManagerPropertySource) factory.getPropertySource() );
-		this.fill( source );
+		this.fill();
 	}
 
 	public NetworkConfigurationPropertySource( NetworkManagerPropertySource nmps ) {
-		super( nmps.getBundleId(), nmps.getIdentifier(), Components.NETWORK_CONFIGURATOR.name(), 2 );
-		source =  nmps;
-		this.fill( source );
+		super( nmps );
+		this.fill();
 	}
 
-	private void fill( NetworkManagerPropertySource source ){
+	private void fill(){
+		NetworkManagerPropertySource source = (NetworkManagerPropertySource) super.getParent();
 		Iterator<NetworkManagerProperties> iterator = source.propertyIterator();
 		while( iterator.hasNext() ){
 			NetworkManagerProperties cp = iterator.next();
@@ -96,7 +97,7 @@ public class NetworkConfigurationPropertySource extends AbstractJxsePropertySour
 			if( nmp == null )
 				continue;
 			Object value = source.getProperty( cp );
-			super.setProperty(nmp, value);
+			super.setProperty(nmp, value, true);
 		}
 		super.setProperty( NetworkConfiguratorProperties.TCP_8PORT, source.getTcpPort());
 		super.setProperty( NetworkConfiguratorProperties.TCP_8ENABLED, true );
@@ -105,23 +106,49 @@ public class NetworkConfigurationPropertySource extends AbstractJxsePropertySour
 
 	@Override
 	public Object getDefaultDirectives(IJxseDirectives id) {
-		if( this.source != null )
-			return this.source.getDefaultDirectives((ContextDirectives) id);
+		NetworkManagerPropertySource source = (NetworkManagerPropertySource) super.getParent();
+		if( source != null )
+			return source.getDefaultDirectives((IJxseDirectives.Directives) id);
 		return null;
 	}
 
 	@Override
+	public String getComponentName() {
+		return Components.NETWORK_CONFIGURATOR.toString();
+	}
+	
+	@Override
+	public NetworkConfiguratorProperties getIdFromString(String key) {
+		return NetworkConfiguratorProperties.valueOf( key );
+	}
+
+	@Override
 	public String getBundleId() {
-		if( this.source != null )
-			return this.source.getBundleId();
+		NetworkManagerPropertySource source = (NetworkManagerPropertySource) super.getParent();
+		if( source != null )
+			return source.getBundleId();
 		return null;
 	}
 
 	@Override
 	public String getIdentifier() {
-		if( this.source != null )
-			return this.source.getIdentifier();
+		NetworkManagerPropertySource source = (NetworkManagerPropertySource) super.getParent();
+		if( source != null )
+			return source.getIdentifier();
 		return null;
+	}
+
+	@Override
+	public Iterator<NetworkConfiguratorProperties> propertyIterator() {
+		Iterator<NetworkConfiguratorProperties> iterator = super.propertyIterator();
+		Collection<NetworkConfiguratorProperties> results = new ArrayList<NetworkConfiguratorProperties>();
+		while( iterator.hasNext() ){
+			NetworkConfiguratorProperties id = iterator.next();
+			if( id.name().startsWith("TCP."))
+				continue;
+			results.add(id);
+		}
+		return results.iterator();
 	}
 
 	@Override
@@ -165,7 +192,7 @@ public class NetworkConfigurationPropertySource extends AbstractJxsePropertySour
 		case MODE:
 			return NetworkConfiguratorProperties.MODE;
 		case INSTANCE_HOME:
-			return NetworkConfiguratorProperties.HOME;
+			return NetworkConfiguratorProperties.STORE_HOME;
 		case PEER_ID:
 			return NetworkConfiguratorProperties.PEER_ID;
 		default:

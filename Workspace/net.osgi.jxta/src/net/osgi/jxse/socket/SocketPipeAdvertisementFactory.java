@@ -21,7 +21,9 @@ import net.jxta.pipe.PipeID;
 import net.jxta.pipe.PipeService;
 import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jxse.advertisement.PipeAdvertisementFactory;
+import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
 public class SocketPipeAdvertisementFactory extends PipeAdvertisementFactory {
@@ -47,7 +49,7 @@ public class SocketPipeAdvertisementFactory extends PipeAdvertisementFactory {
 
 	@Override
 	protected void fillDefaultValues() {
-		IJxsePropertySource<Properties, Directives> source = null;//TODOsuper.getPropertySource();		
+		IJxseWritePropertySource<Properties, IJxseDirectives.Directives> source = null;//TODOsuper.getPropertySource();		
 		try {
 			source.setProperty( Properties.SOCKET_ID, new URI( SOCKETIDSTR ));
 		} catch (URISyntaxException e) {
@@ -63,7 +65,7 @@ public class SocketPipeAdvertisementFactory extends PipeAdvertisementFactory {
 	@Override
 	public PipeAdvertisement createModule() {
 		PipeID socketID = null;
-		IJxsePropertySource<Properties, Directives> source = null;//TODOsuper.getPropertySource();		
+		IJxsePropertySource<Properties, IJxseDirectives.Directives> source = null;//TODOsuper.getPropertySource();		
 		try {
 			socketID = (PipeID) IDFactory.fromURI( (URI) source.getProperty( Properties.SOCKET_ID ));
 		} catch (URISyntaxException use) {

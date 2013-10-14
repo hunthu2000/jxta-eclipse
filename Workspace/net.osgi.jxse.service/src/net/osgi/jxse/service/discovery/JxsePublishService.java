@@ -18,6 +18,8 @@ import java.util.logging.Logger;
 import net.jxta.discovery.DiscoveryService;
 import net.jxta.document.Advertisement;
 import net.osgi.jxse.advertisement.AbstractAdvertisementFactory;
+import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
+import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.utils.StringStyler;
 
 public class JxsePublishService extends JxseDiscoveryService{
@@ -40,7 +42,7 @@ public class JxsePublishService extends JxseDiscoveryService{
 
 	@Override
 	protected void fillDefaultValues() {
-		this.putProperty( DiscoveryProperties.MODE, Mode.DISCOVERY_AND_PUBLISH, true );
+		this.putProperty( DiscoveryProperties.DISCOVERY_MODE, DiscoveryMode.DISCOVERY_AND_PUBLISH, true );
 		this.putProperty( PublishProperties.EXPIRATION, 1200000, true );
 		this.putProperty( PublishProperties.LIFE_TIME, 120000,true );
 		super.fillDefaultValues();
@@ -88,8 +90,8 @@ public class JxsePublishService extends JxseDiscoveryService{
 
 	@Override
 	protected void onActiveState() {
-		Mode mode = ( Mode )this.getProperty( DiscoveryProperties.MODE );
-		if(!( mode.equals( Mode.DISCOVERY )))
+		DiscoveryMode mode = ( DiscoveryMode )this.getProperty( DiscoveryProperties.DISCOVERY_MODE );
+		if(!( mode.equals( DiscoveryMode.DISCOVERY )))
 		  this.publishAdvertisements();		
 		super.onActiveState();
 	}

@@ -178,4 +178,10 @@ public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProper
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public ContextProperties getIdFromString(String key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

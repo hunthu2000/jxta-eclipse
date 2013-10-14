@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,7 +23,12 @@ import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
+import net.osgi.jxse.properties.PartialPropertySource;
+import net.osgi.jxse.properties.SeedListPropertySource;
 import net.osgi.jxse.seeds.ISeedListFactory;
+import net.osgi.jxse.seeds.SeedListFactory;
+import net.osgi.jxse.utils.StringStyler;
 
 public class NetworkConfigurationFactory extends
 		AbstractComponentFactory<NetworkConfigurator, NetworkConfiguratorProperties, IJxseDirectives> {
@@ -35,11 +39,10 @@ public class NetworkConfigurationFactory extends
 	
 	private NetworkManagerFactory nmFactory;
 
-	public NetworkConfigurationFactory( NetworkManagerFactory nmFactory ) {
-		super( new NetworkConfigurationPropertySource( nmFactory ));
+	public NetworkConfigurationFactory( NetworkManagerFactory nmFactory, NetworkConfigurationPropertySource source ) {
+		super( source );
 		this.nmFactory = nmFactory;
 		this.seedLists = new ArrayList<ISeedListFactory>();
-		super.addDirective( Directives.CREATE_PARENT, "true" );
 	}
 
 	public boolean addSeedlist( ISeedListFactory factory ){
@@ -55,10 +58,6 @@ public class NetworkConfigurationFactory extends
 	}
 
 	@Override
-	protected void onParseDirectiveAfterCreation( NetworkConfigurator module, IJxseDirectives directive, Object value) {
-	}
-
-	@Override
 	protected NetworkConfigurator onCreateModule( IJxsePropertySource<NetworkConfiguratorProperties, IJxseDirectives> properties) {
 		NetworkConfigurator configurator = null;
 		try {
@@ -68,14 +67,10 @@ public class NetworkConfigurationFactory extends
 				configurator.setHome( new File( home ));
 			configurator.clearRelaySeeds();
 			configurator.clearRendezvousSeeds();
-			for( ISeedListFactory factory: this.seedLists )
-				try {
-					factory.createSeedlist( configurator );
-				} catch (IOException e) {
-					Logger log = Logger.getLogger( this.getClass().getName() );
-					log.log( Level.SEVERE, e.getMessage() );
-					e.printStackTrace();
-				}
+			for( ISeedListFactory factory: this.seedLists ){
+				factory.setConfigurator(configurator);
+				factory.createModule();
+			}
 			this.fillConfigurator(configurator);
 			configurator.save();
 		} catch (IOException e) {
@@ -87,14 +82,61 @@ public class NetworkConfigurationFactory extends
 		return configurator;
 	}
 	
-	protected void fillConfigurator( NetworkConfigurator configurator ){
-		Iterator<NetworkConfiguratorProperties> properties = super.getPropertySource().propertyIterator();
-		while( properties.hasNext() ){
-			NetworkConfiguratorProperties key = properties.next();
-			Object value = super.getPropertySource().getProperty( key); 
-			TcpConfiguration.fillConfigurator(configurator, key,  value );
-			HttpConfiguration.fillConfigurator(configurator, key, value );
-			MulticastConfiguration.fillConfigurator(configurator, key, value);
+	protected void fillConfigurator( NetworkConfigurator configurator ) throws IOException{
+		this.fillPartialConfigurator(super.getPropertySource());
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void fillPartialConfigurator( IJxsePropertySource<NetworkConfiguratorProperties,IJxseDirectives> source ) throws IOException{
+		INetworkPreferences preferences;
+		if( source instanceof PartialPropertySource ){
+			preferences = getPreferences(( PartialPropertySource )source);
+			preferences.fillConfigurator(this.getModule());
+			return;
+		}
+		if( source instanceof SeedListPropertySource ){
+			this.seedLists.add( new SeedListFactory((SeedListPropertySource) source ));
+			return;
+		}
+		NetworkConfigurator configurator = nmFactory.getModule().getConfigurator();
+		preferences = new OverviewPreferences( (IJxseWritePropertySource<NetworkConfiguratorProperties, IJxseDirectives>) source );
+		preferences.fillConfigurator(configurator);
+		for( IJxsePropertySource<?, ?> child: super.getPropertySource().getChildren() )
+			this.fillPartialConfigurator((IJxsePropertySource<NetworkConfiguratorProperties, IJxseDirectives>) child);
+	}
+
+	@Override
+	protected void onProperytySourceCreated(
+			IJxsePropertySource<?, ?> ps) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onParseDirectiveAfterCreation(IJxseDirectives directive,
+			Object value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * Get the correct preferences for several services
+	 * @param source
+	 * @return
+	 */
+	public static INetworkPreferences getPreferences( PartialPropertySource<NetworkConfiguratorProperties,IJxseDirectives> source ){
+		Components component = Components.valueOf( StringStyler.styleToEnum( source.getComponentName()));
+		switch( component ){
+		case TCP:
+			return new TcpPreferences( source );
+		case HTTP:
+			return new HttpPreferences( source );
+		case MULTICAST:
+			return new MulticastPreferences( source);
+		case SECURITY:
+			return new SecurityPreferences( source );
+		default:
+			return null;
 		}
 	}
 }

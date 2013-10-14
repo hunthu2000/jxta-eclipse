@@ -16,21 +16,30 @@ import java.util.Iterator;
 
 import net.osgi.jxse.activator.IActivator;
 import net.osgi.jxse.builder.ICompositeBuilderListener.FactoryEvents;
-import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.factory.ComponentFactoryEvent;
 import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.network.NetworkConfigurationFactory;
+import net.osgi.jxse.network.NetworkConfigurationPropertySource;
+import net.osgi.jxse.network.NetworkManagerFactory;
+import net.osgi.jxse.network.NetworkManagerPropertySource;
+import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.SeedListPropertySource;
+import net.osgi.jxse.seeds.ISeedListFactory;
+import net.osgi.jxse.seeds.SeedListFactory;
 
-public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends AbstractComponentFactory<T,U,V> implements ICompositeBuilder<T> {
+public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJxseDirectives> implements ICompositeBuilder<T> {
 
-	private ComponentNode<T,U,V> node;
-	
 	private Collection<ICompositeBuilderListener> factoryListeners;
+	private IComponentFactory<?,?,?> factory = null;
+	private ComponentNode<T,U,V> root;
+	private IJxsePropertySource<U,V> ps;
+
 	
-	public CompositeBuilder( ComponentNode<T,U,V> node) {
-		super( node.getFactory().getPropertySource() );
-		this.node = node;
+	public CompositeBuilder( IJxsePropertySource<U,V> propertySource) {
+		ps = propertySource;
 		this.factoryListeners = new ArrayList<ICompositeBuilderListener>();
 	}
 
@@ -52,23 +61,100 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 
 	protected void notifyListeners( ComponentFactoryEvent event ){
 		for( ICompositeBuilderListener listener: factoryListeners )
-			listener.notifyFactoryCreated(event);
+			listener.notifyCreated(event);
 	}
  
-	@Override
-	protected void onParseDirectivePriorToCreation( V directive, Object value) {
-		this.onParseDirectivePriorToCreation( node, ( Directives )directive, ( String )value );
+	/**
+	 * Do nothing
+	 */
+	protected void onProperytySourceCreated( IJxsePropertySource<?,?> ps ) {}
+
+	/**
+	 * Parse the directives for this factory
+	 * @param node
+	 */
+	@SuppressWarnings({ "unchecked" })
+	private final void parsePropertySources(){
+		this.root = (ComponentNode<T, U, V>) this.parsePropertySources(ps, null );
 	}
 
-	protected void onParseDirectivePriorToCreation( ComponentNode<T,U,V> node, Directives directive, String value) {
-		IComponentFactory<?,?,?> parentFactory = null;
+	/**
+	 * Parse the directives for this factory
+	 * @param node
+	 */
+	@SuppressWarnings({"rawtypes", "unchecked" })
+	private final ComponentNode parsePropertySources( IJxsePropertySource<?,?> source, ComponentNode<?, ?, ?> parent ){
+		ComponentNode node = null;
+		ComponentNode returnNode = null;
+		boolean newFactory = false;
+		if( source instanceof NetworkManagerPropertySource ){
+			factory = new NetworkManagerFactory( (IJxsePropertySource<NetworkManagerProperties, Directives>) source );
+			node = this.getNode(parent, factory);
+			returnNode = node;
+			newFactory = true;
+		}else if( source instanceof NetworkConfigurationPropertySource ){
+			factory = new NetworkConfigurationFactory( (NetworkManagerFactory) factory, (NetworkConfigurationPropertySource) source );
+			node = this.getNode(parent, factory);
+			newFactory = true;
+		}else if( source instanceof SeedListPropertySource ){
+			NetworkConfigurationFactory ncf = (NetworkConfigurationFactory) factory;
+			ISeedListFactory slf = new SeedListFactory((SeedListPropertySource<IJxseDirectives>) source ); 
+			ncf.addSeedlist(slf);
+		}
+		this.onProperytySourceCreated(source);
+		ComponentNode childNode = null;
+		for( IJxsePropertySource<?,?> child: source.getChildren()) {
+			childNode = this.parsePropertySources( child, node );
+			if(( returnNode == null ) &&( childNode != null ))
+				returnNode = childNode;
+		}
+		if( newFactory )
+			this.notifyListeners( new ComponentFactoryEvent( this, factory, FactoryEvents.FACTORY_CREATED ));
+		return returnNode;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected ComponentNode<?,?,?> getNode( ComponentNode<?,?,?> node, IComponentFactory<?,?,?> factory ){
+		ComponentNode<?,?,?> childNode = null;
+		if( node == null )
+			childNode = new ComponentNode( factory );
+		else
+			childNode = node.addChild( factory );
+		return childNode;
+	}
+	
+	@Override
+	public T build() {
+		this.parsePropertySources();
+		return this.createModule( this.root);
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private T createModule( ComponentNode node ){
+		IComponentFactory factory = node.getFactory();
+		T component = null;
+		if( factory != null ){
+			this.parseDirectives( node );
+			component = (T) factory.createModule();
+			this.notifyListeners( new ComponentFactoryEvent( this, factory, FactoryEvents.COMPONENT_CREATED ));
+		}
+		for( ComponentNode<?,?,?> child: node.getChildren())
+			createModule( child );
+		factory.complete();
+		return component;
+		
+	}
+
+	protected void onParseDirectivePriorToCreation( ComponentNode<?,?,?> node, IJxseDirectives.Directives directive, String value) {
+		if( node.getParent() == null )
+			return;
+		IComponentFactory<?,?,?> parentFactory = node.getParent().getFactory();
 		switch( directive ){
 			case ACTIVATE_PARENT:
 				boolean ap = Boolean.parseBoolean( value );
-				parentFactory = node.getParent().getFactory();
 				if( !ap || !parentFactory.isCompleted())
 					break;
-				Object pc = node.getParent().getFactory().getModule();
+				Object pc = parentFactory.getModule();
 				if(!( pc instanceof IActivator ))
 					return;
 				IActivator activator = ( IActivator )pc;
@@ -76,9 +162,8 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 				break;
 			case CREATE_PARENT:
 				boolean cp = Boolean.parseBoolean( value );
-				parentFactory = node.getParent().getFactory();
 				if( cp && !parentFactory.isCompleted())
-					node.getParent().getFactory().createModule();
+					parentFactory.createModule();
 				break;
 			default:
 				break;
@@ -88,41 +173,21 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 	/**
 	 * Do nothing
 	 */
-	@Override
-	protected void onParseDirectiveAfterCreation( T component, V directive, Object value) {}
+	protected void onParseDirectiveAfterCreation( ComponentNode<?,?,?> node, IJxseDirectives.Directives directive, Object value) {}
 
 	/**
 	 * Parse the directives for this factory
 	 * @param node
 	 */
-	private final void parseDirectives( ComponentNode<T,U,V> node ){
-		IJxsePropertySource<U, V> ps = node.getFactory().getPropertySource();
-		Iterator<V> iterator = ps.directiveIterator();
+	private final void parseDirectives( ComponentNode<?,?,V> node ){
+		IJxsePropertySource<?,V> propertySource = this.ps;
+		if( node.getFactory() != null )
+			propertySource = node.getFactory().getPropertySource();
+		Iterator<V> iterator = propertySource.directiveIterator();
 		V directive;
 		while( iterator.hasNext()) {
 			directive = iterator.next();
-			this.onParseDirectivePriorToCreation( node, ( Directives )directive, ( String )ps.getDirective( directive ));
+			this.onParseDirectivePriorToCreation( node, ( IJxseDirectives.Directives )directive, ( String )propertySource.getDirective( directive ));
 		}
-	}
-
-	@Override
-	public T build() {
-		return this.createModule();
-	}
-
-	@Override
-	protected T onCreateModule( IJxsePropertySource<U, V> properties) {
-		return this.createModule( node );
-	}
-
-	@SuppressWarnings("unchecked")
-	private T createModule( ComponentNode<T,U,V> node ){
-		this.parseDirectives(node);
-		T component = node.getFactory().createModule();
-		this.notifyListeners( new ComponentFactoryEvent( this, node.getFactory(), FactoryEvents.COMPONENT_CREATED ));
-		for( ComponentNode<?,?,?> child: node.getChildren())
-			createModule( (ComponentNode<T,U,V>) child );
-		return component;
-		
 	}
 }

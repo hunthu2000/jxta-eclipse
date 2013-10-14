@@ -10,15 +10,11 @@
  *******************************************************************************/
 package net.osgi.jxse.seeds;
 
-import java.io.IOException;
-
 import net.jxta.platform.NetworkConfigurator;
+import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.properties.IJxseDirectives;
 
-public interface ISeedListFactory {
+public interface ISeedListFactory extends IComponentFactory<String, String, IJxseDirectives>{
 
-	public abstract void createSeedlist(NetworkConfigurator configurator)
-			throws IOException;
-	
-	public boolean isEmpty();
-
+	public abstract void setConfigurator( NetworkConfigurator configurator );
 }

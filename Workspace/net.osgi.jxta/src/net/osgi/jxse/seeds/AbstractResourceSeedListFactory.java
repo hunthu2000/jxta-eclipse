@@ -25,11 +25,19 @@ public abstract class AbstractResourceSeedListFactory implements ISeedListFactor
 	
 	protected abstract InputStream getInputStream();
 	
+	private NetworkConfigurator configurator;
+	
+	public AbstractResourceSeedListFactory( NetworkConfigurator configurator ) {
+		super();
+		this.configurator = configurator;
+	}
+
+
 	/* (non-Javadoc)
 	 * @see net.osgi.jxta.ISeedListFactory#createSeedlist(net.jxta.platform.NetworkConfigurator)
 	 */
 	@Override
-	public void createSeedlist( NetworkConfigurator configurator ) throws IOException{
+	public String createModule(){
 		configurator.clearRendezvousSeeds();
 		InputStream in = this.getInputStream();
 		Properties props = new Properties();
@@ -53,15 +61,11 @@ public abstract class AbstractResourceSeedListFactory implements ISeedListFactor
 				}
 			}
 		} catch (IOException e) {
-			throw( e );
+			throw new RuntimeException( e );
 		}
 		finally{
 			IOUtils.closeInputStream( in );
 		}
+		return null;
 	}
-
-	@Override
-	public boolean isEmpty() {
-		return ( getInputStream() != null );
-	}		
 }

@@ -21,8 +21,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import net.osgi.jxse.context.JxseContextPropertySource;
-import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
+import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.service.xml.JxseXmlBuilder;
 import net.osgi.jxse.utils.io.IOUtils;
 
@@ -65,7 +65,7 @@ public abstract class AbstractJxseBundleSection extends OptionTemplateSection {
 	public static final String KEY_DOMAIN = "domain";
 	
 	public static final String KEY_JXSE_CONTEXT = "JxseContext";
-	public static final String FILE_JXSE_XML = "JXSE-INF/jxse.xml";
+	public static final String FILE_JXSE_XML = "JXSE-INF/jxse-1.0.0.xml";
 	public static final String FILE_OSGI_XML = "OSGI-INF/attendees.xml";
 	public static final String FOLDER_OSGI = "OSGI-INF/";
 
@@ -76,7 +76,7 @@ public abstract class AbstractJxseBundleSection extends OptionTemplateSection {
 	public static final String S_META_INF = "META-INF/";
 	public static final String S_MANIFEST_MF = "MANIFEST.MF";
 	public static final String S_JXSE_INF = "JXSE-INF/";
-	public static final String S_JXSE_FILE = "jxse.xml";
+	public static final String S_JXSE_FILE = "jxse-1.0.0.xml";
 
 	public static final String S_OSGI_INF = "OSGI-INF/";
 	public static final String S_ATTENDESS_XML = "attendees.xml";
@@ -161,7 +161,6 @@ public abstract class AbstractJxseBundleSection extends OptionTemplateSection {
 		return super.getStringOption(name);
 	}
 
-	
 	@Override
 	public int getNumberOfWorkUnits() {
 		return super.getNumberOfWorkUnits() + 1;
@@ -199,6 +198,17 @@ public abstract class AbstractJxseBundleSection extends OptionTemplateSection {
 		return new String[]{FOLDER_OSGI, FILE_OSGI_XML, FILE_JXSE_XML};
 	}
 
+	protected String getAttenddeesXML(){
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		buffer.append("\t<scr:component xmlns:scr=\"http://www.osgi.org/xmlns/scr/v1.1.0\" name=\"" + this.packageName + ".service\">\n");
+		buffer.append("\t<implementation class=\"" + this.packageName + ".service.OsgiComponent\"/>\n");
+		buffer.append("\t<reference bind=\"setAttendeeService\" cardinality=\"1..1\" interface=\"org.eclipselabs.osgi.ds.broker.IAttendeeService\"" +
+		" name=\"IAttendeeService\" policy=\"static\" unbind=\"unsetAttendeeService\"/>\n");
+		buffer.append("</scr:component>");
+		return buffer.toString();
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.pde.ui.templates.ITemplateSection#getUsedExtensionPoint()
 	 */
@@ -230,6 +240,7 @@ public abstract class AbstractJxseBundleSection extends OptionTemplateSection {
 				new IPluginReference[result.size()]);
 	}
 
+	
 	public void update() throws Exception{}
 	
 	@Override
@@ -243,15 +254,15 @@ public abstract class AbstractJxseBundleSection extends OptionTemplateSection {
 	
 	
 	private void createComponent( IProgressMonitor monitor ){
-		JxseXmlBuilder<ContextProperties, ContextDirectives> builder = 
-				new JxseXmlBuilder<ContextProperties, ContextDirectives>();
+		JxseXmlBuilder<ContextProperties, IJxseDirectives.Directives> builder = 
+				new JxseXmlBuilder<ContextProperties, IJxseDirectives.Directives>();
 		InputStream source = null;
 		try{
 			source = new ByteArrayInputStream( builder.build( this.properties ).getBytes()); 
 			this.createFile(project, S_JXSE_INF + "/", S_JXSE_FILE, source, monitor);
 			IOUtils.closeInputStream(source);
 			monitor.worked(3);
-			source = new ByteArrayInputStream( builder.build( this.properties ).getBytes()); 
+			source = new ByteArrayInputStream( this.getAttenddeesXML().getBytes()); 
 			this.createFile(project, S_OSGI_INF + "/", S_ATTENDESS_XML, source, monitor);
 			monitor.worked(4);
 		}

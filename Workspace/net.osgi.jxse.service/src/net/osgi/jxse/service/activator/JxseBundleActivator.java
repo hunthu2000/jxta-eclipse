@@ -11,19 +11,33 @@
 package net.osgi.jxse.service.activator;
 
 import net.jxta.platform.NetworkManager;
+import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.context.IJxseServiceContext;
 import net.osgi.jxse.service.xml.XMLServiceContext;
 
 public class JxseBundleActivator extends AbstractJxseBundleActivator {
 
-	String bundle_id;
+	private String bundle_id;
+	private ICompositeBuilderListener observer;
+	
 	
 	public JxseBundleActivator(String bundle_id) {
 		this.bundle_id = bundle_id;
 	}
 
+	public ICompositeBuilderListener getObserver() {
+		return observer;
+	}
+
+	public void setObserver(ICompositeBuilderListener observer) {
+		this.observer = observer;
+	}
+
 	@Override
 	protected IJxseServiceContext<NetworkManager> createContext() {
-		return 	new XMLServiceContext( bundle_id, this.getClass() );
+		XMLServiceContext context = new XMLServiceContext( bundle_id, this.getClass() );
+		context.setObserver(observer);
+		context.initialise();
+		return context;
 	}
 }

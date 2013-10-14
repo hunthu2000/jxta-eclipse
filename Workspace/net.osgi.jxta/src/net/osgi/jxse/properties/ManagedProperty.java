@@ -7,13 +7,14 @@ import java.util.Map;
 
 import net.osgi.jxse.utils.Utils;
 
-public class ManagedProperty<T extends Enum<T>, U extends Object> {
-
+public class ManagedProperty<T, U extends Object> {
 	
 	private T id;
 	private U value, defaultValue;
 	private Map<String, String> attributes;
 	private boolean dirty;
+	private IJxseValidator<T,U> validator;
+	private boolean derived;
 
 	private Collection<IManagedPropertyListener<T,U>> listeners;
 	
@@ -24,10 +25,33 @@ public class ManagedProperty<T extends Enum<T>, U extends Object> {
 		this.listeners = new ArrayList<IManagedPropertyListener<T,U>>();
 	}
 
-	public ManagedProperty( T id, U value ) {
+	/**
+	 * Create a managed property with the given id and value. If derives is true, it means that the property
+	 * is managed by another one.
+	 * @param id
+	 * @param value
+	 * @param derived
+	 */
+	public ManagedProperty( T id, U value, boolean derived ) {
 		this( id );
 		this.value = value;
 		this.defaultValue = value;
+		this.derived = derived;
+	}
+
+	public ManagedProperty( T id, U value ) {
+		this( id, value, false );
+	}
+
+	/**
+	 * A derived property is directly associated with another one. If true, a property can
+	 * be skipped because it can also be reconstructed from the source. For instance, the home folder
+	 * can be included in the context, the network manager and the network configurator. By marking
+	 * the property as derived, this property only needs to be set in one compponent. 
+	 * @return
+	 */
+	public boolean isDerived() {
+		return derived;
 	}
 
 	public void addManagedPropertyListener( IManagedPropertyListener<T,U> listener ){
@@ -38,6 +62,14 @@ public class ManagedProperty<T extends Enum<T>, U extends Object> {
 		this.listeners.remove(listener);
 	}
 	
+	public IJxseValidator<T, U> getValidator() {
+		return validator;
+	}
+
+	public void setValidator(IJxseValidator<T, U> validator) {
+		this.validator = validator;
+	}
+
 	protected void notifyValueChanged(){
 		for( IManagedPropertyListener<T,U> listener: this.listeners ){
 			listener.notifyValueChanged( new ManagedPropertyEvent<>(this));
@@ -62,6 +94,10 @@ public class ManagedProperty<T extends Enum<T>, U extends Object> {
 		return this.attributes.get(attr);
 	}
 
+	public Map<String, String> getAttributes(){
+		return this.attributes;
+	}
+	
 	public T getKey() {
 		return id;
 	}
@@ -72,12 +108,16 @@ public class ManagedProperty<T extends Enum<T>, U extends Object> {
 		return value;
 	}
 
-	public void setValue(U value) {
+	public boolean setValue(U value) {
 		this.dirty = (this.value == null ) || ( !this.value.equals( value ));
 		if( !this.dirty )
-			return;
+			return false;
+		if( !this.validate( value ))
+			return false;
 		this.value = value;
+		this.derived = false;
 		this.notifyValueChanged();
+		return true;
 	}
 
 	public U getDefaultValue() {
@@ -93,4 +133,25 @@ public class ManagedProperty<T extends Enum<T>, U extends Object> {
 	public boolean isDirty() {
 		return dirty;
 	}	
+	
+	/**
+	 * Validate the value against the given validator, or return true if
+	 * no validator is used
+	 * @return
+	 */
+	public boolean validate(){
+		return this.validate(this.value);
+	}
+
+	/**
+	 * Validate the value against the given validator, or return true if
+	 * no validator is used
+	 * @return
+	 */
+	protected boolean validate( U value ){
+		if( this.validator == null )
+			return true;
+		else
+			return this.validator.validate( value);
+	}
 }

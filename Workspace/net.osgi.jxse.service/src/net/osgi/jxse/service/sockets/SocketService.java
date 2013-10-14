@@ -25,13 +25,13 @@ import java.util.concurrent.Executors;
 import net.jxta.platform.NetworkManager;
 import net.jxta.socket.JxtaSocket;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.factory.IComponentFactory.Directives;
+import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.service.core.AbstractJxtaService;
 import net.osgi.jxse.socket.ISocketFactory;
 import net.osgi.jxse.socket.SocketFactory;
 import net.osgi.jxse.utils.IOUtils;
 
-public class SocketService extends AbstractJxtaService<JxtaSocket, ISocketFactory.Properties, Directives> implements Runnable{
+public class SocketService extends AbstractJxtaService<JxtaSocket, ISocketFactory.Properties, IJxseDirectives.Directives> implements Runnable{
 
 	/**
 	* number of runs to make
@@ -59,7 +59,7 @@ public class SocketService extends AbstractJxtaService<JxtaSocket, ISocketFactor
 
 	
 	@Override
-	protected boolean onSetAvailable(IComponentFactory<JxtaSocket, ISocketFactory.Properties, Directives> factory) {
+	protected boolean onSetAvailable(IComponentFactory<JxtaSocket, ISocketFactory.Properties, IJxseDirectives.Directives> factory) {
 		if(!factory.canCreate() )
 			return false;
 

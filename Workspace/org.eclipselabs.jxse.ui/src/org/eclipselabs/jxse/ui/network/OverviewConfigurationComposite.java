@@ -5,9 +5,10 @@ import java.net.URI;
 
 import net.jxta.peer.PeerID;
 import net.jxta.platform.NetworkManager.ConfigMode;
+import net.osgi.jxse.context.JxseContextPreferences;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
-import net.osgi.jxse.preferences.AbstractJxsePreferences;
+import net.osgi.jxse.validator.StringValidator;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.GridLayout;
@@ -19,6 +20,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipselabs.jxse.ui.property.databinding.ComboDataBinding;
+import org.eclipselabs.jxse.ui.property.databinding.IJxseDatabinding;
 import org.eclipselabs.jxse.ui.property.databinding.StringDataBinding;
 
 public class OverviewConfigurationComposite extends Composite {
@@ -107,29 +109,31 @@ public class OverviewConfigurationComposite extends Composite {
 		return source;
 	}
 
+	/**
+	 * Initialise the view
+	 * @param source
+	 */
 	public void init( NetworkConfigurationPropertySource source ){
 		this.source = source;
-		Object value = source.getDefault( NetworkConfiguratorProperties.HOME );
+		Object value = source.getProperty( NetworkConfiguratorProperties.HOME );
 		if( value != null)
 			this.storeHomeText.setText((( URI) value ).getPath() );
 		value = source.getDefault( NetworkConfiguratorProperties.STORE_HOME );
 		if( value != null)
 			this.storeText.setText((( File )value ).toString() );
-		value = source.getDefault( NetworkConfiguratorProperties.NAME );
-		if( value != null)
-			this.nameText.setText(( String )value );
-		new StringDataBinding<NetworkConfiguratorProperties>( NetworkConfiguratorProperties.NAME, source, text);
+		
+		IJxseDatabinding<NetworkConfiguratorProperties, String> db = new StringDataBinding<NetworkConfiguratorProperties>( NetworkConfiguratorProperties.NAME, source, nameText);
+		db.setValidator( new StringValidator<NetworkConfiguratorProperties>( NetworkConfiguratorProperties.NAME, StringValidator.S_NAME_REGEX ));
 
 		value = source.getDefault( NetworkConfiguratorProperties.DESCRIPTION );
 		if( value != null)
 			this.descriptionText.setText(( String )value );
-		new StringDataBinding<NetworkConfiguratorProperties>( NetworkConfiguratorProperties.DESCRIPTION, source, descriptionText );
 
-		this.combo.setItems( AbstractJxsePreferences.getConfigModes());
+		this.combo.setItems( JxseContextPreferences.getConfigModes());
 		value = source.getDefault( NetworkConfiguratorProperties.MODE );
-		ConfigMode mode = ( value == null )? ConfigMode.EDGE: (ConfigMode.valueOf( (String) value ));
+		ConfigMode mode = ( value == null )? ConfigMode.EDGE: (ConfigMode ) value;
 		this.combo.select( mode.ordinal() );
-		new ComboDataBinding<NetworkConfiguratorProperties, ConfigMode>( NetworkConfiguratorProperties.MODE, source, ConfigMode.EDGE, combo );		
+		new ComboDataBinding<NetworkConfiguratorProperties, ConfigMode>( NetworkConfiguratorProperties.MODE, source, combo );		
 
 		value = source.getDefault( NetworkConfiguratorProperties.PEER_ID );
 		if( value != null)

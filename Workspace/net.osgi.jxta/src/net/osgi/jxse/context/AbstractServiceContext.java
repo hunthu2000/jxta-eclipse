@@ -119,6 +119,8 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 
 	@Override
 	public void putProperty(Object key, Object value) {
+		if( value == null )
+			return;
 		this.properties.put(key, value);
 	}
 

@@ -93,25 +93,25 @@ public class SecurityConfiguration {
 		boolean retval = false;
 		NetworkConfigurationPropertySource source = (NetworkConfigurationPropertySource) factory.getPropertySource();
 		switch( property ){
-		case CERTFICATE:
+		case SECURITY_8CERTFICATE:
 			//source.setProperty( property, X509Certificate,( value ));
 			retval = true;
 			break;
-		case CERTIFICATE_CHAIN:
+		case SECURITY_8CERTIFICATE_CHAIN:
 			//source.setProperty( property, X509Certificate[]( value ));
 			retval = true;
 			break;
-		case KEY_STORE_LOCATION:
+		case SECURITY_8KEY_STORE_LOCATION:
 			source.setProperty( property, URI.create( value ));
 			retval = true;
 			break;
-		case AUTHENTICATION_TYPE:
-		case PASSWORD:
-		case PRINCIPAL:
+		case SECURITY_8AUTHENTICATION_TYPE:
+		case SECURITY_8PASSWORD:
+		case SECURITY_8PRINCIPAL:
 			source.setProperty( property, value );
 			retval = true;
 			break;
-		case PRIVATE_KEY:			
+		case SECURITY_8PRIVATE_KEY:			
 			//source.setProperty( property, new PrivateKey( value ));
 			retval = true;
 			break;
@@ -120,39 +120,4 @@ public class SecurityConfiguration {
 		}
 		return retval;
 	}	
-
-	/**
-	 * Fill the configurator with the given properties
-	 * @param configurator
-	 * @param property
-	 * @param value
-	 */
-	public static void fillConfigurator( NetworkConfigurator configurator, NetworkConfiguratorProperties property, Object value ){
-		switch( property ){
-		case AUTHENTICATION_TYPE:
-			configurator.setAuthenticationType((String) value );
-			break;
-		case CERTFICATE:
-			configurator.setCertificate(( X509Certificate ) value );
-			break;
-		case CERTIFICATE_CHAIN:
-			configurator.setCertificateChain(( X509Certificate[] )value );
-			break;
-		case KEY_STORE_LOCATION:
-			configurator.setKeyStoreLocation(( URI )value );
-			break;
-		case PASSWORD:
-			configurator.setPassword(( String ) value );
-			break;
-		case PRINCIPAL:
-			configurator.setPrincipal(( String ) value );
-			break;
-		case PRIVATE_KEY:
-			configurator.setPrivateKey(( PrivateKey )value );
-			break;
-		default:
-			break;
-		}	
-	}
-
 }

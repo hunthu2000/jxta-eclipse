@@ -18,16 +18,16 @@ import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
+import net.osgi.jxse.properties.AbstractPreferences;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class NetworkManagerPreferences<T extends IJxseDirectives> implements INetworkManagerPropertySource<T>
+public class NetworkManagerPreferences<T extends IJxseDirectives> extends AbstractPreferences<NetworkManagerProperties, T> implements INetworkManagerPreferences<T>
 {
-	private IJxsePropertySource<NetworkManagerProperties, T> source;
-	
-	public NetworkManagerPreferences( IJxsePropertySource<NetworkManagerProperties, T> source )
+	public NetworkManagerPreferences( IJxseWritePropertySource<NetworkManagerProperties, T> source )
 	{
-		this.source = source;
+		super( source );
 	}
 
 	/* (non-Javadoc)
@@ -38,7 +38,8 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> implements INe
 	 */
 	@Override
 	public ConfigMode getConfigMode( ){
-		return ConfigMode.valueOf( (String) this.source.getProperty( NetworkManagerProperties.MODE ));
+		IJxsePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		return ( ConfigMode ) source.getProperty( NetworkManagerProperties.MODE );
 	}
 
 	/* (non-Javadoc)
@@ -46,7 +47,8 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> implements INe
 	 */
 	@Override
 	public void setConfigMode( ConfigMode mode ){
-		this.source.setProperty( NetworkManagerProperties.MODE, mode );
+		IJxseWritePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		source.setProperty( NetworkManagerProperties.MODE, mode );
 	}
 
 	/* (non-Javadoc)
@@ -65,7 +67,8 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> implements INe
 	 */
 	@Override
 	public URI getHomeFolder( ) throws URISyntaxException{
-		return (URI)this.source.getProperty( NetworkManagerProperties.INSTANCE_HOME );
+		IJxsePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		return (URI)source.getProperty( NetworkManagerProperties.INSTANCE_HOME );
 	}
 
 	/* (non-Javadoc)
@@ -73,7 +76,8 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> implements INe
 	 */
 	@Override
 	public void setHomeFolder( URI homeFolder ){
-		this.source.setProperty( NetworkManagerProperties.INSTANCE_HOME, homeFolder );
+		IJxseWritePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		source.setProperty( NetworkManagerProperties.INSTANCE_HOME, homeFolder );
 	}
 
 	/* (non-Javadoc)
@@ -86,7 +90,8 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> implements INe
 		if( split.length > 1 ){
 			  folder = System.getProperty( split[0] ) + split[1]; 
 		}
-		this.source.setProperty( NetworkManagerProperties.INSTANCE_HOME, folder );
+		IJxseWritePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		source.setProperty( NetworkManagerProperties.INSTANCE_HOME, folder );
 	}
 
 	/* (non-Javadoc)
@@ -97,9 +102,10 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> implements INe
 	 */
 	@Override
 	public PeerID getPeerID() throws URISyntaxException{
-		String name = this.source.getIdentifier();
+		IJxsePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		String name = source.getIdentifier();
 		PeerID pgId = IDFactory.newPeerID( PeerGroupID.defaultNetPeerGroupID, name.getBytes() );
-		String str = (String) this.source.getProperty( NetworkManagerProperties.PEER_ID);
+		String str = (String) source.getProperty( NetworkManagerProperties.PEER_ID);
 		URI uri = new URI( str );
 		return (PeerID) IDFactory.fromURI( uri );
 	}
@@ -109,7 +115,8 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> implements INe
 	 */
 	@Override
 	public void setPeerID( PeerID peerID ){
-		this.source.setProperty( NetworkManagerProperties.PEER_ID, peerID.toString() );
+		IJxseWritePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		source.setProperty( NetworkManagerProperties.PEER_ID, peerID.toString() );
 	}
 
 	/* (non-Javadoc)
@@ -117,7 +124,8 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> implements INe
 	 */
 	@Override
 	public String getInstanceName(){
-		return (String) this.source.getProperty( NetworkManagerProperties.INSTANCE_NAME );
+		IJxsePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		return (String) source.getProperty( NetworkManagerProperties.INSTANCE_NAME );
 	}
 
 	/* (non-Javadoc)
@@ -125,7 +133,8 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> implements INe
 	 */
 	@Override
 	public void setInstanceName( String name ){
-		this.source.setProperty( NetworkManagerProperties.INSTANCE_NAME, name );
+		IJxseWritePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		source.setProperty( NetworkManagerProperties.INSTANCE_NAME, name );
 	}
 	
 	/**
@@ -135,21 +144,23 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> implements INe
 	 * @return
 	 * @throws URISyntaxException
 	 */
-	public Object getPropertyFromString( NetworkManagerProperties property, String value ) throws URISyntaxException{
-		switch( property ){
+	public boolean setPropertyFromString( NetworkManagerProperties id, String value ){
+		IJxseWritePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		switch( id ){
 		case CONFIG_PERSISTENT:
-			return Boolean.parseBoolean( value );
+			return source.setProperty(id, Boolean.parseBoolean( value ));
 		case INSTANCE_NAME:
 		case INFRASTRUCTURE_ID:
-			return value;
-		case INSTANCE_HOME:
-			return this.getHomeFolder();
-		case MODE:
-			return this.getConfigMode();
 		case PEER_ID:
-			return this.getPeerID();
+			return source.setProperty(id, value);
+		case INSTANCE_HOME:
+			this.setHomeFolder(value);
+			return true;
+		case MODE:
+			this.setConfigMode( ConfigMode.valueOf(value));
+			return true;
 		default:
-			return null;
+			return false;
 		}
 	}
 }

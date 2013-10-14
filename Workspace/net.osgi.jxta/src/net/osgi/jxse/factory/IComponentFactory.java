@@ -14,12 +14,17 @@ import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public interface IComponentFactory<T extends Object, U extends Enum<U>, V extends IJxseDirectives> {
+public interface IComponentFactory<T extends Object, U extends Object, V extends IJxseDirectives> {
 
 	public enum Components{
 		JXSE_CONTEXT,
 		NETWORK_MANAGER,
 		NETWORK_CONFIGURATOR,
+		SEED_LIST,
+		SECURITY,
+		TCP,
+		HTTP,
+		MULTICAST,
 		PEERGROUP_SERVICE,
 		DISCOVERY_SERVICE,
 		RENDEZVOUS_SERVICE,
@@ -37,34 +42,6 @@ public interface IComponentFactory<T extends Object, U extends Enum<U>, V extend
 			if(( str == null ) || ( str.length() == 0 ))
 				return false;
 			for( Components comp: values()){
-				if( comp.name().equals( str.toUpperCase() ))
-					return true;
-			}
-			return false;
-		}
-	}
-
-	/**
-	 * Directives give additional clues on how to create the component
-	 * @author Kees
-	 *
-	 */
-	public enum Directives implements IJxseDirectives{
-		AUTO_START,
-		CLEAR_CONFIG,
-		CREATE_PARENT,
-		ACTIVATE_PARENT;
-
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString() );
-		}
-
-		public static boolean isDirective( String str ){
-			str = StringStyler.styleToEnum(str);
-			if(( str == null ) || ( str.length() == 0 ))
-				return false;
-			for( Directives comp: values()){
 				if( comp.name().equals( str.toUpperCase() ))
 					return true;
 			}
@@ -95,6 +72,13 @@ public interface IComponentFactory<T extends Object, U extends Enum<U>, V extend
 	 * @return
 	 */
 	public T createModule();
+	
+	/**
+	 * The completion is not necessarily the same as creating the module. This method has to 
+	 * be called separately;
+	 * @return
+	 */
+	public boolean complete();
 	
 	public boolean isCompleted();
 	

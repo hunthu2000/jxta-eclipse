@@ -2,15 +2,19 @@ package net.osgi.jxse.network;
 
 import java.util.Iterator;
 
-import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.properties.AbstractJxsePropertySource;
+import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
+import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.StringStyler;
 
-public class NetworkManagerPropertySource extends AbstractJxsePropertySource<NetworkManagerPropertySource.NetworkManagerProperties, ContextDirectives>{
+public class NetworkManagerPropertySource extends AbstractJxseWritePropertySource<NetworkManagerPropertySource.NetworkManagerProperties, IJxseDirectives.Directives>
+	implements IJxseWritePropertySource<NetworkManagerPropertySource.NetworkManagerProperties, IJxseDirectives.Directives>
+{
 
 	public enum NetworkManagerProperties{
 		CONFIG_PERSISTENT,
@@ -25,17 +29,21 @@ public class NetworkManagerPropertySource extends AbstractJxsePropertySource<Net
 			return StringStyler.prettyString( super.toString() );
 		}
 	}
-
-	private JxseContextPropertySource source;
 	
 	public NetworkManagerPropertySource( JxseContextPropertySource source) {
-		super( source.getBundleId(), source.getIdentifier(), Components.NETWORK_MANAGER.name() );
+		super( source );
 		this.fill( source );
-		this.source = source;
+	}
+
+	@Override
+	public String getComponentName() {
+		return Components.NETWORK_MANAGER.toString();
 	}
 
 	private void fill( JxseContextPropertySource source ){
 		Iterator<ContextProperties> iterator = source.propertyIterator();
+		this.setDirective( Directives.AUTO_START, source.getDirective( Directives.AUTO_START ));
+		this.setDirective( Directives.CLEAR_CONFIG, source.getDirective( Directives.CLEAR_CONFIG ));
 		while( iterator.hasNext() ){
 			ContextProperties cp = iterator.next();
 			NetworkManagerProperties nmp = convertFrom( cp );
@@ -44,12 +52,18 @@ public class NetworkManagerPropertySource extends AbstractJxsePropertySource<Net
 			Object retval = source.getProperty( cp );
 			if( NetworkManagerProperties.INSTANCE_HOME.equals(nmp ) && ( retval instanceof String ))
 				retval = ProjectFolderUtils.getParsedUserDir((String) retval, super.getBundleId());
-			super.setProperty(nmp, retval);
+			super.setProperty(nmp, retval, true);
 		}	
 	}
 
 	@Override
+	public NetworkManagerProperties getIdFromString(String key) {
+		return NetworkManagerProperties.valueOf( key );
+	}
+
+	@Override
 	public Object getDefault(NetworkManagerProperties id) {
+		JxseContextPropertySource source = (JxseContextPropertySource) super.getParent();
 		return source.getDefault( convertTo( id ));
 	}
 
@@ -59,10 +73,11 @@ public class NetworkManagerPropertySource extends AbstractJxsePropertySource<Net
 	 * @return
 	 */
 	public int getTcpPort(){
-		Object port = this.source.getProperty( ContextProperties.PORT );
+		JxseContextPropertySource source = (JxseContextPropertySource) super.getParent();
+		Object port = source.getProperty( ContextProperties.PORT );
 		if( port == null )
 			return 0;
-		return Integer.parseInt(( String )port );
+		return ( Integer )port;
 	}
 	
 	@Override
@@ -72,7 +87,7 @@ public class NetworkManagerPropertySource extends AbstractJxsePropertySource<Net
 	}
 
 	@Override
-	public Object getDefaultDirectives(ContextDirectives id) {
+	public Object getDefaultDirectives(IJxseDirectives.Directives id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

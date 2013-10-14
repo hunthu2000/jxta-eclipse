@@ -11,33 +11,47 @@
 package net.osgi.jxse.context;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URISyntaxException;
 
 import net.jxta.id.IDFactory;
 import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
-import net.jxta.platform.NetworkManager;
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.properties.AbstractJxsePropertySource;
+import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
+import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.Utils;
+import net.osgi.jxse.validator.ClassValidator;
+import net.osgi.jxse.validator.RangeValidator;
 
-public class JxseContextPropertySource extends AbstractJxsePropertySource<ContextProperties, ContextDirectives>{
+public class JxseContextPropertySource extends AbstractJxseWritePropertySource<ContextProperties, IJxseDirectives.Directives>{
 
 	public static final String DEF_HOME_FOLDER = "${user.home}/.jxse/${bundle-id}";
 	public static final int DEF_MIN_PORT = 1000;
 	public static final int DEF_MAX_PORT = 9999;
 	public static final int DEF_PORT = 9715;
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public JxseContextPropertySource( String bundleId, String identifier) {
 		super( bundleId, identifier, Components.JXSE_CONTEXT.toString() );
-		this.setProperty( ContextProperties.BUNDLE_ID, bundleId );
-		this.setProperty( ContextProperties.IDENTIFIER, identifier );
-		this.setProperty( ContextProperties.CONFIG_MODE, ConfigMode.EDGE );
-		this.setProperty( ContextProperties.HOME_FOLDER, ProjectFolderUtils.getParsedUserDir(DEF_HOME_FOLDER, bundleId));
+		this.setProperty( ContextProperties.BUNDLE_ID, bundleId, 
+				new ClassValidator( ContextProperties.CONFIG_MODE, String.class ), false );
+		this.setProperty( ContextProperties.IDENTIFIER, identifier, 
+				new ClassValidator( ContextProperties.CONFIG_MODE, String.class ), false);
+		this.setProperty( ContextProperties.CONFIG_MODE, ConfigMode.EDGE, 
+				new ClassValidator( ContextProperties.CONFIG_MODE, ConfigMode.class ), false);
+		this.setProperty( ContextProperties.HOME_FOLDER, ProjectFolderUtils.getParsedUserDir(DEF_HOME_FOLDER, bundleId),
+				new ClassValidator( ContextProperties.HOME_FOLDER, URI.class ), false);
+		this.setProperty( ContextProperties.PORT, DEF_PORT,
+				new RangeValidator( ContextProperties.PORT, 65535 ), false);
+	}
+
+	@Override
+	public ContextProperties getIdFromString(String key) {
+		return ContextProperties.valueOf( key );
 	}
 
 	/**
@@ -71,7 +85,7 @@ public class JxseContextPropertySource extends AbstractJxsePropertySource<Contex
 			File file = new File( str );
 			return file.toURI();
 		case CONFIG_MODE:
-			return ConfigMode.valueOf( NetworkManager.ConfigMode.EDGE.name() );
+			return ConfigMode.EDGE;
 		case RENDEZVOUZ_AUTOSTART:
 			return true;
 		case PEER_ID:
@@ -98,7 +112,7 @@ public class JxseContextPropertySource extends AbstractJxsePropertySource<Contex
 	}
 
 	@Override
-	public Object getDefaultDirectives(ContextDirectives id) {
+	public Object getDefaultDirectives(IJxseDirectives.Directives id) {
 		switch( id ){
 		case AUTO_START:
 			return true;

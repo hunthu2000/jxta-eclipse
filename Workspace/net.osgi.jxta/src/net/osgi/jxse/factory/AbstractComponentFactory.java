@@ -13,11 +13,10 @@ package net.osgi.jxse.factory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.utils.StringStyler;
 
 public abstract class AbstractComponentFactory<T extends Object, U extends Enum<U>, V extends IJxseDirectives> implements IComponentFactory<T,U,V>{
 
@@ -37,7 +36,7 @@ public abstract class AbstractComponentFactory<T extends Object, U extends Enum<
 
 	@Override
 	public Components getComponentName() {
-		return Components.valueOf( this.properties.getComponentName());
+		return Components.valueOf( StringStyler.styleToEnum( this.properties.getComponentName()));
 	}
 	
 	protected void setPropertySource( IJxsePropertySource<U,V> properties ){
@@ -47,15 +46,6 @@ public abstract class AbstractComponentFactory<T extends Object, U extends Enum<
 	@Override
 	public IJxsePropertySource<U,V> getPropertySource(){
 		return this.properties;
-	}
-
-	protected void addDirective( V directive, String value ){
-		if( value != null )
-		  this.properties.setDirective(directive, value);
-	}
-	
-	protected Object getDirective( V directive ){
-		return this.properties.getDirective( directive);
 	}
 
 	@Override
@@ -75,7 +65,7 @@ public abstract class AbstractComponentFactory<T extends Object, U extends Enum<
 	 * Parse the directives for this factory
 	 * @param node
 	 */
-	private final void parseDirectives( ){
+	private final void parseDirectivesPrior( ){
 		Iterator<V> iterator = this.properties.directiveIterator();
 		V directive;
 		while( iterator.hasNext()){
@@ -84,20 +74,25 @@ public abstract class AbstractComponentFactory<T extends Object, U extends Enum<
 		}
 	}
 
-	protected abstract void onParseDirectiveAfterCreation( T module, V directive, Object value );
+	protected abstract void onParseDirectiveAfterCreation( V directive, Object value );
 	
 	/**
 	 * Parse the directives for this factory
 	 * @param node
 	 */
-	private final void parseDirectives( T module ){
+	private final void parseDirectivesAfter(){
 		Iterator<V> iterator = this.properties.directiveIterator();
 		V directive;
 		while( iterator.hasNext()){
 			directive = iterator.next();
-			this.onParseDirectiveAfterCreation( module, directive, properties.getDirective( directive ));
+			this.onParseDirectiveAfterCreation( directive, properties.getDirective( directive ));
 		}
 	}
+
+	/**
+	 * Do nothing
+	 */
+	protected abstract void onProperytySourceCreated( IJxsePropertySource<?,?> ps );
 
 	protected abstract T onCreateModule( IJxsePropertySource<U,V> properties);
 	
@@ -105,11 +100,20 @@ public abstract class AbstractComponentFactory<T extends Object, U extends Enum<
 	public T createModule() {
 		if( this.completed )
 			return module;
-		this.parseDirectives();
+		this.parseDirectivesPrior();
 		this.module = this.onCreateModule( this.properties);
-		this.parseDirectives(module);
-		this.setCompleted( true );
+		this.parseDirectivesAfter();
 		return module;
+	}
+
+	/**
+	 * The completion is not necessarily the same as creating the module. This method has to 
+	 * be called separately;
+	 * @return
+	 */
+	public boolean complete(){
+		this.setCompleted( true );
+		return this.completed;
 	}
 
 	protected boolean setCompleted(boolean completed) {
@@ -130,25 +134,6 @@ public abstract class AbstractComponentFactory<T extends Object, U extends Enum<
 			this.completed = false;
 	}
 
-	/**
-	 * Set a component if it is valid
-	 * @param module
-	 * @return
-	 */
-	@Deprecated
-	protected boolean setJxtaServiceComponent( T module ){
-		Logger logger = Logger.getLogger( this.getClass().getName() );
-		if( module == null ){
-			setFailed(true);
-			logger.log( Level.SEVERE, "FAILED to create a component!!!" );
-			return false;
-		}
-		this.module = module;
-		this.notifyServiceComponentCompleted(module);
-		logger.info( module.getClass().getSimpleName() + " created succesfully" );
-		return true;
-	}
-
 	@Override
 	public T getModule(){
 		return module;
@@ -162,6 +147,7 @@ public abstract class AbstractComponentFactory<T extends Object, U extends Enum<
 		this.listeners.remove(listener);
 	}
 
+	
 	/**
 	 * Notify completed service components
 	 * @param component

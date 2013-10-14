@@ -20,20 +20,23 @@ import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.jxta.exception.PeerGroupException;
 import net.jxta.platform.NetworkManager;
-import net.osgi.jxse.context.IJxseServiceContext.ContextDirectives;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
+import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager, NetworkManagerProperties, ContextDirectives> {
+public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager, NetworkManagerProperties, IJxseDirectives.Directives> {
 		
-	public NetworkManagerFactory( IJxsePropertySource<NetworkManagerProperties, ContextDirectives> propertySource ) {
+	public NetworkManagerFactory( IJxsePropertySource<NetworkManagerProperties, IJxseDirectives.Directives> propertySource ) {
 		super( propertySource );
 	}
 
 	@Override
-	protected void onParseDirectivePriorToCreation( ContextDirectives directive, Object value) {
+	protected void onParseDirectivePriorToCreation( IJxseDirectives.Directives directive, Object value) {
 		switch( directive ){
 		case CLEAR_CONFIG:
 			Path path = Paths.get(( URI )super.getPropertySource().getProperty( NetworkManagerProperties.INSTANCE_HOME ));
@@ -48,14 +51,10 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 	}
 
 	@Override
-	protected void onParseDirectiveAfterCreation( NetworkManager component,	ContextDirectives directive, Object value) {
-	}
-
-	@Override
-	protected NetworkManager onCreateModule( IJxsePropertySource<NetworkManagerProperties, ContextDirectives> properties) {
+	protected NetworkManager onCreateModule( IJxsePropertySource<NetworkManagerProperties, IJxseDirectives.Directives> properties) {
 		// Removing any existing configuration?
-		NetworkManagerPreferences<ContextDirectives> preferences = 
-				new NetworkManagerPreferences<ContextDirectives>( properties );
+		NetworkManagerPreferences<IJxseDirectives.Directives> preferences = 
+				new NetworkManagerPreferences<IJxseDirectives.Directives>( (IJxseWritePropertySource<NetworkManagerProperties, Directives>) properties );
 		String name = preferences.getInstanceName();
 		try {
 			Path path = Paths.get( preferences.getHomeFolder() );
@@ -68,15 +67,46 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 				}
 			}
 			File file = path.toFile();
-			// Creation of the network manager
-			NetworkManager manager = null;
-			manager = new NetworkManager( preferences.getConfigMode(), name, file.toURI());
-			return manager;
+			return new NetworkManager( preferences.getConfigMode(), name, file.toURI());
 		} catch (Exception e) {
 			Logger log = Logger.getLogger( this.getClass().getName() );
 			log.log( Level.SEVERE, e.getMessage() );
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	
+	@Override
+	public boolean complete() {
+		IJxsePropertySource<NetworkManagerProperties, IJxseDirectives.Directives> properties = super.getPropertySource();
+		Object value = properties.getDirective( Directives.AUTO_START );
+		if( value == null )
+			value = false;
+		if( Boolean.parseBoolean( (String) value)){
+			try {
+				super.getModule().startNetwork();
+				return super.complete();
+			} catch (PeerGroupException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	@Override
+	protected void onProperytySourceCreated(
+			IJxsePropertySource<?, ?> ps) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onParseDirectiveAfterCreation(IJxseDirectives.Directives directive,
+			Object value) {
+		// TODO Auto-generated method stub
+		
 	}
 }

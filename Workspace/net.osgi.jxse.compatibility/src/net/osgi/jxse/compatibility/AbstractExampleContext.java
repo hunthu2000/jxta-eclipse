@@ -14,10 +14,10 @@ import org.eclipse.core.runtime.Platform;
 
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.context.AbstractServiceContext;
-import net.osgi.jxse.factory.IComponentFactory.Directives;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
+import net.osgi.jxse.properties.IJxseDirectives;
 
-public abstract class AbstractExampleContext extends AbstractServiceContext<NetworkManager, NetworkManagerProperties, Directives>{
+public abstract class AbstractExampleContext extends AbstractServiceContext<NetworkManager, NetworkManagerProperties, IJxseDirectives.Directives>{
 
 	
 	protected AbstractExampleContext(String identifier) {

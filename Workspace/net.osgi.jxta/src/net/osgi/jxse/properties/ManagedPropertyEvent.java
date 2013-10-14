@@ -2,7 +2,7 @@ package net.osgi.jxse.properties;
 
 import java.util.EventObject;
 
-public class ManagedPropertyEvent<T extends Enum<T>,U extends Object> extends EventObject {
+public class ManagedPropertyEvent<T,U extends Object> extends EventObject {
 	private static final long serialVersionUID = 1L;
 
 	public ManagedPropertyEvent( ManagedProperty<T,U> property) {

@@ -203,6 +203,7 @@ class Palaver extends AbstractPalaver<String>{
 		return null;
 		
 	}
+	
 	@Override
 	public String giveToken() {
 		if( this.providedToken == null )

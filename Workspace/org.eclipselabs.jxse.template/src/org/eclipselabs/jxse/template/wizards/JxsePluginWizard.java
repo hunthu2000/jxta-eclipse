@@ -36,11 +36,12 @@ public class JxsePluginWizard extends Wizard implements IWorkbenchWizard{
 	}
 
 	@Override
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+	}	
+
+	
+	@Override
 	public boolean performFinish() {
 		return false;
 	}
-
-	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-	}	
 }

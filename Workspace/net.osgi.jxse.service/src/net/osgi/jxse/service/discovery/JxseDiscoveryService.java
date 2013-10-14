@@ -27,11 +27,13 @@ import net.jxta.discovery.DiscoveryService;
 import net.jxta.document.Advertisement;
 import net.jxta.protocol.DiscoveryResponseMsg;
 import net.osgi.jxse.advertisement.AbstractAdvertisementFactory.AdvertisementTypes;
-import net.osgi.jxse.factory.IComponentFactory.Directives;
+import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
+import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.log.JxseLevel;
+import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.service.core.AbstractJxtaService;
 
-public class JxseDiscoveryService extends AbstractJxtaService<DiscoveryService, IDiscoveryService.DiscoveryProperties, Directives> implements Runnable, DiscoveryListener, IDiscoveryService {
+public class JxseDiscoveryService extends AbstractJxtaService<DiscoveryService, DiscoveryProperties, IJxseDirectives.Directives> implements Runnable, DiscoveryListener {
 
 	
 	private ExecutorService executor;
@@ -41,35 +43,16 @@ public class JxseDiscoveryService extends AbstractJxtaService<DiscoveryService, 
 		executor = Executors.newSingleThreadExecutor();
 	}
 
-	@Override
-	protected void fillDefaultValues() {
-		this.putProperty( DiscoveryProperties.MODE, Mode.DISCOVERY, true );
-		this.putProperty( DiscoveryProperties.WAIT_TIME, 60000, true );
-		this.putProperty( DiscoveryProperties.PEER_ID, null, true );
-		this.putProperty( DiscoveryProperties.ADVERTISEMENT_TYPE, AdvertisementTypes.ADV, true );
-		this.putProperty( DiscoveryProperties.ATTRIBUTE, null, true );
-		this.putProperty( DiscoveryProperties.WILDCARD, null, true );
-		this.putProperty( DiscoveryProperties.THRESHOLD, 1, true );
-	}
-
 	public void putProperty( DiscoveryProperties key, Object value ){
 		if( value == null )
 			return;
-		if( key.equals( DiscoveryProperties.ADVERTISEMENT_TYPE ) && ( value instanceof Integer )){
-			super.putProperty(key, AdvertisementTypes.convert( (AdvertisementTypes) value));
-		}else{
-			super.putProperty(key, value );
-		}
+		super.putProperty(key, value );
 	}
 
 	protected void putProperty( DiscoveryProperties key, Object value, boolean skipFilled ){
 		if( value == null )
 			return;
-		if( key.equals( DiscoveryProperties.ADVERTISEMENT_TYPE ) && ( value instanceof Integer )){
-			super.putProperty(key, AdvertisementTypes.convert( (AdvertisementTypes) value), skipFilled );
-		}else{
-			super.putProperty(key, value, skipFilled );
-		}
+		super.putProperty(key, value, skipFilled );
 	}
 
 	public Object getProperty( DiscoveryProperties key ){
@@ -89,11 +72,11 @@ public class JxseDiscoveryService extends AbstractJxtaService<DiscoveryService, 
 		DiscoveryService discovery = super.getModule();
 		try {
 			String peerId = ( String )this.getProperty( DiscoveryProperties.PEER_ID );
-			String adType = AdvertisementTypes.convert(( AdvertisementTypes) this.getProperty( DiscoveryProperties.ADVERTISEMENT_TYPE ));
 			String attribute = ( String )this.getProperty( DiscoveryProperties.ATTRIBUTE );
 			String wildcard = ( String )this.getProperty( DiscoveryProperties.WILDCARD );
 			int threshold = ( Integer )this.getProperty( DiscoveryProperties.THRESHOLD );
 
+			String adType = AdvertisementTypes.convert(( AdvertisementTypes) this.getProperty( null /*DiscoveryProperties.ADVERTISEMENT_TYPE*/ ));
 			discovery.getLocalAdvertisements( Integer.parseInt( adType ), attribute, wildcard );
 			discovery.getRemoteAdvertisements( peerId,  Integer.parseInt( adType ), attribute, wildcard, threshold, null);
 
@@ -127,8 +110,8 @@ public class JxseDiscoveryService extends AbstractJxtaService<DiscoveryService, 
 	 * The activities performed in an active state. By defalt this is discovery
 	 */
 	protected void onActiveState(){
-		Mode mode = ( Mode )this.getProperty( DiscoveryProperties.MODE );
-		if(!( mode.equals( Mode.PUBLISH )))
+		DiscoveryMode mode = ( DiscoveryMode )this.getProperty( DiscoveryProperties.DISCOVERY_MODE );
+		if(!( mode.equals( DiscoveryMode.PUBLISH )))
 		  this.discovery();		
 	}
 
@@ -177,6 +160,12 @@ public class JxseDiscoveryService extends AbstractJxtaService<DiscoveryService, 
 				System.out.println(adv);
 			}
 		}
+	}
+
+	@Override
+	protected void fillDefaultValues() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

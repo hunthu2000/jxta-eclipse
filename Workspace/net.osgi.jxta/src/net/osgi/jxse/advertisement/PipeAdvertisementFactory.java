@@ -21,10 +21,12 @@ import net.jxta.pipe.PipeID;
 import net.jxta.pipe.PipeService;
 import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.factory.IComponentFactory.Directives;
+import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdvertisement, net.osgi.jxse.advertisement.IPipeAdvertisementFactory.Properties, Directives> implements IPipeAdvertisementFactory {
+public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdvertisement, net.osgi.jxse.advertisement.IPipeAdvertisementFactory.Properties, IJxseDirectives.Directives> implements IPipeAdvertisementFactory {
 
 	public static final String S_PIPE_ADVERTISEMENT_SERVICE = "PipeAdvertisementService";
 
@@ -37,7 +39,8 @@ public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdver
 	}
 
 	protected void fillDefaultValues() {
-		IJxsePropertySource<Properties, Directives> source = super.getPropertySource();
+		IJxseWritePropertySource<Properties, IJxseDirectives.Directives> source =
+				(IJxseWritePropertySource<Properties, Directives>) super.getPropertySource();
 		try {
 			source.setProperty( Properties.SOCKET_ID, new URI( SOCKETIDSTR ));
 		} catch (URISyntaxException e) {
@@ -51,9 +54,9 @@ public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdver
 
 	@Override
 	protected PipeAdvertisement onCreateModule(
-			IJxsePropertySource<Properties, net.osgi.jxse.factory.IComponentFactory.Directives> properties) {
+			IJxsePropertySource<Properties, IJxseDirectives.Directives> properties) {
 		PipeID socketID = null;
-		IJxsePropertySource<Properties, Directives> source = super.getPropertySource();
+		IJxsePropertySource<Properties, IJxseDirectives.Directives> source = super.getPropertySource();
 		try {
 			socketID = (PipeID) IDFactory.fromURI( (URI) source.getProperty( Properties.SOCKET_ID ));
 		} catch (URISyntaxException use) {
@@ -68,16 +71,20 @@ public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdver
 	}
 
 	@Override
-	protected void onParseDirectivePriorToCreation(
-			net.osgi.jxse.factory.IComponentFactory.Directives directive,
-			Object value) {
+	protected void onParseDirectivePriorToCreation(IJxseDirectives.Directives directive,Object value) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void onParseDirectiveAfterCreation(PipeAdvertisement module,
-			net.osgi.jxse.factory.IComponentFactory.Directives directive,
+	protected void onProperytySourceCreated(
+			IJxsePropertySource<?, ?> ps) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onParseDirectiveAfterCreation(IJxseDirectives.Directives directive,
 			Object value) {
 		// TODO Auto-generated method stub
 		

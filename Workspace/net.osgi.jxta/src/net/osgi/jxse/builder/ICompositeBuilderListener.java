@@ -25,5 +25,5 @@ public interface ICompositeBuilderListener {
 		}
 	}
 	
-	public void notifyFactoryCreated( ComponentFactoryEvent event );
+	public void notifyCreated( ComponentFactoryEvent event );
 }

@@ -25,6 +25,7 @@ public class StringStyler
 		if(( input == null ) || ( input.length() == 0))
 			return input;
 		String parsed = input.replace(".", "_8");
+		parsed = parsed.replace(":", "_1");
 		if( input.equals( parsed.toUpperCase() ))
 			return input;
 		String str = StringStyler.insertSpace( parsed );
@@ -98,6 +99,7 @@ public class StringStyler
 	 */
 	public static String prettyString( String strng ){
 		strng = strng.replaceAll("_8", ".");
+		strng = strng.replaceAll("_1", ":");
 		strng = strng.replaceAll(" ", "_");
 		String[] split = strng.split("[_]");
 		StringBuffer buffer = new StringBuffer();
@@ -105,5 +107,17 @@ public class StringStyler
 			buffer.append( firstUpperCaseString( str ));
 		}
 		return buffer.toString();
+	}
+
+	/**
+	 * Create a pretty string from the given one
+	 * @param strng
+	 * @return
+	 */
+	public static String xmlStyleString( String strng ){
+		String str = styleToEnum(strng);
+		if( Utils.isNull( str ))
+			return null;
+		return str.replace("_", "-").toLowerCase();
 	}
 }

@@ -4,6 +4,8 @@ import net.osgi.jxse.network.NetworkConfigurationPropertySource;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipselabs.jxse.ui.property.databinding.BooleanDataBinding;
+import org.eclipselabs.jxse.ui.property.databinding.SpinnerDataBinding;
 
 public class TcpConfigurationComposite extends AbstractProtocolConfigurationComposite {
 	
@@ -19,8 +21,8 @@ public class TcpConfigurationComposite extends AbstractProtocolConfigurationComp
 	public void init( NetworkConfigurationPropertySource source ){
 		super.init( source );
 		Object value = source.getDefault( NetworkConfiguratorProperties.TCP_8ENABLED  );
-		if( value != null)
-			this.btnEnabled.setSelection((boolean)value );
+		//if( value != null)
+			new BooleanDataBinding<NetworkConfiguratorProperties>( NetworkConfiguratorProperties.TCP_8ENABLED, source, this.btnEnabled);
 		value = source.getDefault( NetworkConfiguratorProperties.TCP_8INCOMING_STATUS  );
 		if( value != null)
 			this.btnIncomingStatus.setSelection((boolean) value);
@@ -35,19 +37,8 @@ public class TcpConfigurationComposite extends AbstractProtocolConfigurationComp
 			this.btnExclusive.setSelection((boolean) value );
 		value = source.getDefault( NetworkConfiguratorProperties.TCP_8INTERFACE_ADDRESS  );
 		if( value != null)
-			this.interfaceAddressText.setText((String)value );
-		this.portSpinner.setMaximum(65536);
-		value = source.getDefault( NetworkConfiguratorProperties.TCP_8PORT  );
-		if( value != null){
-			int port = ( int )value;
-
-			this.portSpinner.setSelection( port );
-		}
-		value = source.getDefault( NetworkConfiguratorProperties.TCP_8START_PORT  );
-		if( value != null)
-			this.portSpinner.setMinimum(( int )value );
-		value = source.getDefault( NetworkConfiguratorProperties.TCP_8END_PORT  );
-		if( value != null)
-			this.portSpinner.setMaximum(( int )value );
+			this.interfaceAddressText.setText((String)value );		
+		new SpinnerDataBinding<NetworkConfiguratorProperties>( NetworkConfiguratorProperties.TCP_8PORT ,source, 
+				this.portSpinner, NetworkConfiguratorProperties.TCP_8START_PORT, NetworkConfiguratorProperties.TCP_8END_PORT );
 	}
 }

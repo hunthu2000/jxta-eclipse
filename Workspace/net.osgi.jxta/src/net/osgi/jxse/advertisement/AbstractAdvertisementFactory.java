@@ -98,8 +98,8 @@ public abstract class AbstractAdvertisementFactory<T extends Advertisement, U ex
 	
 	@SuppressWarnings("unchecked")
 	protected void fillDefaultValues() {
-		super.getPropertySource().setProperty((U) AdvertisementProperties.ADVERTISEMENT_TYPE, AdvertisementTypes.ADV);
-		super.getPropertySource().setProperty((U) AdvertisementProperties.NAME, S_DEFAULT_NAME);
+		//super.getPropertySource().setProperty((U) AdvertisementProperties.ADVERTISEMENT_TYPE, AdvertisementTypes.ADV);
+		//super.getPropertySource().setProperty((U) AdvertisementProperties.NAME, S_DEFAULT_NAME);
 		//if( this.createId )
 		//	super.addProperty( AdvertisementProperties.ID, IDFactory.newPipeID(net.jxta.peergroup.PeerGroupID.defaultNetPeerGroupID));
 	}

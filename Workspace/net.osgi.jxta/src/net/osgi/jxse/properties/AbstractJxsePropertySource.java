@@ -18,13 +18,16 @@ import java.util.Map;
 
 import net.osgi.jxse.utils.Utils;
 
-public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends IJxseDirectives> implements IJxsePropertySource<T, U> {
+public abstract class AbstractJxsePropertySource< T extends Object, U extends IJxseDirectives> implements IJxsePropertySource<T, U> {
 
 	private static final String S_CONTEXT = "context";
 	private static final String S_ERR_COMPONENT_NAME_NULL = "The component name cannot be null";
 	
 	private Map<T,ManagedProperty<T,Object>> properties;
 	private Map<U,Object> directives;
+	
+	private IJxsePropertySource<?,?> parent;
+
 	private Collection<IJxsePropertySource<?,?>> children;
 
 	private int depth = 0;
@@ -45,24 +48,22 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends I
 		this.componentName = componentName;
 		children = new ArrayList<IJxsePropertySource<?,?>>();
 		this.depth = depth;
+		this.parent = null;
 	}
 
-	public AbstractJxsePropertySource( String id, String bundleId, String identifier, String componentName) {
-		this( id, bundleId, identifier, componentName, 0);
+	protected AbstractJxsePropertySource( IJxsePropertySource<?,?> parent ) {
+		this( parent.getBundleId(), parent.getIdentifier(), parent.getComponentName(), parent.getDepth() + 1 );
+		this.parent = parent;
+		this.context_id = this.bundleId + "." + componentName.toLowerCase();
 	}
 
-	protected AbstractJxsePropertySource( String id, String bundleId, String identifier, String componentName, int depth ) {
-		properties = new HashMap<T,ManagedProperty<T,Object>>();
-		directives = new HashMap<U,Object>();
-		this.context_id = id;
-		if( Utils.isNull( this.context_id ))
-			this.context_id = this.bundleId + "." + componentName.toLowerCase();
-		this.id_root = this.getIdRoot(this.context_id);
-		this.bundleId = bundleId;
-		this.identifier = identifier;
+	protected AbstractJxsePropertySource( String componentName, IJxsePropertySource<?,?> parent ) {
+		this( parent );
 		this.componentName = componentName;
-		children = new ArrayList<IJxsePropertySource<?,?>>();
-		this.depth = depth;
+	}
+
+	public IJxsePropertySource<?,?> getParent(){
+		return this.parent;
 	}
 
 	public String getId() {
@@ -107,34 +108,27 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends I
 
 	@Override
 	public Object getProperty(T id) {
-		ManagedProperty<T,Object> select = properties.get( id );
+		ManagedProperty<T,Object> select = this.getManagedProperty(id);
 		if( select == null )
 			return null;
 		return select.getValue();
 	}
 
-	@Override
-	public boolean setProperty(T id, Object value) {
-		if( value == null )
-			return false;
-		ManagedProperty<T,Object> select = properties.get( id );
-		if( select == null )
-			properties.put( id, new ManagedProperty<T,Object>( id, value ));
-		else
-			select.setValue(value);
+	protected boolean setManagedProperty( ManagedProperty<T,Object> property ) {
+		this.properties.put( property.getKey(), property );
 		return true;
 	}
-	
+		
 	@Override
 	public Object getDefault(T id) {
-		ManagedProperty<T,Object> select = properties.get( id );
+		ManagedProperty<T,Object> select = this.getManagedProperty(id);
 		if( select == null )
 			return null;
 		return select.getDefaultValue();
 	}
 
 	public ManagedProperty<T,Object> getManagedProperty( T id ){
-		return properties.get(id);
+		return properties.get( id );
 	}
 	
 	@Override
@@ -147,7 +141,18 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends I
 		return directives.get( id );
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
+	public U getDirectiveFromString( String id) {
+		return (U) IJxseDirectives.Directives.valueOf( id );
+	}
+
+	/**
+	 * Set the directive
+	 * @param id
+	 * @param value
+	 * @return
+	 */
 	public boolean setDirective(U id, Object value) {
 		if( value == null )
 			return false;
@@ -160,9 +165,8 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends I
 		return directives.keySet().iterator();
 	}
 
-
-	public void addChild( IJxsePropertySource<?, ?> child ){
-		this.children.add( child );
+	public boolean addChild( IJxsePropertySource<?, ?> child ){
+		return this.children.add( child );
 	}
 
 	public void removeChild( IJxsePropertySource<?, ?> child ){
@@ -192,4 +196,9 @@ public abstract class AbstractJxsePropertySource< T extends Enum<T>, U extends I
 		}else
 			id = this.getBundleId() + "." + name;
 		return id;
-	}}
+	}
+	
+	public boolean isEmpty(){
+		return this.properties.isEmpty();
+	}
+}

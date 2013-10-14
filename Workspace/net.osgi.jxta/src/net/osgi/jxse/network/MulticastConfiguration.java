@@ -120,12 +120,26 @@ public class MulticastConfiguration {
 	}	
 
 	/**
+	 * Fill the configurator with the given properties from a key string
+	 * @param configurator
+	 * @param property
+	 * @param value
+	 */
+	public static boolean fillConfigurator( NetworkConfigurator configurator, String key, Object value ){
+		NetworkConfiguratorProperties id = NetworkConfiguratorProperties.convertTo(key);
+		if( id == null )
+			return false;
+		return fillConfigurator(configurator, id, value);	
+	}
+
+	/**
 	 * Fill the configurator with the given properties
 	 * @param configurator
 	 * @param property
 	 * @param value
 	 */
-	public static void fillConfigurator( NetworkConfigurator configurator, NetworkConfiguratorProperties property, Object value ){
+	public static boolean fillConfigurator( NetworkConfigurator configurator, NetworkConfiguratorProperties property, Object value ){
+		boolean retval = true;
 		switch( property ){
 		case USE_MULTICAST:
 		case MULTICAST_8STATUS:
@@ -147,7 +161,9 @@ public class MulticastConfiguration {
 			configurator.setMulticastInterface(( String )value );
 			break;
 		default:
+			retval = false;
 			break;
 		}	
+		return retval;
 	}
 }

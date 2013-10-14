@@ -12,6 +12,7 @@ package $packageName$;
 
 import net.osgi.jxse.service.activator.JxseBundleActivator;
 import org.osgi.framework.*;
+import $packageName$.service.ContextObserver;
 
 public class Activator extends JxseBundleActivator {
 

@@ -122,45 +122,4 @@ public class HttpConfiguration {
 		}
 		return retval;
 	}	
-
-	/**
-	 * Fill the configurator with the given properties
-	 * @param configurator
-	 * @param property
-	 * @param value
-	 */
-	public static void fillConfigurator( NetworkConfigurator configurator, NetworkConfiguratorProperties property, Object value ){
-		switch( property ){
-		case HTTP_8ENABLED:
-			configurator.setHttp2Enabled((boolean) value );
-			break;
-		case HTTP_8INCOMING_STATUS:
-			configurator.setHttp2Incoming((boolean) value );
-			break;
-		case HTTP_8OUTGOING_STATUS:
-			configurator.setHttp2Outgoing((boolean)value );
-			break;
-		case HTTP_8PUBLIC_ADDRESS_EXCLUSIVE:
-			configurator.setHttp2PublicAddress(( String )value, true );
-			break;
-		case HTTP_8END_PORT:
-			configurator.setHttp2EndPort(( Integer ) value );
-			break;
-		case HTTP_8PORT:
-			configurator.setHttpPort(( Integer ) value );
-			break;
-		case HTTP_8START_PORT:
-			configurator.setHttp2StartPort(( Integer )value );
-			break;
-		case HTTP_8INTERFACE_ADDRESS:
-			configurator.setHttpInterfaceAddress(( String )value );
-			break;
-		case HTTP_8PUBLIC_ADDRESS:
-			configurator.setHttpPublicAddress(( String) value, false );
-			break;			
-		default:
-			break;
-		}	
-	}
-
 }

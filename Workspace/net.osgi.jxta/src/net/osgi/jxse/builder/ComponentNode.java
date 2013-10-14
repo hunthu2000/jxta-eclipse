@@ -23,7 +23,11 @@ public class ComponentNode<T extends Object, U extends Enum<U>, V extends IJxseD
 	private ComponentNode<?,?,?> parent;
 	
 	private Collection<ComponentNode<IComponentFactory<?,?,?>,?,?>> children;
-	
+
+	public ComponentNode() {
+		this( null );
+	}
+
 	public ComponentNode( IComponentFactory<T,U,V> factory ) {
 		this.factory = factory;
 		children = new TreeSet<ComponentNode<IComponentFactory<?,?,?>,?,?>>();

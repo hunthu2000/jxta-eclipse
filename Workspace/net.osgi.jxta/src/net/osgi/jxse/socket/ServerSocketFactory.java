@@ -19,10 +19,11 @@ import net.jxta.protocol.PipeAdvertisement;
 import net.jxta.socket.JxtaServerSocket;
 import net.osgi.jxse.advertisement.PipeAdvertisementFactory;
 import net.osgi.jxse.factory.AbstractComponentFactory;
+import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.IOUtils;
 
-public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSocket, net.osgi.jxse.socket.IServerSocketFactory.Properties, net.osgi.jxse.factory.IComponentFactory.Directives> implements IServerSocketFactory {
+public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSocket, net.osgi.jxse.socket.IServerSocketFactory.Properties, IJxseDirectives.Directives> implements IServerSocketFactory {
 
 	public static final String S_JXSE_SERVER_SOCKET_SERVICE = "JxtaServerSocketService";	
 	
@@ -36,27 +37,19 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 	}
 
 	protected void fillDefaultValues() {
-		super.getPropertySource().setProperty( Properties.TIME_OUT, 10 );
-		super.getPropertySource().setProperty( Properties.SO_TIME_OUT, 0 );
+		//super.getPropertySource().setProperty( Properties.TIME_OUT, 10 );
+		//super.getPropertySource().setProperty( Properties.SO_TIME_OUT, 0 );
 	}
 	
 	@Override
-	protected void onParseDirectivePriorToCreation(Directives directive,
+	protected void onParseDirectivePriorToCreation(IJxseDirectives.Directives directive,
 			Object value) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void onParseDirectiveAfterCreation( JxtaServerSocket component, Directives directive, Object value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-	@Override
-	protected JxtaServerSocket onCreateModule(
-			IJxsePropertySource<Properties, Directives> properties) {
+	protected JxtaServerSocket onCreateModule(IJxsePropertySource<Properties, IJxseDirectives.Directives> properties) {
 		this.pipeFactory = new SocketPipeAdvertisementFactory();
 		JxtaServerSocket socket = this.createSocket();
 		super.setCompleted(true);
@@ -72,7 +65,7 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 		PipeAdvertisement pipeAd = this.pipeFactory.getModule();
 		JxtaServerSocket serverSocket = null;
 		try {
-			IJxsePropertySource<Properties, Directives> source = super.getPropertySource();
+			IJxsePropertySource<Properties, IJxseDirectives.Directives> source = super.getPropertySource();
 			serverSocket = new JxtaServerSocket( manager.getNetPeerGroup(), pipeAd, ( boolean )source.getProperty( Properties.TIME_OUT ));
 			serverSocket.setSoTimeout(( int )source.getProperty( Properties.SO_TIME_OUT ));
 			return serverSocket;
@@ -83,6 +76,19 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 			IOUtils.closeSocket( serverSocket );
 		}
 		return null;
+	}
+
+	@Override
+	protected void onProperytySourceCreated(
+			IJxsePropertySource<?, ?> ps) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onParseDirectiveAfterCreation(IJxseDirectives.Directives directive, Object value) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

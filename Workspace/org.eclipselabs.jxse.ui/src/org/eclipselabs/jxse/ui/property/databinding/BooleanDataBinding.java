@@ -1,5 +1,6 @@
 package org.eclipselabs.jxse.ui.property.databinding;
 
+import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.properties.ManagedPropertyEvent;
 
@@ -13,6 +14,13 @@ public class BooleanDataBinding<T extends Enum<T>> extends AbstractManagedProper
 	public BooleanDataBinding(ManagedProperty<T, Boolean> source, Button button) {
 		super(source);
 		button.addSelectionListener(this);
+		button.setSelection(source.getValue());
+		button.setData(this);
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public BooleanDataBinding( T id, IJxsePropertySource<T, ?> source, Button button) {
+		this((ManagedProperty)source.getManagedProperty(id), button);
 	}
 
 	@Override

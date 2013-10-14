@@ -18,14 +18,14 @@ import net.jxta.rendezvous.RendezVousService;
 import net.jxta.rendezvous.RendezvousEvent;
 import net.jxta.rendezvous.RendezvousListener;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.factory.IComponentFactory.Directives;
 import net.osgi.jxse.log.JxseLevel;
+import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.service.ServiceEventDispatcher;
 import net.osgi.jxse.service.core.AbstractJxtaService;
 import net.osgi.jxse.service.network.IRendezVousComponent.RendezVousServiceProperties;
 
-public class RendezVousComponent extends AbstractJxtaService<RendezVousService, IRendezVousComponent.RendezVousServiceProperties, Directives> implements RendezvousListener, IRendezVousComponent{
+public class RendezVousComponent extends AbstractJxtaService<RendezVousService, IRendezVousComponent.RendezVousServiceProperties, IJxseDirectives.Directives> implements RendezvousListener, IRendezVousComponent{
 
 	public static final String S_RENDEZ_VOUS_SERVICE = "RendezVous Service";
 
@@ -110,7 +110,7 @@ public class RendezVousComponent extends AbstractJxtaService<RendezVousService, 
 	}
 }
 
-class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousService, IRendezVousComponent.RendezVousServiceProperties, Directives>{
+class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousService, IRendezVousComponent.RendezVousServiceProperties, IJxseDirectives.Directives>{
 
 	private NetPeerGroupService parent;
 	
@@ -126,24 +126,32 @@ class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousServic
 
 	@Override
 	protected void onParseDirectivePriorToCreation(
-			net.osgi.jxse.factory.IComponentFactory.Directives directive,
+			IJxseDirectives.Directives directive,
 			Object value) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void onParseDirectiveAfterCreation( RendezVousService component, Directives directive, Object value) {
+	protected RendezVousService onCreateModule(
+			IJxsePropertySource<RendezVousServiceProperties, IJxseDirectives.Directives> properties) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void onProperytySourceCreated(
+			IJxsePropertySource<?, ?> ps) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	
 	@Override
-	protected RendezVousService onCreateModule(
-			IJxsePropertySource<RendezVousServiceProperties, Directives> properties) {
+	protected void onParseDirectiveAfterCreation(
+			IJxseDirectives.Directives directive,
+			Object value) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 	
 }

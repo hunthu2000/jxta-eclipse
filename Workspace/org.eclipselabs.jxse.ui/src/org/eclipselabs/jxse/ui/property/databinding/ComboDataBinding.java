@@ -11,18 +11,18 @@ import org.eclipse.swt.widgets.Combo;
 public class ComboDataBinding<T extends Enum<T>, U extends Enum<U>> extends AbstractManagedPropertySourceDatabinding<T, U>{
 
 	private Combo combo;
-	private U enm;
 	
 	@SuppressWarnings("unchecked")
-	public ComboDataBinding(ManagedProperty<T, ?> managedProperty, U enm, Combo combo) {
+	public ComboDataBinding(ManagedProperty<T, Enum<U>> managedProperty, Combo combo) {
 		super((ManagedProperty<T, U>) managedProperty);
 		combo.addSelectionListener(this);
 		combo.setData(this);
-		this.enm = enm;
+		combo.select( managedProperty.getValue().ordinal());
 	}
 
-	public ComboDataBinding( T id, IJxsePropertySource<T, ?> source, U enumClass, Combo combo) {
-		this( source.getManagedProperty(id), enumClass, combo);
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public ComboDataBinding( T id, IJxsePropertySource<T, ?> source, Combo combo) {
+		this(( ManagedProperty ) source.getManagedProperty(id), combo);
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class ComboDataBinding<T extends Enum<T>, U extends Enum<U>> extends Abst
 		if( Utils.isNull(str)){
 			super.getSource().setValue(null);
 		}else{
-			U value= (U) Enum.valueOf( enm.getClass(), str.toUpperCase() );
+			U value= (U) Enum.valueOf( super.getSource().getValue().getClass(), str.toUpperCase() );
 			super.getSource().setValue( value );
 		}
 	}

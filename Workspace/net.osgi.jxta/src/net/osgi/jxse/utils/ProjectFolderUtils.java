@@ -59,7 +59,7 @@ public class ProjectFolderUtils {
 		String parsed = str.replace( S_USER_HOME, "");
 		parsed = parsed.replace( S_BUNDLE_ID, "");
 		if( parsed.equals(str))
-			return new File( str ).toURI();
+			return URI.create( str );
 		
 		String[] split = str.split("[/]");
 		StringBuffer buffer = new StringBuffer();

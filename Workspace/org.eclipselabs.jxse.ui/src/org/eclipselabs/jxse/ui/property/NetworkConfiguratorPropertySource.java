@@ -159,16 +159,12 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 		NetworkConfigurator configurator = super.getModule();
 		NetworkConfiguratorProperties property = ( NetworkConfiguratorProperties )id;
 		switch( property ){
-		case AUTHENTICATION_TYPE:
-			return configurator.getAuthenticationType();
-		case CERTFICATE:
-			return configurator.getCertificate();
-		case CERTIFICATE_CHAIN:
-			return configurator.getCertificateChain();
 		case DESCRIPTION:
 			return S_NO_READ_VALUE;
 		case HOME:
 			return configurator.getHome();
+		case MODE:
+			return configurator.getMode();
 		case HTTP_8PUBLIC_ADDRESS:
 			return configurator.getHttp2PublicAddress();
 		case HTTP_8ENABLED:
@@ -195,10 +191,20 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 			return configurator.getInfrastructureID();
 		case INFRASTRUCTURE_8NAME:
 			return configurator.getInfrastructureName();
-		case KEY_STORE_LOCATION:
+		case SECURITY_8AUTHENTICATION_TYPE:
+			return configurator.getAuthenticationType();
+		case SECURITY_8CERTFICATE:
+			return configurator.getCertificate();
+		case SECURITY_8CERTIFICATE_CHAIN:
+			return configurator.getCertificateChain();
+		case SECURITY_8PASSWORD:
+			return configurator.getPassword();
+		case SECURITY_8KEY_STORE_LOCATION:
 			return configurator.getKeyStoreLocation();
-		case MODE:
-			return configurator.getMode();
+		case SECURITY_8PRINCIPAL:
+			return configurator.getPrincipal();
+		case SECURITY_8PRIVATE_KEY:
+			return configurator.getPrivateKey();
 		case MULTICAST_8ADDRESS:
 			return configurator.getMulticastAddress();
 		case MULTICAST_8INTERFACE:
@@ -213,14 +219,8 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 			return configurator.getMulticastStatus();
 		case NAME:
 			return configurator.getName();
-		case PASSWORD:
-			return configurator.getPassword();
 		case PEER_ID:
 			return configurator.getPeerID();
-		case PRINCIPAL:
-			return configurator.getPrincipal();
-		case PRIVATE_KEY:
-			return configurator.getPrivateKey();
 		case RELAY_8MAX_CLIENTS:
 			return configurator.getRelayMaxClients();
 		case RELAY_8SEED_URIS:
@@ -300,15 +300,6 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 		NetworkConfiguratorProperties property = ( NetworkConfiguratorProperties )id;
 		Object[] combined;
 		switch( property ){
-		case AUTHENTICATION_TYPE:
-			configurator.setAuthenticationType( (String) value );
-			return;
-		case CERTFICATE:
-			configurator.setCertificate( (X509Certificate) value);
-			return;
-		case CERTIFICATE_CHAIN:
-			configurator.setCertificateChain( (X509Certificate[]) value);
-			return;
 		case DESCRIPTION:
 			configurator.setDescription((String) value);
 			return;
@@ -355,9 +346,6 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 		case INFRASTRUCTURE_8NAME:
 			configurator.setInfrastructureName( (String) value);
 			return;
-		case KEY_STORE_LOCATION:
-			configurator.setKeyStoreLocation( (URI) value);
-			return;
 		case MODE:
 			configurator.setMode( (int) value);
 			return;
@@ -382,16 +370,28 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 		case NAME:
 			configurator.setName( (String) value);
 			return;
-		case PASSWORD:
-			configurator.setPassword( (String) value);
-			return;
 		case PEER_ID:
 			configurator.setPeerID( (PeerID) value);
 			return;
-		case PRINCIPAL:
+		case SECURITY_8KEY_STORE_LOCATION:
+			configurator.setKeyStoreLocation( (URI) value);
+			return;
+		case SECURITY_8PASSWORD:
+			configurator.setPassword( (String) value);
+			return;
+		case SECURITY_8AUTHENTICATION_TYPE:
+			configurator.setAuthenticationType( (String) value );
+			return;
+		case SECURITY_8CERTFICATE:
+			configurator.setCertificate( (X509Certificate) value);
+			return;
+		case SECURITY_8CERTIFICATE_CHAIN:
+			configurator.setCertificateChain( (X509Certificate[]) value);
+			return;
+		case SECURITY_8PRINCIPAL:
 			configurator.setPrincipal( (String) value);
 			return;
-		case PRIVATE_KEY:
+		case SECURITY_8PRIVATE_KEY:
 			configurator.setPrivateKey( (PrivateKey) value);
 			return;
 		case RELAY_8MAX_CLIENTS:
