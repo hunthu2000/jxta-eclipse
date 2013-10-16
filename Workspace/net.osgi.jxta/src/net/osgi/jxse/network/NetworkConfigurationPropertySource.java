@@ -105,14 +105,6 @@ public class NetworkConfigurationPropertySource extends AbstractJxseWritePropert
 	}
 
 	@Override
-	public Object getDefaultDirectives(IJxseDirectives id) {
-		NetworkManagerPropertySource source = (NetworkManagerPropertySource) super.getParent();
-		if( source != null )
-			return source.getDefaultDirectives((IJxseDirectives.Directives) id);
-		return null;
-	}
-
-	@Override
 	public String getComponentName() {
 		return Components.NETWORK_CONFIGURATOR.toString();
 	}

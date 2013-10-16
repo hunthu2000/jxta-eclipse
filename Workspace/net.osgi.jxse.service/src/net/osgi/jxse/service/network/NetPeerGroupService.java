@@ -21,10 +21,10 @@ import net.jxta.exception.PeerGroupException;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.properties.IJxseDirectives;
-import net.osgi.jxse.service.core.AbstractJxtaService;
+import net.osgi.jxse.service.core.AbstractJxseService;
 import net.osgi.jxse.service.peergroup.IPeerGroupProperties.PeerGroupProperties;
 
-public class NetPeerGroupService extends AbstractJxtaService<PeerGroup, PeerGroupProperties, IJxseDirectives.Directives>{
+public class NetPeerGroupService extends AbstractJxseService<PeerGroup, PeerGroupProperties, IJxseDirectives.Directives>{
 
 	public static final String S_NETWORK_MANAGER = "Jxta Network Manager";
 

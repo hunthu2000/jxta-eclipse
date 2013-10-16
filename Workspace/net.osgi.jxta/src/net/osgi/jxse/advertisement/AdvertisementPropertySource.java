@@ -57,9 +57,4 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 	public boolean validate(IJxseProperties id, Object value) {
 		return false;
 	}
-
-	@Override
-	public Object getDefaultDirectives(IJxseDirectives id) {
-		return null;
-	}
 }

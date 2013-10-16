@@ -83,11 +83,6 @@ public class PropertySourceWrapper< T extends Object, U extends IJxseDirectives>
 	}
 
 	@Override
-	public Object getDefaultDirectives(U id) {
-		return this.getDefaultDirectives(id);
-	}
-
-	@Override
 	public Iterator<U> directiveIterator() {
 		return this.directiveIterator();
 	}
@@ -105,11 +100,6 @@ public class PropertySourceWrapper< T extends Object, U extends IJxseDirectives>
 	@Override
 	public IJxsePropertySource<?, ?> getParent() {
 		return source.getParent();
-	}
-
-	@Override
-	public boolean isEmpty() {
-		return source.isEmpty();
 	}
 
 	@Override

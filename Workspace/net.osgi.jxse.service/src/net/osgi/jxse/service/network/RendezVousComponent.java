@@ -22,10 +22,10 @@ import net.osgi.jxse.log.JxseLevel;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.service.ServiceEventDispatcher;
-import net.osgi.jxse.service.core.AbstractJxtaService;
+import net.osgi.jxse.service.core.AbstractJxseService;
 import net.osgi.jxse.service.network.IRendezVousComponent.RendezVousServiceProperties;
 
-public class RendezVousComponent extends AbstractJxtaService<RendezVousService, IRendezVousComponent.RendezVousServiceProperties, IJxseDirectives.Directives> implements RendezvousListener, IRendezVousComponent{
+public class RendezVousComponent extends AbstractJxseService<RendezVousService, IRendezVousComponent.RendezVousServiceProperties, IJxseDirectives.Directives> implements RendezvousListener, IRendezVousComponent{
 
 	public static final String S_RENDEZ_VOUS_SERVICE = "RendezVous Service";
 

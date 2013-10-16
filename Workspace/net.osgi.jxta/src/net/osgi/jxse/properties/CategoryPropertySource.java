@@ -119,10 +119,4 @@ public class CategoryPropertySource<T extends IJxseDirectives> extends AbstractJ
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	@Override
-	public Object getDefaultDirectives(T id) {
-		// TODO Auto-generated method stub
-		return null;
-	}	
 }

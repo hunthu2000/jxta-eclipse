@@ -21,23 +21,38 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jxta.exception.PeerGroupException;
+import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
+import net.osgi.jxse.peergroup.IPeerGroupProvider;
+import net.osgi.jxse.peergroup.PeerGroupPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager, NetworkManagerProperties, IJxseDirectives.Directives> {
+public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager, NetworkManagerProperties, IJxseDirectives> 
+implements IPeerGroupProvider{
 		
-	public NetworkManagerFactory( IJxsePropertySource<NetworkManagerProperties, IJxseDirectives.Directives> propertySource ) {
+	public NetworkManagerFactory( IJxsePropertySource<NetworkManagerProperties, IJxseDirectives> propertySource ) {
 		super( propertySource );
 	}
 
+	/**
+	 * Get the name of the peergroup provider
+	 * @return
+	 */
+	public String getPeerGroupProviderName(){
+		return PeerGroupPropertySource.S_NET_PEERGROUP;
+	}
+
 	@Override
-	protected void onParseDirectivePriorToCreation( IJxseDirectives.Directives directive, Object value) {
-		switch( directive ){
+	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value) {
+		if(!( directive instanceof Directives ))
+			return;
+		Directives dir = ( Directives )directive;
+		switch( dir ){
 		case CLEAR_CONFIG:
 			Path path = Paths.get(( URI )super.getPropertySource().getProperty( NetworkManagerProperties.INSTANCE_HOME ));
 			if(Files.exists(path, LinkOption.NOFOLLOW_LINKS )){
@@ -51,10 +66,10 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 	}
 
 	@Override
-	protected NetworkManager onCreateModule( IJxsePropertySource<NetworkManagerProperties, IJxseDirectives.Directives> properties) {
+	protected NetworkManager onCreateModule( IJxsePropertySource<NetworkManagerProperties, IJxseDirectives> properties) {
 		// Removing any existing configuration?
-		NetworkManagerPreferences<IJxseDirectives.Directives> preferences = 
-				new NetworkManagerPreferences<IJxseDirectives.Directives>( (IJxseWritePropertySource<NetworkManagerProperties, Directives>) properties );
+		NetworkManagerPreferences<IJxseDirectives> preferences = 
+				new NetworkManagerPreferences<IJxseDirectives>( (IJxseWritePropertySource<NetworkManagerProperties, IJxseDirectives>) properties );
 		String name = preferences.getInstanceName();
 		try {
 			Path path = Paths.get( preferences.getHomeFolder() );
@@ -75,11 +90,10 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 			return null;
 		}
 	}
-
 	
 	@Override
 	public boolean complete() {
-		IJxsePropertySource<NetworkManagerProperties, IJxseDirectives.Directives> properties = super.getPropertySource();
+		IJxsePropertySource<NetworkManagerProperties, IJxseDirectives> properties = super.getPropertySource();
 		Object value = properties.getDirective( Directives.AUTO_START );
 		if( value == null )
 			value = false;
@@ -97,6 +111,13 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 	}
 
 	@Override
+	public PeerGroup getPeerGroup() {
+		if(!super.isCompleted() )
+			return null;
+		return super.getModule().getNetPeerGroup();
+	}
+
+	@Override
 	protected void onProperytySourceCreated(
 			IJxsePropertySource<?, ?> ps) {
 		// TODO Auto-generated method stub
@@ -104,8 +125,7 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 	}
 
 	@Override
-	protected void onParseDirectiveAfterCreation(IJxseDirectives.Directives directive,
-			Object value) {
+	protected void onParseDirectiveAfterCreation(IJxseDirectives directive,	Object value) {
 		// TODO Auto-generated method stub
 		
 	}

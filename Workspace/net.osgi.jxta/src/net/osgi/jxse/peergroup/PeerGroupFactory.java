@@ -1,0 +1,77 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Condast and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Kees Pieters - initial API and implementation
+ *******************************************************************************/
+package net.osgi.jxse.peergroup;
+
+import net.jxta.peergroup.PeerGroup;
+import net.osgi.jxse.advertisement.AdvertisementPropertySource;
+import net.osgi.jxse.factory.AbstractComponentFactory;
+import net.osgi.jxse.peergroup.PeerGroupPropertySource.PeerGroupProperties;
+import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxsePropertySource;
+
+public class PeerGroupFactory extends
+		AbstractComponentFactory<PeerGroup, PeerGroupProperties, IJxseDirectives> 
+	implements IPeerGroupProvider
+{
+
+	public static final String S_PEERGROUP_SERVICE = "PeerGroupService";
+
+	private IPeerGroupProvider parentContainer;
+
+	public PeerGroupFactory( IPeerGroupProvider parentContainer, PeerGroupPropertySource source ) {
+		super( source );
+		this.parentContainer = parentContainer;
+	}
+
+	/**
+	 * Get the name of the peergroup provider
+	 * @return
+	 */
+	public String getPeerGroupProviderName(){
+		Object property = super.getPropertySource().getProperty( PeerGroupProperties.NAME );
+		if( property == null )
+			return null;
+		return ( String )property;
+	}
+
+	@Override
+	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value) {
+	}
+
+	@Override
+	protected PeerGroup onCreateModule( IJxsePropertySource<PeerGroupProperties, IJxseDirectives> properties) {
+		PeerGroup parent = parentContainer.getPeerGroup();
+		return parent;//.newGroup( null);
+	}
+	
+	protected AdvertisementPropertySource getAdvertisementPropertySource(){
+		//for( IJxsePropertySource source: super. )
+		return null;
+	}
+	
+	@Override
+	protected void onProperytySourceCreated(
+			IJxsePropertySource<?, ?> ps) {
+		// TODO Auto-generated method stub		
+	}
+
+	@Override
+	protected void onParseDirectiveAfterCreation(IJxseDirectives directive,
+			Object value) {
+		// TODO Auto-generated method stub		
+	}
+
+	@Override
+	public PeerGroup getPeerGroup() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

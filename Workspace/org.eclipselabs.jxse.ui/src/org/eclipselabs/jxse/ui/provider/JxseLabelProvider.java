@@ -1,7 +1,7 @@
 package org.eclipselabs.jxse.ui.provider;
 
 import net.osgi.jxse.component.IJxseComponent;
-import net.osgi.jxse.service.core.AbstractJxtaService;
+import net.osgi.jxse.service.core.AbstractJxseService;
 import net.osgi.jxse.service.utils.Utils;
 
 import org.eclipse.jface.viewers.LabelProvider;
@@ -18,8 +18,8 @@ public class JxseLabelProvider extends LabelProvider{
 			return super.getImage(element);
 		IJxseComponent<?> component = (IJxseComponent<?> )element;
 		StatusImages images = new StatusImages();
-		if( component instanceof AbstractJxtaService ){
-			AbstractJxtaService<?,?,?> service = (net.osgi.jxse.service.core.AbstractJxtaService<Object,?,?> )component;
+		if( component instanceof AbstractJxseService ){
+			AbstractJxseService<?,?,?> service = (net.osgi.jxse.service.core.AbstractJxseService<Object,?,?> )component;
 			return images.getImage( service.getStatus() );
 		}
 		return images.getImage( Images.COMPONENT );

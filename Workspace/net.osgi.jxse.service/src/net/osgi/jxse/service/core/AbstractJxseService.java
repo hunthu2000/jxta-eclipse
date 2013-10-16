@@ -27,7 +27,7 @@ import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
 
-public abstract class AbstractJxtaService<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends AbstractActivator<IComponentFactory<T,U,V>> 
+public abstract class AbstractJxseService<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends AbstractActivator<IComponentFactory<T,U,V>> 
 implements IJxseService<T>{
 
 	public static final String S_SERVICE = "Service";
@@ -44,7 +44,7 @@ implements IJxseService<T>{
 	
 	private ComponentEventDispatcher dispatcher;
 
-	protected AbstractJxtaService() {
+	protected AbstractJxseService() {
 		properties = new HashMap<Object, Object>();
 		dispatcher = ComponentEventDispatcher.getInstance();
 		advertisements = new ArrayList<Advertisement>();
@@ -52,7 +52,7 @@ implements IJxseService<T>{
 		super.initialise();
 	}
 
-	protected AbstractJxtaService( T module ) {
+	protected AbstractJxseService( T module ) {
 		this();
 		this.module = module;
 	}

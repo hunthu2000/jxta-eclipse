@@ -25,11 +25,11 @@ import net.osgi.jxse.seeds.ISeedListFactory;
 import net.osgi.jxse.service.network.NetPeerGroupService;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 
-public class XMLServiceContext extends AbstractServiceContext<NetworkManager,ContextProperties, IJxseDirectives.Directives>{
+public class XMLServiceContext extends AbstractServiceContext<NetworkManager,ContextProperties, IJxseDirectives>{
 
 	public static final String S_ERR_NO_SERVICE_LOADED = "\n\t!!! No service is loaded. Not starting context:  ";
 	
-	private IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives.Directives> factory;
+	private IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives> factory;
 	private NetPeerGroupService service;
 	private AbstractResourceSeedListFactory seeds;
 	private XMLServiceContext host;
@@ -45,19 +45,19 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 		this.seeds = seeds;
 	}
 
-	public XMLServiceContext( IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives.Directives> factory ) {
+	public XMLServiceContext( IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives> factory ) {
 		super( factory, true );
 		this.host = this;
 	}
 
-	public XMLServiceContext( IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives.Directives> factory, AbstractResourceSeedListFactory seeds ) {
+	public XMLServiceContext( IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives> factory, AbstractResourceSeedListFactory seeds ) {
 		super( factory );
 		this.host = this;
 		this.seeds = seeds;
 	}
 
 	@Override
-	protected boolean onSetAvailable( IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives.Directives> factory) {
+	protected boolean onSetAvailable( IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives> factory) {
 		if( !factory.canCreate() )
 			return false;
 		this.factory = factory;	

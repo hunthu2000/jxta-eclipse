@@ -26,12 +26,12 @@ import net.jxta.platform.NetworkManager;
 import net.jxta.socket.JxtaSocket;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
-import net.osgi.jxse.service.core.AbstractJxtaService;
+import net.osgi.jxse.service.core.AbstractJxseService;
 import net.osgi.jxse.socket.ISocketFactory;
 import net.osgi.jxse.socket.SocketFactory;
 import net.osgi.jxse.utils.IOUtils;
 
-public class SocketService extends AbstractJxtaService<JxtaSocket, ISocketFactory.Properties, IJxseDirectives.Directives> implements Runnable{
+public class SocketService extends AbstractJxseService<JxtaSocket, ISocketFactory.Properties, IJxseDirectives.Directives> implements Runnable{
 
 	/**
 	* number of runs to make
