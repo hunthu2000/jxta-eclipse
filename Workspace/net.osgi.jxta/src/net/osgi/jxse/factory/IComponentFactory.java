@@ -27,6 +27,7 @@ public interface IComponentFactory<T extends Object, U extends Object, V extends
 		MULTICAST,
 		PEERGROUP_SERVICE,
 		DISCOVERY_SERVICE,
+		REGISTRATION_SERVICE,
 		RENDEZVOUS_SERVICE,
 		JXSE_SOCKET,
 		JXSE_SERVER_SOCKET,

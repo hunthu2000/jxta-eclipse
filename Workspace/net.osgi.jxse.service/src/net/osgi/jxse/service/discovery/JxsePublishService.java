@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.jxta.discovery.DiscoveryService;
+import net.jxta.discovery.RegistrationService;
 import net.jxta.document.Advertisement;
 import net.osgi.jxse.advertisement.AbstractAdvertisementFactory;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
@@ -35,7 +35,7 @@ public class JxsePublishService extends JxseDiscoveryService{
 
 	private Collection<AbstractAdvertisementFactory<?,?,?>> adfactories;
 	
-	public JxsePublishService( DiscoveryService component ) {
+	public JxsePublishService( RegistrationService component ) {
 		super( component );
 		adfactories = new ArrayList<AbstractAdvertisementFactory<?,?,?>>();
 	}
@@ -69,7 +69,7 @@ public class JxsePublishService extends JxseDiscoveryService{
 	protected void publishAdvertisements(){
 		if( this.adfactories.isEmpty() )
 			return;
-		DiscoveryService discovery = super.getModule();
+		RegistrationService discovery = super.getModule();
 		int lifetime = ( Integer )this.getProperty( PublishProperties.LIFE_TIME );
 		int expiration = ( Integer )this.getProperty( PublishProperties.EXPIRATION );
 		try {

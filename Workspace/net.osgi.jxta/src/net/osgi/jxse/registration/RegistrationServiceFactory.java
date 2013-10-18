@@ -8,23 +8,23 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.discovery;
+package net.osgi.jxse.registration;
 
-import net.jxta.discovery.RegistrationService;
-import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
+import net.osgi.jxse.registration.RegistrationPropertySource.RegistrationProperties;
 
-public class DiscoveryServiceFactory extends
-		AbstractComponentFactory<RegistrationService, DiscoveryProperties, IJxseDirectives> {
+public class RegistrationServiceFactory extends
+		AbstractComponentFactory<RegistrationService, RegistrationProperties, IJxseDirectives> {
 
 	public static final String S_DISCOVERY_SERVICE = "DiscoveryService";
 
 	private IPeerGroupProvider peerGroupContainer;
 
-	public DiscoveryServiceFactory( IPeerGroupProvider peerGroupContainer, DiscoveryPropertySource source ) {
+	public RegistrationServiceFactory( IPeerGroupProvider peerGroupContainer, IJxsePropertySource<RegistrationProperties, IJxseDirectives> source ) {
 		super( source );
 		this.peerGroupContainer = peerGroupContainer;
 	}
@@ -34,8 +34,8 @@ public class DiscoveryServiceFactory extends
 	}
 
 	@Override
-	protected RegistrationService onCreateModule( IJxsePropertySource<DiscoveryProperties, IJxseDirectives> properties) {
-		RegistrationService service = peerGroupContainer.getPeerGroup().getDiscoveryService();
+	protected RegistrationService onCreateModule( IJxsePropertySource<RegistrationProperties, IJxseDirectives> properties) {
+		RegistrationService service = new RegistrationService( peerGroupContainer, (IJxseWritePropertySource<RegistrationProperties, IJxseDirectives>) properties );
 		return service;
 	}
 	

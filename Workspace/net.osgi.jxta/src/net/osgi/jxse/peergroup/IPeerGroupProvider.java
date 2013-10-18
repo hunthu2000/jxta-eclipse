@@ -1,33 +1,16 @@
 package net.osgi.jxse.peergroup;
 
 import net.jxta.peergroup.PeerGroup;
-import net.osgi.jxse.properties.IJxseDirectives;
-import net.osgi.jxse.utils.StringStyler;
 
 public interface IPeerGroupProvider {
 
-	public enum PeerGroupDirectives implements IJxseDirectives{
-		PEERGROUP;
-
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString());
-		}
-		
-		public static boolean isValidIdString( String id ){
-			for( PeerGroupDirectives dir: values() ){
-				if( dir.name().equals(id ))
-					return true;
-			}
-			return false;
-		}
-	}
+	public static final String S_NET_PEER_GROUP = "NetPeerGroup";
 	
 	/**
-	 * Get the name of the peergroup provider
+	 * Get the name of the (intended) peergroup
 	 * @return
 	 */
-	public String getPeerGroupProviderName();
+	public String getPeerGroupName();
 	
 	/**
 	 * This supportive interface allows various objects to provide a peer goup.

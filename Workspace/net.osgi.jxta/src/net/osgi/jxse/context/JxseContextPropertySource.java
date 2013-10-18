@@ -27,7 +27,7 @@ import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.validator.ClassValidator;
 import net.osgi.jxse.validator.RangeValidator;
 
-public class JxseContextPropertySource extends AbstractJxseWritePropertySource<ContextProperties, IJxseDirectives>{
+public class JxseContextPropertySource extends AbstractJxseWritePropertySource<ContextProperties, IJxseDirectives.Directives>{
 
 	public static final String DEF_HOME_FOLDER = "${user.home}/.jxse/${bundle-id}";
 	public static final int DEF_MIN_PORT = 1000;
@@ -105,6 +105,23 @@ public class JxseContextPropertySource extends AbstractJxseWritePropertySource<C
 			return (String) super.getProperty( ContextProperties.BUNDLE_ID );
 		case PORT:
 			return DEF_PORT;
+		default:
+			break;
+		}
+		return null;
+	}
+
+	@Override
+	public Object getDefaultDirectives(IJxseDirectives.Directives id) {
+		switch( id ){
+		case AUTO_START:
+			return true;
+		case PEER_ID_CREATE:
+			return true;
+		case PEER_ID_PERSIST:
+			return true;
+		case CLEAR_CONFIG:
+			break;
 		default:
 			break;
 		}

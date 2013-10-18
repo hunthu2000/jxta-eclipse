@@ -40,7 +40,7 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
 	private Date date;
 	
 	private JxseServiceContainerPetitioner() {
-		super( new Palaver());
+		super( new ResourcePalaver());
 		children = new ArrayList<IJxseComponent<?>>();
 		this.date = Calendar.getInstance().getTime();
 	}
@@ -166,19 +166,19 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
  * @author Kees
  *
  */
-class Palaver extends AbstractPalaver<String>{
+class ResourcePalaver extends AbstractPalaver<String>{
 
 	private static final String S_JXSE_INF = "/JXSE-INF/token.txt";
 	
 	private String providedToken;
 
-	protected Palaver() {
+	protected ResourcePalaver() {
 		super( getProvidedInfo()[0]);
 		this.providedToken = getProvidedInfo()[1];
 	}
 
 	private static final String[] getProvidedInfo(){
-		Class<?> clss = Palaver.class;
+		Class<?> clss = ResourcePalaver.class;
 		String[] info = { JxseDSComponent.S_IJXSE_CONTAINER_PACKAGE_ID, JxseDSComponent.S_IJXSE_TOKEN} ;
 		URL url = clss.getResource(S_JXSE_INF );
 		if( url == null )

@@ -16,7 +16,9 @@ import java.util.Iterator;
 
 import net.osgi.jxse.activator.IActivator;
 import net.osgi.jxse.builder.ICompositeBuilderListener.FactoryEvents;
+import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.discovery.DiscoveryPropertySource;
+import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryDirectives;
 import net.osgi.jxse.discovery.DiscoveryServiceFactory;
 import net.osgi.jxse.factory.ComponentFactoryEvent;
 import net.osgi.jxse.factory.IComponentFactory;
@@ -26,23 +28,24 @@ import net.osgi.jxse.network.NetworkManagerFactory;
 import net.osgi.jxse.network.NetworkManagerPropertySource;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
-import net.osgi.jxse.peergroup.IPeerGroupProvider.PeerGroupDirectives;
-import net.osgi.jxse.peergroup.PeerGroupPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.SeedListPropertySource;
+import net.osgi.jxse.registration.RegistrationPropertySource;
+import net.osgi.jxse.registration.RegistrationServiceFactory;
 import net.osgi.jxse.seeds.ISeedListFactory;
 import net.osgi.jxse.seeds.SeedListFactory;
 import net.osgi.jxse.utils.Utils;
 
-public class CompositeBuilder<T extends Object, U extends Enum<U>> implements ICompositeBuilder<T> {
+public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJxseDirectives> implements ICompositeBuilder<T> {
 
 	private Collection<ICompositeBuilderListener> factoryListeners;
-	private ComponentNode<T,U,IJxseDirectives> root;
-	private IJxsePropertySource<U,IJxseDirectives> ps;
+	private ComponentNode<T,U,V> root;
+	private IJxsePropertySource<U,V> ps;
 
 	
-	public CompositeBuilder( IJxsePropertySource<U, IJxseDirectives> propertySource) {
+	public CompositeBuilder( IJxsePropertySource<U,V> propertySource) {
 		ps = propertySource;
 		this.factoryListeners = new ArrayList<ICompositeBuilderListener>();
 	}
@@ -77,9 +80,9 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>> implements IC
 	 * Parse the directives for this factory
 	 * @param node
 	 */
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private final void parsePropertySources(){
-		this.root = (ComponentNode<T, U, IJxseDirectives>) this.parsePropertySources(ps, new ComponentNode<T, U, IJxseDirectives>( null ));
+		this.root = (ComponentNode<T, U, V>) this.parsePropertySources(ps, new ComponentNode( null ));
 	}
 
 	/**
@@ -87,20 +90,21 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>> implements IC
 	 * @param node
 	 */
 	@SuppressWarnings({"rawtypes", "unchecked" })
-	private final ComponentNode parsePropertySources( IJxsePropertySource<?,IJxseDirectives> source, ComponentNode<?, ?, IJxseDirectives> parent ){
-		if(( source == null ) || ( parent == null ))
-			return null;
-		ComponentNode node = parent;
+	private final ComponentNode parsePropertySources( IJxsePropertySource<?,?> source, ComponentNode<?, ?, ?> parent ){
+		ComponentNode node = null;
 		ComponentNode returnNode = null;
+		IComponentFactory<?,?,?> factory = parent.getFactory();
 		boolean newFactory = false;
-		IComponentFactory<?,?,IJxseDirectives> factory = parent.getFactory();
+		if( source instanceof JxseContextPropertySource ){
+			node = parent;
+		}
 		if( source instanceof NetworkManagerPropertySource ){
-			factory = new NetworkManagerFactory( (IJxsePropertySource<NetworkManagerProperties, IJxseDirectives>) source );
+			factory = new NetworkManagerFactory( (IJxsePropertySource<NetworkManagerProperties, Directives>) source );
 			node = this.getNode(parent, factory);
 			returnNode = node;
 			newFactory = true;
 		}else if( source instanceof NetworkConfigurationPropertySource ){
-			factory = new NetworkConfigurationFactory( (NetworkManagerFactory) factory, (NetworkConfigurationPropertySource) source );
+			factory = new NetworkConfigurationFactory( (NetworkManagerFactory) parent.getFactory(), (NetworkConfigurationPropertySource) source );
 			node = this.getNode(parent, factory);
 			newFactory = true;
 		}else if( source instanceof SeedListPropertySource ){
@@ -108,18 +112,23 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>> implements IC
 			ISeedListFactory slf = new SeedListFactory((SeedListPropertySource<IJxseDirectives>) source ); 
 			ncf.addSeedlist(slf);
 		}else if( source instanceof DiscoveryPropertySource ){
-			String peergroup = (String) source.getDirective( PeerGroupDirectives.PEERGROUP );
-			if( Utils.isNull( peergroup ))
-					peergroup = PeerGroupPropertySource.S_NET_PEERGROUP;
-			
+			DiscoveryPropertySource discsource = ( DiscoveryPropertySource )source;
+			String peergroup = (String) discsource.getDirective( DiscoveryDirectives.PEERGROUP );
 			IPeerGroupProvider provider = this.getPeerGroupProvider( peergroup, parent);
 			factory = new DiscoveryServiceFactory( provider, (DiscoveryPropertySource)source );
+			node = this.getNode(parent, factory);
+			newFactory = true;
+		}else if( source instanceof RegistrationPropertySource ){
+			RegistrationPropertySource rescsource = ( RegistrationPropertySource )source;
+			String peergroup = (String) rescsource.getDirective( DiscoveryDirectives.PEERGROUP );
+			IPeerGroupProvider provider = this.getPeerGroupProvider( peergroup, parent);
+			factory = new RegistrationServiceFactory( provider, rescsource );
 			node = this.getNode(parent, factory);
 			newFactory = true;
 		}
 		this.onProperytySourceCreated(source);
 		ComponentNode childNode = null;
-		for( IJxsePropertySource child: source.getChildren()) {
+		for( IJxsePropertySource<?,?> child: source.getChildren()) {
 			childNode = this.parsePropertySources( child, node );
 			if(( returnNode == null ) &&( childNode != null ))
 				returnNode = childNode;
@@ -129,30 +138,28 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>> implements IC
 		return returnNode;
 	}
 
-	/**
-	 * Look for a peergroup provider with the given name
-	 * @param name
-	 * @param parent
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private IPeerGroupProvider getPeerGroupProvider( String name, ComponentNode<?, ?, IJxseDirectives> parent  ){
-		if( Utils.isNull( name ))
-			return null;
-		IComponentFactory<?,?,IJxseDirectives> factory = parent.getFactory();
-		if(( factory != null ) && ( factory instanceof IPeerGroupProvider )){
-			IPeerGroupProvider provider = ( IPeerGroupProvider )factory;
-			if( name.equals( provider.getPeerGroupProviderName() ))
-				return provider;
+	private final IPeerGroupProvider getPeerGroupProvider( String name, ComponentNode<?, ?, ?> parent ){
+		IComponentFactory<?,?,?> factory = parent.getFactory();
+		if( Utils.isNull( name )){
+			if( factory instanceof IPeerGroupProvider )
+				return (IPeerGroupProvider) parent;
+			name = IPeerGroupProvider.S_NET_PEER_GROUP;
+		}else{
+			if( factory instanceof IPeerGroupProvider ){
+				IPeerGroupProvider provider = (IPeerGroupProvider) factory;
+				if( provider.getPeerGroupName().equals(name ))
+					return provider;
+			}
 		}
-		for( ComponentNode<?, ?, ?> child: parent.getChildren() ) {
-			IPeerGroupProvider childProvider = this.getPeerGroupProvider(name, (ComponentNode<?, ?, IJxseDirectives>) child );
-			if( childProvider != null )
-				return childProvider;
-		}	
-		return null;
+		IPeerGroupProvider returnNode= null;
+		for( ComponentNode<?,?,?> child: parent.getChildren()) {
+			returnNode = this.getPeerGroupProvider( name, child );
+			if( returnNode != null )
+				return returnNode;
+		}
+		return returnNode;
 	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected ComponentNode<?,?,?> getNode( ComponentNode<?,?,?> node, IComponentFactory<?,?,?> factory ){
 		ComponentNode<?,?,?> childNode = null;
@@ -219,12 +226,12 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>> implements IC
 	 * Parse the directives for this factory
 	 * @param node
 	 */
-	private final void parseDirectives( ComponentNode<?,?,IJxseDirectives> node ){
-		IJxsePropertySource<?,IJxseDirectives> propertySource = this.ps;
+	private final void parseDirectives( ComponentNode<?,?,V> node ){
+		IJxsePropertySource<?,V> propertySource = this.ps;
 		if( node.getFactory() != null )
 			propertySource = node.getFactory().getPropertySource();
-		Iterator<IJxseDirectives> iterator = propertySource.directiveIterator();
-		IJxseDirectives directive;
+		Iterator<V> iterator = propertySource.directiveIterator();
+		V directive;
 		while( iterator.hasNext()) {
 			directive = iterator.next();
 			this.onParseDirectivePriorToCreation( node, ( IJxseDirectives.Directives )directive, ( String )propertySource.getDirective( directive ));

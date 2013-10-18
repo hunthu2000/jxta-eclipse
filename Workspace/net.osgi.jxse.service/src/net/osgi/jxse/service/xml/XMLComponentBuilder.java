@@ -51,6 +51,9 @@ import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.properties.PartialPropertySource;
 import net.osgi.jxse.properties.SeedListPropertySource;
+import net.osgi.jxse.registration.RegistrationPreferences;
+import net.osgi.jxse.registration.RegistrationPropertySource;
+import net.osgi.jxse.registration.RegistrationPropertySource.RegistrationProperties;
 import net.osgi.jxse.service.xml.PreferenceStore.Persistence;
 import net.osgi.jxse.service.xml.PreferenceStore.SupportedAttributes;
 import net.osgi.jxse.service.xml.XMLComponentBuilder.Groups;
@@ -58,7 +61,7 @@ import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.utils.io.IOUtils;
 
-public class XMLComponentBuilder implements IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives>, ICompositeBuilder<NetworkManager> {
+public class XMLComponentBuilder implements IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives.Directives>, ICompositeBuilder<NetworkManager> {
 
 	protected static final String JAXP_SCHEMA_SOURCE =
 		    "http://java.sun.com/xml/jaxp/properties/schemaSource";
@@ -174,7 +177,6 @@ public class XMLComponentBuilder implements IComponentFactory<NetworkManager, Co
 		return this.createModule();
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public NetworkManager createModule() {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -195,7 +197,7 @@ public class XMLComponentBuilder implements IComponentFactory<NetworkManager, Co
 				notifyListeners(event);
 			}
 		};
-		ICompositeBuilder<NetworkManager> cf = new CompositeBuilder( this.getPropertySource() );
+		ICompositeBuilder<NetworkManager> cf = new CompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives.Directives>( this.getPropertySource() );
 		cf.addListener( listener );
 		try {
 			logger.info("Parsing JXSE Bundle: " + this.properties.getProperty( ContextProperties.BUNDLE_ID ));
@@ -261,7 +263,7 @@ public class XMLComponentBuilder implements IComponentFactory<NetworkManager, Co
 	}
 
 	@Override
-	public IJxsePropertySource<ContextProperties, IJxseDirectives> getPropertySource() {
+	public IJxsePropertySource<ContextProperties, IJxseDirectives.Directives> getPropertySource() {
 		return this.properties;
 	}
 	
@@ -320,6 +322,9 @@ class JxtaHandler extends DefaultHandler{
 			case ADVERTISEMENT:
 				newSource = new AdvertisementPropertySource( qName, source );
 				break;			
+			case REGISTRATION_SERVICE:
+				newSource = new RegistrationPropertySource( qName, source );
+				break;
 			case DISCOVERY_SERVICE:
 				newSource = new DiscoveryPropertySource( qName, source );
 				break;			
@@ -392,6 +397,11 @@ class JxtaHandler extends DefaultHandler{
 		if( source instanceof DiscoveryPropertySource ){
 			DiscoveryPreferences<IJxseDirectives> preferences = new DiscoveryPreferences<IJxseDirectives>( source );
 			preferences.setPropertyFromString(( DiscoveryProperties) property.getKey(), value);
+			return;
+		}
+		if( source instanceof RegistrationPropertySource ){
+			RegistrationPreferences<IJxseDirectives> preferences = new RegistrationPreferences<IJxseDirectives>( source );
+			preferences.setPropertyFromString(( RegistrationProperties) property.getKey(), value);
 			return;
 		}
 		if( source instanceof PartialPropertySource ){

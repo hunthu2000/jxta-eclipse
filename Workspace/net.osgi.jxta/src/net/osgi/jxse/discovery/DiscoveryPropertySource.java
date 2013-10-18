@@ -1,7 +1,6 @@
 package net.osgi.jxse.discovery;
 
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.peergroup.IPeerGroupProvider.PeerGroupDirectives;
 import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
@@ -34,7 +33,24 @@ public class DiscoveryPropertySource extends AbstractJxseWritePropertySource<Dis
 			return StringStyler.prettyString( super.toString() );
 		}
 	}
+
+	public enum DiscoveryDirectives implements IJxseDirectives{
+		PEERGROUP;
 	
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString() );
+		}
+		
+		public static final boolean isValidDirective( String key){
+			for( DiscoveryDirectives directive: DiscoveryDirectives.values() ){
+				if( directive.name().equals( key ))
+					return true;
+			}
+			return false;
+		}
+	}
+
 	public DiscoveryPropertySource( IJxsePropertySource<?,IJxseDirectives> parent) {
 		this( Components.DISCOVERY_SERVICE.toString(), parent );
 	}
@@ -54,6 +70,12 @@ public class DiscoveryPropertySource extends AbstractJxseWritePropertySource<Dis
 		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.THRESHOLD, 1, true ));
 	}
 
+	@Override
+	public IJxseDirectives getDirectiveFromString(String id) {
+		if( DiscoveryDirectives.isValidDirective( id ))
+			return DiscoveryDirectives.valueOf( id );
+		return super.getDirectiveFromString(id);
+	}
 
 	@Override
 	public DiscoveryProperties getIdFromString(String key) {
@@ -61,15 +83,15 @@ public class DiscoveryPropertySource extends AbstractJxseWritePropertySource<Dis
 	}
 
 	@Override
-	public IJxseDirectives getDirectiveFromString(String id) {
-		if( PeerGroupDirectives.isValidIdString(id) )
-			return PeerGroupDirectives.valueOf(id);
-		return super.getDirectiveFromString(id);
-	}
-
-	@Override
 	public boolean validate(DiscoveryProperties id, Object value) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+
+	@Override
+	public Object getDefaultDirectives(IJxseDirectives id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

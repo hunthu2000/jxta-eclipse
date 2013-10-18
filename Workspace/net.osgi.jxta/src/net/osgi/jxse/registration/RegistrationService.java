@@ -8,15 +8,13 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.discovery;
+package net.osgi.jxse.registration;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -24,45 +22,27 @@ import java.util.logging.Logger;
 
 import net.jxta.discovery.DiscoveryEvent;
 import net.jxta.discovery.DiscoveryListener;
-import net.jxta.discovery.DiscoveryService;
 import net.jxta.document.Advertisement;
 import net.jxta.protocol.DiscoveryResponseMsg;
 import net.osgi.jxse.activator.AbstractActivator;
+import net.osgi.jxse.activator.IJxseService;
 import net.osgi.jxse.advertisement.AbstractAdvertisementFactory.AdvertisementTypes;
-import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
-import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
+import net.osgi.jxse.registration.RegistrationPropertySource.RegistrationProperties;
 import net.osgi.jxse.log.JxseLevel;
+import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
-import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class JxseDiscoveryService extends AbstractActivator<DiscoveryServiceFactory> implements IJxseComponent<DiscoveryService>, Runnable, DiscoveryListener {
+public class RegistrationService extends AbstractActivator<IPeerGroupProvider> implements IJxseService<RegistrationService>, Runnable, DiscoveryListener {
 	
-	private DiscoveryService discoveryService;
-	private IJxsePropertySource<DiscoveryProperties, IJxseDirectives> source;
+	private IJxseWritePropertySource<RegistrationProperties, IJxseDirectives> source;
 	private ExecutorService executor;
 	
-	public JxseDiscoveryService( DiscoveryServiceFactory factory ) {
-		super( factory );
-	}
-
-	@Override
-	protected boolean onSetAvailable(DiscoveryServiceFactory factory) {
-		this.discoveryService = factory.getDiscoveryService();
-		this.source = factory.getPropertySource();
+	public RegistrationService( IPeerGroupProvider provider, IJxseWritePropertySource<RegistrationProperties, IJxseDirectives> source ) {
+		super( provider );
+		this.source = source;
 		executor = Executors.newSingleThreadExecutor();
-		return true;
-	}
-
-	@Override
-	protected boolean onInitialising() {
-		return true;
-	}
-
-	@Override
-	public Iterator<?> iterator() {
-		List<DiscoveryProperties> set = Arrays.asList(DiscoveryProperties.values());
-		return set.iterator();
 	}
 
 	/**
@@ -70,14 +50,14 @@ public class JxseDiscoveryService extends AbstractActivator<DiscoveryServiceFact
 	 */
 	protected void discovery() {
 		try {
-			String peerId = ( String )this.getProperty( DiscoveryProperties.PEER_ID );
-			String attribute = ( String )this.getProperty( DiscoveryProperties.ATTRIBUTE );
-			String wildcard = ( String )this.getProperty( DiscoveryProperties.WILDCARD );
-			int threshold = ( Integer )this.getProperty( DiscoveryProperties.THRESHOLD );
+			String peerId = ( String )this.getProperty( RegistrationProperties.PEER_ID );
+			String attribute = ( String )this.getProperty( RegistrationProperties.ATTRIBUTE );
+			String wildcard = ( String )this.getProperty( RegistrationProperties.WILDCARD );
+			int threshold = ( Integer )this.getProperty( RegistrationProperties.THRESHOLD );
 
 			String adType = AdvertisementTypes.convert(( AdvertisementTypes) this.getProperty( null /*DiscoveryProperties.ADVERTISEMENT_TYPE*/ ));
-			discoveryService.getLocalAdvertisements( Integer.parseInt( adType ), attribute, wildcard );
-			discoveryService.getRemoteAdvertisements( peerId,  Integer.parseInt( adType ), attribute, wildcard, threshold, null);
+			//discovery.getLocalAdvertisements( Integer.parseInt( adType ), attribute, wildcard );
+			//discovery.getRemoteAdvertisements( peerId,  Integer.parseInt( adType ), attribute, wildcard, threshold, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -92,7 +72,7 @@ public class JxseDiscoveryService extends AbstractActivator<DiscoveryServiceFact
 	public Advertisement[] getAdvertisements(){
 		Collection<Advertisement> advertisements = new ArrayList<Advertisement>();
 		try {
-			Enumeration<Advertisement> enm = discoveryService.getLocalAdvertisements( DiscoveryService.ADV, null, null);
+			Enumeration<Advertisement> enm = null;//service.getLocalAdvertisements( RegistrationService.ADV, null, null);
 			while( enm.hasMoreElements())
 				advertisements.add( enm.nextElement());
 		} catch (Exception e) {
@@ -108,7 +88,7 @@ public class JxseDiscoveryService extends AbstractActivator<DiscoveryServiceFact
 	 * The activities performed in an active state. By defalt this is discovery
 	 */
 	protected void onActiveState(){
-		DiscoveryMode mode = ( DiscoveryMode )this.getProperty( DiscoveryProperties.DISCOVERY_MODE );
+		DiscoveryMode mode = ( DiscoveryMode )this.getProperty( RegistrationProperties.DISCOVERY_MODE );
 		if(!( mode.equals( DiscoveryMode.PUBLISH )))
 		  this.discovery();		
 	}
@@ -116,14 +96,14 @@ public class JxseDiscoveryService extends AbstractActivator<DiscoveryServiceFact
 	
 	@Override
 	public boolean start() {
-		discoveryService.addDiscoveryListener(this);
+		//service.addDiscoveryListener(this);
 		this.executor.execute(this);
 		return super.start();
 	}
 
 	@Override
 	public void run() {
-		int wait_time = ( Integer )this.getProperty( DiscoveryProperties.WAIT_TIME );
+		int wait_time = ( Integer )this.getProperty( RegistrationProperties.WAIT_TIME );
 		while ( super.isActive()) {
 			this.onActiveState();
 			try {
@@ -138,7 +118,7 @@ public class JxseDiscoveryService extends AbstractActivator<DiscoveryServiceFact
 	@Override
 	protected void deactivate() {
 		Thread.currentThread().interrupt();
-		discoveryService.removeDiscoveryListener(this );
+		//service.removeDiscoveryListener(this );
 	}
 
 	@Override
@@ -160,40 +140,52 @@ public class JxseDiscoveryService extends AbstractActivator<DiscoveryServiceFact
 
 	@Override
 	public String getId() {
-		return source.getId();
+		return this.source.getId();
 	}
 
 	@Override
 	public Date getCreateDate() {
+		return null;//this.source.getProperty();
+	}
+
+	@Override
+	public boolean hasAdvertisements() {
+		return false;
+	}
+
+	@Override
+	public Object getProperty(Object id) {
+		return this.source.getProperty((RegistrationProperties) id);
+	}
+
+	@Override
+	public void putProperty(Object id, Object value) {
+		this.source.setProperty((RegistrationProperties) id, value);
+	}
+
+	@Override
+	public RegistrationService getModule() {
+		return null;//this.service;
+	}
+
+	@Override
+	protected boolean onInitialising() {
+		return true;
+	}
+
+	@Override
+	protected void onFinalising() {
+	}
+
+	@Override
+	public Iterator<?> iterator() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean hasAdvertisements() {
+	protected boolean onSetAvailable(IPeerGroupProvider factory) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public Object getProperty(Object key) {
-		return source.getProperty((DiscoveryProperties) key);
-	}
-
-	@Override
-	public void putProperty(Object key, Object value) {
-		//TODOthis.source.getManagedProperty(id)
-	}
-
-	@Override
-	public DiscoveryService getModule() {
-		return this.discoveryService;
-	}
-
-	@Override
-	protected void onFinalising() {
-		if( this.executor == null )
-			return;
-		this.executor.shutdown();
 	}
 }

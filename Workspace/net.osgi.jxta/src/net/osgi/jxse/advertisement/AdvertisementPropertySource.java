@@ -9,10 +9,25 @@ import net.osgi.jxse.utils.Utils;
 
 public class AdvertisementPropertySource extends AbstractJxseWritePropertySource< IJxseProperties, IJxseDirectives> {
 
+	/**
+	 * The scope of an advertisement determines whter it will be published or not
+	 * @author keesp
+	 *
+	 */
+	public enum Scope{
+		INTERNAL,
+		LOCAL,
+		REMOTE;
+	
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString() );
+		}
+	}
+
 	public enum AdvertisementDirectives implements IJxseDirectives{
 		ADVERTISEMENT_TYPE,
-		PUBLISH_LOCAL,
-		PUBLISH_REMOTE;
+		SCOPE;
 	
 		public static boolean isValidDirective( String directive ){
 			if( Utils.isNull( directive ))
@@ -32,13 +47,13 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 
 	public AdvertisementPropertySource(IJxsePropertySource<?, IJxseDirectives> parent) {
 		super(parent);
-		super.setDirective(AdvertisementDirectives.PUBLISH_LOCAL, true);
+		super.setDirective(AdvertisementDirectives.SCOPE, Scope.REMOTE);
 	}
 
 	public AdvertisementPropertySource(String componentName,
 			IJxsePropertySource<?, IJxseDirectives> parent) {
 		super(componentName, parent);
-		super.setDirective(AdvertisementDirectives.PUBLISH_LOCAL, true);
+		super.setDirective(AdvertisementDirectives.SCOPE, Scope.REMOTE);
 	}
 
 	@Override
@@ -56,5 +71,10 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 	@Override
 	public boolean validate(IJxseProperties id, Object value) {
 		return false;
+	}
+
+	@Override
+	public Object getDefaultDirectives(IJxseDirectives id) {
+		return null;
 	}
 }

@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 import net.jxta.discovery.DiscoveryEvent;
 import net.jxta.discovery.DiscoveryListener;
-import net.jxta.discovery.DiscoveryService;
+import net.jxta.discovery.RegistrationService;
 import net.jxta.document.Advertisement;
 import net.jxta.protocol.DiscoveryResponseMsg;
 import net.osgi.jxse.advertisement.AbstractAdvertisementFactory.AdvertisementTypes;
@@ -33,11 +33,11 @@ import net.osgi.jxse.log.JxseLevel;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.service.core.AbstractJxseService;
 
-public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, DiscoveryProperties, IJxseDirectives.Directives> implements Runnable, DiscoveryListener {
+public class JxseDiscoveryService extends AbstractJxseService<RegistrationService, DiscoveryProperties, IJxseDirectives.Directives> implements Runnable, DiscoveryListener {
 	
 	private ExecutorService executor;
 	
-	public JxseDiscoveryService( DiscoveryService discoveryService ) {
+	public JxseDiscoveryService( RegistrationService discoveryService ) {
 		super( discoveryService );
 		executor = Executors.newSingleThreadExecutor();
 	}
@@ -68,7 +68,7 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 	 * Implement pure discovery
 	 */
 	protected void discovery() {
-		DiscoveryService discovery = super.getModule();
+		RegistrationService discovery = super.getModule();
 		try {
 			String peerId = ( String )this.getProperty( DiscoveryProperties.PEER_ID );
 			String attribute = ( String )this.getProperty( DiscoveryProperties.ATTRIBUTE );
@@ -90,10 +90,10 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 	 */
 	@Override
 	public Advertisement[] getAdvertisements(){
-		DiscoveryService discovery = super.getModule();
+		RegistrationService discovery = super.getModule();
 		Collection<Advertisement> advertisements = new ArrayList<Advertisement>();
 		try {
-			Enumeration<Advertisement> enm = discovery.getLocalAdvertisements( DiscoveryService.ADV, null, null);
+			Enumeration<Advertisement> enm = discovery.getLocalAdvertisements( RegistrationService.ADV, null, null);
 			while( enm.hasMoreElements())
 				advertisements.add( enm.nextElement());
 		} catch (Exception e) {
@@ -117,7 +117,7 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 	
 	@Override
 	public boolean start() {
-		DiscoveryService discovery = super.getModule();
+		RegistrationService discovery = super.getModule();
 		discovery.addDiscoveryListener(this);
 		this.executor.execute(this);
 		return super.start();
@@ -140,7 +140,7 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 	@Override
 	protected void deactivate() {
 		Thread.currentThread().interrupt();
-		DiscoveryService discovery = super.getModule();
+		RegistrationService discovery = super.getModule();
 		discovery.removeDiscoveryListener(this );
 	}
 

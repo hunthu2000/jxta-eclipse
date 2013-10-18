@@ -5,7 +5,6 @@ import java.util.Iterator;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.peergroup.IPeerGroupProvider.PeerGroupDirectives;
 import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
@@ -13,9 +12,10 @@ import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.StringStyler;
 
-public class NetworkManagerPropertySource extends AbstractJxseWritePropertySource<NetworkManagerPropertySource.NetworkManagerProperties, IJxseDirectives>
-	implements IJxseWritePropertySource<NetworkManagerPropertySource.NetworkManagerProperties, IJxseDirectives>
+public class NetworkManagerPropertySource extends AbstractJxseWritePropertySource<NetworkManagerPropertySource.NetworkManagerProperties, IJxseDirectives.Directives>
+	implements IJxseWritePropertySource<NetworkManagerPropertySource.NetworkManagerProperties, IJxseDirectives.Directives>
 {
+
 	public enum NetworkManagerProperties{
 		CONFIG_PERSISTENT,
 		INFRASTRUCTURE_ID,
@@ -61,14 +61,6 @@ public class NetworkManagerPropertySource extends AbstractJxseWritePropertySourc
 		return NetworkManagerProperties.valueOf( key );
 	}
 
-	
-	@Override
-	public IJxseDirectives getDirectiveFromString(String id) {
-		if( PeerGroupDirectives.isValidIdString(id) )
-			return PeerGroupDirectives.valueOf(id);
-		return super.getDirectiveFromString(id);
-	}
-
 	@Override
 	public Object getDefault(NetworkManagerProperties id) {
 		JxseContextPropertySource source = (JxseContextPropertySource) super.getParent();
@@ -92,6 +84,12 @@ public class NetworkManagerPropertySource extends AbstractJxseWritePropertySourc
 	public boolean validate(NetworkManagerProperties id, Object value) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public Object getDefaultDirectives(IJxseDirectives.Directives id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**

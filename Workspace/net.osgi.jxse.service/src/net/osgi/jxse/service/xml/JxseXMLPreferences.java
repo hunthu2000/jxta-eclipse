@@ -168,6 +168,12 @@ public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProper
 	}
 
 	@Override
+	public Object getDefaultDirectives(IJxseDirectives id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public String getIdentifier() {
 		// TODO Auto-generated method stub
 		return null;

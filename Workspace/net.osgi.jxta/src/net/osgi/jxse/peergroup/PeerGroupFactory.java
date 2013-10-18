@@ -31,17 +31,6 @@ public class PeerGroupFactory extends
 		this.parentContainer = parentContainer;
 	}
 
-	/**
-	 * Get the name of the peergroup provider
-	 * @return
-	 */
-	public String getPeerGroupProviderName(){
-		Object property = super.getPropertySource().getProperty( PeerGroupProperties.NAME );
-		if( property == null )
-			return null;
-		return ( String )property;
-	}
-
 	@Override
 	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value) {
 	}
@@ -71,7 +60,11 @@ public class PeerGroupFactory extends
 
 	@Override
 	public PeerGroup getPeerGroup() {
-		// TODO Auto-generated method stub
-		return null;
+		return super.getModule();
+	}
+
+	@Override
+	public String getPeerGroupName() {
+		return (String) super.getPropertySource().getProperty( PeerGroupProperties.ATTRIBUTE );
 	}
 }

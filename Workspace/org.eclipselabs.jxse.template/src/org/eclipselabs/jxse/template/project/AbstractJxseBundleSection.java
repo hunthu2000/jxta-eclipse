@@ -254,8 +254,8 @@ public abstract class AbstractJxseBundleSection extends OptionTemplateSection {
 	
 	
 	private void createComponent( IProgressMonitor monitor ){
-		JxseXmlBuilder<ContextProperties, IJxseDirectives> builder = 
-				new JxseXmlBuilder<ContextProperties, IJxseDirectives>();
+		JxseXmlBuilder<ContextProperties, IJxseDirectives.Directives> builder = 
+				new JxseXmlBuilder<ContextProperties, IJxseDirectives.Directives>();
 		InputStream source = null;
 		try{
 			source = new ByteArrayInputStream( builder.build( this.properties ).getBytes()); 

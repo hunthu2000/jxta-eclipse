@@ -5,14 +5,12 @@ import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.utils.StringStyler;
 
 public class PeerGroupPropertySource extends AbstractJxseWritePropertySource<PeerGroupPropertySource.PeerGroupProperties, IJxseDirectives>
 {
-	public static final String S_NET_PEERGROUP = "NetPeerGroup";
-	
 	public enum PeerGroupProperties implements IJxseProperties{
-		NAME,
 		DISCOVERY_MODE,
 		WAIT_TIME,
 		PEER_ID,
@@ -56,5 +54,12 @@ public class PeerGroupPropertySource extends AbstractJxseWritePropertySource<Pee
 	public boolean validate(PeerGroupProperties id, Object value) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+
+	@Override
+	public Object getDefaultDirectives(IJxseDirectives id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

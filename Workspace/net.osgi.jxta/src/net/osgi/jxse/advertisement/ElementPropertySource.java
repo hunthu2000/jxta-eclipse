@@ -59,6 +59,12 @@ public class ElementPropertySource<E extends Element<E>> extends AbstractJxsePro
 	}
 
 	@Override
+	public Object getDefaultDirectives(IJxseDirectives id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public int hashCode() {
 		return root.hashCode();
 	}
