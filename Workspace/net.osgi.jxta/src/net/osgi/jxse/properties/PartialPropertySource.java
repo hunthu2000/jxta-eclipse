@@ -35,7 +35,7 @@ implements  IJxseWritePropertySource<T, U>{
 		Collection<T> ids = new ArrayList<T>();
 		while( iterator.hasNext() ){
 			T id = iterator.next();
-			if( id.name().startsWith(cat))
+			if( id.name().toLowerCase().startsWith(cat))
 				ids.add(id);
 		}
 		return ids.iterator();

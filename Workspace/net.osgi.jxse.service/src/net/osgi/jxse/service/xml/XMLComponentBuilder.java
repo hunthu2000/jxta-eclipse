@@ -315,6 +315,7 @@ class JxtaHandler extends DefaultHandler{
 				break;
 			case TCP:
 			case HTTP:
+			case HTTP2:
 			case MULTICAST:
 			case SECURITY:
 				newSource = new PartialPropertySource( qName, source );

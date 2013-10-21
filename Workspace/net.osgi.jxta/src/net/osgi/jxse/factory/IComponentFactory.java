@@ -24,6 +24,7 @@ public interface IComponentFactory<T extends Object, U extends Object, V extends
 		SECURITY,
 		TCP,
 		HTTP,
+		HTTP2,
 		MULTICAST,
 		PEERGROUP_SERVICE,
 		DISCOVERY_SERVICE,

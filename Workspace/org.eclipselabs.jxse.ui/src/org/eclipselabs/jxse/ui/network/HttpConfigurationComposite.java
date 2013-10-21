@@ -39,11 +39,5 @@ public class HttpConfigurationComposite extends AbstractProtocolConfigurationCom
 		value = source.getDefault( NetworkConfiguratorProperties.HTTP_8PORT  );
 		if( value != null)
 			this.portSpinner.setSelection(( int )value );
-		value = source.getDefault( NetworkConfiguratorProperties.HTTP_8START_PORT  );
-		if( value != null)
-			this.portSpinner.setMinimum(( int )value );
-		value = source.getDefault( NetworkConfiguratorProperties.HTTP_8END_PORT  );
-		if( value != null)
-			this.portSpinner.setMaximum(( int )value );
 	}
 }

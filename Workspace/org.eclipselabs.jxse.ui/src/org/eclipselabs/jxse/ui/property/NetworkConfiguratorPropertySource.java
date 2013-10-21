@@ -116,8 +116,9 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 				break;				
 			case MULTICAST_8PORT:
 			case HTTP_8PORT:
-			case HTTP_8START_PORT:
-			case HTTP_8END_PORT:
+			case HTTP2_8PORT:
+			case HTTP2_8START_PORT:
+			case HTTP2_8END_PORT:
 			case TCP_8START_PORT:
 			case TCP_8END_PORT:
 			case TCP_8PORT:
@@ -169,8 +170,6 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 			return configurator.getHttp2PublicAddress();
 		case HTTP_8ENABLED:
 			return configurator.isHttp2Enabled();
-		case HTTP_8END_PORT:
-			return configurator.getHttp2EndPort();
 		case HTTP_8PUBLIC_ADDRESS_EXCLUSIVE:
 			return configurator.isHttpPublicAddressExclusive();
 		case HTTP_8INCOMING_STATUS:
@@ -181,10 +180,29 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 			return configurator.getHttp2OutgoingStatus();
 		case HTTP_8PORT:
 			return configurator.getHttp2Port();
-		case HTTP_8START_PORT:
-			return configurator.getHttp2StartPort();
 		case HTTP_8TO_PUBLIC_ADDRESS_EXCLUSIVE:
 			return configurator.isHttp2PublicAddressExclusive();
+		case HTTP2_8PUBLIC_ADDRESS:
+			return configurator.getHttp2PublicAddress();
+		case HTTP2_8ENABLED:
+			return configurator.isHttp2Enabled();
+		case HTTP2_8PUBLIC_ADDRESS_EXCLUSIVE:
+			return configurator.isHttpPublicAddressExclusive();
+		case HTTP2_8INCOMING_STATUS:
+			return configurator.getHttp2IncomingStatus();
+		case HTTP2_8INTERFACE_ADDRESS:
+			return configurator.getHttp2InterfaceAddress();
+		case HTTP2_8OUTGOING_STATUS:
+			return configurator.getHttp2OutgoingStatus();
+		case HTTP2_8PORT:
+			return configurator.getHttp2Port();
+		case HTTP2_8END_PORT:
+			return configurator.getHttp2EndPort();
+		case HTTP2_8START_PORT:
+			return configurator.getHttp2StartPort();
+		case HTTP2_8TO_PUBLIC_ADDRESS_EXCLUSIVE:
+			return configurator.isHttp2PublicAddressExclusive();
+
 		case INFRASTRUCTURE_8DESCRIPTION:
 			return configurator.getInfrastructureDescriptionStr();
 		case INFRASTRUCTURE_8ID:
@@ -308,33 +326,58 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 			return;
 		case HTTP_8PUBLIC_ADDRESS:
 			combined = ( Object[] )value;
-			configurator.setHttp2PublicAddress(( String )combined[0], ( boolean)combined[1] );
+			configurator.setHttpPublicAddress(( String )combined[0], ( boolean)combined[1] );
 			return;
 		case HTTP_8ENABLED:
-			configurator.setHttp2Enabled( (boolean) value);
-			return;
-		case HTTP_8END_PORT:
-			configurator.setHttp2EndPort( (int) value);
+			configurator.setHttpEnabled( (boolean) value);
 			return;
 		case HTTP_8PUBLIC_ADDRESS_EXCLUSIVE:
 			//configurator.setHttpPublicAddressExclusive(( String )combined[0], ( boolean )combined[1]);
 			return;
 		case HTTP_8INCOMING_STATUS:
-			configurator.setHttp2Incoming( (boolean) value);
+			configurator.setHttpIncoming( (boolean) value);
 			return;
 		case HTTP_8INTERFACE_ADDRESS:
-			configurator.setHttp2InterfaceAddress( (String) value);
+			configurator.setHttpInterfaceAddress( (String) value);
 			return;
 		case HTTP_8OUTGOING_STATUS:
-			configurator.setHttp2Outgoing( (boolean) value);
+			configurator.setHttpOutgoing( (boolean) value);
 			return;
 		case HTTP_8PORT:
-			configurator.setHttp2Port( (int) value);
-			return;
-		case HTTP_8START_PORT:
-			configurator.setHttp2StartPort( (int) value);
+			configurator.setHttpPort( (int) value);
 			return;
 		case HTTP_8TO_PUBLIC_ADDRESS_EXCLUSIVE:
+			//configurator.setHttp2PublicAddressExclusive( value);
+			return;
+		case HTTP2_8PUBLIC_ADDRESS:
+			combined = ( Object[] )value;
+			configurator.setHttp2PublicAddress(( String )combined[0], ( boolean)combined[1] );
+			return;
+		case HTTP2_8ENABLED:
+			configurator.setHttp2Enabled( (boolean) value);
+			return;
+		case HTTP2_8END_PORT:
+			configurator.setHttp2EndPort( (int) value);
+			return;
+		case HTTP2_8PUBLIC_ADDRESS_EXCLUSIVE:
+			//configurator.setHttpPublicAddressExclusive(( String )combined[0], ( boolean )combined[1]);
+			return;
+		case HTTP2_8INCOMING_STATUS:
+			configurator.setHttp2Incoming( (boolean) value);
+			return;
+		case HTTP2_8INTERFACE_ADDRESS:
+			configurator.setHttp2InterfaceAddress( (String) value);
+			return;
+		case HTTP2_8OUTGOING_STATUS:
+			configurator.setHttp2Outgoing( (boolean) value);
+			return;
+		case HTTP2_8PORT:
+			configurator.setHttp2Port( (int) value);
+			return;
+		case HTTP2_8START_PORT:
+			configurator.setHttp2StartPort( (int) value);
+			return;
+		case HTTP2_8TO_PUBLIC_ADDRESS_EXCLUSIVE:
 			//configurator.setHttp2PublicAddressExclusive( value);
 			return;
 		case INFRASTRUCTURE_8DESCRIPTION:

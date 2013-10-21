@@ -5,7 +5,6 @@ import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
-import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.utils.StringStyler;
 
 public class PeerGroupPropertySource extends AbstractJxseWritePropertySource<PeerGroupPropertySource.PeerGroupProperties, IJxseDirectives>

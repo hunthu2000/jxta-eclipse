@@ -83,26 +83,25 @@ public class NetworkConfigurationFactory extends
 	}
 	
 	protected void fillConfigurator( NetworkConfigurator configurator ) throws IOException{
-		this.fillPartialConfigurator(super.getPropertySource());
+		this.fillPartialConfigurator( configurator, super.getPropertySource());
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void fillPartialConfigurator( IJxsePropertySource<NetworkConfiguratorProperties,IJxseDirectives> source ) throws IOException{
+	private void fillPartialConfigurator( NetworkConfigurator configurator ,IJxsePropertySource<NetworkConfiguratorProperties,IJxseDirectives> source ) throws IOException{
 		INetworkPreferences preferences;
 		if( source instanceof PartialPropertySource ){
 			preferences = getPreferences(( PartialPropertySource )source);
-			preferences.fillConfigurator(this.getModule());
+			preferences.fillConfigurator( configurator );
 			return;
 		}
 		if( source instanceof SeedListPropertySource ){
 			this.seedLists.add( new SeedListFactory((SeedListPropertySource) source ));
 			return;
 		}
-		NetworkConfigurator configurator = nmFactory.getModule().getConfigurator();
 		preferences = new OverviewPreferences( (IJxseWritePropertySource<NetworkConfiguratorProperties, IJxseDirectives>) source );
 		preferences.fillConfigurator(configurator);
 		for( IJxsePropertySource<?, ?> child: super.getPropertySource().getChildren() )
-			this.fillPartialConfigurator((IJxsePropertySource<NetworkConfiguratorProperties, IJxseDirectives>) child);
+			this.fillPartialConfigurator( configurator, (IJxsePropertySource<NetworkConfiguratorProperties, IJxseDirectives>) child);
 	}
 
 	@Override
@@ -131,6 +130,8 @@ public class NetworkConfigurationFactory extends
 			return new TcpPreferences( source );
 		case HTTP:
 			return new HttpPreferences( source );
+		case HTTP2:
+			return new Http2Preferences( source );
 		case MULTICAST:
 			return new MulticastPreferences( source);
 		case SECURITY:

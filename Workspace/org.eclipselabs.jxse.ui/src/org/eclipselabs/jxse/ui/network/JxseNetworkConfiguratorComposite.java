@@ -16,6 +16,7 @@ public class JxseNetworkConfiguratorComposite extends Composite {
 	private OverviewConfigurationComposite overviewComposite;
 	private TcpConfigurationComposite tcpComposite;
 	private HttpConfigurationComposite httpComposite;
+	private Http2ConfigurationComposite http2Composite;
 	private MulticastConfigurationComposite multicastComposite;
 	private RdvRelayConfigurationComposite rdvRelayComposite;
 	
@@ -45,7 +46,13 @@ public class JxseNetworkConfiguratorComposite extends Composite {
 		httpComposite = new HttpConfigurationComposite( tabFolder, SWT.NONE);
 		tbtmHttpItem.setControl(httpComposite);
 		sashForm.setWeights(new int[] {1, 1});
-		
+
+		TabItem tbtmHttp2Item = new TabItem(tabFolder, SWT.NONE);
+		tbtmHttp2Item.setText("Http2");
+		http2Composite = new Http2ConfigurationComposite( tabFolder, SWT.NONE);
+		tbtmHttp2Item.setControl(httpComposite);
+		sashForm.setWeights(new int[] {1, 1});
+
 		TabItem tbtmMulticastItem = new TabItem(tabFolder, SWT.NONE);
 		tbtmMulticastItem.setText("Multicast");
 		multicastComposite = new MulticastConfigurationComposite( tabFolder, SWT.NONE);
@@ -65,6 +72,7 @@ public class JxseNetworkConfiguratorComposite extends Composite {
 		this.overviewComposite.init(ncps);
 		this.tcpComposite.init(ncps);
 		this.httpComposite.init(ncps);
+		this.http2Composite.init(ncps);
 	}
 	
 	@Override
