@@ -1,14 +1,14 @@
 package net.osgi.jxse.discovery;
 
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
+import net.osgi.jxse.properties.AbstractPeerGroupProviderPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.utils.StringStyler;
 
-public class DiscoveryPropertySource extends AbstractJxseWritePropertySource<DiscoveryPropertySource.DiscoveryProperties, IJxseDirectives>
+public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySource<DiscoveryPropertySource.DiscoveryProperties>
 {
 	public enum DiscoveryMode{
 		DISCOVERY,
@@ -34,23 +34,6 @@ public class DiscoveryPropertySource extends AbstractJxseWritePropertySource<Dis
 		}
 	}
 
-	public enum DiscoveryDirectives implements IJxseDirectives{
-		PEERGROUP;
-	
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString() );
-		}
-		
-		public static final boolean isValidDirective( String key){
-			for( DiscoveryDirectives directive: DiscoveryDirectives.values() ){
-				if( directive.name().equals( key ))
-					return true;
-			}
-			return false;
-		}
-	}
-
 	public DiscoveryPropertySource( IJxsePropertySource<?,IJxseDirectives> parent) {
 		this( Components.DISCOVERY_SERVICE.toString(), parent );
 	}
@@ -68,13 +51,6 @@ public class DiscoveryPropertySource extends AbstractJxseWritePropertySource<Dis
 		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.ATTRIBUTE, null, true ));
 		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.WILDCARD, null, true ));
 		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.THRESHOLD, 1, true ));
-	}
-
-	@Override
-	public IJxseDirectives getDirectiveFromString(String id) {
-		if( DiscoveryDirectives.isValidDirective( id ))
-			return DiscoveryDirectives.valueOf( id );
-		return super.getDirectiveFromString(id);
 	}
 
 	@Override

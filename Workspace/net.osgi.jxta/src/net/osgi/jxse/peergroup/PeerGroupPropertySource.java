@@ -1,13 +1,13 @@
 package net.osgi.jxse.peergroup;
 
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
+import net.osgi.jxse.properties.AbstractPeerGroupProviderPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public class PeerGroupPropertySource extends AbstractJxseWritePropertySource<PeerGroupPropertySource.PeerGroupProperties, IJxseDirectives>
+public class PeerGroupPropertySource extends AbstractPeerGroupProviderPropertySource<PeerGroupPropertySource.PeerGroupProperties>
 {
 	public enum PeerGroupProperties implements IJxseProperties{
 		DISCOVERY_MODE,
@@ -41,7 +41,6 @@ public class PeerGroupPropertySource extends AbstractJxseWritePropertySource<Pee
 		//this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.WILDCARD, null, true ));
 		//this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.THRESHOLD, 1, true ));
 	}
-
 
 	@Override
 	public PeerGroupProperties getIdFromString(String key) {

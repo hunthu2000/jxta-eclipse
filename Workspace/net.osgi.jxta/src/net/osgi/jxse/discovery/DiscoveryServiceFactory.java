@@ -10,7 +10,7 @@
  *******************************************************************************/
 package net.osgi.jxse.discovery;
 
-import net.jxta.discovery.RegistrationService;
+import net.jxta.discovery.DiscoveryService;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
@@ -18,7 +18,7 @@ import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class DiscoveryServiceFactory extends
-		AbstractComponentFactory<RegistrationService, DiscoveryProperties, IJxseDirectives> {
+		AbstractComponentFactory<DiscoveryService, DiscoveryProperties, IJxseDirectives> {
 
 	public static final String S_DISCOVERY_SERVICE = "DiscoveryService";
 
@@ -34,8 +34,8 @@ public class DiscoveryServiceFactory extends
 	}
 
 	@Override
-	protected RegistrationService onCreateModule( IJxsePropertySource<DiscoveryProperties, IJxseDirectives> properties) {
-		RegistrationService service = peerGroupContainer.getPeerGroup().getDiscoveryService();
+	protected DiscoveryService onCreateModule( IJxsePropertySource<DiscoveryProperties, IJxseDirectives> properties) {
+		DiscoveryService service = peerGroupContainer.getPeerGroup().getDiscoveryService();
 		return service;
 	}
 	

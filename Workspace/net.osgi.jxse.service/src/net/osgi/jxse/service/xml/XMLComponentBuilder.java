@@ -51,6 +51,7 @@ import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.properties.PartialPropertySource;
 import net.osgi.jxse.properties.SeedListPropertySource;
+import net.osgi.jxse.peergroup.PeerGroupPropertySource;
 import net.osgi.jxse.registration.RegistrationPreferences;
 import net.osgi.jxse.registration.RegistrationPropertySource;
 import net.osgi.jxse.registration.RegistrationPropertySource.RegistrationProperties;
@@ -329,6 +330,9 @@ class JxtaHandler extends DefaultHandler{
 			case DISCOVERY_SERVICE:
 				newSource = new DiscoveryPropertySource( qName, source );
 				break;			
+			case PEERGROUP_SERVICE:
+				newSource = new PeerGroupPropertySource( qName, source );
+				break;			
 			default:
 				newSource = new CategoryPropertySource( qName, source );
 				break;
@@ -398,6 +402,11 @@ class JxtaHandler extends DefaultHandler{
 		if( source instanceof DiscoveryPropertySource ){
 			DiscoveryPreferences<IJxseDirectives> preferences = new DiscoveryPreferences<IJxseDirectives>( source );
 			preferences.setPropertyFromString(( DiscoveryProperties) property.getKey(), value);
+			return;
+		}
+		if( source instanceof PeerGroupPropertySource ){
+			//DiscoveryPreferences<IJxseDirectives> preferences = new DiscoveryPreferences<IJxseDirectives>( source );
+			//preferences.setPropertyFromString(( DiscoveryProperties) property.getKey(), value);
 			return;
 		}
 		if( source instanceof RegistrationPropertySource ){

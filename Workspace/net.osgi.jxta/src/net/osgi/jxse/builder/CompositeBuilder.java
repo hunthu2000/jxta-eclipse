@@ -18,7 +18,6 @@ import net.osgi.jxse.activator.IActivator;
 import net.osgi.jxse.builder.ICompositeBuilderListener.FactoryEvents;
 import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.discovery.DiscoveryPropertySource;
-import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryDirectives;
 import net.osgi.jxse.discovery.DiscoveryServiceFactory;
 import net.osgi.jxse.factory.ComponentFactoryEvent;
 import net.osgi.jxse.factory.IComponentFactory;
@@ -28,6 +27,9 @@ import net.osgi.jxse.network.NetworkManagerFactory;
 import net.osgi.jxse.network.NetworkManagerPropertySource;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
+import net.osgi.jxse.peergroup.PeerGroupFactory;
+import net.osgi.jxse.peergroup.PeerGroupPropertySource;
+import net.osgi.jxse.properties.AbstractPeerGroupProviderPropertySource.PeerGroupDirectives;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxsePropertySource;
@@ -113,14 +115,21 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 			ncf.addSeedlist(slf);
 		}else if( source instanceof DiscoveryPropertySource ){
 			DiscoveryPropertySource discsource = ( DiscoveryPropertySource )source;
-			String peergroup = (String) discsource.getDirective( DiscoveryDirectives.PEERGROUP );
+			String peergroup = (String) discsource.getDirective( PeerGroupDirectives.PEERGROUP );
 			IPeerGroupProvider provider = this.getPeerGroupProvider( peergroup, parent);
 			factory = new DiscoveryServiceFactory( provider, (DiscoveryPropertySource)source );
 			node = this.getNode(parent, factory);
 			newFactory = true;
+		}else if( source instanceof PeerGroupPropertySource ){
+			PeerGroupPropertySource peersource = ( PeerGroupPropertySource )source;
+			String peergroup = (String)peersource.getDirective( PeerGroupDirectives.PEERGROUP );
+			IPeerGroupProvider provider = this.getPeerGroupProvider( peergroup, parent);
+			factory = new PeerGroupFactory( provider, (PeerGroupPropertySource)source );
+			node = this.getNode(parent, factory);
+			newFactory = true;
 		}else if( source instanceof RegistrationPropertySource ){
 			RegistrationPropertySource rescsource = ( RegistrationPropertySource )source;
-			String peergroup = (String) rescsource.getDirective( DiscoveryDirectives.PEERGROUP );
+			String peergroup = (String) rescsource.getDirective( PeerGroupDirectives.PEERGROUP );
 			IPeerGroupProvider provider = this.getPeerGroupProvider( peergroup, parent);
 			factory = new RegistrationServiceFactory( provider, rescsource );
 			node = this.getNode(parent, factory);
