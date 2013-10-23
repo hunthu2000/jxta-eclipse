@@ -84,8 +84,8 @@ implements IPeerGroupProvider{
 		IJxsePropertySource<NetworkManagerProperties, IJxseDirectives.Directives> properties = super.getPropertySource();
 		Object value = properties.getDirective( Directives.AUTO_START );
 		if( value == null )
-			value = false;
-		if(( Boolean ) value){
+			value = Boolean.FALSE.toString();
+		if( Boolean.parseBoolean( (String) value )){
 			try {
 				super.getModule().startNetwork();
 				return super.complete();

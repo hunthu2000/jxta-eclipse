@@ -131,7 +131,7 @@ public class JxseXmlBuilder<T extends Enum<T>, U extends IJxseDirectives> {
 			value = attributes.get( attr );
 			if( Utils.isNull( attr ) || Utils.isNull( value ))
 				continue;
-			buffer.append( attr + "=\"" + value + "\" ");
+			buffer.append( StringStyler.xmlStyleString( attr ) + "=\"" + value + "\" ");
 		}
 		return buffer.toString();
 	}

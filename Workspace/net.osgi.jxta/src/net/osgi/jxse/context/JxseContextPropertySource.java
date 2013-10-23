@@ -124,6 +124,7 @@ public class JxseContextPropertySource extends AbstractJxseWritePropertySource<C
 		return null;
 	}
 
+	
 	@Override
 	public boolean validate(ContextProperties id, Object value) {
 		// TODO Auto-generated method stub
