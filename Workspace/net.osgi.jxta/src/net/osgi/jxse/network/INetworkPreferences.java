@@ -11,7 +11,7 @@ public interface INetworkPreferences {
 	 */
 	public String getName();
 	
-	public abstract void setPropertyFromString(
+	public abstract boolean setPropertyFromString(
 			NetworkConfiguratorProperties id, String value);
 
 	/**

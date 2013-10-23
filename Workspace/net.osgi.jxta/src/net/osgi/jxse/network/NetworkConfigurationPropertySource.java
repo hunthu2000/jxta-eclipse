@@ -40,6 +40,7 @@ public class NetworkConfigurationPropertySource extends AbstractJxseWritePropert
 		INFRASTRUCTURE_8DESCRIPTION,
 		INFRASTRUCTURE_8ID,
 		MODE,
+		MULTICAST_8ENABLED,
 		MULTICAST_8ADDRESS,
 		MULTICAST_8INTERFACE,
 		MULTICAST_8POOL_SIZE,
@@ -71,7 +72,6 @@ public class NetworkConfigurationPropertySource extends AbstractJxseWritePropert
 		TCP_8PUBLIC_ADDRESS,
 		TCP_8PUBLIC_ADDRESS_EXCLUSIVE,
 		TCP_8START_PORT,
-		USE_MULTICAST,
 		USE_ONLY_RELAY_SEEDS,
 		USE_ONLY_RENDEZVOUS_SEEDS;
 	
@@ -99,13 +99,14 @@ public class NetworkConfigurationPropertySource extends AbstractJxseWritePropert
 	private void fill(){
 		NetworkManagerPropertySource source = (NetworkManagerPropertySource) super.getParent();
 		Iterator<NetworkManagerProperties> iterator = source.propertyIterator();
+		NetworkConfiguratorProperties nmp = null;
 		while( iterator.hasNext() ){
 			NetworkManagerProperties cp = iterator.next();
-			NetworkConfiguratorProperties nmp = convertTo( cp );
-			if( nmp == null )
-				continue;
-			Object value = source.getProperty( cp );
-			super.setProperty(nmp, value, true);
+			nmp = convertTo( cp );
+			if( nmp != null ){
+				Object value = source.getProperty( cp );
+				super.setProperty(nmp, value, true);
+			}
 		}
 		super.setProperty( NetworkConfiguratorProperties.TCP_8PORT, source.getTcpPort());
 		super.setProperty( NetworkConfiguratorProperties.TCP_8ENABLED, true );

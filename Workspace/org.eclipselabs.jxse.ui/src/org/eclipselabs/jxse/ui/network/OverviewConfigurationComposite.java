@@ -120,7 +120,7 @@ public class OverviewConfigurationComposite extends Composite {
 			this.storeHomeText.setText((( URI) value ).getPath() );
 		value = source.getDefault( NetworkConfiguratorProperties.STORE_HOME );
 		if( value != null)
-			this.storeText.setText((( File )value ).toString() );
+			this.storeText.setText((( URI )value ).getPath() );
 		
 		IJxseDatabinding<NetworkConfiguratorProperties, String> db = new StringDataBinding<NetworkConfiguratorProperties>( NetworkConfiguratorProperties.NAME, source, nameText);
 		db.setValidator( new StringValidator<NetworkConfiguratorProperties>( NetworkConfiguratorProperties.NAME, StringValidator.S_NAME_REGEX ));

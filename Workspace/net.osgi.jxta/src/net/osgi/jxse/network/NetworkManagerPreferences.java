@@ -22,6 +22,7 @@ import net.osgi.jxse.properties.AbstractPreferences;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
+import net.osgi.jxse.properties.ManagedProperty;
 
 public class NetworkManagerPreferences<T extends IJxseDirectives> extends AbstractPreferences<NetworkManagerProperties, T> implements INetworkManagerPreferences<T>
 {
@@ -102,10 +103,11 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> extends Abstra
 	 */
 	@Override
 	public PeerID getPeerID() throws URISyntaxException{
-		IJxsePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		IJxseWritePropertySource<NetworkManagerProperties, T> source = super.getSource();
 		String name = source.getIdentifier();
 		PeerID pgId = IDFactory.newPeerID( PeerGroupID.defaultNetPeerGroupID, name.getBytes() );
-		String str = (String) source.getProperty( NetworkManagerProperties.PEER_ID);
+		ManagedProperty<NetworkManagerProperties, Object> property = source.getOrCreateManagedProperty( NetworkManagerProperties.PEER_ID, pgId.toString(), false );
+		String str = (String) property.getValue();
 		URI uri = new URI( str );
 		return (PeerID) IDFactory.fromURI( uri );
 	}
@@ -144,15 +146,25 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> extends Abstra
 	 * @return
 	 * @throws URISyntaxException
 	 */
-	public boolean setPropertyFromString( NetworkManagerProperties id, String value ){
+	public Object convertValue( NetworkManagerProperties id, String value ){
 		IJxseWritePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		if( value == null )
+			return null;
 		switch( id ){
 		case CONFIG_PERSISTENT:
 			return source.setProperty(id, Boolean.parseBoolean( value ));
 		case INSTANCE_NAME:
 		case INFRASTRUCTURE_ID:
+			return value;
 		case PEER_ID:
-			return source.setProperty(id, value);
+			URI uri;
+			try {
+				uri = new URI( value );
+				return (PeerID) IDFactory.fromURI( uri );
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+			break;
 		case INSTANCE_HOME:
 			this.setHomeFolder(value);
 			return true;
@@ -162,5 +174,6 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> extends Abstra
 		default:
 			return false;
 		}
+		return null;
 	}
 }

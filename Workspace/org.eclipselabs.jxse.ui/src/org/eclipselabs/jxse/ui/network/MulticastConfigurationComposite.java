@@ -94,7 +94,7 @@ public class MulticastConfigurationComposite extends Composite {
 
 	public void init( NetworkConfigurationPropertySource source ){
 		this.source = source;
-		this.btnEnabled.setSelection((boolean) source.getDefault( NetworkConfiguratorProperties.USE_MULTICAST ));
+		this.btnEnabled.setSelection((boolean) source.getDefault( NetworkConfiguratorProperties.MULTICAST_8ENABLED ));
 		this.btnActivated.setSelection((boolean) source.getDefault( NetworkConfiguratorProperties.MULTICAST_8STATUS));
 		this.addressText.setText((String) source.getDefault(NetworkConfiguratorProperties.MULTICAST_8ADDRESS));
 		this.spinner.setSelection((int) source.getDefault(NetworkConfiguratorProperties.MULTICAST_8PORT));

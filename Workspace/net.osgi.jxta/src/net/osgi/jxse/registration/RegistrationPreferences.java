@@ -35,7 +35,7 @@ public class RegistrationPreferences<T extends IJxseDirectives> extends Abstract
 	 * @throws URISyntaxException
 	 */
 	@Override
-	public boolean setPropertyFromString( RegistrationProperties id, String value ){
+	public Object convertValue( RegistrationProperties id, String value ){
 		IJxseWritePropertySource<RegistrationProperties, T> source = super.getSource();
 		switch( id ){
 		case ATTRIBUTE:

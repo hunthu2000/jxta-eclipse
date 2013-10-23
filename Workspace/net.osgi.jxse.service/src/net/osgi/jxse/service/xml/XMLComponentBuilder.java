@@ -44,6 +44,7 @@ import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfigura
 import net.osgi.jxse.network.NetworkManagerPreferences;
 import net.osgi.jxse.network.NetworkManagerPropertySource;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
+import net.osgi.jxse.network.OverviewPreferences;
 import net.osgi.jxse.properties.CategoryPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
@@ -348,16 +349,35 @@ class JxtaHandler extends DefaultHandler{
 				}
 			}
 		}else if( !Groups.isGroup( qName )){
-			String id = StringStyler.styleToEnum( qName );
-			property = source.getOrCreateManagedProperty( source.getIdFromString( id ), null, false);
-			for( int i=0; i<attributes.getLength(); i++  ){
-				if( !Utils.isNull( attributes.getLocalName(i)))
-					property.addAttribute(attributes.getLocalName(i), attributes.getValue(i));
-			}
+			this.property = this.createProperty(qName, attributes );
 		}
 		logger.info(" Group value: " + qName );
 	}
-
+	
+	/**
+	 * Create the property
+	 * @param qName
+	 * @param attributes
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	protected ManagedProperty<Object,Object> createProperty( String qName, Attributes attributes ){
+		String id = StringStyler.styleToEnum( qName );
+		Object value = null;
+		if( isCreated(attributes)){
+			if( source instanceof NetworkConfigurationPropertySource ){
+				OverviewPreferences preferences = new OverviewPreferences( source );
+				value = preferences.createDefaultValue((NetworkConfiguratorProperties) source.getIdFromString( id ));
+			}
+		}
+		ManagedProperty<Object,Object> prop = source.getOrCreateManagedProperty( source.getIdFromString( id ), value, false);
+		for( int i=0; i<attributes.getLength(); i++  ){
+			if( !Utils.isNull( attributes.getLocalName(i)))
+				prop.addAttribute(attributes.getLocalName(i), attributes.getValue(i));
+		}
+		return prop;
+	}
+	
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
@@ -382,13 +402,13 @@ class JxtaHandler extends DefaultHandler{
 	 */
 	@SuppressWarnings({ "unchecked" })
 	protected void parseProperties(char ch[], int start, int length) throws SAXException {
-		if(( this.property == null ) || ( property.getKey() == null ))
-			return;
-		
 		String value = new String(ch, start, length);
 		if( Utils.isNull( value  ))
 			return;
 
+		if( property.getKey() == null )
+			return;
+		
 		if( source instanceof JxseContextPropertySource ){
 			JxseContextPreferences preferences = new JxseContextPreferences( source );
 			preferences.setPropertyFromString((ContextProperties) property.getKey(), value);
@@ -397,6 +417,11 @@ class JxtaHandler extends DefaultHandler{
 		if( source instanceof NetworkManagerPropertySource ){
 			NetworkManagerPreferences<IJxseDirectives> preferences = new NetworkManagerPreferences<IJxseDirectives>( source );
 			preferences.setPropertyFromString( (NetworkManagerProperties) property.getKey(), value);
+			return;
+		}
+		if( source instanceof NetworkConfigurationPropertySource ){
+			OverviewPreferences preferences = new OverviewPreferences( source );
+			preferences.setPropertyFromString( (NetworkConfiguratorProperties) property.getKey(), value);
 			return;
 		}
 		if( source instanceof DiscoveryPropertySource ){
@@ -470,5 +495,17 @@ class JxtaHandler extends DefaultHandler{
 				x.getMessage()
 				});
 		Logger.getLogger( this.getClass().getName()).info(msg);
+	}
+	
+	/**
+	 * Returns true if one of the attributes allows creation of values
+	 * @param attributes
+	 * @return
+	 */
+	protected static boolean isCreated( Attributes attributes ){
+		String attr = attributes.getValue( ManagedProperty.Attributes.PERSIST.name().toLowerCase() );
+		if( Utils.isNull(attr))
+			return false;
+		return Boolean.parseBoolean( attr );
 	}
 }

@@ -25,7 +25,9 @@ public class RdvTemplateSection extends JxseConfigurationBundleSection implement
 		properties.addChild(nmps);
 		NetworkConfigurationPropertySource ncps = new NetworkConfigurationPropertySource( nmps );
 		ncps.setProperty(NetworkConfiguratorProperties.TCP_8ENABLED, true );
-		ncps.setProperty(NetworkConfiguratorProperties.HTTP_8ENABLED, true );
+		ncps.setProperty(NetworkConfiguratorProperties.TCP_8INCOMING_STATUS, true );
+		ncps.setProperty(NetworkConfiguratorProperties.TCP_8OUTGOING_STATUS, true );
+		ncps.setProperty(NetworkConfiguratorProperties.MULTICAST_8ENABLED, false );
 		nmps.addChild(ncps);
 		super.onFillProperties(properties);
 		super.setTemplateOption( TemplateOptions.SIMPLE_RDV);

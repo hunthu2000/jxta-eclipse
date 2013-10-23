@@ -101,9 +101,10 @@ public class TcpPreferences implements INetworkPreferences {
 	 * @see net.osgi.jxse.network.INetworkPreferences#setPropertyFromString(net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties, java.lang.String)
 	 */
 	@Override
-	public void setPropertyFromString( NetworkConfiguratorProperties id, String value ){
+	public boolean setPropertyFromString( NetworkConfiguratorProperties id, String value ){
 		Object val = convertStringToCorrectType( id, value);
 		source.setProperty( id, val );
+		return true;
 	}
 	
 	/**

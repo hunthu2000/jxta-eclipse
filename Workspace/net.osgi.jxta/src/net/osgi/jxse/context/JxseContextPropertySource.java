@@ -116,10 +116,6 @@ public class JxseContextPropertySource extends AbstractJxseWritePropertySource<C
 		switch( id ){
 		case AUTO_START:
 			return true;
-		case PEER_ID_CREATE:
-			return true;
-		case PEER_ID_PERSIST:
-			return true;
 		case CLEAR_CONFIG:
 			break;
 		default:

@@ -97,7 +97,7 @@ public class MulticastConfiguration {
 		boolean retval = false;
 		NetworkConfigurationPropertySource source = (NetworkConfigurationPropertySource) factory.getPropertySource();
 		switch( property ){
-		case USE_MULTICAST:
+		case MULTICAST_8ENABLED:
 			source.setProperty( property, Boolean.parseBoolean( value ));
 			retval = true;
 			break;
@@ -141,7 +141,7 @@ public class MulticastConfiguration {
 	public static boolean fillConfigurator( NetworkConfigurator configurator, NetworkConfiguratorProperties property, Object value ){
 		boolean retval = true;
 		switch( property ){
-		case USE_MULTICAST:
+		case MULTICAST_8ENABLED:
 		case MULTICAST_8STATUS:
 			configurator.setUseMulticast((boolean) value );
 			break;

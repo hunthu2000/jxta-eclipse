@@ -5,9 +5,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
 public class ManagedProperty<T, U extends Object> {
+	
+	public enum Attributes{
+		PERSIST,
+		CREATE;
+
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString() );
+		}
+	}
 	
 	private T id;
 	private U value, defaultValue;
@@ -79,19 +90,21 @@ public class ManagedProperty<T, U extends Object> {
 	public boolean addAttribute( String attr, String value ){
 		if( Utils.isNull( attr ) || ( Utils.isNull( value )))
 			return false;
-		attributes.put(attr, value);
+		attributes.put(attr.toLowerCase(), value);
 		return true;
 	}
 
 	public boolean removeAttribute( String attr ){
 		if( Utils.isNull( attr ))
 			return false;
-		String str = attributes.remove( attr );
+		String str = attributes.remove( attr.toLowerCase() );
 		return !Utils.isNull(str);
 	}
 	
 	public String getAttribute( String attr ){
-		return this.attributes.get(attr);
+		if( Utils.isNull( attr ))
+			return null;
+		return this.attributes.get(attr.toLowerCase());
 	}
 
 	public Map<String, String> getAttributes(){
@@ -154,4 +167,40 @@ public class ManagedProperty<T, U extends Object> {
 		else
 			return this.validator.validate( value);
 	}
+
+	
+	@Override
+	public String toString() {
+		return "{"+ this.id + "=" + this.value + "}";
+	}
+
+	/**
+	 * Returns true if the given property is persisted
+	 * @param property
+	 * @return
+	 */
+	public static boolean isPersisted( ManagedProperty<?,?> property){
+		if( property == null )
+			return false;
+		String str = property.getAttribute( ManagedProperty.Attributes.PERSIST.name() );
+		if( !Utils.isNull(str))
+			return false;
+		return Boolean.parseBoolean( property.getAttribute( Attributes.PERSIST.name() ));
+	}
+	
+	/**
+	 * Returns true if the given property is created automatically
+	 * @param property
+	 * @return
+	 */
+	public static boolean isCreated( ManagedProperty<?,?> property){
+		if( property == null )
+			return false;
+		String str = property.getAttribute( ManagedProperty.Attributes.CREATE.name().toLowerCase() );
+		if( !Utils.isNull(str))
+			return false;
+		return Boolean.parseBoolean( property.getAttribute( Attributes.CREATE.name().toLowerCase() ));
+
+	}
+	
 }

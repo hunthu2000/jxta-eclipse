@@ -154,7 +154,7 @@ public class ContextComposite extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Button selected = (Button) e.getSource();
-				properties.setDirective( IJxseDirectives.Directives.PEER_ID_CREATE, selected.getSelection() );
+//TODO				properties.setDirective( IJxseDirectives.Directives.PEER_ID_CREATE, selected.getSelection() );
 				combo_peer_id.setEnabled(!selected.getSelection());
 			}
 		});
@@ -165,7 +165,7 @@ public class ContextComposite extends Composite {
 		btnPersist.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				properties.setDirective( IJxseDirectives.Directives.PEER_ID_PERSIST, (( Button )e.item ).getSelection() );
+//TODO				properties.setDirective( IJxseDirectives.Directives.PEER_ID_PERSIST, (( Button )e.item ).getSelection() );
 			}
 		});
 
@@ -236,8 +236,8 @@ public class ContextComposite extends Composite {
 
 		obj = properties.getProperty( ContextProperties.PEER_ID );
 		this.btnAutoStart.setSelection((boolean) properties.getDefaultDirectives( IJxseDirectives.Directives.AUTO_START ));
-		this.btnPersist.setSelection((boolean) properties.getDefaultDirectives( IJxseDirectives.Directives.PEER_ID_PERSIST ));
-		obj = properties.getDirective( IJxseDirectives.Directives.PEER_ID_CREATE );
+		//TODO this.btnPersist.setSelection((boolean) properties.getDefaultDirectives( IJxseDirectives.Directives.PEER_ID_PERSIST ));
+		//TODO obj = properties.getDirective( IJxseDirectives.Directives.PEER_ID_CREATE );
 		boolean create = ( obj == null )?false: (boolean )obj;
 		this.btnGenerate.setSelection(create);
 		this.combo_peer_id.setEnabled(!create);
@@ -266,8 +266,9 @@ public class ContextComposite extends Composite {
 			return false;
 		if( !properties.setDirective( IJxseDirectives.Directives.AUTO_START, this.btnAutoStart.getSelection() ))
 			return false;
-		if( !properties.setDirective( IJxseDirectives.Directives.PEER_ID_CREATE, this.btnGenerate.getSelection() ))
-			return false;
-		return properties.setDirective( IJxseDirectives.Directives.PEER_ID_PERSIST, this.btnPersist.getSelection() );
+		return true;
+		//if( !properties.setDirective( IJxseDirectives.Directives.PEER_ID_CREATE, this.btnGenerate.getSelection() ))
+		//	return false;
+		//return properties.setDirective( IJxseDirectives.Directives.PEER_ID_PERSIST, this.btnPersist.getSelection() );
 	}
 }

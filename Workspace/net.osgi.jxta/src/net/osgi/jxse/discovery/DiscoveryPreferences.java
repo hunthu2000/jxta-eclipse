@@ -35,7 +35,7 @@ public class DiscoveryPreferences<T extends IJxseDirectives> extends AbstractPre
 	 * @throws URISyntaxException
 	 */
 	@Override
-	public boolean setPropertyFromString( DiscoveryProperties id, String value ){
+	public Object convertValue( DiscoveryProperties id, String value ){
 		IJxseWritePropertySource<DiscoveryProperties, T> source = super.getSource();
 		switch( id ){
 		case ATTRIBUTE:

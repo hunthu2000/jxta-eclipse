@@ -22,6 +22,7 @@ import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.properties.PartialPropertySource;
@@ -114,7 +115,14 @@ public class NetworkConfigurationFactory extends
 	@Override
 	protected void onParseDirectiveAfterCreation(IJxseDirectives directive,
 			Object value) {
-		// TODO Auto-generated method stub
+		if(!( directive instanceof Directives ))
+			return;
+		Directives dir = ( Directives )directive;
+		switch( dir )
+		{
+		default:
+			break;// TODO Auto-generated method stub
+		}
 		
 	}
 

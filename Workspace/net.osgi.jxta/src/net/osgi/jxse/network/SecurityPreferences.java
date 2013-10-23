@@ -36,8 +36,9 @@ public class SecurityPreferences implements INetworkPreferences{
 	}
 
 	@Override
-	public void setPropertyFromString(NetworkConfiguratorProperties id, String value) {
+	public boolean setPropertyFromString(NetworkConfiguratorProperties id, String value) {
 		source.setProperty(id, convertStringToCorrectType(id, value));
+		return true;
 	}
 
 	/**

@@ -85,7 +85,7 @@ implements IPeerGroupProvider{
 		Object value = properties.getDirective( Directives.AUTO_START );
 		if( value == null )
 			value = false;
-		if( Boolean.parseBoolean( (String) value)){
+		if(( Boolean ) value){
 			try {
 				super.getModule().startNetwork();
 				return super.complete();

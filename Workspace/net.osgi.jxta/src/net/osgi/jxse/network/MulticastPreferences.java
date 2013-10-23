@@ -39,9 +39,9 @@ public class MulticastPreferences implements INetworkPreferences{
 	}
 		
 	@Override
-	public void setPropertyFromString(NetworkConfiguratorProperties id, String value) {
+	public boolean setPropertyFromString(NetworkConfiguratorProperties id, String value) {
 		switch( id ){
-		case USE_MULTICAST:
+		case MULTICAST_8ENABLED:
 			source.setProperty( id, Boolean.parseBoolean( value ));
 			break;
 		case MULTICAST_8POOL_SIZE:
@@ -56,7 +56,8 @@ public class MulticastPreferences implements INetworkPreferences{
 			break;
 		default:
 			break;
-		}	
+		}
+		return true;
 	}	
 
 	/**
@@ -85,7 +86,7 @@ public class MulticastPreferences implements INetworkPreferences{
 	public static boolean fillConfigurator( NetworkConfigurator configurator, NetworkConfiguratorProperties property, Object value ){
 		boolean retval = true;
 		switch( property ){
-		case USE_MULTICAST:
+		case MULTICAST_8ENABLED:
 		case MULTICAST_8STATUS:
 			configurator.setUseMulticast((boolean) value );
 			break;

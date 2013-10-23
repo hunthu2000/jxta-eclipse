@@ -16,8 +16,6 @@ public interface IJxseDirectives{
 		NAME,
 		AUTO_START,
 		CLEAR_CONFIG,
-		PEER_ID_PERSIST,
-		PEER_ID_CREATE,
 		CREATE_PARENT,
 		ACTIVATE_PARENT;
 

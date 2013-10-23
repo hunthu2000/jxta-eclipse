@@ -66,10 +66,10 @@
    <extension
          point="org.eclipse.pde.ui.templates">
       <template
-            class="org.eclipselabs.jxse.template.sections.JxseContextSection"
-            contributingId="org.eclipselabs.jxse.template.template1"
-            id="org.eclipselabs.jxse.template.simple.template"
-            name="JXSE 2.7x Bundle Project with a NetworkManager">
+            class="org.eclipselabs.jxse.template.config.JxseConfigurationBundleSection"
+            contributingId="org.eclipselabs.jxse.bundle.template"
+            id="org.eclipselabs.jxse.template.config.template"
+            name="JXSE 2.7x Config Bundle Project Wizard">
       </template>
       <template
             class="org.eclipselabs.jxse.template.project.AbstractJxseBundleSection"

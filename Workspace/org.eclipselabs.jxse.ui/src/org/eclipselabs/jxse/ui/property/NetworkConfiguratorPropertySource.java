@@ -134,11 +134,16 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 			case HTTP_8OUTGOING_STATUS:
 			case HTTP_8TO_PUBLIC_ADDRESS_EXCLUSIVE:
 			case HTTP_8PUBLIC_ADDRESS_EXCLUSIVE:
+			case HTTP2_8ENABLED:
+			case HTTP2_8INCOMING_STATUS:
+			case HTTP2_8OUTGOING_STATUS:
+			case HTTP2_8TO_PUBLIC_ADDRESS_EXCLUSIVE:
+			case HTTP2_8PUBLIC_ADDRESS_EXCLUSIVE:
 			case TCP_8ENABLED:
 			case TCP_8INCOMING_STATUS:
 			case TCP_8OUTGOING_STATUS:
 			case TCP_8PUBLIC_ADDRESS_EXCLUSIVE:
-			case USE_MULTICAST:
+			case MULTICAST_8ENABLED:
 			case USE_ONLY_RELAY_SEEDS:
 			case USE_ONLY_RENDEZVOUS_SEEDS:
 				descriptor = new CheckBoxPropertyDescriptor( property, parsed[1] );
@@ -167,17 +172,17 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 		case MODE:
 			return configurator.getMode();
 		case HTTP_8PUBLIC_ADDRESS:
-			return configurator.getHttp2PublicAddress();
+			return configurator.getHttpPublicAddress();
 		case HTTP_8ENABLED:
-			return configurator.isHttp2Enabled();
+			return configurator.isHttpEnabled();
 		case HTTP_8PUBLIC_ADDRESS_EXCLUSIVE:
 			return configurator.isHttpPublicAddressExclusive();
 		case HTTP_8INCOMING_STATUS:
-			return configurator.getHttp2IncomingStatus();
+			return configurator.getHttpIncomingStatus();
 		case HTTP_8INTERFACE_ADDRESS:
-			return configurator.getHttp2InterfaceAddress();
+			return configurator.getHttpInterfaceAddress();
 		case HTTP_8OUTGOING_STATUS:
-			return configurator.getHttp2OutgoingStatus();
+			return configurator.getHttpOutgoingStatus();
 		case HTTP_8PORT:
 			return configurator.getHttp2Port();
 		case HTTP_8TO_PUBLIC_ADDRESS_EXCLUSIVE:
@@ -187,7 +192,7 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 		case HTTP2_8ENABLED:
 			return configurator.isHttp2Enabled();
 		case HTTP2_8PUBLIC_ADDRESS_EXCLUSIVE:
-			return configurator.isHttpPublicAddressExclusive();
+			return configurator.isHttp2PublicAddressExclusive();
 		case HTTP2_8INCOMING_STATUS:
 			return configurator.getHttp2IncomingStatus();
 		case HTTP2_8INTERFACE_ADDRESS:
@@ -271,7 +276,7 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 			return configurator.getTcpPort();
 		case TCP_8START_PORT:
 			return configurator.getTcpStartPort();
-		case USE_MULTICAST:
+		case MULTICAST_8ENABLED:
 			return configurator.getMulticastStatus();
 		case USE_ONLY_RELAY_SEEDS:
 			return configurator.getUseOnlyRelaySeedsStatus();
@@ -486,7 +491,7 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 		case TCP_8START_PORT:
 			configurator.setTcpStartPort( (int) value);
 			return;
-		case USE_MULTICAST:
+		case MULTICAST_8ENABLED:
 			configurator.setUseMulticast( (boolean) value );
 			return;
 		case USE_ONLY_RELAY_SEEDS:
