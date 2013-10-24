@@ -8,22 +8,21 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.network;
-
-import java.util.List;
-import java.util.Set;
+package net.osgi.jxse.network.http;
 
 import net.jxta.platform.NetworkConfigurator;
+import net.osgi.jxse.network.NetworkConfigurationFactory;
+import net.osgi.jxse.network.NetworkConfigurationPropertySource;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
-public class RdvRelayConfiguration {
+public class Http2Configuration {
 
-	public static final String S_RDV_RELAY_CONFIGURATION = "Rendezvous and Relay Configuration";
+	public static final String S_HTTP_CONFIGURATION = "Http2 Configuration";
 
 	private NetworkConfigurator configurator;
 	private boolean publicAddressExclusive = false;
 	
-	public RdvRelayConfiguration( NetworkConfigurator configurator ) {
+	public Http2Configuration( NetworkConfigurator configurator ) {
 		this.configurator = configurator;
 	}
 
@@ -101,24 +100,22 @@ public class RdvRelayConfiguration {
 		boolean retval = false;
 		NetworkConfigurationPropertySource source = (NetworkConfigurationPropertySource) factory.getPropertySource();
 		switch( property ){
-		case USE_ONLY_RELAY_SEEDS:
-		case USE_ONLY_RENDEZVOUS_SEEDS:
+		case HTTP2_8ENABLED:
+		case HTTP2_8INCOMING_STATUS:
+		case HTTP2_8OUTGOING_STATUS:
+		case HTTP2_8TO_PUBLIC_ADDRESS_EXCLUSIVE:
 			source.setProperty( property, Boolean.parseBoolean( value ));
 			retval = true;
 			break;
-		case RELAY_8MAX_CLIENTS:
-		case RENDEZVOUS_8MAX_CLIENTS:
+		case HTTP2_8END_PORT:
+		case HTTP2_8PORT:
+		case HTTP2_8START_PORT:
 			source.setProperty( property, Integer.parseInt( value ));
 			retval = true;
 			break;
-		case RELAY_8SEED_URIS:
-		case RENDEZVOUS_8SEED_URIS:
-			//TODO source.setProperty( property, Boolean.parseBoolean( value ));
-			retval = true;
-			break;
-		case RELAY_8SEEDING_URIS:
-		case RENDEZVOUS_8SEEDING_URIS:
-			//TODO
+		case HTTP2_8PUBLIC_ADDRESS_EXCLUSIVE:
+		case HTTP2_8PUBLIC_ADDRESS:
+		case HTTP2_8INTERFACE_ADDRESS:	
 			source.setProperty( property, value );
 			retval = true;
 			break;
@@ -127,43 +124,4 @@ public class RdvRelayConfiguration {
 		}
 		return retval;
 	}	
-
-	/**
-	 * Fill the configurator with the given properties
-	 * @param configurator
-	 * @param property
-	 * @param value
-	 */
-	@SuppressWarnings("unchecked")
-	public static void fillConfigurator( NetworkConfigurator configurator, NetworkConfiguratorProperties property, Object value ){
-		switch( property ){
-		case USE_ONLY_RELAY_SEEDS:
-			configurator.setUseOnlyRelaySeeds((boolean) value );
-			break;
-		case RELAY_8MAX_CLIENTS:
-			configurator.setRelayMaxClients(( int )value );
-			break;
-		case RELAY_8SEEDING_URIS:
-			configurator.setRelaySeedingURIs(( Set<String> )value );
-			break;
-		case RELAY_8SEED_URIS:
-			configurator.setRelaySeedURIs(( List<String> ) value );
-			break;
-		case USE_ONLY_RENDEZVOUS_SEEDS:
-			configurator.setUseOnlyRendezvousSeeds((boolean) value );
-			break;
-		case RENDEZVOUS_8MAX_CLIENTS:
-			configurator.setRendezvousMaxClients(( int ) value );
-			break;
-		case RENDEZVOUS_8SEED_URIS:
-			configurator.setRendezvousSeeds(( Set<String> ) value );
-			break;
-		case RENDEZVOUS_8SEEDING_URIS:
-			configurator.setRendezvousSeedingURIs(( List<String> )value );
-			break;
-		default:
-			break;
-		}	
-	}
-
 }

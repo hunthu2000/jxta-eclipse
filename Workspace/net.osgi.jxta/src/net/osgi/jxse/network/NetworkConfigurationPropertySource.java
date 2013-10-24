@@ -209,5 +209,4 @@ public class NetworkConfigurationPropertySource extends AbstractJxseWritePropert
 		}
 		return null;
 	}
-
 }

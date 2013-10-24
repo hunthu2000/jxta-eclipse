@@ -15,10 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
 
 import net.jxta.document.Advertisement;
 import net.jxta.platform.NetworkManager;
@@ -33,32 +30,41 @@ import net.osgi.jxse.component.JxseComponentNode;
 import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 
 public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends AbstractActivator<IComponentFactory<T,U,V>> implements
 		IJxseServiceContext<T>{
 
 	public static final String S_SERVICE_CONTAINER = "JXSE Container";
 	
-	private IJxseComponent<?> parent;
 	private Collection<IJxseComponent<?>> children;
 	private String identifier;
 	private Collection<Advertisement> advertisements;
-	private Map<Object, Object> properties;
+	private IJxseWritePropertySource<U, V> properties;
 	
 	private NetworkManager networkManager; 
 	
 	private ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 
 	protected AbstractServiceContext() {
-		this.properties = new HashMap<Object, Object>();
-		this.parent = null;
 		this.children = new ArrayList<IJxseComponent<?>>();
 		this.advertisements = new ArrayList<Advertisement>();
 	}
 
+	protected AbstractServiceContext( IComponentFactory<T,U,V> factory ) {
+		this( factory, false );
+	}
+
+	protected AbstractServiceContext( IComponentFactory<T,U,V> factory, boolean skipAvailable ) {
+		super( factory, skipAvailable );
+		this.children = new ArrayList<IJxseComponent<?>>();
+		this.advertisements = new ArrayList<Advertisement>();
+	}
+
+
 	protected AbstractServiceContext( IJxseComponent<?> parent ) {
 		this();
-		this.parent = parent;
 	}
 
 	protected AbstractServiceContext( String identifier ) {
@@ -66,9 +72,15 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 		this.identifier = identifier;
 	}
 
+	
+	protected IJxsePropertySource<U, V> getProperties() {
+		return properties;
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public String getId() {
-		return (String) this.properties.get( ModuleProperties.ID );
+		return (String) this.properties.getProperty( (U) ModuleProperties.ID );
 	}
 
 	@Override
@@ -80,17 +92,6 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 	protected void onFinalising() {
 	}
 
-	protected AbstractServiceContext( IComponentFactory<T,U,V> factory ) {
-		this( factory, false );
-	}
-
-	protected AbstractServiceContext( IComponentFactory<T,U,V> factory, boolean skipAvailable ) {
-		super( factory, skipAvailable );
-		this.properties = new Properties();
-		this.children = new ArrayList<IJxseComponent<?>>();
-		this.advertisements = new ArrayList<Advertisement>();
-	}
-
 	protected NetworkManager getNetworkManager() {
 		return networkManager;
 	}
@@ -98,9 +99,10 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 	/**
 	 * Get the create date
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Date getCreateDate(){
-		return (Date) this.properties.get(ModuleProperties.CREATE_DATE);
+		return (Date) this.properties.getProperty( (U) ModuleProperties.CREATE_DATE);
 	}
 
 	public void clearModules(){
@@ -109,19 +111,22 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 
 	@Override
 	protected boolean onSetAvailable( IComponentFactory<T,U,V> obj ) {
+		this.properties = (IJxseWritePropertySource<U, V>) obj.getPropertySource();
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object getProperty(Object key) {
-		return this.properties.get( key );
+		return this.properties.getProperty( (U) key );
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void putProperty(Object key, Object value) {
 		if( value == null )
 			return;
-		this.properties.put(key, value);
+		this.properties.setProperty(( U) key, value);
 	}
 
 	public void addAdvertisement( Advertisement advertisement ){
@@ -159,12 +164,12 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 
 	@Override
 	public boolean isRoot() {
-		return ( this.parent == null );
+		return true;
 	}
 	
 	@Override
 	public IJxseComponent<?> getParent() {
-		return this.parent;
+		return null;
 	}
 	
 	//Make public
@@ -224,7 +229,7 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 
 	@Override
 	public Iterator<?> iterator() {
-		return this.properties.keySet().iterator();
+		return this.properties.propertyIterator();
 	}
 
 	/**

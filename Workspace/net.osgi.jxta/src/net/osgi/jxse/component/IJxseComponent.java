@@ -14,11 +14,12 @@ import java.util.Date;
 import java.util.Iterator;
 
 import net.jxta.document.Advertisement;
+import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.utils.StringStyler;
 
 public interface IJxseComponent<T extends Object>{
 	
-	public enum ModuleProperties{
+	public enum ModuleProperties implements IJxseDirectives{
 		ID,
 		CREATE_DATE;
 

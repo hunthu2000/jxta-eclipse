@@ -14,9 +14,9 @@ import java.util.Iterator;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.network.seed.SeedListPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
-import net.osgi.jxse.properties.SeedListPropertySource;
 import net.osgi.jxse.seeds.SeedInfo;
 
 public class SeedListFactory implements IComponentFactory<String, String, IJxseDirectives>, ISeedListFactory{

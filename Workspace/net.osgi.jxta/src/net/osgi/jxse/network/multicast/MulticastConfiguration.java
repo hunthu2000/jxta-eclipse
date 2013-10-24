@@ -8,9 +8,11 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.network;
+package net.osgi.jxse.network.multicast;
 
 import net.jxta.platform.NetworkConfigurator;
+import net.osgi.jxse.network.NetworkConfigurationFactory;
+import net.osgi.jxse.network.NetworkConfigurationPropertySource;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
 public class MulticastConfiguration {

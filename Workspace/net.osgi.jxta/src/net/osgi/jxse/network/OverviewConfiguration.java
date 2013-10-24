@@ -23,7 +23,6 @@ public class OverviewConfiguration {
 	public static final String S_OVERVIEW = "Overview";
 
 	private NetworkConfigurator configurator;
-	private boolean publicAddressExclusive = false;
 	private String description;
 	
 	public OverviewConfiguration( NetworkConfigurator configurator ) {

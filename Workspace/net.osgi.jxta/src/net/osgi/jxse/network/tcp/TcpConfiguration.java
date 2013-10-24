@@ -8,68 +8,70 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.network;
+package net.osgi.jxse.network.tcp;
 
 import net.jxta.platform.NetworkConfigurator;
+import net.osgi.jxse.network.NetworkConfigurationFactory;
+import net.osgi.jxse.network.NetworkConfigurationPropertySource;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
-public class HttpConfiguration {
+public class TcpConfiguration {
 
-	public static final String S_HTTP_CONFIGURATION = "Http Configuration";
-
+	public static final String S_TCP_CONFIGURATION = "Tcp Configuration";
+	
 	private NetworkConfigurator configurator;
 	private boolean publicAddressExclusive = false;
 	
-	public HttpConfiguration( NetworkConfigurator configurator ) {
+	public TcpConfiguration( NetworkConfigurator configurator ) {
 		this.configurator = configurator;
 	}
 
 	public int getStartPort(){
-		return this.configurator.getHttp2StartPort();
+		return this.configurator.getTcpStartPort();
 	}
 
 	public void setStartPort( int port ){
-		this.configurator.setHttp2StartPort( port );
+		this.configurator.setTcpStartPort( port );
 	}
 
 	public int getPort(){
-		return this.configurator.getHttpPort();
+		return this.configurator.getTcpPort();
 	}
 
 	public void setPort( int port ){
-		this.configurator.setHttp2Port( port );
+		this.configurator.setTcpPort( port );
 	}
 
 	public int getEndPort(){
-		return this.configurator.getHttp2EndPort();
+		return this.configurator.getTcpEndport();
 	}
 
 	public void setEndPort( int port ){
-		this.configurator.setHttp2EndPort( port );
+		this.configurator.setTcpEndPort( port );
 	}
 
 	public boolean getIncomingStatus(){
-		return this.configurator.getHttp2IncomingStatus();
+		return this.configurator.getTcpIncomingStatus();
 	}
 
 	public void setIncomingStatus( boolean enabled ){
-		this.configurator.setHttp2Incoming( enabled );
+		this.configurator.setTcpIncoming( enabled );
 	}
 
 	public String getInterfaceAddress(){
-		return this.configurator.getHttp2InterfaceAddress();
+		return this.configurator.getTcpInterfaceAddress();
 	}
 
 	public void setInterfaceAddress( String address ){
-		this.configurator.setHttp2InterfaceAddress(address);
+		this.configurator.setTcpInterfaceAddress(address);
 	}
 
-	public boolean getHttpOutgoingStatus(){
-		return this.configurator.getHttp2OutgoingStatus();
+	public boolean getOutgoingStatus(){
+		return this.configurator.getTcpOutgoingStatus();
 	}
 
 	public void setOutgoingStatus( boolean enabled ){
-		this.configurator.setHttp2Outgoing( enabled );
+		this.configurator.setTcpOutgoing( enabled );
 	}
 
 	public boolean getPublicAddressExclusive(){
@@ -81,13 +83,13 @@ public class HttpConfiguration {
 	}
 
 	public String getPublicAddress(){
-		return this.configurator.getHttp2PublicAddress();
+		return this.configurator.getTcpPublicAddress();
 	}
 
-	public void setHttpPublicAddress( String address ){
-		this.configurator.setHttp2PublicAddress(address, this.publicAddressExclusive);
+	public void setPublicAddress( String address ){
+		this.configurator.setTcpPublicAddress(address, this.publicAddressExclusive);
 	}
-
+	
 	/**
 	 * Create the correct type for the given property
 	 * @param factory
@@ -98,26 +100,26 @@ public class HttpConfiguration {
 		boolean retval = false;
 		NetworkConfigurationPropertySource source = (NetworkConfigurationPropertySource) factory.getPropertySource();
 		switch( property ){
-		case HTTP_8ENABLED:
-		case HTTP_8INCOMING_STATUS:
-		case HTTP_8OUTGOING_STATUS:
-		case HTTP_8TO_PUBLIC_ADDRESS_EXCLUSIVE:
+		case TCP_8ENABLED:
+		case TCP_8INCOMING_STATUS:
+		case TCP_8OUTGOING_STATUS:
+		case TCP_8PUBLIC_ADDRESS_EXCLUSIVE:
 			source.setProperty( property, Boolean.parseBoolean( value ));
 			retval = true;
 			break;
-		case HTTP_8PORT:
+		case TCP_8END_PORT:
+		case TCP_8PORT:
+		case TCP_8START_PORT:
 			source.setProperty( property, Integer.parseInt( value ));
 			retval = true;
 			break;
-		case HTTP_8PUBLIC_ADDRESS_EXCLUSIVE:
-		case HTTP_8PUBLIC_ADDRESS:
-		case HTTP_8INTERFACE_ADDRESS:	
+		case TCP_8INTERFACE_ADDRESS:
 			source.setProperty( property, value );
 			retval = true;
 			break;
 		default:
 			break;
-		}
+		}	
 		return retval;
 	}	
 }

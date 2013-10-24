@@ -26,6 +26,7 @@ import net.osgi.jxse.network.NetworkConfigurationPropertySource;
 import net.osgi.jxse.network.NetworkManagerFactory;
 import net.osgi.jxse.network.NetworkManagerPropertySource;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
+import net.osgi.jxse.network.seed.SeedListPropertySource;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.peergroup.PeerGroupFactory;
 import net.osgi.jxse.peergroup.PeerGroupPropertySource;
@@ -33,7 +34,6 @@ import net.osgi.jxse.properties.AbstractPeerGroupProviderPropertySource.PeerGrou
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxsePropertySource;
-import net.osgi.jxse.properties.SeedListPropertySource;
 import net.osgi.jxse.registration.RegistrationPropertySource;
 import net.osgi.jxse.registration.RegistrationServiceFactory;
 import net.osgi.jxse.seeds.ISeedListFactory;
@@ -139,7 +139,7 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 		ComponentNode childNode = null;
 		for( IJxsePropertySource<?,?> child: source.getChildren()) {
 			childNode = this.parsePropertySources( child, node );
-			if(( returnNode == null ) &&( childNode != null ))
+			if(( returnNode == null ) && ( childNode != null ))
 				returnNode = childNode;
 		}
 		if( newFactory )

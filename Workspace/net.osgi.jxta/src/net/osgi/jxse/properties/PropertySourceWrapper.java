@@ -89,7 +89,7 @@ public class PropertySourceWrapper< T extends Object, U extends IJxseDirectives>
 
 	@Override
 	public Iterator<U> directiveIterator() {
-		return this.directiveIterator();
+		return this.source.directiveIterator();
 	}
 	
 	@Override

@@ -4,38 +4,114 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.utils.StringStyler;
+import net.osgi.jxse.utils.Utils;
 
-public class PartialPropertySource<T extends Enum<T>, U extends IJxseDirectives> extends AbstractJxseWritePropertySource<T, U> 
+/**
+ * A partial property source breaks a parent up in distinct parts, based on the existence of dots (_8) in the given properties
+ * @author Kees
+ *
+ * @param <T>
+ * @param <U>
+ */
+public class PartialPropertySource<T extends Enum<T>, U extends IJxseDirectives> extends PropertySourceWrapper<T, U> 
 implements  IJxseWritePropertySource<T, U>{
 
-	private String cat;
-	
-	public PartialPropertySource(String cat, IJxsePropertySource<NetworkConfiguratorProperties, IJxseDirectives> source) {
-		super(source);
-		this.cat = cat;
+	private int offset;
+	private String componentName;
+
+	private Collection<IJxsePropertySource<?,?>> children;
+
+	protected PartialPropertySource( IJxsePropertySource<T, U> parent, int offset ) {
+		super( parent);
+		this.offset = offset;
+		children = new ArrayList<IJxsePropertySource<?,?>>();
 	}
 
-	@SuppressWarnings("unchecked")
+	public PartialPropertySource( IJxsePropertySource<T, U> parent) {
+		this( parent, -1);
+	}
+
+	PartialPropertySource( String componentName,  IJxsePropertySource<T, U> parent, int offset ) {
+		super( parent );
+		this.offset = offset;
+		this.componentName = componentName;
+		children = new ArrayList<IJxsePropertySource<?,?>>();
+	}
+
+	public PartialPropertySource( String componentName,  IJxsePropertySource<T, U> parent) {
+		this( componentName, parent, -1 );
+	}
+
+	@Override
+	public IJxsePropertySource<?, ?> getParent() {
+		return super.getSource();
+	}
+
+	public String getCategory() {
+		if( offset < 0 )
+			return this.componentName;
+		String[] split = this.componentName.split("[.]");
+		return split[offset];
+	}
+
 	@Override
 	public T getIdFromString(String key) {
+		String cat = this.getCategory();
 		String id = StringStyler.styleToEnum( cat + "." + key.toLowerCase() );
-		return (T) super.getParent().getIdFromString( id );
+		return (T) super.getSource().getIdFromString( id );
 	}
 
 	@Override
 	public String getComponentName() {
-		return cat;
+		return this.getCategory();
+	}
+
+	protected int getOffset() {
+		return offset;
+	}
+
+	/**
+	 * returns true if the given id is valid for this partial property source
+	 * @param id
+	 * @return
+	 */
+	protected boolean isValidId( T id ){
+		if( id == null )
+			return false;
+		String check =  StringStyler.prettyString( id.name() ).toLowerCase();
+		String cat = this.getCategory();
+		if( Utils.isNull( cat )){
+			return ( check.indexOf(".") < 0 );
+		}else{
+			String str = ( cat.toLowerCase() + "." ); 
+			return check.startsWith(str);
+		}
+	}
+	
+	@Override
+	public ManagedProperty<T, Object> getOrCreateManagedProperty(T id, Object value, boolean derived) {
+		if(!isValidId(id))
+			return null;
+		IJxseWritePropertySource<T,U> source = (IJxseWritePropertySource<T, U>) super.getSource();
+		return source.getOrCreateManagedProperty(id, value, derived);
 	}
 
 	@Override
+	public ManagedProperty<T, Object> getManagedProperty(T id) {
+		if(!isValidId(id))
+			return null;
+		return super.getManagedProperty(id);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
 	public Iterator<T> propertyIterator() {
-		Iterator<T> iterator  = super.propertyIterator();
+		Iterator<T> iterator  = (Iterator<T>) super.getParent().propertyIterator();
 		Collection<T> ids = new ArrayList<T>();
 		while( iterator.hasNext() ){
 			T id = iterator.next();
-			if( id.name().toLowerCase().startsWith(cat))
+			if( isValidId(id) )
 				ids.add(id);
 		}
 		return ids.iterator();
@@ -43,7 +119,8 @@ implements  IJxseWritePropertySource<T, U>{
 
 	@Override
 	public boolean validate(T id, Object value) {
-		// TODO Auto-generated method stub
+		if(!isValidId(id))
+			return false;
 		return false;
 	}
 
@@ -51,5 +128,118 @@ implements  IJxseWritePropertySource<T, U>{
 	public Object getDefaultDirectives(IJxseDirectives id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@SuppressWarnings({ "rawtypes" })
+	protected static boolean canExpand( IJxsePropertySource<Enum<?>, IJxseDirectives> source ){
+		Iterator<Enum<?>> iterator  = source.propertyIterator();
+		while( iterator.hasNext() ){
+			Enum id = iterator.next();
+			String check =  StringStyler.prettyString( id.name() );
+			int index = check.indexOf(".");
+			if( index >= 0 )
+				return true;
+			}
+		return false;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static IJxsePropertySource<Enum<?>,IJxseDirectives> expand( IJxsePropertySource<Enum<?>, IJxseDirectives> parent ){
+		if(!canExpand( parent ))
+			return parent;
+		PartialPropertySource<? extends Enum<?>, IJxseDirectives> root = new PartialPropertySource( parent );
+		expand( parent, root );
+		return (IJxsePropertySource<Enum<?>, IJxseDirectives>) root;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected static void expand( IJxsePropertySource<Enum<?>, IJxseDirectives> parent, PartialPropertySource<? extends Enum<?>, IJxseDirectives> current ){
+		Iterator<Enum<?>> iterator  = parent.propertyIterator();
+		while( iterator.hasNext() ){
+			Enum id = iterator.next();
+			int offset = calculateOffset( id );
+			if( offset <= current.getOffset() ) 
+				continue;
+			String ct = getCategory( id, offset );
+			if( Utils.isNull( ct ))
+				continue;
+			if( !hasChildWithName( current, ct )){
+				PartialPropertySource child = new PartialPropertySource( id.toString(), parent, current.getOffset() + 1 ); 
+				expand( parent, child );
+				current.addChild( child);
+			}
+		}
+	}
+
+	/**
+	 * Returns true if the given souce has a child with the given name
+	 * @param source
+	 * @param name
+	 * @return
+	 */
+	protected static boolean hasChildWithName( IJxsePropertySource<? extends Enum<?>, IJxseDirectives> source, String name ){
+		for( IJxsePropertySource<?, ?> child: source.getChildren() ){
+			if( child.getComponentName().equals( name ))
+				return true;
+		}
+		return false;
+		
+	}
+	
+	/**
+	 * Calculate the offset for the given id. returns a negative value if no offset exists
+	 * @param id
+	 * @return
+	 */
+	protected static int calculateOffset( Enum<?> id ){
+		String check =  StringStyler.prettyString( id.name() );
+		int index = check.indexOf(".");
+		if( index < 0 )
+			return index;
+		String[] split = check.split("[.]");
+		return split.length - 2;
+	}
+
+	/**
+	 * Calculate the offset for the given id
+	 * @param id
+	 * @return
+	 */
+	protected static String getCategory( Enum<?> id, int offset ){
+		if( offset < 0 )
+			return null;
+		String check =  StringStyler.prettyString( id.name() );
+		int index = check.indexOf(".");
+		if( index < 0 )
+			return check;
+		String[] split = check.split("[.]");	
+		if( offset >= split.length - 1)
+			return null;
+		return split[ offset ];
+	}
+
+	@Override
+	public boolean setProperty(T id, Object value) {
+		IJxseWritePropertySource<T,U> source = (IJxseWritePropertySource<T, U>) super.getSource();
+		return source.setProperty(id, value);
+	}
+
+	@Override
+	public boolean setDirective(U id, Object value) {
+		IJxseWritePropertySource<T,U> source = (IJxseWritePropertySource<T, U>) super.getSource();
+		return source.setDirective(id, value);
+	}
+
+	public boolean addChild( IJxsePropertySource<?, ?> child ){
+		return this.children.add( child );
+	}
+
+	public void removeChild( IJxsePropertySource<?, ?> child ){
+		this.children.remove( child );
+	}
+
+	@Override
+	public IJxsePropertySource<?, ?>[] getChildren() {
+		return this.children.toArray(new IJxsePropertySource[children.size()]);
 	}
 }

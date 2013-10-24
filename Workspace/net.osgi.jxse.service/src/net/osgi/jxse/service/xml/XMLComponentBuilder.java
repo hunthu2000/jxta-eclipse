@@ -44,6 +44,7 @@ import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfigura
 import net.osgi.jxse.network.NetworkManagerPreferences;
 import net.osgi.jxse.network.NetworkManagerPropertySource;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
+import net.osgi.jxse.network.seed.SeedListPropertySource;
 import net.osgi.jxse.network.OverviewPreferences;
 import net.osgi.jxse.properties.CategoryPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
@@ -51,7 +52,6 @@ import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.properties.PartialPropertySource;
-import net.osgi.jxse.properties.SeedListPropertySource;
 import net.osgi.jxse.peergroup.PeerGroupPropertySource;
 import net.osgi.jxse.registration.RegistrationPreferences;
 import net.osgi.jxse.registration.RegistrationPropertySource;
@@ -406,7 +406,7 @@ class JxtaHandler extends DefaultHandler{
 		if( Utils.isNull( value  ))
 			return;
 
-		if( property.getKey() == null )
+		if(( property == null ) || ( property.getKey() == null ))
 			return;
 		
 		if( source instanceof JxseContextPropertySource ){

@@ -8,6 +8,7 @@ import net.osgi.jxse.properties.CategoryPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
+import net.osgi.jxse.properties.PartialPropertySource;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
@@ -20,7 +21,6 @@ public class JxseXmlBuilder<T extends Enum<T>, U extends IJxseDirectives> {
 	public static final String DOC_DIRECTIVE_END = "</directives>\n";
 	
 	public JxseXmlBuilder() {
-		super();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -37,13 +37,14 @@ public class JxseXmlBuilder<T extends Enum<T>, U extends IJxseDirectives> {
 	 */
 	@SuppressWarnings("unchecked")
 	protected static void buildSource( int offset, StringBuffer buffer, IJxsePropertySource<Enum<?>,IJxseDirectives> source ){
-		String component = StringStyler.xmlStyleString( source.getComponentName());
-		buffer.append( createComponent( offset, component, source ));
+		IJxsePropertySource<Enum<?>,IJxseDirectives> expand = PartialPropertySource.expand(source );
+		String component = StringStyler.xmlStyleString( expand.getComponentName());
+		buffer.append( createComponent( offset, component, expand ));
 		offset +=2;
-		String str = createProperties( offset, source );
+		String str = createProperties( offset, expand );
 		if( !Utils.isNull( str ))
 			buffer.append(str );
-		for( IJxsePropertySource<?,?> child: source.getChildren()){
+		for( IJxsePropertySource<?,?> child: expand.getChildren()){
 			if( !( child instanceof CategoryPropertySource ))
 				buildSource( offset, buffer, ( IJxsePropertySource<Enum<?>,IJxseDirectives>)child );
 		}

@@ -8,7 +8,11 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.properties;
+package net.osgi.jxse.network.seed;
+
+import net.osgi.jxse.properties.CategoryPropertySource;
+import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class SeedListPropertySource<T extends IJxseDirectives> extends CategoryPropertySource<T> {
 

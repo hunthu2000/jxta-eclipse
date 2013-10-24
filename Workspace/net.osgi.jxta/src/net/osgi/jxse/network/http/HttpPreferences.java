@@ -8,22 +8,24 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.network;
+package net.osgi.jxse.network.http;
 
 import java.util.Iterator;
 
 import net.jxta.platform.NetworkConfigurator;
+import net.osgi.jxse.network.INetworkPreferences;
+import net.osgi.jxse.network.NetworkConfigurationPropertySource;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.PartialPropertySource;
 
-public class Http2Preferences implements INetworkPreferences {
+public class HttpPreferences implements INetworkPreferences {
 
-	public static final String S_HTTP2_CONFIGURATION = "http Configuration";
+	public static final String S_HTTP_CONFIGURATION = "http Configuration";
 	
 	private PartialPropertySource<NetworkConfiguratorProperties, IJxseDirectives> source;
 	
-	public Http2Preferences( PartialPropertySource<NetworkConfiguratorProperties, IJxseDirectives> source ) {
+	public HttpPreferences( PartialPropertySource<NetworkConfiguratorProperties, IJxseDirectives> source ) {
 		this.source = source;
 	}
 
@@ -37,68 +39,52 @@ public class Http2Preferences implements INetworkPreferences {
 		return source.getComponentName();
 	}
 
-	public int getStartPort(){
-		return ( int )this.source.getProperty( NetworkConfiguratorProperties.HTTP2_8START_PORT);
-	}
-
-	public void setStartPort( int port ){
-		this.source.setProperty( NetworkConfiguratorProperties.HTTP2_8START_PORT, port );
-	}
-
 	public int getPort(){
-		return ( int )this.source.getProperty( NetworkConfiguratorProperties.HTTP2_8PORT);
+		return ( int )this.source.getProperty( NetworkConfiguratorProperties.HTTP_8PORT);
 	}
 
 	public void setPort( int port ){
-		this.source.setProperty( NetworkConfiguratorProperties.HTTP2_8PORT, port );
-	}
-
-	public int getEndPort(){
-		return ( int )this.source.getProperty( NetworkConfiguratorProperties.HTTP2_8END_PORT);
-	}
-
-	public void setEndPort( int port ){
-		this.source.setProperty( NetworkConfiguratorProperties.HTTP2_8END_PORT, port );
+		this.source.setProperty( NetworkConfiguratorProperties.HTTP_8PORT, port );
 	}
 
 	public boolean getIncomingStatus(){
-		return (boolean )this.source.getProperty( NetworkConfiguratorProperties.HTTP2_8INCOMING_STATUS );
+		return (boolean )this.source.getProperty( NetworkConfiguratorProperties.HTTP_8INCOMING_STATUS );
 	}
 
 	public void setIncomingStatus( boolean enabled ){
-		this.source.setProperty( NetworkConfiguratorProperties.HTTP2_8INCOMING_STATUS, enabled );
+		this.source.setProperty( NetworkConfiguratorProperties.HTTP_8INCOMING_STATUS, enabled );
 	}
 
 	public String getInterfaceAddress(){
-		return ( String )this.source.getProperty( NetworkConfiguratorProperties.HTTP2_8INTERFACE_ADDRESS );
+		return ( String )this.source.getProperty( NetworkConfiguratorProperties.HTTP_8INTERFACE_ADDRESS );
 	}
 
 	public void setInterfaceAddress( String address ){
-		this.source.setProperty( NetworkConfiguratorProperties.HTTP2_8INTERFACE_ADDRESS, address );
+		this.source.setProperty( NetworkConfiguratorProperties.HTTP_8INTERFACE_ADDRESS, address );
 	}
 
 	public boolean getOutgoingStatus(){
-		return ( boolean )this.source.getProperty( NetworkConfiguratorProperties.HTTP2_8OUTGOING_STATUS );
+		return ( boolean )this.source.getProperty( NetworkConfiguratorProperties.HTTP_8OUTGOING_STATUS );
 	}
 
 	public void setOutgoingStatus( boolean enabled ){
-		this.source.setProperty( NetworkConfiguratorProperties.HTTP2_8OUTGOING_STATUS, enabled );
+		this.source.setProperty( NetworkConfiguratorProperties.HTTP_8OUTGOING_STATUS, enabled );
 	}
 
 	public boolean getPublicAddressExclusive(){
-		return ( boolean )this.source.getProperty( NetworkConfiguratorProperties.HTTP2_8PUBLIC_ADDRESS_EXCLUSIVE );
+		return ( boolean )this.source.getProperty( NetworkConfiguratorProperties.HTTP_8PUBLIC_ADDRESS_EXCLUSIVE );
 	}
 
 	public void setPublicAddressExclusive( boolean exclusive ){
-		this.source.setProperty( NetworkConfiguratorProperties.HTTP2_8PUBLIC_ADDRESS_EXCLUSIVE, exclusive );
+		this.source.setProperty( NetworkConfiguratorProperties.HTTP_8PUBLIC_ADDRESS_EXCLUSIVE, exclusive );
 	}
 
 	public String getPublicAddress(){
-		return ( String )this.source.getProperty( NetworkConfiguratorProperties.HTTP2_8PUBLIC_ADDRESS );
+		return ( String )this.source.getProperty( NetworkConfiguratorProperties.HTTP_8PUBLIC_ADDRESS );
 	}
 
 	public void setPublicAddress( String address ){
-		this.source.setProperty( NetworkConfiguratorProperties.HTTP2_8PUBLIC_ADDRESS, address );
+		this.source.setProperty( NetworkConfiguratorProperties.HTTP_8PUBLIC_ADDRESS, address );
 	}
 
 	/**
@@ -128,32 +114,26 @@ public class Http2Preferences implements INetworkPreferences {
 	public static boolean fillConfigurator( NetworkConfigurator configurator, NetworkConfiguratorProperties property, Object value ){
 		boolean retval = true;
 		switch( property ){
-		case HTTP2_8ENABLED:
-			configurator.setHttp2Enabled((boolean) value );
+		case HTTP_8ENABLED:
+			configurator.setHttpEnabled((boolean) value );
 			break;
-		case HTTP2_8INCOMING_STATUS:
-			configurator.setHttp2Incoming((boolean) value );
+		case HTTP_8INCOMING_STATUS:
+			configurator.setHttpIncoming((boolean) value );
 			break;
-		case HTTP2_8OUTGOING_STATUS:
-			configurator.setHttp2Outgoing((boolean)value );
+		case HTTP_8OUTGOING_STATUS:
+			configurator.setHttpOutgoing((boolean)value );
 			break;
-		case HTTP2_8PUBLIC_ADDRESS_EXCLUSIVE:
-			configurator.setHttp2PublicAddress(( String )value, true );
+		case HTTP_8PUBLIC_ADDRESS_EXCLUSIVE:
+			configurator.setHttpPublicAddress(( String )value, true );
 			break;
-		case HTTP2_8END_PORT:
-			configurator.setHttp2EndPort(( Integer ) value );
+		case HTTP_8PORT:
+			configurator.setHttpPort(( Integer ) value );
 			break;
-		case HTTP2_8PORT:
-			configurator.setHttp2Port(( Integer ) value );
+		case HTTP_8INTERFACE_ADDRESS:
+			configurator.setHttpInterfaceAddress(( String )value );
 			break;
-		case HTTP2_8START_PORT:
-			configurator.setHttp2StartPort(( Integer )value );
-			break;
-		case HTTP2_8INTERFACE_ADDRESS:
-			configurator.setHttp2InterfaceAddress(( String )value );
-			break;
-		case HTTP2_8PUBLIC_ADDRESS:
-			configurator.setHttp2PublicAddress(( String) value, false );
+		case HTTP_8PUBLIC_ADDRESS:
+			configurator.setHttpPublicAddress(( String) value, false );
 			break;			
 		default:
 			retval = false;
@@ -180,17 +160,15 @@ public class Http2Preferences implements INetworkPreferences {
 	 */
 	public static Object convertStringToCorrectType( NetworkConfiguratorProperties property, String value ){
 		switch( property ){
-		case HTTP2_8INTERFACE_ADDRESS:
-		case HTTP2_8PUBLIC_ADDRESS:
-		case HTTP2_8PUBLIC_ADDRESS_EXCLUSIVE:
+		case HTTP_8INTERFACE_ADDRESS:
+		case HTTP_8PUBLIC_ADDRESS:
+		case HTTP_8PUBLIC_ADDRESS_EXCLUSIVE:
 			return value;
-		case HTTP2_8ENABLED:
-		case HTTP2_8INCOMING_STATUS:
-		case HTTP2_8OUTGOING_STATUS:
+		case HTTP_8ENABLED:
+		case HTTP_8INCOMING_STATUS:
+		case HTTP_8OUTGOING_STATUS:
 			return Boolean.parseBoolean( value );
-		case HTTP2_8END_PORT:
-		case HTTP2_8PORT:
-		case HTTP2_8START_PORT:
+		case HTTP_8PORT:
 			return Integer.parseInt( value );
 		default:
 			return null;

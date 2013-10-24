@@ -20,6 +20,8 @@ import net.osgi.jxse.factory.ComponentFactoryEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.network.NetworkConfigurationFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
+import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.seeds.AbstractResourceSeedListFactory;
 import net.osgi.jxse.seeds.ISeedListFactory;
 import net.osgi.jxse.service.network.NetPeerGroupService;
@@ -63,6 +65,11 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 		this.factory = factory;	
 		return super.onSetAvailable( factory );
 	}
+	
+	@Override
+	public IJxsePropertySource<ContextProperties, Directives> getProperties() {
+		return super.getProperties();
+	}
 
 	@Override
 	public NetworkManager getModule() {
@@ -81,7 +88,6 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 		this.observer = observer;
 	}
 
-	
 	@Override
 	public void initialise() {
 		super.initialise();
