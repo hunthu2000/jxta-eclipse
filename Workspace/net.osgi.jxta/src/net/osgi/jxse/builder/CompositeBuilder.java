@@ -32,7 +32,6 @@ import net.osgi.jxse.peergroup.PeerGroupFactory;
 import net.osgi.jxse.peergroup.PeerGroupPropertySource;
 import net.osgi.jxse.properties.AbstractPeerGroupProviderPropertySource.PeerGroupDirectives;
 import net.osgi.jxse.properties.IJxseDirectives;
-import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.registration.RegistrationPropertySource;
 import net.osgi.jxse.registration.RegistrationServiceFactory;
@@ -101,7 +100,7 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 			node = parent;
 		}
 		if( source instanceof NetworkManagerPropertySource ){
-			factory = new NetworkManagerFactory( (IJxsePropertySource<NetworkManagerProperties, Directives>) source );
+			factory = new NetworkManagerFactory( (IJxsePropertySource<NetworkManagerProperties, IJxseDirectives>) source );
 			node = this.getNode(parent, factory);
 			returnNode = node;
 			newFactory = true;

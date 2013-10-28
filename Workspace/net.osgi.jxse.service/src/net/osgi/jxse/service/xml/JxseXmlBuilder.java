@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import net.osgi.jxse.properties.CategoryPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.properties.PartialPropertySource;
+import net.osgi.jxse.properties.PropertySourceUtils;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
@@ -25,6 +25,7 @@ public class JxseXmlBuilder<T extends Enum<T>, U extends IJxseDirectives> {
 
 	@SuppressWarnings("unchecked")
 	public final String build( IJxsePropertySource<T,U> source ){
+		System.err.println( PropertySourceUtils.printPropertySource( source, true ));
 		StringBuffer buffer = new StringBuffer();
 		buffer.append( DOC_HEAD);
 		buildSource( 0, buffer, ( IJxsePropertySource<Enum<?>,IJxseDirectives> )source );
@@ -45,8 +46,7 @@ public class JxseXmlBuilder<T extends Enum<T>, U extends IJxseDirectives> {
 		if( !Utils.isNull( str ))
 			buffer.append(str );
 		for( IJxsePropertySource<?,?> child: expand.getChildren()){
-			if( !( child instanceof CategoryPropertySource ))
-				buildSource( offset, buffer, ( IJxsePropertySource<Enum<?>,IJxseDirectives>)child );
+			buildSource( offset, buffer, ( IJxsePropertySource<Enum<?>,IJxseDirectives>)child );
 		}
 		offset-=2;
 		buffer.append( insertOffset( offset ));
@@ -87,19 +87,17 @@ public class JxseXmlBuilder<T extends Enum<T>, U extends IJxseDirectives> {
 		buffer.append( DOC_PROPERTY );
 		Iterator<Enum> iterator = source.propertyIterator();
 		boolean properties = false;
+		int newOffset = offset + 2;
 		while( iterator.hasNext() ){
 			ManagedProperty property = source.getManagedProperty( iterator.next() );
-			String str = createProperty( offset + 2, property);
+			String str = ( source instanceof PartialPropertySource )? createPartialProperty( newOffset, property): createProperty( newOffset, property);
 			if( !Utils.isNull( str )){
 				buffer.append( str );
 				properties = true;
 			}
 		}
 		for( IJxsePropertySource<?,?> child: source.getChildren()){
-			if( child instanceof CategoryPropertySource ){
-				properties = true;
-				buildSource( offset, buffer,  ( IJxsePropertySource<Enum<?>,IJxseDirectives>)child );
-			}
+			buildSource( offset, buffer,  ( IJxsePropertySource<Enum<?>,IJxseDirectives>)child );
 		}
 		if( !properties )
 			return null;
@@ -112,9 +110,24 @@ public class JxseXmlBuilder<T extends Enum<T>, U extends IJxseDirectives> {
 		if(( property == null ) || property.isDerived() || ( property.getValue() == null ))
 			return null;
 		StringBuffer buffer = new StringBuffer();
-		buffer.append( xmlBeginTag( offset, toXmlStyle( property.getKey() ), property.getAttributes(), false));
+		String key = toXmlStyle( property.getKey() );
+		buffer.append( xmlBeginTag( offset, key, property.getAttributes(), false));
 		buffer.append( property.getValue() );
-		buffer.append( xmlParseEndTag( offset, toXmlStyle( property.getKey() )));	
+		buffer.append( xmlParseEndTag( offset, key ));	
+		return buffer.toString();
+	}
+
+	private static String createPartialProperty( int offset, ManagedProperty<?, IJxseDirectives> property ){
+		if(( property == null ) || property.isDerived() || ( property.getValue() == null ))
+			return null;
+		StringBuffer buffer = new StringBuffer();
+		String key = toXmlStyle( property.getKey() );
+		int index = key.indexOf("-8");
+		if( index >= 0 )
+			key = key.substring(index + 2, key.length());
+		buffer.append( xmlBeginTag( offset, key , property.getAttributes(), false));
+		buffer.append( property.getValue() );
+		buffer.append( xmlParseEndTag( offset, key ));	
 		return buffer.toString();
 	}
 

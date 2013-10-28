@@ -16,23 +16,19 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import net.osgi.jxse.utils.Utils;
 
-public abstract class AbstractJxsePropertySource< T extends Object, U extends IJxseDirectives> implements IJxsePropertySource<T, U> {
-
-	private static final String S_CONTEXT = "context";
-	private static final String S_ERR_COMPONENT_NAME_NULL = "The component name cannot be null";
+public abstract class AbstractJxsePropertySource< T extends Object> implements IJxsePropertySource<T, IJxseDirectives> {
 	
 	private Map<T,ManagedProperty<T,Object>> properties;
-	private Map<U,Object> directives;
+	private Map<IJxseDirectives,Object> directives;
 	
 	private IJxsePropertySource<?,?> parent;
 
 	private Collection<IJxsePropertySource<?,?>> children;
 
 	private int depth = 0;
-	private String context_id, id_root;
-	private String bundleId, identifier, componentName;
+	private String id_root;
+	private String bundleId, componentName;
 	
 	public AbstractJxsePropertySource( String bundleId, String identifier, String componentName) {
 		this( bundleId, identifier, componentName, 0);
@@ -40,11 +36,11 @@ public abstract class AbstractJxsePropertySource< T extends Object, U extends IJ
 
 	protected AbstractJxsePropertySource( String bundleId, String identifier, String componentName, int depth ) {
 		properties = new HashMap<T,ManagedProperty<T,Object>>();
-		directives = new HashMap<U,Object>();
+		directives = new HashMap<IJxseDirectives,Object>();
 		this.bundleId = bundleId;
-		this.context_id = this.bundleId + "." + componentName.toLowerCase();
+		this.directives.put( IJxseDirectives.Directives.ID, this.bundleId + "." + componentName.toLowerCase() );
 		this.id_root = this.bundleId;
-		this.identifier = identifier;
+		this.directives.put( IJxseDirectives.Directives.NAME, identifier );
 		this.componentName = componentName;
 		children = new ArrayList<IJxsePropertySource<?,?>>();
 		this.depth = depth;
@@ -54,7 +50,6 @@ public abstract class AbstractJxsePropertySource< T extends Object, U extends IJ
 	protected AbstractJxsePropertySource( IJxsePropertySource<?,?> parent ) {
 		this( parent.getBundleId(), parent.getIdentifier(), parent.getComponentName(), parent.getDepth() + 1 );
 		this.parent = parent;
-		this.context_id = this.bundleId + "." + componentName.toLowerCase();
 	}
 
 	protected AbstractJxsePropertySource( String componentName, IJxsePropertySource<?,?> parent ) {
@@ -67,19 +62,11 @@ public abstract class AbstractJxsePropertySource< T extends Object, U extends IJ
 	}
 
 	public String getId() {
-		return context_id;
+		return (String) this.directives.get( IJxseDirectives.Directives.ID );
 	}
 
 	public String getIdRoot() {
 		return id_root;
-	}
-
-	public void setId(String id) {
-		if( Utils.isNull( id ))
-			this.context_id = this.bundleId + "." + componentName.toLowerCase();
-		else
-			this.context_id = id;
-		this.id_root = this.getIdRoot( this.context_id );
 	}
 
 	@Override
@@ -89,11 +76,7 @@ public abstract class AbstractJxsePropertySource< T extends Object, U extends IJ
 
 	@Override
 	public String getIdentifier() {
-		return identifier;
-	}
-
-	protected void setIdentifier(String identifier) {
-		this.identifier = identifier;
+		return (String) this.directives.get( IJxseDirectives.Directives.NAME );
 	}
 
 	@Override
@@ -137,14 +120,13 @@ public abstract class AbstractJxsePropertySource< T extends Object, U extends IJ
 	}
 
 	@Override
-	public Object getDirective(U id) {
+	public Object getDirective( IJxseDirectives id) {
 		return directives.get( id );
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public U getDirectiveFromString( String id) {
-		return (U) IJxseDirectives.Directives.valueOf( id );
+	public IJxseDirectives getDirectiveFromString( String id) {
+		return IJxseDirectives.Directives.valueOf( id );
 	}
 
 	/**
@@ -153,7 +135,7 @@ public abstract class AbstractJxsePropertySource< T extends Object, U extends IJ
 	 * @param value
 	 * @return
 	 */
-	public boolean setDirective(U id, Object value) {
+	public boolean setDirective( IJxseDirectives id, Object value) {
 		if( value == null )
 			return false;
 		directives.put( id, value );
@@ -161,7 +143,7 @@ public abstract class AbstractJxsePropertySource< T extends Object, U extends IJ
 	}
 
 	@Override
-	public Iterator<U> directiveIterator() {
+	public Iterator<IJxseDirectives> directiveIterator() {
 		return directives.keySet().iterator();
 	}
 
@@ -178,27 +160,13 @@ public abstract class AbstractJxsePropertySource< T extends Object, U extends IJ
 		return this.children.toArray(new IJxsePropertySource[children.size()]);
 	}
 	
-	/**
-	 * Get the root of the id
-	 * @param id
-	 * @return
-	 */
-	private String getIdRoot( String id ){
-		String name = this.getComponentName().toLowerCase();
-		if( Utils.isNull( name ))
-			throw new NullPointerException( S_ERR_COMPONENT_NAME_NULL );
-		if( id != null ){
-			if( id.contains( S_CONTEXT))
-				id = id.replace("context", name);
-			else
-				id = id.replace("context", "");
-			id += "." + name;
-		}else
-			id = this.getBundleId() + "." + name;
-		return id;
-	}
-	
 	public boolean isEmpty(){
 		return this.properties.isEmpty();
 	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "[" + this.getComponentName() + "]";
+	}
+	
 }

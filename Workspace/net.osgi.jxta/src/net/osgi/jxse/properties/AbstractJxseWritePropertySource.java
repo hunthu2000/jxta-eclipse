@@ -10,8 +10,8 @@
  *******************************************************************************/
 package net.osgi.jxse.properties;
 
-public abstract class AbstractJxseWritePropertySource< T extends Object, U extends IJxseDirectives> 
-extends AbstractJxsePropertySource<T,U> implements IJxseWritePropertySource<T, U> {
+public abstract class AbstractJxseWritePropertySource< T extends Object> 
+extends AbstractJxsePropertySource<T> implements IJxseWritePropertySource<T, IJxseDirectives> {
 
 	public AbstractJxseWritePropertySource( String bundleId, String identifier, String componentName) {
 		this( bundleId, identifier, componentName, 0);
@@ -19,10 +19,6 @@ extends AbstractJxsePropertySource<T,U> implements IJxseWritePropertySource<T, U
 
 	protected AbstractJxseWritePropertySource( String bundleId, String identifier, String componentName, int depth ) {
 		super( bundleId, identifier, componentName );
-	}
-
-	protected AbstractJxseWritePropertySource( IJxsePropertySource<?,?> parent ) {
-		super( parent  );
 	}
 
 	protected AbstractJxseWritePropertySource( String componentName, IJxsePropertySource<?,?> parent ) {
@@ -63,7 +59,7 @@ extends AbstractJxsePropertySource<T,U> implements IJxseWritePropertySource<T, U
 	 * @param value
 	 * @return
 	 */
-	public boolean setDirective(U id, Object value) {
+	public boolean setDirective(IJxseDirectives id, Object value) {
 		return super.setDirective(id, value);
 	}
 }

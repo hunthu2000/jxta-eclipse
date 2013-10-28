@@ -22,12 +22,13 @@ import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.validator.ClassValidator;
 import net.osgi.jxse.validator.RangeValidator;
 
-public class JxseContextPropertySource extends AbstractJxseWritePropertySource<ContextProperties, IJxseDirectives.Directives>{
+public class JxseContextPropertySource extends AbstractJxseWritePropertySource<ContextProperties>{
 
 	public static final String DEF_HOME_FOLDER = "${user.home}/.jxse/${bundle-id}";
 	public static final int DEF_MIN_PORT = 1000;
@@ -70,11 +71,6 @@ public class JxseContextPropertySource extends AbstractJxseWritePropertySource<C
 		return (String) this.getProperty( ContextProperties.IDENTIFIER );
 	}
 
-	public void setIdentifier( String identifier ){
-		this.setProperty( ContextProperties.IDENTIFIER, identifier );	
-		super.setIdentifier(identifier);
-	}
-	
 	@Override
 	public Object getDefault(ContextProperties id) {
 		String str = null;
@@ -112,8 +108,10 @@ public class JxseContextPropertySource extends AbstractJxseWritePropertySource<C
 	}
 
 	@Override
-	public Object getDefaultDirectives(IJxseDirectives.Directives id) {
-		switch( id ){
+	public Object getDefaultDirectives(IJxseDirectives id) {
+		if(!( id instanceof Directives ))
+				return null;
+		switch(( Directives )id ){
 		case AUTO_START:
 			return true;
 		case CLEAR_CONFIG:

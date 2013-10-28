@@ -31,16 +31,16 @@ import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager, NetworkManagerProperties, IJxseDirectives.Directives> 
+public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager, NetworkManagerProperties, IJxseDirectives> 
 implements IPeerGroupProvider{
 		
-	public NetworkManagerFactory( IJxsePropertySource<NetworkManagerProperties, IJxseDirectives.Directives> propertySource ) {
+	public NetworkManagerFactory( IJxsePropertySource<NetworkManagerProperties, IJxseDirectives> propertySource ) {
 		super( propertySource );
 	}
 
 	@Override
-	protected void onParseDirectivePriorToCreation( IJxseDirectives.Directives directive, Object value) {
-		switch( directive ){
+	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value) {
+		switch(( IJxseDirectives.Directives )directive ){
 		case CLEAR_CONFIG:
 			Path path = Paths.get(( URI )super.getPropertySource().getProperty( NetworkManagerProperties.INSTANCE_HOME ));
 			if(Files.exists(path, LinkOption.NOFOLLOW_LINKS )){
@@ -54,10 +54,10 @@ implements IPeerGroupProvider{
 	}
 
 	@Override
-	protected NetworkManager onCreateModule( IJxsePropertySource<NetworkManagerProperties, IJxseDirectives.Directives> properties) {
+	protected NetworkManager onCreateModule( IJxsePropertySource<NetworkManagerProperties, IJxseDirectives> properties) {
 		// Removing any existing configuration?
-		NetworkManagerPreferences<IJxseDirectives.Directives> preferences = 
-				new NetworkManagerPreferences<IJxseDirectives.Directives>( (IJxseWritePropertySource<NetworkManagerProperties, Directives>) properties );
+		NetworkManagerPreferences<IJxseDirectives> preferences = 
+				new NetworkManagerPreferences<IJxseDirectives>( (IJxseWritePropertySource<NetworkManagerProperties, IJxseDirectives>) properties );
 		String name = preferences.getInstanceName();
 		try {
 			Path path = Paths.get( preferences.getHomeFolder() );
@@ -81,7 +81,7 @@ implements IPeerGroupProvider{
 	
 	@Override
 	public boolean complete() {
-		IJxsePropertySource<NetworkManagerProperties, IJxseDirectives.Directives> properties = super.getPropertySource();
+		IJxsePropertySource<NetworkManagerProperties, IJxseDirectives> properties = super.getPropertySource();
 		Object value = properties.getDirective( Directives.AUTO_START );
 		if( value == null )
 			value = Boolean.FALSE.toString();
@@ -113,8 +113,7 @@ implements IPeerGroupProvider{
 	}
 
 	@Override
-	protected void onParseDirectiveAfterCreation(IJxseDirectives.Directives directive,
-			Object value) {
+	protected void onParseDirectiveAfterCreation(IJxseDirectives directive,	Object value) {
 		// TODO Auto-generated method stub
 		
 	}

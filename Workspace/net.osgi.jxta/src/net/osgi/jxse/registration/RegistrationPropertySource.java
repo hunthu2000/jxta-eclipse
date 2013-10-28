@@ -8,7 +8,7 @@ import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.utils.StringStyler;
 
-public class RegistrationPropertySource extends AbstractJxseWritePropertySource<RegistrationPropertySource.RegistrationProperties, IJxseDirectives>
+public class RegistrationPropertySource extends AbstractJxseWritePropertySource<RegistrationPropertySource.RegistrationProperties>
 {
 	public enum RegistrationProperties implements IJxseProperties{
 		DISCOVERY_MODE,

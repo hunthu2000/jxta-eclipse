@@ -32,7 +32,7 @@ import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
-public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProperties, IJxseDirectives> implements IJxsePropertySource<ContextProperties, IJxseDirectives> {
+public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProperties> implements IJxsePropertySource<ContextProperties, IJxseDirectives> {
 
 	public static final String S_XML_ROOT = "JXSE Component Root";
 	private PreferenceStore store;

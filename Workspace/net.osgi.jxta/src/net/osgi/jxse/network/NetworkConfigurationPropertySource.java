@@ -1,7 +1,5 @@
 package net.osgi.jxse.network;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 
 import net.osgi.jxse.factory.IComponentFactory.Components;
@@ -11,10 +9,12 @@ import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public class NetworkConfigurationPropertySource extends AbstractJxseWritePropertySource<NetworkConfigurationPropertySource.NetworkConfiguratorProperties, IJxseDirectives>
+public class NetworkConfigurationPropertySource extends AbstractJxseWritePropertySource<NetworkConfigurationPropertySource.NetworkConfiguratorProperties>
 	implements IJxseWritePropertySource<NetworkConfigurationPropertySource.NetworkConfiguratorProperties, IJxseDirectives>
 
 {
+	public static String S_NETWORK_CONFIGURATOR = "NetworkConfigurator";
+	
 	public enum NetworkConfiguratorProperties{
 		DESCRIPTION,
 		HOME,
@@ -92,7 +92,7 @@ public class NetworkConfigurationPropertySource extends AbstractJxseWritePropert
 	}
 
 	public NetworkConfigurationPropertySource( NetworkManagerPropertySource nmps ) {
-		super( nmps );
+		super( S_NETWORK_CONFIGURATOR, nmps );
 		this.fill();
 	}
 
@@ -116,9 +116,9 @@ public class NetworkConfigurationPropertySource extends AbstractJxseWritePropert
 	@Override
 	public Object getDefaultDirectives(IJxseDirectives id) {
 		NetworkManagerPropertySource source = (NetworkManagerPropertySource) super.getParent();
-		if( source != null )
-			return source.getDefaultDirectives((IJxseDirectives.Directives) id);
-		return null;
+		if( source == null )
+			return null;
+		return null;//source.getDefaultDirectives((IJxseDirectives.Directives) id);
 	}
 
 	@Override
@@ -145,19 +145,6 @@ public class NetworkConfigurationPropertySource extends AbstractJxseWritePropert
 		if( source != null )
 			return source.getIdentifier();
 		return null;
-	}
-
-	@Override
-	public Iterator<NetworkConfiguratorProperties> propertyIterator() {
-		Iterator<NetworkConfiguratorProperties> iterator = super.propertyIterator();
-		Collection<NetworkConfiguratorProperties> results = new ArrayList<NetworkConfiguratorProperties>();
-		while( iterator.hasNext() ){
-			NetworkConfiguratorProperties id = iterator.next();
-			if( id.name().startsWith("TCP."))
-				continue;
-			results.add(id);
-		}
-		return results.iterator();
 	}
 
 	@Override

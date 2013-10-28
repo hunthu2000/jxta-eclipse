@@ -93,7 +93,7 @@ public class NetworkConfigurationFactory extends
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void fillPartialConfigurator( NetworkConfigurator configurator ,IJxsePropertySource<NetworkConfiguratorProperties,IJxseDirectives> source ) throws IOException{
+	private void fillPartialConfigurator( NetworkConfigurator configurator ,IJxsePropertySource<?,IJxseDirectives> source ) throws IOException{
 		INetworkPreferences preferences;
 		if( source instanceof PartialPropertySource ){
 			preferences = getPreferences(( PartialPropertySource )source);

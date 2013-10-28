@@ -7,8 +7,10 @@ import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
-public class AdvertisementPropertySource extends AbstractJxseWritePropertySource< IJxseProperties, IJxseDirectives> {
+public class AdvertisementPropertySource extends AbstractJxseWritePropertySource<IJxseProperties> {
 
+	public static String S_ADVERTISEMENTS = "Adverisements";
+	
 	/**
 	 * The scope of an advertisement determines whter it will be published or not
 	 * @author keesp
@@ -46,7 +48,7 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 	}
 
 	public AdvertisementPropertySource(IJxsePropertySource<?, IJxseDirectives> parent) {
-		super(parent);
+		super( S_ADVERTISEMENTS, parent);
 		super.setDirective(AdvertisementDirectives.SCOPE, Scope.REMOTE);
 	}
 

@@ -14,14 +14,14 @@ import net.osgi.jxse.properties.CategoryPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
-public class SeedListPropertySource<T extends IJxseDirectives> extends CategoryPropertySource<T> {
+public class SeedListPropertySource<T extends IJxseDirectives> extends CategoryPropertySource {
 
 	public static final String S_SEED_LIST = "Seed List";
 	 
 	String category, id;
 	int depth;
 	
-	public SeedListPropertySource( IJxsePropertySource<String, T> source ) {
+	public SeedListPropertySource( IJxsePropertySource<String, IJxseDirectives> source ) {
 		super( S_SEED_LIST, source );
 	}
 }

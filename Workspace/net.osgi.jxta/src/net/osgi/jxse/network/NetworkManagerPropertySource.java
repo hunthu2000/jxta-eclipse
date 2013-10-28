@@ -12,8 +12,8 @@ import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.StringStyler;
 
-public class NetworkManagerPropertySource extends AbstractJxseWritePropertySource<NetworkManagerPropertySource.NetworkManagerProperties, IJxseDirectives.Directives>
-	implements IJxseWritePropertySource<NetworkManagerPropertySource.NetworkManagerProperties, IJxseDirectives.Directives>
+public class NetworkManagerPropertySource extends AbstractJxseWritePropertySource<NetworkManagerPropertySource.NetworkManagerProperties>
+	implements IJxseWritePropertySource<NetworkManagerPropertySource.NetworkManagerProperties, IJxseDirectives>
 {
 
 	public enum NetworkManagerProperties{
@@ -31,7 +31,7 @@ public class NetworkManagerPropertySource extends AbstractJxseWritePropertySourc
 	}
 	
 	public NetworkManagerPropertySource( JxseContextPropertySource source) {
-		super( source );
+		super( source.getComponentName(), source );
 		this.fill( source );
 	}
 
@@ -87,7 +87,7 @@ public class NetworkManagerPropertySource extends AbstractJxseWritePropertySourc
 	}
 
 	@Override
-	public Object getDefaultDirectives(IJxseDirectives.Directives id) {
+	public Object getDefaultDirectives(IJxseDirectives id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

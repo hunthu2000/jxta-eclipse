@@ -9,6 +9,7 @@ import net.osgi.jxse.utils.Utils;
 
 /**
  * A partial property source breaks a parent up in distinct parts, based on the existence of dots (_8) in the given properties
+ * TODO: This approach is not very nice yet. Reconsider this idea
  * @author Kees
  *
  * @param <T>
@@ -22,8 +23,9 @@ implements  IJxseWritePropertySource<T, U>{
 
 	private Collection<IJxsePropertySource<?,?>> children;
 
+	@SuppressWarnings("unchecked")
 	protected PartialPropertySource( IJxsePropertySource<T, U> parent, int offset ) {
-		super( parent);
+		super( (IJxsePropertySource<T, U>) selectParent( parent ));
 		this.offset = offset;
 		children = new ArrayList<IJxsePropertySource<?,?>>();
 	}
@@ -32,8 +34,9 @@ implements  IJxseWritePropertySource<T, U>{
 		this( parent, -1);
 	}
 
+	@SuppressWarnings("unchecked")
 	PartialPropertySource( String componentName,  IJxsePropertySource<T, U> parent, int offset ) {
-		super( parent );
+		super( (IJxsePropertySource<T, U>) selectParent( parent ));
 		this.offset = offset;
 		this.componentName = componentName;
 		children = new ArrayList<IJxsePropertySource<?,?>>();
@@ -41,6 +44,27 @@ implements  IJxseWritePropertySource<T, U>{
 
 	public PartialPropertySource( String componentName,  IJxsePropertySource<T, U> parent) {
 		this( componentName, parent, -1 );
+	}
+
+	/**
+	 * Select the parent of this property source. Always take over the parent of a partial property source
+	 * @param parent
+	 * @return
+	 */
+	private static final IJxsePropertySource<?, ?> selectParent( IJxsePropertySource<?, ?> parent ){
+		if( parent instanceof PartialPropertySource)
+			return (IJxsePropertySource<?, ?>) parent.getParent();
+		return parent;
+	}
+
+	@Override
+	public String getId() {
+		return  Utils.isNull( this.componentName )? super.getId(): null;
+	}
+
+	@Override
+	public String getIdentifier() {
+		return  Utils.isNull( this.componentName )? super.getIdentifier(): null;
 	}
 
 	@Override
@@ -64,11 +88,18 @@ implements  IJxseWritePropertySource<T, U>{
 
 	@Override
 	public String getComponentName() {
-		return this.getCategory();
+		String cat = this.getCategory();
+		return Utils.isNull(cat)?super.getComponentName(): cat;
 	}
 
 	protected int getOffset() {
 		return offset;
+	}
+
+	
+	@Override
+	public int getDepth() {
+		return super.getDepth() + 1;
 	}
 
 	/**
@@ -89,11 +120,12 @@ implements  IJxseWritePropertySource<T, U>{
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public ManagedProperty<T, Object> getOrCreateManagedProperty(T id, Object value, boolean derived) {
 		if(!isValidId(id))
 			return null;
-		IJxseWritePropertySource<T,U> source = (IJxseWritePropertySource<T, U>) super.getSource();
+		IJxseWritePropertySource<T,U> source = (IJxseWritePropertySource<T, U>) this.getParent();
 		return source.getOrCreateManagedProperty(id, value, derived);
 	}
 
@@ -107,7 +139,7 @@ implements  IJxseWritePropertySource<T, U>{
 	@SuppressWarnings("unchecked")
 	@Override
 	public Iterator<T> propertyIterator() {
-		Iterator<T> iterator  = (Iterator<T>) super.getParent().propertyIterator();
+		Iterator<T> iterator  = (Iterator<T>) this.getParent().propertyIterator();
 		Collection<T> ids = new ArrayList<T>();
 		while( iterator.hasNext() ){
 			T id = iterator.next();
@@ -124,10 +156,18 @@ implements  IJxseWritePropertySource<T, U>{
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object getDefaultDirectives(IJxseDirectives id) {
-		// TODO Auto-generated method stub
-		return null;
+		return super.getSource().getDefaultDirectives((U) id);
+	}
+	
+	@Override
+	public Iterator<U> directiveIterator() {
+		if( Utils.isNull( this.componentName ))
+			return super.directiveIterator();
+		Collection<U> col = new ArrayList<U>();
+		return col.iterator();
 	}
 
 	@SuppressWarnings({ "rawtypes" })
@@ -145,7 +185,7 @@ implements  IJxseWritePropertySource<T, U>{
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static IJxsePropertySource<Enum<?>,IJxseDirectives> expand( IJxsePropertySource<Enum<?>, IJxseDirectives> parent ){
-		if(!canExpand( parent ))
+		if((!canExpand( parent ) || ( parent instanceof PartialPropertySource )))
 			return parent;
 		PartialPropertySource<? extends Enum<?>, IJxseDirectives> root = new PartialPropertySource( parent );
 		expand( parent, root );

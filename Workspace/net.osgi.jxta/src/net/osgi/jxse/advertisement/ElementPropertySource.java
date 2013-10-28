@@ -8,7 +8,7 @@ import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 
-public class ElementPropertySource<E extends Element<E>> extends AbstractJxsePropertySource<String, IJxseDirectives> {
+public class ElementPropertySource<E extends Element<E>> extends AbstractJxsePropertySource<String> {
 
 	private Element<E> root;
 	

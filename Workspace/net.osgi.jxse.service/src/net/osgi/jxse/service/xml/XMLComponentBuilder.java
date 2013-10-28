@@ -63,7 +63,7 @@ import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.utils.io.IOUtils;
 
-public class XMLComponentBuilder implements IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives.Directives>, ICompositeBuilder<NetworkManager> {
+public class XMLComponentBuilder implements IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives>, ICompositeBuilder<NetworkManager> {
 
 	protected static final String JAXP_SCHEMA_SOURCE =
 		    "http://java.sun.com/xml/jaxp/properties/schemaSource";
@@ -199,7 +199,7 @@ public class XMLComponentBuilder implements IComponentFactory<NetworkManager, Co
 				notifyListeners(event);
 			}
 		};
-		ICompositeBuilder<NetworkManager> cf = new CompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives.Directives>( this.getPropertySource() );
+		ICompositeBuilder<NetworkManager> cf = new CompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives>( this.getPropertySource() );
 		cf.addListener( listener );
 		try {
 			logger.info("Parsing JXSE Bundle: " + this.properties.getProperty( ContextProperties.BUNDLE_ID ));
@@ -265,7 +265,7 @@ public class XMLComponentBuilder implements IComponentFactory<NetworkManager, Co
 	}
 
 	@Override
-	public IJxsePropertySource<ContextProperties, IJxseDirectives.Directives> getPropertySource() {
+	public IJxsePropertySource<ContextProperties, IJxseDirectives> getPropertySource() {
 		return this.properties;
 	}
 	

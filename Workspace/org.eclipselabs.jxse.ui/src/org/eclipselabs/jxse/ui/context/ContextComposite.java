@@ -17,6 +17,7 @@ import net.osgi.jxse.context.JxseContextPreferences;
 import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.validator.StringValidator;
 
@@ -86,7 +87,7 @@ public class ContextComposite extends Composite {
 		text_id.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				properties.setId((( Text )e.item ).getText() );
+				properties.setDirective( Directives.ID, (( Text )e.item ).getText() );
 			}
 		});
 		text_id.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -249,7 +250,7 @@ public class ContextComposite extends Composite {
 	public boolean complete() throws Exception{
 		if( Utils.isNull( this.text_id.getText()))
 			return false;
-		properties.setId( this.text_id.getText() );
+		properties.setDirective( Directives.ID, text_id.getText() );
 		if( !properties.setProperty( ContextProperties.HOME_FOLDER, URI.create( this.text_home_folder.getText() )))
 			return false;
 		if( !properties.setProperty( ContextProperties.BUNDLE_ID, this.lbl_plugin_id.getText() ))
