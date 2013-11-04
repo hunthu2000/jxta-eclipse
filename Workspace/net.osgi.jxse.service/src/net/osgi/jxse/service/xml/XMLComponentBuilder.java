@@ -44,7 +44,6 @@ import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfigura
 import net.osgi.jxse.network.NetworkManagerPreferences;
 import net.osgi.jxse.network.NetworkManagerPropertySource;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
-import net.osgi.jxse.network.seed.SeedListPropertySource;
 import net.osgi.jxse.network.OverviewPreferences;
 import net.osgi.jxse.properties.CategoryPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
@@ -56,6 +55,8 @@ import net.osgi.jxse.peergroup.PeerGroupPropertySource;
 import net.osgi.jxse.registration.RegistrationPreferences;
 import net.osgi.jxse.registration.RegistrationPropertySource;
 import net.osgi.jxse.registration.RegistrationPropertySource.RegistrationProperties;
+import net.osgi.jxse.seeds.SeedInfo;
+import net.osgi.jxse.seeds.SeedListPropertySource;
 import net.osgi.jxse.service.xml.PreferenceStore.Persistence;
 import net.osgi.jxse.service.xml.PreferenceStore.SupportedAttributes;
 import net.osgi.jxse.service.xml.XMLComponentBuilder.Groups;
@@ -103,7 +104,7 @@ public class XMLComponentBuilder implements IComponentFactory<NetworkManager, Co
 		}
 	}
 	
-	private Class<?> clss;
+	Class<?> clss;
 	private boolean completed, failed;
 	private JxseContextPropertySource properties;
 	private String location;
@@ -311,6 +312,9 @@ class JxtaHandler extends DefaultHandler{
 				break;
 			case NETWORK_CONFIGURATOR:
 				newSource = new NetworkConfigurationPropertySource((NetworkManagerPropertySource)source );
+				SeedListPropertySource slps = new SeedListPropertySource( newSource, owner.clss );
+				if( slps.hasSeeds() )
+					newSource.addChild(slps);
 				break;
 			case SEED_LIST:
 				newSource = new SeedListPropertySource((NetworkConfigurationPropertySource)source );
@@ -447,7 +451,8 @@ class JxtaHandler extends DefaultHandler{
 		}
 		if( source instanceof SeedListPropertySource ){
 			SeedListPropertySource<?> slps = (SeedListPropertySource<?>) source;
-			slps.setProperty((String) property.getKey(), value);
+			SeedInfo seedInfo = new SeedInfo((String) property.getKey(), ( String )value );
+			slps.setProperty((String) property.getKey(), seedInfo );
 			return;
 		}
 		this.property.setValue(value);

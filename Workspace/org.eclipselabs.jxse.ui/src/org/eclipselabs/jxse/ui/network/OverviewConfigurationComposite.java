@@ -1,6 +1,5 @@
 package org.eclipselabs.jxse.ui.network;
 
-import java.io.File;
 import java.net.URI;
 
 import net.jxta.peer.PeerID;

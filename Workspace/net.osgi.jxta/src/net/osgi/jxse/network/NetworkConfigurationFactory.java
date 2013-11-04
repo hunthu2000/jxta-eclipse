@@ -25,7 +25,6 @@ import net.osgi.jxse.network.http.Http2Preferences;
 import net.osgi.jxse.network.http.HttpPreferences;
 import net.osgi.jxse.network.multicast.MulticastPreferences;
 import net.osgi.jxse.network.security.SecurityPreferences;
-import net.osgi.jxse.network.seed.SeedListPropertySource;
 import net.osgi.jxse.network.tcp.TcpPreferences;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
@@ -34,6 +33,7 @@ import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.properties.PartialPropertySource;
 import net.osgi.jxse.seeds.ISeedListFactory;
 import net.osgi.jxse.seeds.SeedListFactory;
+import net.osgi.jxse.seeds.SeedListPropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
 public class NetworkConfigurationFactory extends

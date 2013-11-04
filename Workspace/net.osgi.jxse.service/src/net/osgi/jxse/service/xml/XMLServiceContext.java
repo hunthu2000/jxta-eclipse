@@ -18,11 +18,8 @@ import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.factory.ComponentFactoryEvent;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.network.NetworkConfigurationFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
-import net.osgi.jxse.seeds.AbstractResourceSeedListFactory;
-import net.osgi.jxse.seeds.ISeedListFactory;
 import net.osgi.jxse.service.network.NetPeerGroupService;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 
@@ -32,7 +29,6 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 	
 	private IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives> factory;
 	private NetPeerGroupService service;
-	private AbstractResourceSeedListFactory seeds;
 	private XMLServiceContext host;
 	private ICompositeBuilderListener observer;
 	
@@ -41,20 +37,9 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 		this.host = this;
 	}
 
-	public XMLServiceContext( String plugin_id, Class<?> clss, AbstractResourceSeedListFactory seeds ) {
-		this( new XMLComponentBuilder( plugin_id, clss ));
-		this.seeds = seeds;
-	}
-
 	public XMLServiceContext( IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives> factory ) {
 		super( factory, true );
 		this.host = this;
-	}
-
-	public XMLServiceContext( IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives> factory, AbstractResourceSeedListFactory seeds ) {
-		super( factory );
-		this.host = this;
-		this.seeds = seeds;
 	}
 
 	@Override
@@ -73,10 +58,6 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 	@Override
 	public NetworkManager getModule() {
 		return service.getNetworkManager();
-	}
-
-	ISeedListFactory getSeeds() {
-		return seeds;
 	}
 
 	public ICompositeBuilderListener getObserver() {
@@ -103,10 +84,6 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 					FactoryEvents fe = event.getFactoryEvent();
 					switch( fe ){
 					case FACTORY_CREATED:
-						if( event.getFactory() instanceof NetworkConfigurationFactory ){
-							if( seeds != null )
-							  ((NetworkConfigurationFactory) event.getFactory()).addSeedlist( seeds );
-						}
 						break;
 					case COMPONENT_CREATED:
 						Object component = event.getFactory().getModule();

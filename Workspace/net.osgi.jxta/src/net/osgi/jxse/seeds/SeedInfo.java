@@ -10,11 +10,15 @@
  *******************************************************************************/
 package net.osgi.jxse.seeds;
 
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 
 
 public class SeedInfo implements ISeedInfo{
 
+	protected static final String S_LOCALHOST = "localhost";
+	 
 	private SeedTypes seedType;
 	
 	private String url;
@@ -24,7 +28,12 @@ public class SeedInfo implements ISeedInfo{
 	public SeedInfo() {
 		this.commentedOut = false;
 	}
-	
+
+	public SeedInfo( String key, String value ) {
+		this();
+		parse( key, value );
+	}
+
 	public void parse( String key, String value ){
 		if( key.startsWith("//") || key.startsWith("/*)")){
 			this.commentedOut = true;
@@ -47,7 +56,32 @@ public class SeedInfo implements ISeedInfo{
 		return seedType;
 	}
 
+	/**
+	 * Get the uri corresponding with the given string
+	 * @return
+	 */
 	public URI getUri() {
-		return URI.create( url );
+		try {
+			return getURIFromString( url );
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
+	
+	/**
+	 * Create the correct URI from the given string
+	 * @param str
+	 * @return
+	 * @throws UnknownHostException
+	 */
+	public static URI getURIFromString( String str ) throws UnknownHostException{
+		String uri = str;
+		if( uri.toLowerCase().contains( S_LOCALHOST )){
+			String localhost = InetAddress.getLocalHost().getHostName();
+			uri = uri.replace( S_LOCALHOST, localhost );
+		}
+		return URI.create(uri);
+	}
+	
 }

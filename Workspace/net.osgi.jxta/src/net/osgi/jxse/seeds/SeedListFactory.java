@@ -14,7 +14,6 @@ import java.util.Iterator;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.network.seed.SeedListPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.seeds.SeedInfo;
@@ -35,7 +34,7 @@ public class SeedListFactory implements IComponentFactory<String, String, IJxseD
 	}
 	
 	@Override
-	public net.osgi.jxse.factory.IComponentFactory.Components getComponentName() {
+	public Components getComponentName() {
 		return Components.SEED_LIST;
 	}
 
@@ -56,15 +55,10 @@ public class SeedListFactory implements IComponentFactory<String, String, IJxseD
 
 	@Override
 	public String createModule() {
-		SeedInfo seedInfo = new SeedInfo();
-		String value;
 		Iterator<String> iterator = source.propertyIterator();
 		while( iterator.hasNext() ){
 			String key = iterator.next();
-			value = (String) source.getProperty( key);
-			seedInfo.parse(key, value );
-			if( seedInfo.isCommentedOut() )
-				continue;
+			SeedInfo seedInfo = ( SeedInfo ) source.getProperty( key);
 			switch( seedInfo.getSeedType() ){
 			case RDV:
 				configurator.addSeedRendezvous( seedInfo.getUri() );

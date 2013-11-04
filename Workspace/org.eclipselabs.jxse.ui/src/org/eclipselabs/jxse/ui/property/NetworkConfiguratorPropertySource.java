@@ -247,15 +247,15 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 		case RELAY_8MAX_CLIENTS:
 			return configurator.getRelayMaxClients();
 		case RELAY_8SEED_URIS:
-			return configurator.getRelaySeedURIs();
+			return  new CollectionPropertySource( property.toString(), configurator.getRelaySeedURIs(), "default");
 		case RELAY_8SEEDING_URIS:
-			return configurator.getRelaySeedingURIs();
+			return new CollectionPropertySource( property.toString(), configurator.getRelaySeedingURIs(), "default");
 		case RENDEZVOUS_8MAX_CLIENTS:
 			return configurator.getRendezvousMaxClients();
 		case RENDEZVOUS_8SEED_URIS:
-			return configurator.getRdvSeedURIs();
+			return  new CollectionPropertySource( property.toString(), configurator.getRdvSeedURIs(), "default");
 		case RENDEZVOUS_8SEEDING_URIS:
-			return configurator.getRdvSeedingURIs();
+			return new CollectionPropertySource( property.toString(), configurator.getRdvSeedingURIs(), "default" );
 		case STORE_HOME:
 			return configurator.getStoreHome();
 		case TCP_8PUBLIC_ADDRESS:

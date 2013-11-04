@@ -17,12 +17,19 @@ public class CategoryPropertySource extends AbstractJxseWritePropertySource<Stri
 	public static final String S_DOT_REGEX = "[.]";
 	
 	String category, id;
-	
-	public CategoryPropertySource( String cat, IJxsePropertySource<String, IJxseDirectives> source ) {
-		super( cat, source );
+
+	protected CategoryPropertySource( String bundleId, String identifier, String cat ) {
+		super( bundleId, identifier, cat );
 		String[] split = cat.split("[.]");
 		this.category = split[0];
-		this.id = source.getId() + "." + category;
+		this.id = identifier + "." + category;
+	}
+
+	public CategoryPropertySource( String cat, IJxsePropertySource<?, IJxseDirectives> parent ) {
+		super( cat, parent );
+		String[] split = cat.split("[.]");
+		this.category = split[0];
+		this.id = parent.getId() + "." + category;
 	}
 
 	@Override

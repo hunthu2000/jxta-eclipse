@@ -40,7 +40,7 @@ extends AbstractJxsePropertySource<T> implements IJxseWritePropertySource<T, IJx
 		return this.setProperty(id, value, null, false );
 	}
 
-	public boolean setProperty(T id, Object value, boolean derived ) {
+	protected boolean setProperty(T id, Object value, boolean derived ) {
 		return this.setProperty(id, value, null, derived );
 	}
 
@@ -50,7 +50,8 @@ extends AbstractJxsePropertySource<T> implements IJxseWritePropertySource<T, IJx
 		ManagedProperty select = source.getOrCreateManagedProperty(id, value, derived);
 		if( validator != null )
 			select.setValidator(validator);
-		return select.setValue(value);
+		select.setValue(value);
+		return true;
 	}
 		
 	/**
