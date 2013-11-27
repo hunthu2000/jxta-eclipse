@@ -42,9 +42,9 @@ public class JxsePublishService extends JxseDiscoveryService{
 
 	@Override
 	protected void fillDefaultValues() {
-		this.putProperty( DiscoveryProperties.DISCOVERY_MODE, DiscoveryMode.DISCOVERY_AND_PUBLISH, true );
-		this.putProperty( PublishProperties.EXPIRATION, 1200000, true );
-		this.putProperty( PublishProperties.LIFE_TIME, 120000,true );
+		//this.putProperty( DiscoveryProperties.DISCOVERY_MODE, DiscoveryMode.DISCOVERY_AND_PUBLISH, true );
+		//this.putProperty( PublishProperties.EXPIRATION, 1200000, true );
+		//this.putProperty( PublishProperties.LIFE_TIME, 120000,true );
 		super.fillDefaultValues();
 	}
 

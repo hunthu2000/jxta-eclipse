@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -175,12 +174,6 @@ public class RegistrationService extends AbstractActivator<IPeerGroupProvider> i
 
 	@Override
 	protected void onFinalising() {
-	}
-
-	@Override
-	public Iterator<?> iterator() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

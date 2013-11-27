@@ -11,9 +11,6 @@
 package net.osgi.jxse.service.network;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,13 +39,6 @@ public class NetPeerGroupService extends AbstractJxseService<PeerGroup, PeerGrou
 		return manager;
 	}
 
-	@Override
-	public Iterator<?> iterator() {
-		List<PeerGroupProperties> set = Arrays.asList(PeerGroupProperties.values());
-		return set.iterator();
-	}
-
-	
 	@Override
 	protected void activate() {
 		try {

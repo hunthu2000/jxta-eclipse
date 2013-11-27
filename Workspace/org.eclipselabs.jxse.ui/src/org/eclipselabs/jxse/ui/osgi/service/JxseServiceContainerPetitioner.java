@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -105,11 +104,6 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
 	@Override
 	public Collection<IJxseServiceContext<?>> getModule() {
 		return super.getCollection();
-	}
-
-	@Override
-	public Iterator<?> iterator() {
-		return null;
 	}
 
 	@Override

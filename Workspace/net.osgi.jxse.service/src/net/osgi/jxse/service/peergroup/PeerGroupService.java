@@ -10,10 +10,6 @@
  *******************************************************************************/
 package net.osgi.jxse.service.peergroup;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
 import net.jxta.peergroup.PeerGroup;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.service.core.AbstractJxseService;
@@ -45,12 +41,6 @@ public class PeerGroupService extends AbstractJxseService<PeerGroup, PeerGroupPr
 		return super.getProperty(key);
 	}
 	
-	@Override
-	public Iterator<?> iterator() {
-		List<PeerGroupProperties> set = Arrays.asList(PeerGroupProperties.values());
-		return set.iterator();
-	}
-
 	@Override
 	protected void deactivate() {
 		// TODO Auto-generated method stub

@@ -26,7 +26,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource;
 import net.osgi.jxse.builder.ComponentNode;
-import net.osgi.jxse.builder.CompositeBuilder;
 import net.osgi.jxse.builder.ICompositeBuilder;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
@@ -57,14 +56,15 @@ import net.osgi.jxse.registration.RegistrationPropertySource;
 import net.osgi.jxse.registration.RegistrationPropertySource.RegistrationProperties;
 import net.osgi.jxse.seeds.SeedInfo;
 import net.osgi.jxse.seeds.SeedListPropertySource;
+import net.osgi.jxse.service.core.JxseCompositeBuilder;
 import net.osgi.jxse.service.xml.PreferenceStore.Persistence;
 import net.osgi.jxse.service.xml.PreferenceStore.SupportedAttributes;
-import net.osgi.jxse.service.xml.XMLComponentBuilder.Groups;
+import net.osgi.jxse.service.xml.XMLFactoryBuilder.Groups;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.utils.io.IOUtils;
 
-public class XMLComponentBuilder implements ICompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives> {
+public class XMLFactoryBuilder implements ICompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives> {
 
 	protected static final String JAXP_SCHEMA_SOURCE =
 		    "http://java.sun.com/xml/jaxp/properties/schemaSource";
@@ -115,13 +115,13 @@ public class XMLComponentBuilder implements ICompositeBuilder<NetworkManager, Co
 	
 	private ComponentNode<NetworkManager, ContextProperties, IJxseDirectives> module;
 	
-	private Logger logger = Logger.getLogger( XMLComponentBuilder.class.getName() );
+	private Logger logger = Logger.getLogger( XMLFactoryBuilder.class.getName() );
 	
-	public XMLComponentBuilder( String pluginId, Class<?> clss) {
+	public XMLFactoryBuilder( String pluginId, Class<?> clss) {
 		this( pluginId, clss, S_DEFAULT_LOCATION );
 	}
 
-	protected XMLComponentBuilder( String pluginId, Class<?> clss, String location ) {
+	protected XMLFactoryBuilder( String pluginId, Class<?> clss, String location ) {
 		this.clss = clss;
 		this.location = location;
 		this.completed = false;
@@ -177,7 +177,7 @@ public class XMLComponentBuilder implements ICompositeBuilder<NetworkManager, Co
 	@Override
 	public ComponentNode<NetworkManager,ContextProperties, IJxseDirectives> build() {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
-		URL schema_in = XMLComponentBuilder.class.getResource( S_SCHEMA_LOCATION); 
+		URL schema_in = XMLFactoryBuilder.class.getResource( S_SCHEMA_LOCATION); 
 		if( schema_in == null )
 			throw new RuntimeException( S_ERR_NO_SCHEMA_FOUND );
 		
@@ -194,7 +194,7 @@ public class XMLComponentBuilder implements ICompositeBuilder<NetworkManager, Co
 				notifyListeners(event);
 			}
 		};
-		ICompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives> cf = new CompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives>( this.getPropertySource() );
+		ICompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives> cf = new JxseCompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives>( this.getPropertySource() );
 		cf.addListener( listener );
 		try {
 			logger.info("Parsing JXSE Bundle: " + this.properties.getProperty( ContextProperties.BUNDLE_ID ));
@@ -259,7 +259,7 @@ public class XMLComponentBuilder implements ICompositeBuilder<NetworkManager, Co
 
 class JxtaHandler extends DefaultHandler{
 
-	private XMLComponentBuilder owner;
+	private XMLFactoryBuilder owner;
 	private Components current;
 	
 	@SuppressWarnings("rawtypes")
@@ -267,9 +267,9 @@ class JxtaHandler extends DefaultHandler{
 	private ManagedProperty<Object,Object> property;
 
 
-	private static Logger logger = Logger.getLogger( XMLComponentBuilder.class.getName() );
+	private static Logger logger = Logger.getLogger( XMLFactoryBuilder.class.getName() );
 
-	public JxtaHandler( XMLComponentBuilder owner ) {
+	public JxtaHandler( XMLFactoryBuilder owner ) {
 		super();
 		this.owner = owner;
 	}

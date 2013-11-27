@@ -141,14 +141,6 @@ public class JxseComponent<T extends Object> implements IJxseComponent<T>, Compa
 		properties.put( key, value );
 	}
 
-	/**
-	 * Iterates through all the property keys
-	 */
-	@Override
-	public Iterator<?> iterator() {
-		return this.properties.keySet().iterator();
-	}
-
 	@Override
 	public int compareTo(IJxseComponent<?> o) {
 		return Integer.MAX_VALUE;

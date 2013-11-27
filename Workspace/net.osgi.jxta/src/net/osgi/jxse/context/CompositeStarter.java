@@ -22,7 +22,10 @@ import net.osgi.jxse.factory.ComponentFactoryEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
+import net.osgi.jxse.properties.IJxseDirectives.Types;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.utils.StringStyler;
+import net.osgi.jxse.utils.Utils;
 
 public class CompositeStarter<T extends Object, U extends Enum<U>, V extends IJxseDirectives> {
 
@@ -85,6 +88,14 @@ public class CompositeStarter<T extends Object, U extends Enum<U>, V extends IJx
 		}
 		factory.complete();
 		this.notifyListeners( new ComponentFactoryEvent( this, factory, FactoryEvents.COMPONENT_CREATED ));
+		IJxsePropertySource<?,V> ps = (IJxsePropertySource<?, V>) factory.getPropertySource();
+		Iterator<?> iterator = ps.directiveIterator();
+		V directive;
+		while( iterator.hasNext()) {
+			directive = (V)iterator.next();
+			this.onParseDirectiveAfterCreation( node, ( V )directive, ( String )ps.getDirective( directive ));
+		}
+
 		return node;
 	}
 
@@ -134,7 +145,40 @@ public class CompositeStarter<T extends Object, U extends Enum<U>, V extends IJx
 	/**
 	 * Do nothing
 	 */
-	protected void onParseDirectiveAfterCreation( ComponentNode<?,?,?> node, IJxseDirectives directive, Object value) {}
+	protected void onParseDirectiveAfterCreation( ComponentNode<?,?,?> node, IJxseDirectives directive, String value) {
+		if( node == null )
+			return;
+		IComponentFactory<?,?,?> factory = node.getFactory();
+		if(( !factory.isCompleted() ) || !(directive instanceof Directives ))
+			return;
+		Directives dir = ( Directives )directive;
+		switch( dir ){
+		case TYPE:
+			if( Utils.isNull( value ))
+				break;
+			Types type = Types.valueOf( StringStyler.styleToEnum(value));
+			switch( type ){
+			case CHAUPAL:
+				break;
+			default:
+				break;
+			}
+			
+			break;
+		case AUTO_START:
+				boolean ap = Boolean.parseBoolean( value );
+				if( !ap )
+					break;
+				Object pc = factory.getModule();
+				if(!( pc instanceof IActivator ))
+					return;
+				IActivator activator = ( IActivator )pc;
+				activator.start();
+				break;
+			default:
+				break;
+		}
+	}
 
 	/**
 	 * Parse the directives for this factory

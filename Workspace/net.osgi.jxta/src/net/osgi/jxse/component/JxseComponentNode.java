@@ -13,7 +13,6 @@ package net.osgi.jxse.component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 
 import net.jxta.document.Advertisement;
 import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
@@ -78,14 +77,6 @@ public class JxseComponentNode<T extends Object> implements IJxseComponentNode<T
 	@Override
 	public void putProperty(Object key, Object value) {
 		component.putProperty(key, value);	
-	}
-
-	/**
-	 * Iterates through all the property keys
-	 */
-	@Override
-	public Iterator<?> iterator() {
-		return this.component.iterator();
 	}
 
 	@Override

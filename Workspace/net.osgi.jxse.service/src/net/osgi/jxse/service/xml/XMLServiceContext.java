@@ -24,6 +24,7 @@ import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
+import net.osgi.jxse.service.core.AbstractJxseService;
 import net.osgi.jxse.service.network.NetPeerGroupService;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 
@@ -76,7 +77,7 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 
 	@Override
 	protected boolean onInitialising() {
-		XMLComponentBuilder builder = new XMLComponentBuilder( plugin_id, clss );
+		XMLFactoryBuilder builder = new XMLFactoryBuilder( plugin_id, clss );
 		ICompositeBuilderListener listener = new ICompositeBuilderListener(){
 
 			@Override
@@ -140,6 +141,10 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 						IPeerGroupProvider provider = ( IPeerGroupProvider )event.getFactory();
 						swarm.addPeerGroup( provider.getPeerGroup() );
 					}
+					if( component instanceof AbstractJxseService ){
+						AbstractJxseService<?,?,?> service = ( AbstractJxseService<?,?,?> )component;
+						service.start();
+					}
 					break;
 				default:
 					break;
@@ -153,6 +158,7 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 			starter.start();
 		}
 		starter.removeListener(listener);	
+		this.root = null;
 		return true;
 	}
 	
@@ -174,9 +180,14 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 		}
 		super.activate();
 	}
+	
+	@Override
+	protected void deactivate() {
+		super.deactivate();
+	}
 
 	@Override
-	protected void onFinalising() {
+	protected void onFinalising() {	
 		this.stop();
 	}
 }

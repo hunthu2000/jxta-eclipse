@@ -11,11 +11,8 @@
 package net.osgi.jxse.service.discovery;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -33,7 +30,7 @@ import net.osgi.jxse.log.JxseLevel;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.service.core.AbstractJxseService;
 
-public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, DiscoveryProperties, IJxseDirectives.Directives> implements Runnable, DiscoveryListener {
+public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, DiscoveryProperties, IJxseDirectives> implements Runnable, DiscoveryListener {
 	
 	private ExecutorService executor;
 	
@@ -41,29 +38,7 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 		super( discoveryService );
 		executor = Executors.newSingleThreadExecutor();
 	}
-
-	public void putProperty( DiscoveryProperties key, Object value ){
-		if( value == null )
-			return;
-		super.putProperty(key, value );
-	}
-
-	protected void putProperty( DiscoveryProperties key, Object value, boolean skipFilled ){
-		if( value == null )
-			return;
-		super.putProperty(key, value, skipFilled );
-	}
-
-	public Object getProperty( DiscoveryProperties key ){
-		return super.getProperty(key);
-	}
 	
-	@Override
-	public Iterator<?> iterator() {
-		List<DiscoveryProperties> set = Arrays.asList(DiscoveryProperties.values());
-		return set.iterator();
-	}
-
 	/**
 	 * Implement pure discovery
 	 */
@@ -106,7 +81,7 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 	}
 	
 	/**
-	 * The activities performed in an active state. By defalt this is discovery
+	 * The activities performed in an active state. By default this is discovery
 	 */
 	protected void onActiveState(){
 		DiscoveryMode mode = ( DiscoveryMode )this.getProperty( DiscoveryProperties.DISCOVERY_MODE );

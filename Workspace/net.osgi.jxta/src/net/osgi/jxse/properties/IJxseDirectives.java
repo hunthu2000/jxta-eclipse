@@ -14,6 +14,7 @@ public interface IJxseDirectives{
 		SCHEMA_LOCATION,
 		ID,
 		NAME,
+		TYPE,
 		AUTO_START,
 		CLEAR_CONFIG,
 		CREATE_PARENT,
@@ -33,6 +34,22 @@ public interface IJxseDirectives{
 					return true;
 			}
 			return false;
+		}
+	}
+
+	/**
+	 * The types of services that are available
+	 * @author Kees
+	 *
+	 */
+	public enum Types{
+		JXTA,
+		JXSE,
+		CHAUPAL;
+
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString() );
 		}
 	}
 

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package net.osgi.jxse.service.network;
 
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
 import net.jxta.rendezvous.RendezVousService;
@@ -78,11 +76,6 @@ public class RendezVousComponent extends AbstractJxseService<RendezVousService, 
 		default:
 			super.putProperty(key, value );
 		}
-	}
-
-	@Override
-	public Iterator<?> iterator() {
-		return Arrays.asList( RendezVousServiceProperties.values() ).iterator();
 	}
 
 	@Override

@@ -13,9 +13,6 @@ package net.osgi.jxse.service.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import net.jxta.document.Advertisement;
 import net.osgi.jxse.activator.AbstractActivator;
@@ -26,6 +23,7 @@ import net.osgi.jxse.component.ComponentEventDispatcher;
 import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxsePropertySource;
 
 public abstract class AbstractJxseService<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends AbstractActivator<IComponentFactory<T,U,V>> 
 implements IJxseService<T>{
@@ -40,12 +38,19 @@ implements IJxseService<T>{
 	private T module;
 	private Collection<Advertisement> advertisements;
 	
-	private Map<Object, Object> properties;
+	private IJxsePropertySource<Object, IJxseDirectives> properties;
 	
 	private ComponentEventDispatcher dispatcher;
 
 	protected AbstractJxseService() {
-		properties = new HashMap<Object, Object>();
+		dispatcher = ComponentEventDispatcher.getInstance();
+		advertisements = new ArrayList<Advertisement>();
+		super.setStatus( Status.AVAILABLE );
+		super.initialise();
+	}
+
+	protected AbstractJxseService( IJxsePropertySource<Object, IJxseDirectives> properties ) {
+		this.properties = properties;
 		dispatcher = ComponentEventDispatcher.getInstance();
 		advertisements = new ArrayList<Advertisement>();
 		super.setStatus( Status.AVAILABLE );
@@ -61,14 +66,14 @@ implements IJxseService<T>{
 	 * Get the id
 	 */
 	public String getId(){
-		return (String) this.properties.get(ModuleProperties.ID );
+		return (String) this.properties.getId();
 	}
 
 	/**
 	 * Get the create date
 	 */
 	public Date getCreateDate(){
-		return (Date) this.properties.get(ModuleProperties.CREATE_DATE);
+		return (Date) this.properties.getProperty( ModuleProperties.CREATE_DATE);
 	}
 
 	@Override
@@ -157,36 +162,14 @@ implements IJxseService<T>{
 	public Object getProperty(Object key) {
 		if( key.toString().equals( IActivator.S_STATUS ))
 			return super.getStatus();
-		return properties.get(key);
-	}
-
-	/**
-	 * Put a property only f it is still empty
-	 * @param key
-	 * @param value
-	 * @param skipFilled
-	 */
-	protected void putProperty( Object key, Object value, boolean skipFilled ){
-		if( skipFilled && ( properties.get( key ) != null ))
-			return;
-		properties.put(key, value);
+		return properties.getProperty(key);
 	}
 
 	@Override
 	public void putProperty( Object key, Object value ){
-		properties.put(key, value);
+		//properties.put(key, value);
 	}
 	
-	/**
-	 * Iterates through all the property keys
-	 */
-	@Override
-	public Iterator<?> iterator() {	
-		Collection<Object> keys = new ArrayList<Object>( properties.keySet());
-		keys.add( IActivator.S_STATUS );
-		return keys.iterator();
-	}
-
 	@Override
 	protected void notifyListeners(Status previous, Status status) {
 		super.notifyListeners(previous, status);

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 
 import net.jxta.document.Advertisement;
 import net.jxta.platform.NetworkManager;
@@ -177,7 +176,6 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 		return null;
 	}
 	
-	//Make public
 	@Override
 	protected void deactivate() {
 		NetworkManager manager = null;
@@ -193,7 +191,7 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 			}
 		}
 	}	
-	
+
 	@Override
 	public Collection<IJxseComponent<?>> getChildren(){
 		return this.children;
@@ -230,11 +228,6 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	public Iterator<?> iterator() {
-		return this.properties.propertyIterator();
 	}
 
 	/**

@@ -11,7 +11,6 @@
 package net.osgi.jxse.component;
 
 import java.util.Date;
-import java.util.Iterator;
 
 import net.jxta.document.Advertisement;
 import net.osgi.jxse.properties.IJxseDirectives;
@@ -68,10 +67,4 @@ public interface IJxseComponent<T extends Object>{
 	 * @return
 	 */
 	public T getModule();
-
-	/**
-	 * Get an iterator over the properties
-	 * @return
-	 */
-	public Iterator<?> iterator();
 }
