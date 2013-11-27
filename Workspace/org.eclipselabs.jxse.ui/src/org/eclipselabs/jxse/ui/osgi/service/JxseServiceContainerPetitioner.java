@@ -60,7 +60,7 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
 	protected void onDataReceived( ParlezEvent<IJxseServiceContext<?>> event ) {
 		  super.onDataReceived( event );
 		  this.addChild( event.getData());
-		  System.out.println("Container added");
+		  System.out.println("Container added: " + event.getData().getIdentifier( ));
 	}
 
 	

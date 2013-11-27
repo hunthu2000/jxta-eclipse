@@ -25,6 +25,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource;
+import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.CompositeBuilder;
 import net.osgi.jxse.builder.ICompositeBuilder;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
@@ -35,7 +36,6 @@ import net.osgi.jxse.discovery.DiscoveryPreferences;
 import net.osgi.jxse.discovery.DiscoveryPropertySource;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.factory.ComponentFactoryEvent;
-import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.network.INetworkPreferences;
 import net.osgi.jxse.network.NetworkConfigurationFactory;
@@ -64,7 +64,7 @@ import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.utils.io.IOUtils;
 
-public class XMLComponentBuilder implements IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives>, ICompositeBuilder<NetworkManager> {
+public class XMLComponentBuilder implements ICompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives> {
 
 	protected static final String JAXP_SCHEMA_SOURCE =
 		    "http://java.sun.com/xml/jaxp/properties/schemaSource";
@@ -113,7 +113,7 @@ public class XMLComponentBuilder implements IComponentFactory<NetworkManager, Co
 	
 	//private Logger logger = Logger.getLogger(XMLComponentFactory.class.getName() );
 	
-	private NetworkManager module;
+	private ComponentNode<NetworkManager, ContextProperties, IJxseDirectives> module;
 	
 	private Logger logger = Logger.getLogger( XMLComponentBuilder.class.getName() );
 	
@@ -167,7 +167,6 @@ public class XMLComponentBuilder implements IComponentFactory<NetworkManager, Co
 			listener.notifyCreated(event);
 	}
 
-	@Override
 	public boolean canCreate(){
 		if( clss == null )
 			return false;
@@ -176,12 +175,7 @@ public class XMLComponentBuilder implements IComponentFactory<NetworkManager, Co
 
 	
 	@Override
-	public NetworkManager build() {
-		return this.createModule();
-	}
-
-	@Override
-	public NetworkManager createModule() {
+	public ComponentNode<NetworkManager,ContextProperties, IJxseDirectives> build() {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		URL schema_in = XMLComponentBuilder.class.getResource( S_SCHEMA_LOCATION); 
 		if( schema_in == null )
@@ -200,7 +194,7 @@ public class XMLComponentBuilder implements IComponentFactory<NetworkManager, Co
 				notifyListeners(event);
 			}
 		};
-		ICompositeBuilder<NetworkManager> cf = new CompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives>( this.getPropertySource() );
+		ICompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives> cf = new CompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives>( this.getPropertySource() );
 		cf.addListener( listener );
 		try {
 			logger.info("Parsing JXSE Bundle: " + this.properties.getProperty( ContextProperties.BUNDLE_ID ));
@@ -239,33 +233,19 @@ public class XMLComponentBuilder implements IComponentFactory<NetworkManager, Co
 		return module;
 	}
 
-	@Override
 	public boolean complete() {
 		this.completed = true;
 		return completed;
 	}
 
-	@Override
 	public boolean isCompleted() {
 		return completed;
 	}
 
-	@Override
 	public boolean hasFailed() {
 		return failed;
 	}
 
-	@Override
-	public NetworkManager getModule() {
-		return module;
-	}
-
-	@Override
-	public Components getComponentName() {
-		return Components.NETWORK_MANAGER;
-	}
-
-	@Override
 	public IJxsePropertySource<ContextProperties, IJxseDirectives> getPropertySource() {
 		return this.properties;
 	}

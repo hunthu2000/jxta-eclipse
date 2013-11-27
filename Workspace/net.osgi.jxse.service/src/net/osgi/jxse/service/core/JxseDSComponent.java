@@ -105,6 +105,7 @@ class JxseContextProvider extends AbstractProvider<String, Object, IJxseServiceC
 		if( container == null )
 			throw new NullPointerException();
 		this.container = container;
+		super.setIdentifier( container.getIdentifier());
 		super.provide(container);
 	}
 

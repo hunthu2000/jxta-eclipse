@@ -115,6 +115,11 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 		return true;
 	}
 
+	
+	protected void setProperties(IJxseWritePropertySource<U, V> properties) {
+		this.properties = properties;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object getProperty(Object key) {

@@ -35,6 +35,11 @@ public class DiscoveryServiceFactory extends
 
 	@Override
 	protected DiscoveryService onCreateModule( IJxsePropertySource<DiscoveryProperties, IJxseDirectives> properties) {
+		if( peerGroupContainer.getPeerGroup() == null ){
+			super.setCompleted(false );
+			return null;
+		}
+			
 		DiscoveryService service = peerGroupContainer.getPeerGroup().getDiscoveryService();
 		return service;
 	}

@@ -102,6 +102,8 @@ public abstract class AbstractComponentFactory<T extends Object, U extends Enum<
 			return module;
 		this.parseDirectivesPrior();
 		this.module = this.onCreateModule( this.properties);
+		if( this.module == null )
+			return null;
 		this.parseDirectivesAfter();
 		return module;
 	}

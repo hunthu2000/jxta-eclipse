@@ -14,40 +14,39 @@ import java.util.logging.Logger;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager;
+import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.context.AbstractServiceContext;
+import net.osgi.jxse.context.CompositeStarter;
+import net.osgi.jxse.context.Swarm;
 import net.osgi.jxse.factory.ComponentFactoryEvent;
-import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.service.network.NetPeerGroupService;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 
 public class XMLServiceContext extends AbstractServiceContext<NetworkManager,ContextProperties, IJxseDirectives>{
 
 	public static final String S_ERR_NO_SERVICE_LOADED = "\n\t!!! No service is loaded. Not starting context:  ";
+	public static final String S_ERR_CONTEXT_NOT_BUILT = "\n\t!!! The context was not built! Not starting context:  ";
 	
-	private IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives> factory;
 	private NetPeerGroupService service;
 	private XMLServiceContext host;
 	private ICompositeBuilderListener observer;
+	private ComponentNode<NetworkManager,ContextProperties, IJxseDirectives> root;
+	
+	private String plugin_id;
+	private Class<?> clss;
+	private Swarm swarm;
 	
 	public XMLServiceContext( String plugin_id, Class<?> clss) {
-		super( new XMLComponentBuilder( plugin_id, clss ));
 		this.host = this;
-	}
-
-	public XMLServiceContext( IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives> factory ) {
-		super( factory, true );
-		this.host = this;
-	}
-
-	@Override
-	protected boolean onSetAvailable( IComponentFactory<NetworkManager, ContextProperties, IJxseDirectives> factory) {
-		if( !factory.canCreate() )
-			return false;
-		this.factory = factory;	
-		return super.onSetAvailable( factory );
+		this.plugin_id = plugin_id;
+		this.clss = clss;	
+		this.swarm = new Swarm();
+		super.setStatus( Status.AVAILABLE);
 	}
 	
 	@Override
@@ -57,6 +56,8 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 
 	@Override
 	public NetworkManager getModule() {
+		if( service == null )
+			return null;
 		return service.getNetworkManager();
 	}
 
@@ -75,69 +76,102 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 
 	@Override
 	protected boolean onInitialising() {
-		if( factory instanceof XMLComponentBuilder ){
-			XMLComponentBuilder xmlFactory = (XMLComponentBuilder) factory;
-			ICompositeBuilderListener listener = new ICompositeBuilderListener(){
+		XMLComponentBuilder builder = new XMLComponentBuilder( plugin_id, clss );
+		ICompositeBuilderListener listener = new ICompositeBuilderListener(){
 
-				@Override
-				public void notifyCreated(ComponentFactoryEvent event) {
-					FactoryEvents fe = event.getFactoryEvent();
-					switch( fe ){
-					case FACTORY_CREATED:
-						break;
-					case COMPONENT_CREATED:
-						Object component = event.getFactory().getModule();
-						if( component instanceof NetworkConfigurator ){
-							break;
-						}
-						if( component instanceof NetworkManager ){
-							XMLServiceContext.addModule( host, component );
-							service = new NetPeerGroupService( (NetworkManager) component );
-							break;
-						}
-						XMLServiceContext.addModule( host, component );
-						break;
-					}
+			@Override
+			public void notifyCreated(ComponentFactoryEvent event) {
+				FactoryEvents fe = event.getFactoryEvent();
+				switch( fe ){
+				case FACTORY_CREATED:
+					break;
+				default:
+					break;
 				}
-			};
-			xmlFactory.addListener(listener);
-			if( this.observer != null )
-				xmlFactory.addListener(observer);
-				
-			xmlFactory.createModule();
-			xmlFactory.removeListener(listener);
-			if( this.observer != null )
-				xmlFactory.removeListener(observer);
-			super.setIdentifier( xmlFactory.getPropertySource().getIdentifier() );
-			super.putProperty( ContextProperties.PASS_1, 
-					xmlFactory.getPropertySource().getProperty( ContextProperties.PASS_1 ));
-			super.putProperty( ContextProperties.PASS_2, 
-					xmlFactory.getPropertySource().getProperty( ContextProperties.PASS_2 ));
-		}
-		return true;
+			}
+		};
+		builder.addListener(listener);
+		if( this.observer != null )
+			builder.addListener(observer);
+
+		root = builder.build();
+		builder.removeListener(listener);
+		super.setProperties( (IJxseWritePropertySource<net.osgi.jxse.context.IJxseServiceContext.ContextProperties, IJxseDirectives>) root.getFactory().getPropertySource() );
+		if( this.observer != null )
+			builder.removeListener(observer);
+		super.setIdentifier( builder.getPropertySource().getIdentifier() );
+		super.putProperty( ContextProperties.PASS_1, 
+				builder.getPropertySource().getProperty( ContextProperties.PASS_1 ));
+		super.putProperty( ContextProperties.PASS_2, 
+				builder.getPropertySource().getProperty( ContextProperties.PASS_2 ));
+		boolean autostart = Boolean.parseBoolean( (String) root.getFactory().getPropertySource().getDirective( IJxseDirectives.Directives.AUTO_START ));
+		return autostart;
 	}
 
+	/**
+	 * Prepare the context by running the factories
+	 * @return
+	 */
+	private boolean prepare(){
+		Logger logger = Logger.getLogger( this.getClass().getName() );
+		if( this.root == null ){
+			logger.severe( S_ERR_CONTEXT_NOT_BUILT + super.getIdentifier() + " !!!\n");
+			return false;
+		}
+		CompositeStarter<NetworkManager, ContextProperties, IJxseDirectives> starter = 
+				new CompositeStarter<NetworkManager, ContextProperties, IJxseDirectives>( this.root );
+		ICompositeBuilderListener listener = new ICompositeBuilderListener(){
+
+			@Override
+			public void notifyCreated(ComponentFactoryEvent event) {
+				FactoryEvents fe = event.getFactoryEvent();
+				switch( fe ){
+				case COMPONENT_CREATED:
+					Object component = event.getFactory().getModule();
+					if( component instanceof NetworkConfigurator ){
+						break;
+					}
+					if( component instanceof NetworkManager ){
+						XMLServiceContext.addModule( host, component );
+						service = new NetPeerGroupService( (NetworkManager) component );
+					}
+					XMLServiceContext.addModule( host, component );
+					if( event.getFactory() instanceof IPeerGroupProvider ){
+						IPeerGroupProvider provider = ( IPeerGroupProvider )event.getFactory();
+						swarm.addPeerGroup( provider.getPeerGroup() );
+					}
+					break;
+				default:
+					break;
+				}
+			}
+		};
+		starter.addListener(listener);
+		starter.start();
+		//This will happen if the network needs to start before new services can be added.
+		if( !starter.isCompleted() ){
+			starter.start();
+		}
+		starter.removeListener(listener);	
+		return true;
+	}
 	
 	@Override
 	protected void activate() {
+		Logger logger = Logger.getLogger( this.getClass().getName() );
+		if( !this.prepare())
+			return;
+		try{
+			this.service.start();
+			addChild(this.service);
+		}
+		catch( Exception ex ){
+			ex.printStackTrace();
+		}
 		if( this.service == null ){
-			Logger logger = Logger.getLogger( this.getClass().getName() );
 			logger.severe( S_ERR_NO_SERVICE_LOADED + super.getIdentifier() + " !!!\n");
 			return;
 		}
-		if( factory instanceof XMLComponentBuilder ){
-			XMLComponentBuilder xmlFactory = (XMLComponentBuilder) factory;
-			if( xmlFactory.isAutostart()){
-				try{
-				  this.service.start();
-				  addChild(this.service);
-				}
-				catch( Exception ex ){
-					ex.printStackTrace();
-				}
-			}
-		}
-		factory = null;
 		super.activate();
 	}
 

@@ -14,7 +14,6 @@ import java.util.Iterator;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.network.INetworkPreferences;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.PartialPropertySource;

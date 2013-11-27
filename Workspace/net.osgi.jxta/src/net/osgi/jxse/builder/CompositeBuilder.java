@@ -12,9 +12,7 @@ package net.osgi.jxse.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
-import net.osgi.jxse.activator.IActivator;
 import net.osgi.jxse.builder.ICompositeBuilderListener.FactoryEvents;
 import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.discovery.DiscoveryPropertySource;
@@ -39,7 +37,7 @@ import net.osgi.jxse.seeds.SeedListFactory;
 import net.osgi.jxse.seeds.SeedListPropertySource;
 import net.osgi.jxse.utils.Utils;
 
-public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJxseDirectives> implements ICompositeBuilder<T> {
+public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJxseDirectives> implements ICompositeBuilder<T,U,V> {
 
 	private Collection<ICompositeBuilderListener> factoryListeners;
 	private ComponentNode<T,U,V> root;
@@ -67,7 +65,7 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 		this.factoryListeners.remove( listener);
 	}
 
-	protected void notifyListeners( ComponentFactoryEvent event ){
+	private void notifyListeners( ComponentFactoryEvent event ){
 		for( ICompositeBuilderListener listener: factoryListeners )
 			listener.notifyCreated(event);
 	}
@@ -115,22 +113,22 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 		}else if( source instanceof DiscoveryPropertySource ){
 			DiscoveryPropertySource discsource = ( DiscoveryPropertySource )source;
 			String peergroup = (String) discsource.getDirective( PeerGroupDirectives.PEERGROUP );
-			IPeerGroupProvider provider = this.getPeerGroupProvider( peergroup, parent);
-			factory = new DiscoveryServiceFactory( provider, (DiscoveryPropertySource)source );
-			node = this.getNode(parent, factory);
+			ComponentNode<IPeerGroupProvider,?,?> provider = this.getPeerGroupProvider( peergroup, parent);
+			factory = new DiscoveryServiceFactory( (IPeerGroupProvider) provider.getFactory(), (DiscoveryPropertySource)source );
+			node = this.getNode(provider, factory);
 			newFactory = true;
 		}else if( source instanceof PeerGroupPropertySource ){
 			PeerGroupPropertySource peersource = ( PeerGroupPropertySource )source;
 			String peergroup = (String)peersource.getDirective( PeerGroupDirectives.PEERGROUP );
-			IPeerGroupProvider provider = this.getPeerGroupProvider( peergroup, parent);
-			factory = new PeerGroupFactory( provider, (PeerGroupPropertySource)source );
+			ComponentNode<IPeerGroupProvider,?,?>  provider = this.getPeerGroupProvider( peergroup, parent);
+			factory = new PeerGroupFactory( (IPeerGroupProvider) provider.getFactory(), (PeerGroupPropertySource)source );
 			node = this.getNode(parent, factory);
 			newFactory = true;
 		}else if( source instanceof RegistrationPropertySource ){
 			RegistrationPropertySource rescsource = ( RegistrationPropertySource )source;
 			String peergroup = (String) rescsource.getDirective( PeerGroupDirectives.PEERGROUP );
-			IPeerGroupProvider provider = this.getPeerGroupProvider( peergroup, parent);
-			factory = new RegistrationServiceFactory( provider, rescsource );
+			ComponentNode<IPeerGroupProvider,?,?> provider = this.getPeerGroupProvider( peergroup, parent);
+			factory = new RegistrationServiceFactory( (IPeerGroupProvider) provider.getFactory(), rescsource );
 			node = this.getNode(parent, factory);
 			newFactory = true;
 		}
@@ -146,20 +144,27 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 		return returnNode;
 	}
 
-	private final IPeerGroupProvider getPeerGroupProvider( String name, ComponentNode<?, ?, ?> parent ){
+	/**
+	 * returns the node that contains a peergroup provider
+	 * @param name
+	 * @param parent
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private final ComponentNode<IPeerGroupProvider,?,?> getPeerGroupProvider( String name, ComponentNode<?, ?, ?> parent ){
 		IComponentFactory<?,?,?> factory = parent.getFactory();
 		if( Utils.isNull( name )){
 			if( factory instanceof IPeerGroupProvider )
-				return (IPeerGroupProvider) parent;
+				return (ComponentNode<IPeerGroupProvider, ?, ?>) parent;
 			name = IPeerGroupProvider.S_NET_PEER_GROUP;
 		}else{
 			if( factory instanceof IPeerGroupProvider ){
 				IPeerGroupProvider provider = (IPeerGroupProvider) factory;
 				if( provider.getPeerGroupName().equals(name ))
-					return provider;
+					return (ComponentNode<IPeerGroupProvider, ?, ?>) parent;
 			}
 		}
-		IPeerGroupProvider returnNode= null;
+		ComponentNode<IPeerGroupProvider,?,?> returnNode= null;
 		for( ComponentNode<?,?,?> child: parent.getChildren()) {
 			returnNode = this.getPeerGroupProvider( name, child );
 			if( returnNode != null )
@@ -179,70 +184,8 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 	}
 	
 	@Override
-	public T build() {
+	public ComponentNode<T,U,V> build() {
 		this.parsePropertySources();
-		return this.createModule( this.root);
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private T createModule( ComponentNode node ){
-		IComponentFactory factory = node.getFactory();
-		T component = null;
-		if( factory != null ){
-			this.parseDirectives( node );
-			component = (T) factory.createModule();
-			this.notifyListeners( new ComponentFactoryEvent( this, factory, FactoryEvents.COMPONENT_CREATED ));
-		}
-		for( ComponentNode<?,?,?> child: node.getChildren())
-			createModule( child );
-		factory.complete();
-		return component;
-		
-	}
-
-	protected void onParseDirectivePriorToCreation( ComponentNode<?,?,?> node, IJxseDirectives.Directives directive, String value) {
-		if( node.getParent() == null )
-			return;
-		IComponentFactory<?,?,?> parentFactory = node.getParent().getFactory();
-		switch( directive ){
-			case ACTIVATE_PARENT:
-				boolean ap = Boolean.parseBoolean( value );
-				if( !ap || !parentFactory.isCompleted())
-					break;
-				Object pc = parentFactory.getModule();
-				if(!( pc instanceof IActivator ))
-					return;
-				IActivator activator = ( IActivator )pc;
-				activator.start();
-				break;
-			case CREATE_PARENT:
-				boolean cp = Boolean.parseBoolean( value );
-				if( cp && !parentFactory.isCompleted())
-					parentFactory.createModule();
-				break;
-			default:
-				break;
-		}
-	}
-
-	/**
-	 * Do nothing
-	 */
-	protected void onParseDirectiveAfterCreation( ComponentNode<?,?,?> node, IJxseDirectives.Directives directive, Object value) {}
-
-	/**
-	 * Parse the directives for this factory
-	 * @param node
-	 */
-	private final void parseDirectives( ComponentNode<?,?,V> node ){
-		IJxsePropertySource<?,V> propertySource = this.ps;
-		if( node.getFactory() != null )
-			propertySource = node.getFactory().getPropertySource();
-		Iterator<V> iterator = propertySource.directiveIterator();
-		V directive;
-		while( iterator.hasNext()) {
-			directive = iterator.next();
-			this.onParseDirectivePriorToCreation( node, ( IJxseDirectives.Directives )directive, ( String )propertySource.getDirective( directive ));
-		}
+		return this.root;
 	}
 }

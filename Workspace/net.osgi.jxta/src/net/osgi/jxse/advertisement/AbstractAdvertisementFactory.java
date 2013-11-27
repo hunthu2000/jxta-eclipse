@@ -96,7 +96,6 @@ public abstract class AbstractAdvertisementFactory<T extends Advertisement, U ex
 	}
 
 	
-	@SuppressWarnings("unchecked")
 	protected void fillDefaultValues() {
 		//super.getPropertySource().setProperty((U) AdvertisementProperties.ADVERTISEMENT_TYPE, AdvertisementTypes.ADV);
 		//super.getPropertySource().setProperty((U) AdvertisementProperties.NAME, S_DEFAULT_NAME);
