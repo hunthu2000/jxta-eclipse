@@ -17,7 +17,7 @@ public class AdvertisementNavigator extends CommonNavigator{
 	
 	private CommonViewer viewer;
 	
-	private IJxseComponent<?> component;
+	private IJxseComponent<?,?> component;
 
 	private ISelectionListener listener = new ISelectionListener() {
 		@Override
@@ -68,9 +68,9 @@ public class AdvertisementNavigator extends CommonNavigator{
 		Object element = ss.getFirstElement();
 		
 		//We check for service decorators coming from the service navigator
-		if(!( element instanceof IJxseComponent<?>))
+		if(!( element instanceof IJxseComponent<?,?>))
 			return;
-		IJxseComponent<?> component = (net.osgi.jxse.component.IJxseComponent<?> )element;
+		IJxseComponent<?,?> component = (IJxseComponent<?,?> )element;
 		viewer.setInput( component );
 		viewer.refresh(true);
 	}

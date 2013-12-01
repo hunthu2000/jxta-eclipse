@@ -13,9 +13,9 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		if(( parentElement == null ) || !( parentElement instanceof IJxseComponentNode<?> ))
+		if(( parentElement == null ) || !( parentElement instanceof IJxseComponentNode<?,?> ))
 			return null;
-		 IJxseComponentNode<?> decorator = (IJxseComponentNode<?>)parentElement;
+		 IJxseComponentNode<?,?> decorator = (IJxseComponentNode<?,?>)parentElement;
 		if( decorator.getChildren() == null )
 			return null;
 		//Collections.sort( decorator.getChildren(), new JxtaServiceComparator< IJxtaServiceNode<?>>());
@@ -26,7 +26,7 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 	public boolean hasChildren(Object element) {
 		if(!( element instanceof IJxseComponentNode ))
 			return false;
-		IJxseComponentNode<?> decorator = (IJxseComponentNode<?>)element;
+		IJxseComponentNode<?,?> decorator = (IJxseComponentNode<?,?>)element;
 		return decorator.hasChildren();
 	}
 
@@ -44,7 +44,7 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 		if(!(element instanceof IJxseComponentNode )){
 			return null;
 		}
-		IJxseComponentNode<?> component = (IJxseComponentNode<?>)element;
+		IJxseComponentNode<?,?> component = (IJxseComponentNode<?,?>)element;
 		if( component.isRoot() )
 			return null;
 		return component.getParent();

@@ -12,10 +12,10 @@ package net.osgi.jxse.service.core;
 
 import net.osgi.jxse.service.IContextObserver;
 
-public interface IBuilderContext<T extends Object> {
+public interface IBuilderContext<T extends Object,U extends Enum<U>> {
 
-	public abstract IContextObserver<T> getObserver();
+	public abstract IContextObserver<T,U> getObserver();
 
-	public abstract void setObserver(IContextObserver<T> observer);
+	public abstract void setObserver(IContextObserver<T,U> observer);
 
 }

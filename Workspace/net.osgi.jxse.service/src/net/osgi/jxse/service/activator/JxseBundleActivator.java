@@ -13,6 +13,7 @@ package net.osgi.jxse.service.activator;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.context.IJxseServiceContext;
+import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.service.xml.XMLServiceContext;
 
 public class JxseBundleActivator extends AbstractJxseBundleActivator {
@@ -33,8 +34,8 @@ public class JxseBundleActivator extends AbstractJxseBundleActivator {
 		this.observer = observer;
 	}
 
-	@Override
-	protected IJxseServiceContext<NetworkManager> createContext() {
+	//@Override
+	protected IJxseServiceContext<NetworkManager, ContextProperties> createContext() {
 		XMLServiceContext context = new XMLServiceContext( bundle_id, this.getClass() );
 		context.setObserver(observer);
 		context.initialise();

@@ -13,21 +13,22 @@ package net.osgi.jxse.component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import net.jxta.document.Advertisement;
 import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
 
-public class JxseComponentNode<T extends Object> implements IJxseComponentNode<T>{
+public class JxseComponentNode<T extends Object, U extends Enum<U>> implements IJxseComponentNode<T,U>{
 
-	private IJxseComponent<T> component;
-	private IJxseComponentNode<?> parent;	
-	private Collection<IJxseComponent<?>> children;
+	private IJxseComponent<T,U> component;
+	private IJxseComponentNode<?,?> parent;	
+	private Collection<IJxseComponent<?,?>> children;
 	private ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 	
-	public JxseComponentNode( IJxseComponentNode<?> parent, IJxseComponent<T> component ) {
+	public JxseComponentNode( IJxseComponentNode<?,?> parent, IJxseComponent<T,U> component ) {
 		this.component = component;
 		this.parent = parent;
-		this.children = new ArrayList<IJxseComponent<?>>();
+		this.children = new ArrayList<IJxseComponent<?,?>>();
 	}
 
 	/**
@@ -59,7 +60,7 @@ public class JxseComponentNode<T extends Object> implements IJxseComponentNode<T
 	 * @return
 	 */
 	@Override
-	public IJxseComponentNode<?> getParent(){
+	public IJxseComponentNode<?,?> getParent(){
 		return parent;
 	}
 
@@ -80,19 +81,19 @@ public class JxseComponentNode<T extends Object> implements IJxseComponentNode<T
 	}
 
 	@Override
-	public void addChild( IJxseComponent<?> child ){
+	public void addChild( IJxseComponent<?,?> child ){
 		this.children.add( child );
 		dispatcher.serviceChanged( new ComponentChangedEvent( this, ServiceChange.CHILD_ADDED ));
 	}
 
 	@Override
-	public void removeChild( IJxseComponent<?> child ){
+	public void removeChild( IJxseComponent<?,?> child ){
 		this.children.remove( child );
 		dispatcher.serviceChanged( new ComponentChangedEvent( this, ServiceChange.CHILD_REMOVED ));
 	}
 
 	@Override
-	public Collection<IJxseComponent<?>> getChildren(){
+	public Collection<IJxseComponent<?,?>> getChildren(){
 		return this.children;
 	}
 
@@ -113,6 +114,12 @@ public class JxseComponentNode<T extends Object> implements IJxseComponentNode<T
 	@Override
 	public boolean hasAdvertisements(){
 		return this.component.hasAdvertisements();
+	}
+
+	@Override
+	public Iterator<U> iterator() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

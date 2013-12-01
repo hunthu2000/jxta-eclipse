@@ -21,9 +21,9 @@ public class Utils
 	 * @param component
 	 * @return
 	 */
-	public static String getLabel( IJxseComponent<?> component) {
+	public static String getLabel( IJxseComponent<?,?> component) {
 		if( component instanceof IJxseServiceContext ){
-			IJxseServiceContext<?> container = (net.osgi.jxse.context.IJxseServiceContext<?> )component;
+			IJxseServiceContext<?,?> container = (IJxseServiceContext<?,?> )component;
 			return container.getIdentifier();			
 		}
 		if( component.getModule() == null )

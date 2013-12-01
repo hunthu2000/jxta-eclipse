@@ -76,9 +76,9 @@ public class ModuleTableViewer extends ViewPart {
 		Object element = ss.getFirstElement();
 		
 		//We check for service decorators coming from the service navigator
-		if(!( element instanceof IJxseComponent<?>))
+		if(!( element instanceof IJxseComponent<?,?>))
 			return;
-		IJxseComponent<?> component = (net.osgi.jxse.component.IJxseComponent<?> )element;
+		IJxseComponent<?,?> component = (IJxseComponent<?,?> )element;
 		//if(!( component.getModule() instanceof PeerGroup ))
 		//	this.setPeerGroup(null );
 		//else

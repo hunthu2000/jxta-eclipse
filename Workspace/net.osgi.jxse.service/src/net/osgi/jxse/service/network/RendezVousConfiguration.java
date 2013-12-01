@@ -18,6 +18,7 @@ import java.util.Set;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.component.IJxseComponent;
+import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
 public class RendezVousConfiguration {
 
@@ -27,7 +28,7 @@ public class RendezVousConfiguration {
 		this.configurator = configurator;
 	}
 
-	public RendezVousConfiguration( IJxseComponent<NetworkConfigurator> component ) {
+	public RendezVousConfiguration( IJxseComponent<NetworkConfigurator, NetworkConfiguratorProperties> component ) {
 		this( component.getModule() );
 	}
 

@@ -3,12 +3,13 @@ package org.eclipselabs.jxse.ui.property.advertisement;
 import net.jxta.document.Element;
 import net.jxta.platform.ModuleSpecID;
 import net.jxta.protocol.ModuleImplAdvertisement;
+import net.osgi.jxse.advertisement.AbstractAdvertisementFactory.AdvertisementProperties;
 import net.osgi.jxse.utils.StringStyler;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipselabs.jxse.ui.property.AbstractJxsePropertySource;
 
-public class ModuleImplAdvPropertySource extends AbstractJxsePropertySource<ModuleImplAdvertisement> {
+public class ModuleImplAdvPropertySource extends AbstractJxsePropertySource<ModuleImplAdvertisement, AdvertisementProperties> {
 
 	public enum ModuleImplAdvProperties{
 		BASE_ADVERTISEMENT_TYPE,

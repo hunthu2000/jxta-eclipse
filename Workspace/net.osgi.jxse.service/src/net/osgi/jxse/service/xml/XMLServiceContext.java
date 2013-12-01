@@ -12,6 +12,7 @@ package net.osgi.jxse.service.xml;
 
 import java.util.logging.Logger;
 
+import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.builder.ComponentNode;
@@ -20,12 +21,14 @@ import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.context.CompositeStarter;
 import net.osgi.jxse.context.Swarm;
 import net.osgi.jxse.factory.ComponentFactoryEvent;
+import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.service.core.AbstractJxseService;
 import net.osgi.jxse.service.network.NetPeerGroupService;
+import net.osgi.jxse.service.peergroup.IPeerGroupProperties.PeerGroupProperties;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 
 public class XMLServiceContext extends AbstractServiceContext<NetworkManager,ContextProperties, IJxseDirectives>{
@@ -123,6 +126,7 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 				new CompositeStarter<NetworkManager, ContextProperties, IJxseDirectives>( this.root );
 		ICompositeBuilderListener listener = new ICompositeBuilderListener(){
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void notifyCreated(ComponentFactoryEvent event) {
 				FactoryEvents fe = event.getFactoryEvent();
@@ -134,7 +138,7 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 					}
 					if( component instanceof NetworkManager ){
 						XMLServiceContext.addModule( host, component );
-						service = new NetPeerGroupService( (NetworkManager) component );
+						service = new NetPeerGroupService( (IComponentFactory<PeerGroup, PeerGroupProperties, IJxseDirectives>) event.getFactory() );						break;
 					}
 					XMLServiceContext.addModule( host, component );
 					if( event.getFactory() instanceof IPeerGroupProvider ){

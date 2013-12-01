@@ -22,9 +22,9 @@ public class JxseComponentPropertySource implements IPropertySource {
 	public static final String S_PROPERTY_TEXT = "Properties";
 
 	private String defaultText;
-	private IJxseComponent<?> source;
+	private IJxseComponent<?,?> source;
 
-	public JxseComponentPropertySource( IJxseComponent<?> source, String defaultText ) {
+	public JxseComponentPropertySource( IJxseComponent<?,?> source, String defaultText ) {
 		super();
 		this.defaultText = defaultText;
 		this.source = source;
@@ -39,7 +39,7 @@ public class JxseComponentPropertySource implements IPropertySource {
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		PropertyDescriptor descriptor = new JxseComponentPropertyDescriptor( S_PROPERTY_JXTA_COMPONENT_ID, S_PROPERTY_JTTA_SERVICE_COMPONENT_TEXT );
 		descriptor.setCategory(S_PROPERTY_JXTA_TEXT);
-		Iterator<?> iterator = this.source.iterator();
+		Iterator<?> iterator = null;//TODO CP: this.source.iterator();
 		Collection<IPropertyDescriptor> descriptors = new ArrayList<IPropertyDescriptor>();
 		descriptors.add( descriptor);
 		Object key;

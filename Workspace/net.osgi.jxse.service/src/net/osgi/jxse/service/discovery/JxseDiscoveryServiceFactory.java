@@ -39,7 +39,7 @@ public class JxseDiscoveryServiceFactory extends
 		DiscoveryService ds = factory.createModule();
 		if( ds == null )
 			return null;
-		JxseDiscoveryService service = new JxseDiscoveryService( ds );
+		JxseDiscoveryService service = new JxseDiscoveryService( factory );
 		return service;
 	}
 	

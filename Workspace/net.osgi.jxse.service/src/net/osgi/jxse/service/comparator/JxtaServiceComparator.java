@@ -33,8 +33,8 @@ public class JxtaServiceComparator<T extends Object> implements
 		int compare =  getIndex( arg0 ) - getIndex( arg1 );
 		if( compare != 0 )
 			return compare;
-		IJxseComponent<?> node1 = (net.osgi.jxse.component.IJxseComponent<?>)arg0;
-		IJxseComponent<?> node2 = (net.osgi.jxse.component.IJxseComponent<?>)arg1;
+		IJxseComponent<?,?> node1 = (net.osgi.jxse.component.IJxseComponent<?,?>)arg0;
+		IJxseComponent<?,?> node2 = (net.osgi.jxse.component.IJxseComponent<?,?>)arg1;
 		return this.compareDate( node1.getCreateDate(), node2.getCreateDate() );
 	}
 
@@ -51,11 +51,11 @@ public class JxtaServiceComparator<T extends Object> implements
 		if( obj instanceof IJxseServiceContext )
 			return index;
 		index++;
-		if(!( obj instanceof IJxseComponent<?>)){
+		if(!( obj instanceof IJxseComponent<?,?>)){
 			index = JxseModuleComparator.getIndex(obj);
 			return index;
 		}
-		IJxseComponent<Object> comp = (IJxseComponent<Object> )obj;
+		IJxseComponent<Object,?> comp = (IJxseComponent<Object,?> )obj;
 		return JxseModuleComparator.getIndex(comp.getModule());
 	}
 	

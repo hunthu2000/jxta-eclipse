@@ -2,13 +2,15 @@ package org.eclipselabs.jxse.ui.component;
 
 import java.util.Map;
 
+import org.eclipselabs.jxse.ui.property.PeerGroupPropertySource;
+
 import net.jxta.peergroup.PeerGroup;
 import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.component.JxseComponent;
 
-public class PeerGroupComponent extends JxseComponent<PeerGroup> {
+public class PeerGroupComponent extends JxseComponent<PeerGroup, PeerGroupPropertySource.PeerGroupProperties> {
 
-	public PeerGroupComponent(IJxseComponent<?> parent,
+	public PeerGroupComponent(IJxseComponent<?,?> parent,
 			PeerGroup component) {
 		super(parent, component);
 	}

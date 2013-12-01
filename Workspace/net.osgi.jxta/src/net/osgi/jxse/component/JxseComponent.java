@@ -20,11 +20,11 @@ import java.util.Properties;
 
 import net.jxta.document.Advertisement;
 
-public class JxseComponent<T extends Object> implements IJxseComponent<T>, Comparable< IJxseComponent<?>>{
+public class JxseComponent<T extends Object,U extends Enum<U>> implements IJxseComponent<T,U>, Comparable< IJxseComponent<?,?>>{
 
 	private T module;
 	private Map<Object,Object> properties;
-	private IJxseComponent<?> parent;
+	private IJxseComponent<?,?> parent;
 	private Collection<Advertisement> advertisements;
 
 	public JxseComponent( T component ) {
@@ -35,7 +35,7 @@ public class JxseComponent<T extends Object> implements IJxseComponent<T>, Compa
 		this( null, component, properties );
 	}
 
-	protected JxseComponent( IJxseComponent<?> parent, Map<Object,Object> properties ) {
+	protected JxseComponent( IJxseComponent<?,?> parent, Map<Object,Object> properties ) {
 		this.module = null;
 		this.parent = parent;
 		this.properties = new Properties();
@@ -43,7 +43,7 @@ public class JxseComponent<T extends Object> implements IJxseComponent<T>, Compa
 		this.fillProperties(properties);
 	}
 
-	public JxseComponent( IJxseComponent<?> parent, T component, Map<Object,Object> properties ) {
+	public JxseComponent( IJxseComponent<?,?> parent, T component, Map<Object,Object> properties ) {
 		this.module = component;
 		this.properties = properties;
 		this.parent = parent;
@@ -52,7 +52,7 @@ public class JxseComponent<T extends Object> implements IJxseComponent<T>, Compa
 		this.fillProperties(properties);
 	}
 
-	public JxseComponent( IJxseComponent<?> parent, T component ) {
+	public JxseComponent( IJxseComponent<?,?> parent, T component ) {
 		this( component, new Properties() );
 	}
 
@@ -96,7 +96,7 @@ public class JxseComponent<T extends Object> implements IJxseComponent<T>, Compa
 	 * Get the parent of the component
 	 * @return
 	 */
-	public IJxseComponent<?> getParent(){
+	public IJxseComponent<?,?> getParent(){
 		return parent;
 	}
 
@@ -142,7 +142,12 @@ public class JxseComponent<T extends Object> implements IJxseComponent<T>, Compa
 	}
 
 	@Override
-	public int compareTo(IJxseComponent<?> o) {
+	public int compareTo(IJxseComponent<?,?> o) {
 		return Integer.MAX_VALUE;
+	}
+
+	@Override
+	public Iterator<U> iterator() {
+		return null;
 	}
 }

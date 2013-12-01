@@ -1,6 +1,7 @@
 package net.osgi.jxse.peergroup;
 
 import net.osgi.jxse.factory.IComponentFactory.Components;
+import net.osgi.jxse.peergroup.PeerGroupPropertySource;
 import net.osgi.jxse.properties.AbstractPeerGroupProviderPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;

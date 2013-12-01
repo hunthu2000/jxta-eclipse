@@ -113,21 +113,22 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 		}else if( source instanceof DiscoveryPropertySource ){
 			DiscoveryPropertySource discsource = ( DiscoveryPropertySource )source;
 			String peergroup = (String) discsource.getDirective( PeerGroupDirectives.PEERGROUP );
-			ComponentNode<IPeerGroupProvider,?,?> provider = this.getPeerGroupProvider( peergroup, parent);
+
+			ComponentNode<IPeerGroupProvider,?,?> provider = this.getPeerGroupProviderNotNull( peergroup, parent);
 			factory = new DiscoveryServiceFactory( (IPeerGroupProvider) provider.getFactory(), (DiscoveryPropertySource)source );
 			node = this.getNode(provider, factory);
 			newFactory = true;
 		}else if( source instanceof PeerGroupPropertySource ){
 			PeerGroupPropertySource peersource = ( PeerGroupPropertySource )source;
 			String peergroup = (String)peersource.getDirective( PeerGroupDirectives.PEERGROUP );
-			ComponentNode<IPeerGroupProvider,?,?>  provider = this.getPeerGroupProvider( peergroup, parent);
+			ComponentNode<IPeerGroupProvider,?,?>  provider = this.getPeerGroupProviderNotNull( peergroup, parent);
 			factory = new PeerGroupFactory( (IPeerGroupProvider) provider.getFactory(), (PeerGroupPropertySource)source );
 			node = this.getNode(parent, factory);
 			newFactory = true;
 		}else if( source instanceof RegistrationPropertySource ){
 			RegistrationPropertySource rescsource = ( RegistrationPropertySource )source;
 			String peergroup = (String) rescsource.getDirective( PeerGroupDirectives.PEERGROUP );
-			ComponentNode<IPeerGroupProvider,?,?> provider = this.getPeerGroupProvider( peergroup, parent);
+			ComponentNode<IPeerGroupProvider,?,?> provider = this.getPeerGroupProviderNotNull( peergroup, parent);
 			factory = new RegistrationServiceFactory( (IPeerGroupProvider) provider.getFactory(), rescsource );
 			node = this.getNode(parent, factory);
 			newFactory = true;
@@ -160,7 +161,7 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 		}else{
 			if( factory instanceof IPeerGroupProvider ){
 				IPeerGroupProvider provider = (IPeerGroupProvider) factory;
-				if( provider.getPeerGroupName().equals(name ))
+				if( provider.getPeerGroupName().equals( name ))
 					return (ComponentNode<IPeerGroupProvider, ?, ?>) parent;
 			}
 		}
@@ -170,9 +171,22 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 			if( returnNode != null )
 				return returnNode;
 		}
+		
 		return returnNode;
 	}
 
+	/**
+	 * returns the node that contains a peergroup provider
+	 * @param name
+	 * @param parent
+	 * @return
+	 */
+	private final ComponentNode<IPeerGroupProvider,?,?> getPeerGroupProviderNotNull( String name, ComponentNode<?, ?, ?> parent ){
+		ComponentNode<IPeerGroupProvider,?,?> provider = getPeerGroupProvider( name, parent );
+		if( provider == null )
+			provider = getPeerGroupProvider( IPeerGroupProvider.S_NET_PEER_GROUP, parent );
+		return provider;
+	}
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected ComponentNode<?,?,?> getNode( ComponentNode<?,?,?> node, IComponentFactory<?,?,?> factory ){
 		ComponentNode<?,?,?> childNode = null;

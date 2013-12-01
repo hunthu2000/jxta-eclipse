@@ -14,7 +14,7 @@ import net.osgi.jxse.activator.IJxseService;
 import net.osgi.jxse.component.IJxseComponentNode;
 import net.osgi.jxse.utils.StringStyler;
 
-public interface IJxseServiceContext<T extends Object> extends IJxseComponentNode<T>, IJxseService<T> {
+public interface IJxseServiceContext<T extends Object, U extends Enum<U>> extends IJxseComponentNode<T,U>, IJxseService<T,U> {
 
 	public enum ContextProperties{
 		IDENTIFIER,

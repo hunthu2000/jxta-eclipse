@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import net.jxta.document.Advertisement;
 import net.jxta.platform.NetworkManager;
@@ -33,11 +34,11 @@ import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
 public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends AbstractActivator<IComponentFactory<T,U,V>> implements
-		IJxseServiceContext<T>{
+		IJxseServiceContext<T,U>{
 
 	public static final String S_SERVICE_CONTAINER = "JXSE Container";
 	
-	private Collection<IJxseComponent<?>> children;
+	private Collection<IJxseComponent<?,?>> children;
 	private String identifier;
 	private Collection<Advertisement> advertisements;
 	private IJxseWritePropertySource<U, V> properties;
@@ -47,7 +48,7 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 	private ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 
 	protected AbstractServiceContext() {
-		this.children = new ArrayList<IJxseComponent<?>>();
+		this.children = new ArrayList<IJxseComponent<?,?>>();
 		this.advertisements = new ArrayList<Advertisement>();
 	}
 
@@ -57,12 +58,12 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 
 	protected AbstractServiceContext( IComponentFactory<T,U,V> factory, boolean skipAvailable ) {
 		super( factory, skipAvailable );
-		this.children = new ArrayList<IJxseComponent<?>>();
+		this.children = new ArrayList<IJxseComponent<?,?>>();
 		this.advertisements = new ArrayList<Advertisement>();
 	}
 
 
-	protected AbstractServiceContext( IJxseComponent<?> parent ) {
+	protected AbstractServiceContext( IJxseComponent<?,?> parent ) {
 		this();
 	}
 
@@ -172,14 +173,14 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 	}
 	
 	@Override
-	public IJxseComponent<?> getParent() {
+	public IJxseComponent<?,?> getParent() {
 		return null;
 	}
 	
 	@Override
 	protected void deactivate() {
 		NetworkManager manager = null;
-		for( IJxseComponent<?> component: this.children ){
+		for( IJxseComponent<?,?> component: this.children ){
 			if( component instanceof IActivator ){
 				IActivator service = (IActivator )component;
 				service.stop();
@@ -193,12 +194,12 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 	}	
 
 	@Override
-	public Collection<IJxseComponent<?>> getChildren(){
+	public Collection<IJxseComponent<?,?>> getChildren(){
 		return this.children;
 	}
 
 	@Override
-	public void addChild( IJxseComponent<?> child ){
+	public void addChild( IJxseComponent<?,?> child ){
 		this.children.add( child );
 		if( child.getModule() instanceof NetworkManager )
 			this.networkManager = (NetworkManager) child.getModule();
@@ -206,7 +207,7 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 	}
 
 	@Override
-	public void removeChild( IJxseComponent<?> child ){
+	public void removeChild( IJxseComponent<?,?> child ){
 		this.children.remove( child );
 		dispatcher.serviceChanged( new ComponentChangedEvent( this, ServiceChange.CHILD_REMOVED ));
 	}
@@ -222,7 +223,7 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 	 * @param component
 	 * @return
 	 */
-	protected boolean validateComponent( IComponentFactory<?,?,?> factory, IJxseComponent<?> component ){
+	protected boolean validateComponent( IComponentFactory<?,?,?> factory, IJxseComponent<?,?> component ){
 		if( !factory.isCompleted() ){
 			super.setStatus( Status.AVAILABLE );
 			return false;
@@ -235,24 +236,24 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 	 * @param module
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public static IJxseComponent<?> addModule( AbstractServiceContext<?,?,?> context, Object module ){
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static IJxseComponent<?,?> addModule( AbstractServiceContext<?,?,?> context, Object module ){
 		if( module instanceof Advertisement ){
 			context.addAdvertisement( (Advertisement) module );
-			return new JxseComponent<Advertisement>( context, (Advertisement)module );
+			return new JxseComponent( context, (Advertisement)module );
 		}
-		IJxseComponent<Object> component = null;
+		IJxseComponent<Object,?> component = null;
 		if( module instanceof IJxseComponent )
-			component = (IJxseComponent<Object>) module;
+			component = (IJxseComponent<Object,?>) module;
 		else
-			component = new JxseComponent<Object>( context, module );
+			component = new JxseComponent( context, module );
 
 		component.putProperty( ModuleProperties.CREATE_DATE, Calendar.getInstance().getTime() );
 		if( module instanceof NetworkManager ){
-			IJxseComponentNode<Object> node = new JxseComponentNode<Object>( context, component );
+			IJxseComponentNode<Object,?> node = new JxseComponentNode( context, component );
 			NetworkManager manager = ( NetworkManager )module;
 			try {
-				node.addChild( new JxseComponent<Object>( context, manager.getConfigurator() ));
+				node.addChild( new JxseComponent( context, manager.getConfigurator() ));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -269,11 +270,16 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 			context.removeAdvertisement( (Advertisement) module );
 			return;
 		}
-		Collection<IJxseComponent<?>> temp = new ArrayList<IJxseComponent<?>>( context.getChildren() );
-		for( IJxseComponent<?> component: temp ){
+		Collection<IJxseComponent<?,?>> temp = new ArrayList<IJxseComponent<?,?>>( context.getChildren() );
+		for( IJxseComponent<?,?> component: temp ){
 			if( component.getModule().equals( module ))
 				context.getChildren().remove(component);
 		}
+	}
+
+	@Override
+	public Iterator<U> iterator(){
+		return this.properties.propertyIterator();
 	}
 
 }

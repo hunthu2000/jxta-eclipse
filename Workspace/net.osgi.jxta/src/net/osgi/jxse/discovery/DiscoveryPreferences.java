@@ -36,20 +36,19 @@ public class DiscoveryPreferences<T extends IJxseDirectives> extends AbstractPre
 	 */
 	@Override
 	public Object convertValue( DiscoveryProperties id, String value ){
-		IJxseWritePropertySource<DiscoveryProperties, T> source = super.getSource();
 		switch( id ){
 		case ATTRIBUTE:
 		case WILDCARD:
-			return source.setProperty(id, value);
+			return value;
 		case THRESHOLD:
 		case WAIT_TIME:
-			return source.setProperty(id, Integer.valueOf( value));
+			return Integer.valueOf( value);
 		case DISCOVERY_MODE:
-			return source.setProperty(id, DiscoveryMode.valueOf( value ));
+			return DiscoveryMode.valueOf( value );
 		case PEER_ID:
-			return source.setProperty(id, PeerID.create( URI.create( value )));
+			return PeerID.create( URI.create( value ));
 		default:
-			return false;
+			return null;
 		}
 	}
 }

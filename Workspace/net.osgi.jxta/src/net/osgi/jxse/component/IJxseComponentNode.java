@@ -12,7 +12,7 @@ package net.osgi.jxse.component;
 
 import java.util.Collection;
 
-public interface IJxseComponentNode<T extends Object> extends IJxseComponent<T>{
+public interface IJxseComponentNode<T extends Object, U extends Enum<U>> extends IJxseComponent<T,U>{
 	
 	/**
 	 * Return true if the component is a root
@@ -24,16 +24,16 @@ public interface IJxseComponentNode<T extends Object> extends IJxseComponent<T>{
 	 * Get the parent of the component
 	 * @return
 	 */
-	public IJxseComponent<?> getParent();
+	public IJxseComponent<?,?> getParent();
 
-	public void addChild( IJxseComponent<?> child );
-	public void removeChild( IJxseComponent<?> child );
+	public void addChild( IJxseComponent<?,?> child );
+	public void removeChild( IJxseComponent<?,?> child );
 
 	/**
 	 * Get the parent of the component
 	 * @return
 	 */
-	public Collection<IJxseComponent<?>> getChildren();
+	public Collection<IJxseComponent<?,?>> getChildren();
 	
 	public boolean hasChildren();
 }

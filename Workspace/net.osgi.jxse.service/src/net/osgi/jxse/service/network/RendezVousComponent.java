@@ -32,7 +32,7 @@ public class RendezVousComponent extends AbstractJxseService<RendezVousService, 
 	private ServiceEventDispatcher dispatcher;
 
 	public RendezVousComponent( RendezVousService module ) {
-		super( module );
+		super( null);//module );
 	}
 
 	

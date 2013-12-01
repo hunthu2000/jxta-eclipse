@@ -24,17 +24,17 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		if(( parentElement == null ) || !( parentElement instanceof IJxseComponent<?> ))
+		if(( parentElement == null ) || !( parentElement instanceof IJxseComponent<?,?> ))
 			return null;
-		IJxseComponent<?> decorator = (net.osgi.jxse.component.IJxseComponent<?>)parentElement;
+		IJxseComponent<?,?> decorator = (IJxseComponent<?,?>)parentElement;
 		return getDecoratedChildren( decorator );
 	}
 
 	@Override
 	public boolean hasChildren(Object element) {
-		if(( element == null ) || !( element instanceof IJxseComponent<?> ))
+		if(( element == null ) || !( element instanceof IJxseComponent<?,?> ))
 			return false;
-		IJxseComponent<?> decorator = (net.osgi.jxse.component.IJxseComponent<?>)element;
+		IJxseComponent<?,?> decorator = (IJxseComponent<?,?>)element;
 		Object[] children = getChildren( decorator );
 		return ( children == null )? false: ( children.length > 0 );
 	}
@@ -45,9 +45,9 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		if(( inputElement == null ) || !( inputElement instanceof IJxseComponent<?> ))
+		if(( inputElement == null ) || !( inputElement instanceof IJxseComponent<?,?> ))
 			return null;
-		IJxseComponent<?> decorator = (net.osgi.jxse.component.IJxseComponent<?>)inputElement;
+		IJxseComponent<?,?> decorator = (IJxseComponent<?,?>)inputElement;
 		if( decorator.getModule() instanceof NetworkConfigurator ){
 			ITreeContentProvider provider = new NetworkConfiguratorContentProvider();
 			return provider.getElements(inputElement);
@@ -59,7 +59,7 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 	public Object getParent(Object element) {
 		if(!( element instanceof IJxseComponentNode ))
 			return null;
-		IJxseComponentNode<?> decorator = (net.osgi.jxse.component.IJxseComponentNode<?>)element;
+		IJxseComponentNode<?,?> decorator = (IJxseComponentNode<?,?>)element;
 		if( decorator.getModule() instanceof NetworkConfigurator ){
 			ITreeContentProvider provider = new NetworkConfiguratorContentProvider( decorator.getParent() );
 			return provider.getParent(element);
@@ -72,12 +72,12 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 	 * @param component
 	 * @return
 	 */
-	public static NetworkConfiguratorContentProvider getNetworkConfiguratorContentProvider( IJxseComponent<?> component ){
+	public static NetworkConfiguratorContentProvider getNetworkConfiguratorContentProvider( IJxseComponent<?,?> component ){
 		if(!( component.getModule() instanceof NetworkConfigurator ))
 			return null;
 		Object parent = null;
 		if( component instanceof IJxseComponentNode ){
-			IJxseComponentNode<?> node = (net.osgi.jxse.component.IJxseComponentNode<?> )component;
+			IJxseComponentNode<?,?> node = (IJxseComponentNode<?,?> )component;
 			parent = node.getParent();	
 		}
 		return new NetworkConfiguratorContentProvider( parent );
@@ -88,14 +88,14 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 	 * @param component
 	 * @return
 	 */
-	public static Object[] getChildren( IJxseComponent<?> component ){
+	public static Object[] getChildren( IJxseComponent<?,?> component ){
 		NetworkConfiguratorContentProvider provider = getNetworkConfiguratorContentProvider(component);
 		if( provider != null ){
 			return provider.getChildren( component );
 		}
 		if(!( component instanceof IJxseComponentNode ))
 			return null;
-		IJxseComponentNode<?> node = (net.osgi.jxse.component.IJxseComponentNode<?> )component;
+		IJxseComponentNode<?,?> node = (IJxseComponentNode<?,?> )component;
 		return node.getChildren().toArray();
 	}
 
@@ -110,11 +110,11 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 	public static Object decorateComponent( Object element ){
 		if( element instanceof IJxseComponentNode )
 			return element;
-		if(!( element instanceof IJxseComponent<?> ))
+		if(!( element instanceof IJxseComponent<?,?> ))
 			return getComponent( element );
-		if( element instanceof IJxseService<?> )
+		if( element instanceof IJxseService<?,?> )
 			return element;
-		IJxseComponent<?> component = (IJxseComponent<?> )element;
+		IJxseComponent<?,?> component = (IJxseComponent<?,?> )element;
 		return getComponent( component.getModule() );
 	}
 
@@ -123,15 +123,16 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 	 * @param module
 	 * @return
 	 */
-	public static IJxseComponent<?> getComponent( Object module ){
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static IJxseComponent<?,?> getComponent( Object module ){
 		if( module instanceof IJxseComponent )
-			return (IJxseComponent<?>) module;
+			return (IJxseComponent<?,?>) module;
 		if( module instanceof PeerGroup )
 			return new PeerGroupComponent( (PeerGroup) module );
-		return new JxseComponent<Object>( module );
+		return new JxseComponent( module );
 	}
 
-	public static Object[] getDecoratedChildren( IJxseComponent<?> component ) {
+	public static Object[] getDecoratedChildren( IJxseComponent<?,?> component ) {
 		List<Object> results = new ArrayList<Object>();
 		Object[] children = getChildren( component );
 		if(( children == null ) || ( children.length == 0 ))

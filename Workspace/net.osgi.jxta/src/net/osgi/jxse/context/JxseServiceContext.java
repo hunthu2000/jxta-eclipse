@@ -63,7 +63,7 @@ public class JxseServiceContext extends AbstractServiceContext<NetworkManager, N
 	//Make public
 	@Override
 	public void deactivate() {
-		for( IJxseComponent<?> component: super.getChildren() ){
+		for( IJxseComponent<?,?> component: super.getChildren() ){
 			if( component.getModule() instanceof NetworkManager ){
 				NetworkManager manager = ( NetworkManager )component.getModule();
 				manager.stopNetwork();

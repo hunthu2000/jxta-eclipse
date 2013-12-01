@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -33,7 +34,7 @@ import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class RegistrationService extends AbstractActivator<IPeerGroupProvider> implements IJxseService<RegistrationService>, Runnable, DiscoveryListener {
+public class RegistrationService extends AbstractActivator<IPeerGroupProvider> implements IJxseService<RegistrationService,RegistrationProperties>, Runnable, DiscoveryListener {
 	
 	private IJxseWritePropertySource<RegistrationProperties, IJxseDirectives> source;
 	private ExecutorService executor;
@@ -180,5 +181,11 @@ public class RegistrationService extends AbstractActivator<IPeerGroupProvider> i
 	protected boolean onSetAvailable(IPeerGroupProvider factory) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public Iterator<RegistrationProperties> iterator() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

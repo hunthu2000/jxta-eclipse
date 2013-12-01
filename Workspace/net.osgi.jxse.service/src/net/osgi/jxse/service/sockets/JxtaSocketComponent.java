@@ -22,14 +22,18 @@ import net.osgi.jxse.component.JxseComponent;
 import net.osgi.jxse.socket.SocketFactory;
 import net.osgi.jxse.utils.IOUtils;
 
-public class JxtaSocketComponent extends JxseComponent<JxtaSocket> {
+public class JxtaSocketComponent extends JxseComponent<JxtaSocket,JxtaSocketComponent.JxseSocketProperties> {
 
 	public static final String S_SERVER_SOCKET = "JXTA ServerSocket";
 
-	private IJxseComponent<PipeAdvertisement> pipeAd;
+	public enum JxseSocketProperties{
+		
+	}
+	
+	private IJxseComponent<PipeAdvertisement,?> pipeAd;
 
 	
-	public JxtaSocketComponent( IJxseComponent<NetworkManager> manager, IJxseComponent<PipeAdvertisement> pipeAd, 
+	public JxtaSocketComponent( IJxseComponent<NetworkManager,?> manager, IJxseComponent<PipeAdvertisement,?> pipeAd, 
 			Properties properties ) {
 		super( manager, properties );
 		this.pipeAd = pipeAd;
@@ -44,7 +48,7 @@ public class JxtaSocketComponent extends JxseComponent<JxtaSocket> {
 	@Override
 	public JxtaSocket getModule() {
 		JxtaSocket socket = null;
-		 IJxseComponent<NetworkManager> manager = (net.osgi.jxse.component.IJxseComponent<NetworkManager> )super.getParent();
+		 IJxseComponent<NetworkManager,?> manager = (IJxseComponent<NetworkManager,?> )super.getParent();
 		try {
 			return new JxtaSocket( manager.getModule().getNetPeerGroup(), null, pipeAd.getModule(), ( int )super.getProperty( SocketFactory.Properties.TIME_OUT ));
 		} catch (Exception e) {

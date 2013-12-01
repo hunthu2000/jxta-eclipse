@@ -11,8 +11,10 @@
 package net.osgi.jxse.service.core;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import net.jxta.document.Advertisement;
 import net.osgi.jxse.activator.AbstractActivator;
@@ -26,7 +28,7 @@ import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
 public abstract class AbstractJxseService<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends AbstractActivator<IComponentFactory<T,U,V>> 
-implements IJxseService<T>{
+implements IJxseService<T,U>{
 
 	public static final String S_SERVICE = "Service";
 	
@@ -38,28 +40,21 @@ implements IJxseService<T>{
 	private T module;
 	private Collection<Advertisement> advertisements;
 	
-	private IJxsePropertySource<Object, IJxseDirectives> properties;
+	private IJxsePropertySource<U, V> properties;
 	
 	private ComponentEventDispatcher dispatcher;
 
-	protected AbstractJxseService() {
-		dispatcher = ComponentEventDispatcher.getInstance();
-		advertisements = new ArrayList<Advertisement>();
-		super.setStatus( Status.AVAILABLE );
-		super.initialise();
-	}
-
-	protected AbstractJxseService( IJxsePropertySource<Object, IJxseDirectives> properties ) {
+	protected AbstractJxseService( IJxsePropertySource<U, V> properties, T module ) {
 		this.properties = properties;
+		this.module = module;
 		dispatcher = ComponentEventDispatcher.getInstance();
 		advertisements = new ArrayList<Advertisement>();
 		super.setStatus( Status.AVAILABLE );
 		super.initialise();
 	}
 
-	protected AbstractJxseService( T module ) {
-		this();
-		this.module = module;
+	protected AbstractJxseService( IComponentFactory<T,U,V> factory ) {
+		this( factory.getPropertySource(), factory.getModule() );
 	}
 
 	/**
@@ -72,8 +67,12 @@ implements IJxseService<T>{
 	/**
 	 * Get the create date
 	 */
+	@SuppressWarnings("unchecked")
 	public Date getCreateDate(){
-		return (Date) this.properties.getProperty( ModuleProperties.CREATE_DATE);
+		Object value = this.properties.getProperty( (U) ModuleProperties.CREATE_DATE);
+		if( value == null )
+			return Calendar.getInstance().getTime();
+		return ( Date )value;
 	}
 
 	@Override
@@ -158,18 +157,25 @@ implements IJxseService<T>{
 		this.module = module;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object getProperty(Object key) {
 		if( key.toString().equals( IActivator.S_STATUS ))
 			return super.getStatus();
-		return properties.getProperty(key);
+		return properties.getProperty((U) key);
 	}
 
 	@Override
 	public void putProperty( Object key, Object value ){
 		//properties.put(key, value);
 	}
+
 	
+	@Override
+	public Iterator<U> iterator() {
+		return this.properties.propertyIterator();
+	}
+
 	@Override
 	protected void notifyListeners(Status previous, Status status) {
 		super.notifyListeners(previous, status);

@@ -11,12 +11,13 @@
 package net.osgi.jxse.component;
 
 import java.util.Date;
+import java.util.Iterator;
 
 import net.jxta.document.Advertisement;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.utils.StringStyler;
 
-public interface IJxseComponent<T extends Object>{
+public interface IJxseComponent<T extends Object, U extends Enum<U>>{
 	
 	public enum ModuleProperties implements IJxseDirectives{
 		ID,
@@ -67,4 +68,10 @@ public interface IJxseComponent<T extends Object>{
 	 * @return
 	 */
 	public T getModule();
+	
+	/**
+	 * Get an iterator for the supported properties
+	 * @return
+	 */
+	public Iterator<U> iterator(); 
 }

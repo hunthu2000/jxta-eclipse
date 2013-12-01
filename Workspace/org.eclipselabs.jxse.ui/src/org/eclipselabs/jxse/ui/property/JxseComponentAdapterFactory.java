@@ -7,14 +7,14 @@ import org.eclipse.ui.views.properties.IPropertySource;
 
 public class JxseComponentAdapterFactory implements IAdapterFactory {
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		  if((adapterType != IPropertySource.class ) && ( adapterType != IJxseComponent.class ))
 			  return null;
 		  if(!( adaptableObject instanceof IJxseComponent ))
 			  return null;
-		  IJxseComponent component = (IJxseComponent<IJxseComponent<?>>) adaptableObject;
+		  IJxseComponent<?,?> component = (IJxseComponent<?,?>) adaptableObject;
 		  JxseAdapterFactory factory = new JxseAdapterFactory();
 		  Object retval = factory.getAdapter(component, adapterType);
 		  if( retval != null )

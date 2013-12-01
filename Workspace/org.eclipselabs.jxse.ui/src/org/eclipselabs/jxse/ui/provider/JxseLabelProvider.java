@@ -16,7 +16,7 @@ public class JxseLabelProvider extends LabelProvider{
 	public Image getImage(Object element) {
 		if(!( element instanceof IJxseComponent ))
 			return super.getImage(element);
-		IJxseComponent<?> component = (IJxseComponent<?> )element;
+		IJxseComponent<?,?> component = (IJxseComponent<?,?> )element;
 		StatusImages images = new StatusImages();
 		if( component instanceof AbstractJxseService ){
 			AbstractJxseService<?,?,?> service = (net.osgi.jxse.service.core.AbstractJxseService<Object,?,?> )component;
@@ -27,9 +27,9 @@ public class JxseLabelProvider extends LabelProvider{
 
 	@Override
 	public String getText(Object element) {
-		if(!( element instanceof IJxseComponent<?>))
+		if(!( element instanceof IJxseComponent<?,?>))
 			return super.getText(element);
-		IJxseComponent<?> component = (IJxseComponent<?> )element;
+		IJxseComponent<?,?> component = (IJxseComponent<?,?> )element;
 		return Utils.getLabel(component);
 	}	
 }

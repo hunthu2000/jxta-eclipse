@@ -26,7 +26,7 @@ import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.utils.EnumUtils;
 
-public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySource<NetworkConfigurator> {
+public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySource<NetworkConfigurator, NetworkConfiguratorProperties> {
 
 	public static final String S_NO_READ_VALUE = "<Not a readable property>";
 	
@@ -38,7 +38,7 @@ public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySourc
 		super( configurator, defaults );
 	}
 
-	public NetworkConfiguratorPropertySource( IJxseComponent<NetworkConfigurator> component ) {
+	public NetworkConfiguratorPropertySource( IJxseComponent<NetworkConfigurator, NetworkConfiguratorProperties> component ) {
 		super( component );
 	}
 

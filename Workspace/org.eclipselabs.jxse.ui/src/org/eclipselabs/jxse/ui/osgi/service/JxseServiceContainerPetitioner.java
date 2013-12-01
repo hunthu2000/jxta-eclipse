@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -25,14 +26,15 @@ import org.eclipselabs.osgi.ds.broker.service.AbstractPetitioner;
 import org.eclipselabs.osgi.ds.broker.service.IParlezListener.Notifications;
 import org.eclipselabs.osgi.ds.broker.service.ParlezEvent;
 
-public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, String, IJxseServiceContext<?>>
-	implements IJxseComponentNode<Collection<IJxseServiceContext<?>>>, IServiceChangedListener
+public class JxseServiceContainerPetitioner<T extends Enum<T>> extends AbstractPetitioner<String, String, IJxseServiceContext<?,?>>
+	implements IJxseComponentNode<Collection<IJxseServiceContext<?,?>>,T>, IServiceChangedListener
 {
 	public static final String S_JXSE = "Jxse";
 
+	@SuppressWarnings("rawtypes")
 	private static JxseServiceContainerPetitioner attendee = new JxseServiceContainerPetitioner();
 	
-	private List<IJxseComponent<?>> children;
+	private List<IJxseComponent<?,?>> children;
 
 	private ServiceEventDispatcher dispatcher = ServiceEventDispatcher.getInstance();
 	
@@ -40,23 +42,23 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
 	
 	private JxseServiceContainerPetitioner() {
 		super( new ResourcePalaver());
-		children = new ArrayList<IJxseComponent<?>>();
+		children = new ArrayList<IJxseComponent<?,?>>();
 		this.date = Calendar.getInstance().getTime();
 	}
 	
-	public static JxseServiceContainerPetitioner getInstance(){
+	public static JxseServiceContainerPetitioner<?> getInstance(){
 		return attendee;
 	}
 
-	public IJxseServiceContext<?> getJxtaContainer( String identifier ) {
-		for( IJxseServiceContext<?> container: super.getCollection() )
+	public IJxseServiceContext<?,?> getJxtaContainer( String identifier ) {
+		for( IJxseServiceContext<?,?> container: super.getCollection() )
 			if( container.getIdentifier().equals( identifier ))
 				return container;
 		return null;
 	}
 
 	@Override
-	protected void onDataReceived( ParlezEvent<IJxseServiceContext<?>> event ) {
+	protected void onDataReceived( ParlezEvent<IJxseServiceContext<?,?>> event ) {
 		  super.onDataReceived( event );
 		  this.addChild( event.getData());
 		  System.out.println("Container added: " + event.getData().getIdentifier( ));
@@ -81,7 +83,7 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
 	}
 
 	@Override
-	public IJxseComponentNode<?> getParent() {
+	public IJxseComponentNode<?,?> getParent() {
 		return null;
 	}
 
@@ -102,12 +104,12 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
 	}
 
 	@Override
-	public Collection<IJxseServiceContext<?>> getModule() {
+	public Collection<IJxseServiceContext<?,?>> getModule() {
 		return super.getCollection();
 	}
 
 	@Override
-	public Collection<IJxseComponent<?>> getChildren() {
+	public Collection<IJxseComponent<?,?>> getChildren() {
 		return children;
 	}
 
@@ -118,7 +120,7 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
 	}
 
 	@Override
-	public void addChild(IJxseComponent<?> child) {
+	public void addChild(IJxseComponent<?,?> child) {
 		if( children.contains( child ))
 			return;
 		children.add( child );
@@ -127,7 +129,7 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
 	}
 
 	@Override
-	public void removeChild(IJxseComponent<?> child) {
+	public void removeChild(IJxseComponent<?,?> child) {
 		  children.remove( child );
 		  dispatcher.serviceChanged( new ServiceChangedEvent( this, ServiceChange.CHILD_REMOVED ));
 	}
@@ -150,6 +152,12 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
 	@Override
 	public boolean hasAdvertisements(){
 		return false;
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

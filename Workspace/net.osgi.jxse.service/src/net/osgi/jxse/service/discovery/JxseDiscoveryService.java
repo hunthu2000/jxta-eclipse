@@ -26,6 +26,7 @@ import net.jxta.protocol.DiscoveryResponseMsg;
 import net.osgi.jxse.advertisement.AbstractAdvertisementFactory.AdvertisementTypes;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
+import net.osgi.jxse.discovery.DiscoveryServiceFactory;
 import net.osgi.jxse.log.JxseLevel;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.service.core.AbstractJxseService;
@@ -33,11 +34,16 @@ import net.osgi.jxse.service.core.AbstractJxseService;
 public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, DiscoveryProperties, IJxseDirectives> implements Runnable, DiscoveryListener {
 	
 	private ExecutorService executor;
-	
-	public JxseDiscoveryService( DiscoveryService discoveryService ) {
-		super( discoveryService );
+
+	public JxseDiscoveryService( DiscoveryServiceFactory factory ) {
+		super( factory );
 		executor = Executors.newSingleThreadExecutor();
 	}
+
+	//public JxseDiscoveryService( DiscoveryService discoveryService ) {
+	//	super( discoveryService );
+	//	executor = Executors.newSingleThreadExecutor();
+	//}
 	
 	/**
 	 * Implement pure discovery
@@ -50,10 +56,9 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 			String wildcard = ( String )this.getProperty( DiscoveryProperties.WILDCARD );
 			int threshold = ( Integer )this.getProperty( DiscoveryProperties.THRESHOLD );
 
-			String adType = AdvertisementTypes.convert(( AdvertisementTypes) this.getProperty( null /*DiscoveryProperties.ADVERTISEMENT_TYPE*/ ));
-			discovery.getLocalAdvertisements( Integer.parseInt( adType ), attribute, wildcard );
-			discovery.getRemoteAdvertisements( peerId,  Integer.parseInt( adType ), attribute, wildcard, threshold, null);
-
+			int adType = AdvertisementTypes.convertForDiscovery(( AdvertisementTypes) this.getProperty( DiscoveryProperties.ADVERTISEMENT_TYPE ));
+			discovery.getLocalAdvertisements( adType, attribute, wildcard );
+			discovery.getRemoteAdvertisements( peerId,  adType, attribute, wildcard, threshold, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -92,10 +97,11 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 	
 	@Override
 	public boolean start() {
+		boolean retval = super.start();
 		DiscoveryService discovery = super.getModule();
 		discovery.addDiscoveryListener(this);
 		this.executor.execute(this);
-		return super.start();
+		return retval;
 	}
 
 	@Override

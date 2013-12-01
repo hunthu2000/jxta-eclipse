@@ -1,5 +1,6 @@
 package net.osgi.jxse.discovery;
 
+import net.osgi.jxse.advertisement.AbstractAdvertisementFactory.AdvertisementTypes;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.AbstractPeerGroupProviderPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
@@ -26,6 +27,7 @@ public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySo
 		PEER_ID,
 		ATTRIBUTE,
 		WILDCARD,
+		ADVERTISEMENT_TYPE,
 		THRESHOLD;
 	
 		@Override
@@ -46,11 +48,12 @@ public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySo
 
 	protected void fillDefaultValues() {
 		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.DISCOVERY_MODE, DiscoveryMode.DISCOVERY, true ));
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.WAIT_TIME, 60000, true ));
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.PEER_ID, null, true ));
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.ATTRIBUTE, null, true ));
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.WILDCARD, null, true ));
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.THRESHOLD, 1, true ));
+		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.WAIT_TIME, 20000, false ));
+		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.PEER_ID, null, false ));
+		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.ATTRIBUTE, null, false ));
+		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.WILDCARD, null, false ));
+		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.ADVERTISEMENT_TYPE, AdvertisementTypes.ADV, false ));
+		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.THRESHOLD, 1, false ));
 	}
 
 	@Override

@@ -20,6 +20,7 @@ import net.jxta.document.Advertisement;
 import net.osgi.jxse.advertisement.AbstractAdvertisementFactory;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
+import net.osgi.jxse.discovery.DiscoveryServiceFactory;
 import net.osgi.jxse.utils.StringStyler;
 
 public class JxsePublishService extends JxseDiscoveryService{
@@ -35,8 +36,8 @@ public class JxsePublishService extends JxseDiscoveryService{
 
 	private Collection<AbstractAdvertisementFactory<?,?,?>> adfactories;
 	
-	public JxsePublishService( DiscoveryService component ) {
-		super( component );
+	public JxsePublishService( DiscoveryServiceFactory factory ) {
+		super( factory );
 		adfactories = new ArrayList<AbstractAdvertisementFactory<?,?,?>>();
 	}
 

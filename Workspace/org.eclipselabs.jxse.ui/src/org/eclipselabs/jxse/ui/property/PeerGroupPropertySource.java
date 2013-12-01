@@ -13,7 +13,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipselabs.jxse.ui.provider.DecoratorLabelProvider;
 
-public class PeerGroupPropertySource extends AbstractJxsePropertySource<PeerGroup> {
+public class PeerGroupPropertySource extends AbstractJxsePropertySource<PeerGroup, PeerGroupPropertySource.PeerGroupProperties> {
 
 	public enum PeerGroupProperties{
 		NAME,
@@ -32,7 +32,7 @@ public class PeerGroupPropertySource extends AbstractJxsePropertySource<PeerGrou
 		this( peergroup, new Properties() );
 	}
 
-	public PeerGroupPropertySource( IJxseComponent<PeerGroup> component ) {
+	public PeerGroupPropertySource( IJxseComponent<PeerGroup, PeerGroupPropertySource.PeerGroupProperties> component ) {
 		super( component );
 	}
 

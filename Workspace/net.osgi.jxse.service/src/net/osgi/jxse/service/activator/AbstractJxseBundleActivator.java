@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.context.IJxseServiceContext;
+import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.log.JxseLevel;
 
 import org.osgi.framework.BundleActivator;
@@ -42,7 +43,7 @@ public abstract class AbstractJxseBundleActivator implements BundleActivator {
 	 * Create the context
 	 * @return
 	 */
-	protected abstract IJxseServiceContext<NetworkManager> createContext();
+	protected abstract IJxseServiceContext<NetworkManager, ContextProperties> createContext();
 	
 	/*
 	 * (non-Javadoc)
@@ -92,7 +93,7 @@ public abstract class AbstractJxseBundleActivator implements BundleActivator {
 		logServiceTracker = null;
 	}
 
-	public IJxseServiceContext<NetworkManager> getServiceContext(){
+	public IJxseServiceContext<NetworkManager, ContextProperties> getServiceContext(){
 		return jxtaActivator.getServiceContext();
 	}
 }

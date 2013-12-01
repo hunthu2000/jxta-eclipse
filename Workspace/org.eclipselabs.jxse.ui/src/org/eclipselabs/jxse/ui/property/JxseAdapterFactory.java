@@ -1,6 +1,5 @@
 package org.eclipselabs.jxse.ui.property;
 
-import net.jxta.configuration.JxtaConfiguration;
 import net.jxta.document.Advertisement;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkConfigurator;
@@ -37,8 +36,6 @@ public class JxseAdapterFactory implements IAdapterFactory {
 			  return new AdvertisementPropertySource(( Advertisement )adaptableObject);
 		  if( adaptableObject instanceof PeerGroup )
 			  return new PeerGroupPropertySource(( PeerGroup )adaptableObject);
-		  if( adaptableObject instanceof JxtaConfiguration )
-			  return new JxseConfigurationPropertySource(( JxtaConfiguration )adaptableObject);
 		  return null;			
 	}
 
@@ -47,7 +44,7 @@ public class JxseAdapterFactory implements IAdapterFactory {
 	 * @param adaptableObject
 	 * @return
 	 */
-	protected IPropertySource getPropertySource( IJxseComponent<?> component ){
+	protected IPropertySource getPropertySource( IJxseComponent<?,?> component ){
 		Object module = component.getModule();  
 		return this.getPropertySource( module );			
 	}

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package net.osgi.jxse.advertisement;
 
+import net.jxta.discovery.DiscoveryService;
 import net.jxta.document.Advertisement;
 import net.jxta.document.AdvertisementFactory;
 import net.jxta.protocol.ModuleClassAdvertisement;
@@ -26,6 +27,7 @@ public abstract class AbstractAdvertisementFactory<T extends Advertisement, U ex
 	public enum AdvertisementTypes{
 		ADV,
 		PEERGROUP,
+		PEER,
 		MODULE_CLASS,
 		MODULE_SPEC,
 		PIPE;
@@ -54,7 +56,23 @@ public abstract class AbstractAdvertisementFactory<T extends Advertisement, U ex
 				return Advertisement.getAdvertisementType();
 			}
 		}
-	
+
+		/**
+		 * Convert the enum to a form that the jxta lib can understand
+		 * @param adType
+		 * @return
+		 */
+		public static int convertForDiscovery( AdvertisementTypes adType ){
+			switch( adType ){
+			case PEERGROUP:
+				return DiscoveryService.GROUP;
+			case PEER:
+				return DiscoveryService.PEER;
+			default:
+				return DiscoveryService.ADV;
+			}
+		}
+
 		/**
 		 * Concert from advertisement type 
 		*/

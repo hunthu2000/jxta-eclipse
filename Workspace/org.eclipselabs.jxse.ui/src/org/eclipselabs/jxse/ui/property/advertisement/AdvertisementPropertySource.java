@@ -15,7 +15,7 @@ import org.eclipselabs.jxse.ui.property.AbstractJxsePropertySource;
 import org.eclipselabs.jxse.ui.property.advertisement.ModuleImplAdvPropertySource.ModuleImplAdvProperties;
 import org.eclipselabs.jxse.ui.property.advertisement.ModuleSpecAdvPropertySource.ModuleSpecAdvProperties;
 
-public class AdvertisementPropertySource extends AbstractJxsePropertySource<Advertisement> {
+public class AdvertisementPropertySource extends AbstractJxsePropertySource<Advertisement, AdvertisementProperties> {
 
 	public static final String S_DEFAULT_NAME = "Default JXTA Advertisement";
 
@@ -23,7 +23,7 @@ public class AdvertisementPropertySource extends AbstractJxsePropertySource<Adve
 		super( source );
 	}
 
-	public AdvertisementPropertySource( IJxseComponent<Advertisement> component ) {
+	public AdvertisementPropertySource( IJxseComponent<Advertisement, AdvertisementProperties> component ) {
 		super( component );
 	}
 

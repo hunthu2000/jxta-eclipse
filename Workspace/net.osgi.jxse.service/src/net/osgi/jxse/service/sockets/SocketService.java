@@ -53,7 +53,7 @@ public class SocketService extends AbstractJxseService<JxtaSocket, ISocketFactor
 	private ExecutorService service;
 	
 	public SocketService( JxtaSocket component ) {
-		super( component );
+		super( null );//component );
 		service = Executors.newCachedThreadPool();
 	}
 

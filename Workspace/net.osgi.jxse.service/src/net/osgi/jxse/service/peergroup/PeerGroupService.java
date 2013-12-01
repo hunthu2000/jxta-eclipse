@@ -11,16 +11,17 @@
 package net.osgi.jxse.service.peergroup;
 
 import net.jxta.peergroup.PeerGroup;
+import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.service.core.AbstractJxseService;
 import net.osgi.jxse.service.peergroup.IPeerGroupProperties.PeerGroupProperties;
 
-public class PeerGroupService extends AbstractJxseService<PeerGroup, PeerGroupProperties, IJxseDirectives.Directives>{
+public class PeerGroupService extends AbstractJxseService<PeerGroup, PeerGroupProperties, IJxseDirectives>{
 
 	public static final String S_PEERGROUP = "Jxta PeerGroup";
 
-	public PeerGroupService(PeerGroup component ) {
-		super( component );
+	public PeerGroupService(IComponentFactory<PeerGroup, PeerGroupProperties, IJxseDirectives> factory ) {
+		super( factory );
 	}
 
 	@Override

@@ -30,7 +30,7 @@ public class ServerSocketService extends AbstractJxseService<JxtaServerSocket, I
 	private ExecutorService service;
 	
 	public ServerSocketService(JxtaServerSocket component ) {
-		super( component );
+		super( null);//component );
 		service = Executors.newCachedThreadPool();
 	}
 

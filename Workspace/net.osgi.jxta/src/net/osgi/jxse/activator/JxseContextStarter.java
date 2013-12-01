@@ -20,7 +20,7 @@ import net.osgi.jxse.context.IJxseServiceContext;
  * @author keesp
  *
  */
-public class JxseContextStarter<T extends IJxseServiceContext<U>, U extends Object> implements Runnable{
+public class JxseContextStarter<T extends IJxseServiceContext<U,V>, U extends Object, V extends Enum<V>> implements Runnable{
 
 	private T activator;
 	
