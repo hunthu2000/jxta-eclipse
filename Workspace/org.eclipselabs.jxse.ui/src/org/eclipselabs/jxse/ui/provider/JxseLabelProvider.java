@@ -2,6 +2,7 @@ package org.eclipselabs.jxse.ui.provider;
 
 import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.service.core.AbstractJxseService;
+import net.osgi.jxse.service.discovery.JxseDiscoveryService;
 import net.osgi.jxse.service.utils.Utils;
 
 import org.eclipse.jface.viewers.LabelProvider;
@@ -30,6 +31,13 @@ public class JxseLabelProvider extends LabelProvider{
 		if(!( element instanceof IJxseComponent<?,?>))
 			return super.getText(element);
 		IJxseComponent<?,?> component = (IJxseComponent<?,?> )element;
-		return Utils.getLabel(component);
+		String text = Utils.getLabel(component); 
+		if( component instanceof JxseDiscoveryService )
+		{
+			JxseDiscoveryService service = ( JxseDiscoveryService )component;
+			if( service.getSize() > 0 )
+				text += "(" + service.getSize() + ")";
+		}
+		return text;
 	}	
 }

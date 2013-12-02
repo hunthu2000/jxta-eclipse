@@ -136,8 +136,7 @@ public class JxseComponent<T extends Object,U extends Enum<U>> implements IJxseC
 		return properties.get(key);
 	}
 
-	@Override
-	public void putProperty(Object key, Object value ) {
+	protected void putProperty(Object key, Object value ) {
 		properties.put( key, value );
 	}
 

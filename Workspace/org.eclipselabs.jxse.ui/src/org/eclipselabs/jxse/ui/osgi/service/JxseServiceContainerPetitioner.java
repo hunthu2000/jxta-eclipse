@@ -99,11 +99,6 @@ public class JxseServiceContainerPetitioner<T extends Enum<T>> extends AbstractP
 	}
 
 	@Override
-	public void putProperty(Object key, Object value) {
-		// TODO Auto-generated method stub	
-	}
-
-	@Override
 	public Collection<IJxseServiceContext<?,?>> getModule() {
 		return super.getCollection();
 	}

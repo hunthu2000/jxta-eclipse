@@ -74,12 +74,6 @@ public class JxseComponentNode<T extends Object, U extends Enum<U>> implements I
 		return component.getProperty(key);
 	}
 
-	
-	@Override
-	public void putProperty(Object key, Object value) {
-		component.putProperty(key, value);	
-	}
-
 	@Override
 	public void addChild( IJxseComponent<?,?> child ){
 		this.children.add( child );

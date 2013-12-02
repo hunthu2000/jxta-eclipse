@@ -14,11 +14,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import net.jxta.peer.PeerID;
+import net.osgi.jxse.advertisement.AbstractAdvertisementFactory.AdvertisementTypes;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.properties.AbstractPreferences;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
+import net.osgi.jxse.utils.StringStyler;
 
 public class DiscoveryPreferences<T extends IJxseDirectives> extends AbstractPreferences<DiscoveryProperties, T>
 {
@@ -37,6 +39,8 @@ public class DiscoveryPreferences<T extends IJxseDirectives> extends AbstractPre
 	@Override
 	public Object convertValue( DiscoveryProperties id, String value ){
 		switch( id ){
+		case ADVERTISEMENT_TYPE:
+			return AdvertisementTypes.valueOf( StringStyler.styleToEnum(value));
 		case ATTRIBUTE:
 		case WILDCARD:
 			return value;

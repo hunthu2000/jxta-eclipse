@@ -26,7 +26,7 @@ public abstract class AbstractJxsePropertySource<T extends Object,U extends Enum
 
 	protected AbstractJxsePropertySource( IJxseComponent<T,U> component ) {
 		this( component.getModule(), new Properties());
-		Iterator<?> iterator = null;//TODO CP: component.iterator();
+		Iterator<?> iterator = component.iterator();
 		Object key, value;
 		while( iterator.hasNext()){
 			key = iterator.next();

@@ -28,6 +28,7 @@ public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySo
 		ATTRIBUTE,
 		WILDCARD,
 		ADVERTISEMENT_TYPE,
+		FOUND,
 		THRESHOLD;
 	
 		@Override
@@ -54,6 +55,7 @@ public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySo
 		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.WILDCARD, null, false ));
 		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.ADVERTISEMENT_TYPE, AdvertisementTypes.ADV, false ));
 		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.THRESHOLD, 1, false ));
+		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.FOUND, 0, false ));
 	}
 
 	@Override

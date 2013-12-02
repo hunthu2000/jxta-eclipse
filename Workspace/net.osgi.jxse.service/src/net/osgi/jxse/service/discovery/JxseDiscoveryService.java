@@ -31,20 +31,19 @@ import net.osgi.jxse.log.JxseLevel;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.service.core.AbstractJxseService;
 
-public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, DiscoveryProperties, IJxseDirectives> implements Runnable, DiscoveryListener {
+public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, DiscoveryProperties, IJxseDirectives> implements Runnable {
 	
 	private ExecutorService executor;
+	
+	private DiscoveryListener listener;
+	private int size;
 
 	public JxseDiscoveryService( DiscoveryServiceFactory factory ) {
 		super( factory );
+		this.size = 0;
 		executor = Executors.newSingleThreadExecutor();
 	}
 
-	//public JxseDiscoveryService( DiscoveryService discoveryService ) {
-	//	super( discoveryService );
-	//	executor = Executors.newSingleThreadExecutor();
-	//}
-	
 	/**
 	 * Implement pure discovery
 	 */
@@ -57,11 +56,27 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 			int threshold = ( Integer )this.getProperty( DiscoveryProperties.THRESHOLD );
 
 			int adType = AdvertisementTypes.convertForDiscovery(( AdvertisementTypes) this.getProperty( DiscoveryProperties.ADVERTISEMENT_TYPE ));
-			discovery.getLocalAdvertisements( adType, attribute, wildcard );
+			Enumeration<Advertisement> enm= discovery.getLocalAdvertisements( adType, attribute, wildcard );
+			this.calculateSize(enm);
 			discovery.getRemoteAdvertisements( peerId,  adType, attribute, wildcard, threshold, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Get the size of the advertisements that were found
+	 * @return
+	 */
+	public int getSize() {
+		return size;
+	}
+
+	protected synchronized void calculateSize( Enumeration<Advertisement> enm ){
+		size = 0;
+		while( enm.hasMoreElements() )
+			size++;
+		this.putProperty( DiscoveryProperties.FOUND, size );
 	}
 	
 	/**
@@ -99,7 +114,26 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 	public boolean start() {
 		boolean retval = super.start();
 		DiscoveryService discovery = super.getModule();
-		discovery.addDiscoveryListener(this);
+		listener = new DiscoveryListener(){
+
+			@Override
+			public void discoveryEvent(DiscoveryEvent event) {
+				DiscoveryResponseMsg res = event.getResponse();
+				// let's get the responding peer's advertisement
+				System.out.println(" [ Got a Discovery Response [" +
+						res.getResponseCount() + " elements] from peer : " +
+						event.getSource() + " ]");
+				Advertisement adv;
+				Enumeration<?> en = res.getAdvertisements();
+				if (en != null) {
+					while (en.hasMoreElements()) {
+						adv = (Advertisement) en.nextElement();
+						System.out.println(adv);
+					}
+				}
+			}	
+		};
+		discovery.addDiscoveryListener(listener);
 		this.executor.execute(this);
 		return retval;
 	}
@@ -117,29 +151,21 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 			}
 		}
 	}
-		
+	
+	
 	@Override
-	protected void deactivate() {
+	public void stop() {
 		Thread.currentThread().interrupt();
 		DiscoveryService discovery = super.getModule();
-		discovery.removeDiscoveryListener(this );
+		if( listener != null)
+			discovery.removeDiscoveryListener( listener );
+		this.listener = null;
+		super.stop();
 	}
 
 	@Override
-	public void discoveryEvent(DiscoveryEvent event) {
-		DiscoveryResponseMsg res = event.getResponse();
-		// let's get the responding peer's advertisement
-		System.out.println(" [ Got a Discovery Response [" +
-				res.getResponseCount() + " elements] from peer : " +
-				event.getSource() + " ]");
-		Advertisement adv;
-		Enumeration<?> en = res.getAdvertisements();
-		if (en != null) {
-			while (en.hasMoreElements()) {
-				adv = (Advertisement) en.nextElement();
-				System.out.println(adv);
-			}
-		}
+	protected void deactivate() {
+		this.stop();
 	}
 
 	@Override

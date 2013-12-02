@@ -25,7 +25,7 @@ import net.osgi.jxse.component.ComponentEventDispatcher;
 import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
-import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 
 public abstract class AbstractJxseService<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends AbstractActivator<IComponentFactory<T,U,V>> 
 implements IJxseService<T,U>{
@@ -40,11 +40,11 @@ implements IJxseService<T,U>{
 	private T module;
 	private Collection<Advertisement> advertisements;
 	
-	private IJxsePropertySource<U, V> properties;
+	private IJxseWritePropertySource<U, V> properties;
 	
 	private ComponentEventDispatcher dispatcher;
 
-	protected AbstractJxseService( IJxsePropertySource<U, V> properties, T module ) {
+	protected AbstractJxseService( IJxseWritePropertySource<U, V> properties, T module ) {
 		this.properties = properties;
 		this.module = module;
 		dispatcher = ComponentEventDispatcher.getInstance();
@@ -54,7 +54,7 @@ implements IJxseService<T,U>{
 	}
 
 	protected AbstractJxseService( IComponentFactory<T,U,V> factory ) {
-		this( factory.getPropertySource(), factory.getModule() );
+		this( (IJxseWritePropertySource<U, V>) factory.getPropertySource(), factory.getModule() );
 	}
 
 	/**
@@ -165,9 +165,8 @@ implements IJxseService<T,U>{
 		return properties.getProperty((U) key);
 	}
 
-	@Override
-	public void putProperty( Object key, Object value ){
-		//properties.put(key, value);
+	protected void putProperty( U key, Object value ){
+		properties.getOrCreateManagedProperty( key, value, false);
 	}
 
 	

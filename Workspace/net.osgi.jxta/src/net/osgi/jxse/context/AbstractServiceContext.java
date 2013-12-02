@@ -127,8 +127,7 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
-	public void putProperty(Object key, Object value) {
+	protected void putProperty(Object key, Object value) {
 		if( value == null )
 			return;
 		this.properties.setProperty(( U) key, value);
@@ -248,7 +247,7 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 		else
 			component = new JxseComponent( context, module );
 
-		component.putProperty( ModuleProperties.CREATE_DATE, Calendar.getInstance().getTime() );
+		//TODO CP:component.putProperty( ModuleProperties.CREATE_DATE, Calendar.getInstance().getTime() );
 		if( module instanceof NetworkManager ){
 			IJxseComponentNode<Object,?> node = new JxseComponentNode( context, component );
 			NetworkManager manager = ( NetworkManager )module;

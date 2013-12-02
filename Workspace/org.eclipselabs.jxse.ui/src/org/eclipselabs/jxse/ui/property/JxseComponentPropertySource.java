@@ -39,7 +39,7 @@ public class JxseComponentPropertySource implements IPropertySource {
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		PropertyDescriptor descriptor = new JxseComponentPropertyDescriptor( S_PROPERTY_JXTA_COMPONENT_ID, S_PROPERTY_JTTA_SERVICE_COMPONENT_TEXT );
 		descriptor.setCategory(S_PROPERTY_JXTA_TEXT);
-		Iterator<?> iterator = null;//TODO CP: this.source.iterator();
+		Iterator<?> iterator = this.source.iterator();
 		Collection<IPropertyDescriptor> descriptors = new ArrayList<IPropertyDescriptor>();
 		descriptors.add( descriptor);
 		Object key;

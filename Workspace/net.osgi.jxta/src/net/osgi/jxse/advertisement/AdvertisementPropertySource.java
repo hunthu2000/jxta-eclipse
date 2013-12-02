@@ -12,7 +12,7 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 	public static String S_ADVERTISEMENTS = "Adverisements";
 	
 	/**
-	 * The scope of an advertisement determines whter it will be published or not
+	 * The scope of an advertisement determines whether it will be published or not
 	 * @author keesp
 	 *
 	 */
@@ -27,8 +27,30 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 		}
 	}
 
+	public enum AdvertisementProperties{
+		ID,
+		NAME,
+		DESCRIPTION,
+		TYPE;
+	
+		public static boolean isValidProperty( String str ){
+			if( Utils.isNull( str ))
+				return false;
+			for( AdvertisementProperties dir: values() ){
+				if( dir.name().equals( str ))
+					return true;
+			}
+			return false;
+		}
+
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString() );
+		}
+	}
+
 	public enum AdvertisementDirectives implements IJxseDirectives{
-		ADVERTISEMENT_TYPE,
+		TYPE,
 		SCOPE;
 	
 		public static boolean isValidDirective( String directive ){

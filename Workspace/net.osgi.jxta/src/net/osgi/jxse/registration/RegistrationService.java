@@ -158,8 +158,7 @@ public class RegistrationService extends AbstractActivator<IPeerGroupProvider> i
 		return this.source.getProperty((RegistrationProperties) id);
 	}
 
-	@Override
-	public void putProperty(Object id, Object value) {
+	protected void putProperty(Object id, Object value) {
 		this.source.setProperty((RegistrationProperties) id, value);
 	}
 

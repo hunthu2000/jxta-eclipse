@@ -57,13 +57,6 @@ public interface IJxseComponent<T extends Object, U extends Enum<U>>{
 	public Object getProperty( Object key );
 
 	/**
-	 * Set a property for the service component
-	 * @param key
-	 * @return
-	 */
-	public void putProperty( Object key, Object value );
-
-	/**
 	 * Get the module that is contained in the component
 	 * @return
 	 */
