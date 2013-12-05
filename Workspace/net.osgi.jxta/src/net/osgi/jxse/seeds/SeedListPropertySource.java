@@ -90,10 +90,4 @@ public class SeedListPropertySource<T extends IJxseDirectives> extends AbstractJ
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	@Override
-	public Object getDefaultDirectives(IJxseDirectives id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

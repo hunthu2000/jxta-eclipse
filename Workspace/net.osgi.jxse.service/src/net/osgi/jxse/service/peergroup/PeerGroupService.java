@@ -24,10 +24,6 @@ public class PeerGroupService extends AbstractJxseService<PeerGroup, PeerGroupPr
 		super( factory );
 	}
 
-	@Override
-	protected void fillDefaultValues() {
-	}
-
 	public void putProperty( PeerGroupProperties key, Object value ){
 		if( value == null )
 			return;

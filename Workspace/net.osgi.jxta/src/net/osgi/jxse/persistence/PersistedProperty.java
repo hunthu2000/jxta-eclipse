@@ -10,7 +10,7 @@ import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.utils.Utils;
 
-public class PersistedProperty<E extends Enum<E>> {
+public class PersistedProperty<E extends Object> {
 
 	private AbstractPreferences<E, IJxseDirectives> prefs;
 	private Preferences preferences;
@@ -30,7 +30,7 @@ public class PersistedProperty<E extends Enum<E>> {
 	 */
 	public Object getProperty( E id ){
 		ManagedProperty<E, Object> mp = this.prefs.getSource().getManagedProperty(id);
-		String value = this.preferences.get( id.name(), mp.getDefaultValue().toString());
+		String value = this.preferences.get( id.toString(), mp.getDefaultValue().toString());
 		if( !Utils.isNull( value )){
 			this.prefs.setPropertyFromString(id, value);
 		}
@@ -44,7 +44,7 @@ public class PersistedProperty<E extends Enum<E>> {
 	 * @return
 	 */
 	public boolean setProperty( E id, Object value ){
-		this.preferences.put( id.name(), value.toString());
+		this.preferences.put( id.toString(), value.toString());
 		try {
 			this.preferences.flush();
 			return true;

@@ -6,7 +6,7 @@ import net.osgi.jxse.persistence.PersistedProperty;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 
-public abstract class AbstractPreferences<E extends Enum<E>, U extends IJxseDirectives> {
+public abstract class AbstractPreferences<E extends Object, U extends IJxseDirectives> {
 
 	private IJxseWritePropertySource<E, U> source;
 	

@@ -7,6 +7,7 @@ import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.ProjectFolderUtils;
@@ -16,7 +17,7 @@ public class NetworkManagerPropertySource extends AbstractJxseWritePropertySourc
 	implements IJxseWritePropertySource<NetworkManagerPropertySource.NetworkManagerProperties, IJxseDirectives>
 {
 
-	public enum NetworkManagerProperties{
+	public enum NetworkManagerProperties implements IJxseProperties{
 		CONFIG_PERSISTENT,
 		INFRASTRUCTURE_ID,
 		INSTANCE_HOME,
@@ -84,12 +85,6 @@ public class NetworkManagerPropertySource extends AbstractJxseWritePropertySourc
 	public boolean validate(NetworkManagerProperties id, Object value) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public Object getDefaultDirectives(IJxseDirectives id) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**

@@ -25,6 +25,10 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource;
+import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
+import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementProperties;
+import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
+import net.osgi.jxse.advertisement.PipeAdvertisementPropertySource;
 import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilder;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
@@ -46,6 +50,7 @@ import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperti
 import net.osgi.jxse.network.OverviewPreferences;
 import net.osgi.jxse.properties.CategoryPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
@@ -306,8 +311,8 @@ class JxtaHandler extends DefaultHandler{
 			case SECURITY:
 				newSource = new PartialPropertySource( qName, source );
 				break;
-			case ADVERTISEMENT:
-				newSource = new AdvertisementPropertySource( qName, source );
+			case ADVERTISEMENT_SERVICE:
+				newSource = this.getAdvertisementPropertysource(attributes, qName, source );
 				break;			
 			case REGISTRATION_SERVICE:
 				newSource = new RegistrationPropertySource( qName, source );
@@ -317,6 +322,9 @@ class JxtaHandler extends DefaultHandler{
 				break;			
 			case PEERGROUP_SERVICE:
 				newSource = new PeerGroupPropertySource( qName, source );
+				break;			
+			case EXTENDED:
+				newSource = new PartialPropertySource( qName, source );
 				break;			
 			default:
 				newSource = new CategoryPropertySource( qName, source );
@@ -337,7 +345,31 @@ class JxtaHandler extends DefaultHandler{
 		}
 		logger.info(" Group value: " + qName );
 	}
+
+	/**
+	 * Get the correct property source
+	 * @param attrs
+	 * @param qName
+	 * @param parent
+	 * @return
+	 */
+	protected AdvertisementPropertySource getAdvertisementPropertysource( Attributes attrs, String qName ,IJxsePropertySource<IJxseProperties, IJxseDirectives> parent ){
+		AdvertisementPropertySource source = new AdvertisementPropertySource( qName, parent );
+		if(( attrs == null ) || ( attrs.getLength() == 0))
+				return source;
+		String type = attrs.getValue(AdvertisementDirectives.TYPE.toString().toLowerCase() );
+		if( Utils.isNull(type))
+			return source;
+		AdvertisementTypes adv_type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( type ));
+		switch( adv_type ){
+		case PIPE:
+			return new PipeAdvertisementPropertySource( source );
+		default:
+			return source;
+		}
+	}
 	
+
 	/**
 	 * Create the property
 	 * @param qName
@@ -411,6 +443,11 @@ class JxtaHandler extends DefaultHandler{
 		if( source instanceof DiscoveryPropertySource ){
 			DiscoveryPreferences<IJxseDirectives> preferences = new DiscoveryPreferences<IJxseDirectives>( source );
 			preferences.setPropertyFromString(( DiscoveryProperties) property.getKey(), value);
+			return;
+		}
+		if( source instanceof AdvertisementPropertySource ){
+			AdvertisementPropertySource aps = ( AdvertisementPropertySource )source ;
+			aps.setProperty( (AdvertisementProperties) property.getKey(), value);
 			return;
 		}
 		if( source instanceof PeerGroupPropertySource ){

@@ -26,7 +26,7 @@ import net.jxta.document.Advertisement;
 import net.jxta.protocol.DiscoveryResponseMsg;
 import net.osgi.jxse.activator.AbstractActivator;
 import net.osgi.jxse.activator.IJxseService;
-import net.osgi.jxse.advertisement.AbstractAdvertisementFactory.AdvertisementTypes;
+import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.registration.RegistrationPropertySource.RegistrationProperties;
 import net.osgi.jxse.log.JxseLevel;

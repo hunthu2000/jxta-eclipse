@@ -84,11 +84,6 @@ public class SocketService extends AbstractJxseService<JxtaSocket, ISocketFactor
 	}	
 	
 	@Override
-	protected void fillDefaultValues() {
-		// TODO Auto-generated method stub	
-	}
-
-	@Override
 	public void run() {
 		System.out.println("Starting Client Socket");
 		boolean waitForRendezvous = true;//(boolean) socketService.getProperty( JxtaSocketFactory.Properties.WAIT_FOR_RENDEZ_VOUS );

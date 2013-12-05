@@ -78,11 +78,6 @@ public class RendezVousComponent extends AbstractJxseService<RendezVousService, 
 		}
 	}
 
-	@Override
-	protected void fillDefaultValues() {
-	}
-
-	@Override
 	protected void activate() {
 		dispatcher = ServiceEventDispatcher.getInstance();
 		super.activate();

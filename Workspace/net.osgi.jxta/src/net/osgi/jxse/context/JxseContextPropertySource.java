@@ -21,8 +21,6 @@ import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
-import net.osgi.jxse.properties.IJxseDirectives;
-import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.validator.ClassValidator;
@@ -107,22 +105,6 @@ public class JxseContextPropertySource extends AbstractJxseWritePropertySource<C
 		return null;
 	}
 
-	@Override
-	public Object getDefaultDirectives(IJxseDirectives id) {
-		if(!( id instanceof Directives ))
-				return null;
-		switch(( Directives )id ){
-		case AUTO_START:
-			return true;
-		case CLEAR_CONFIG:
-			break;
-		default:
-			break;
-		}
-		return null;
-	}
-
-	
 	@Override
 	public boolean validate(ContextProperties id, Object value) {
 		// TODO Auto-generated method stub

@@ -83,11 +83,6 @@ public class PropertySourceWrapper< T extends Object, U extends IJxseDirectives>
 	}
 
 	@Override
-	public Object getDefaultDirectives(U id) {
-		return this.getDefaultDirectives(id);
-	}
-
-	@Override
 	public Iterator<U> directiveIterator() {
 		return this.source.directiveIterator();
 	}

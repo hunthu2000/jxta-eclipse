@@ -23,7 +23,7 @@ import net.jxta.discovery.DiscoveryListener;
 import net.jxta.discovery.DiscoveryService;
 import net.jxta.document.Advertisement;
 import net.jxta.protocol.DiscoveryResponseMsg;
-import net.osgi.jxse.advertisement.AbstractAdvertisementFactory.AdvertisementTypes;
+import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.discovery.DiscoveryServiceFactory;
@@ -152,26 +152,12 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 		}
 	}
 	
-	
 	@Override
-	public void stop() {
+	protected void deactivate() {
 		Thread.currentThread().interrupt();
 		DiscoveryService discovery = super.getModule();
 		if( listener != null)
 			discovery.removeDiscoveryListener( listener );
 		this.listener = null;
-		super.stop();
 	}
-
-	@Override
-	protected void deactivate() {
-		this.stop();
-	}
-
-	@Override
-	protected void fillDefaultValues() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

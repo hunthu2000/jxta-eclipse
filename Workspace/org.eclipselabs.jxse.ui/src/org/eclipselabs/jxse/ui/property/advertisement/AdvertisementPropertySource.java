@@ -7,7 +7,7 @@ import java.util.Collection;
 import net.jxta.document.Advertisement;
 import net.jxta.protocol.ModuleImplAdvertisement;
 import net.jxta.protocol.ModuleSpecAdvertisement;
-import net.osgi.jxse.advertisement.AbstractAdvertisementFactory.AdvertisementProperties;
+import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementProperties;
 import net.osgi.jxse.component.IJxseComponent;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -62,7 +62,7 @@ public class AdvertisementPropertySource extends AbstractJxsePropertySource<Adve
 			return super.getPropertyValue(id);
 		
 		AdvertisementProperties property = ( AdvertisementProperties )id;
-		switch( property ){
+		/**
 		case ID:
 			return advertisement.getID();
 		case NAME:
@@ -72,6 +72,7 @@ public class AdvertisementPropertySource extends AbstractJxsePropertySource<Adve
 		case ADV_TYPE:
 			return advertisement.getAdvType();
 		}
+	*/
 		return super.getPropertyValue(id);
 	}
 

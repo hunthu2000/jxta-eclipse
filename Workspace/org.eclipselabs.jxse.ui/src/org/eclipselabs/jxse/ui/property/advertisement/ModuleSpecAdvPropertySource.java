@@ -3,7 +3,7 @@ package org.eclipselabs.jxse.ui.property.advertisement;
 import net.jxta.document.Element;
 import net.jxta.platform.ModuleSpecID;
 import net.jxta.protocol.ModuleSpecAdvertisement;
-import net.osgi.jxse.advertisement.AbstractAdvertisementFactory.AdvertisementProperties;
+import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementProperties;
 import net.osgi.jxse.utils.StringStyler;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;

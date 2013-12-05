@@ -14,7 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import net.jxta.peer.PeerID;
-import net.osgi.jxse.advertisement.AbstractAdvertisementFactory.AdvertisementTypes;
+import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.properties.AbstractPreferences;

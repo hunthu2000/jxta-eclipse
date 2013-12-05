@@ -32,7 +32,8 @@ public interface IComponentFactory<T extends Object, U extends Object, V extends
 		RENDEZVOUS_SERVICE,
 		JXSE_SOCKET,
 		JXSE_SERVER_SOCKET,
-		ADVERTISEMENT;
+		ADVERTISEMENT_SERVICE,
+		EXTENDED;
 
 		@Override
 		public String toString() {

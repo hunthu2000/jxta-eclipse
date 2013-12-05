@@ -47,12 +47,6 @@ public class ServerSocketService extends AbstractJxseService<JxtaServerSocket, I
 	}
 
 	@Override
-	protected void fillDefaultValues() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
 	protected boolean onInitialising() {
 		//JxtaServerSocketFactory factory =  ( JxtaServerSocketFactory )super.getFactory();
 		//IJxtaServiceComponent<JxtaServerSocket> socketComp = 

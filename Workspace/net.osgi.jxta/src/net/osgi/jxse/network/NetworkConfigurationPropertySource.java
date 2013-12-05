@@ -6,6 +6,7 @@ import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
@@ -15,7 +16,7 @@ public class NetworkConfigurationPropertySource extends AbstractJxseWritePropert
 {
 	public static String S_NETWORK_CONFIGURATOR = "NetworkConfigurator";
 	
-	public enum NetworkConfiguratorProperties{
+	public enum NetworkConfiguratorProperties implements IJxseProperties{
 		DESCRIPTION,
 		HOME,
 		HTTP_8ENABLED,
@@ -111,14 +112,6 @@ public class NetworkConfigurationPropertySource extends AbstractJxseWritePropert
 		super.setProperty( NetworkConfiguratorProperties.TCP_8PORT, source.getTcpPort());
 		super.setProperty( NetworkConfiguratorProperties.TCP_8ENABLED, true );
 		super.setProperty( NetworkConfiguratorProperties.HTTP_8ENABLED, true );
-	}
-
-	@Override
-	public Object getDefaultDirectives(IJxseDirectives id) {
-		NetworkManagerPropertySource source = (NetworkManagerPropertySource) super.getParent();
-		if( source == null )
-			return null;
-		return null;//source.getDefaultDirectives((IJxseDirectives.Directives) id);
 	}
 
 	@Override

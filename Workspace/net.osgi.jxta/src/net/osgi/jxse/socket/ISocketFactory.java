@@ -1,11 +1,12 @@
 package net.osgi.jxse.socket;
 
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.utils.StringStyler;
 
 public interface ISocketFactory {
 
 
-	public enum Properties{
+	public enum Properties implements IJxseProperties{
 		TIME_OUT,
 		SO_TIME_OUT,
 		WAIT_FOR_RENDEZ_VOUS;

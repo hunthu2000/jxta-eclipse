@@ -122,13 +122,6 @@ public class CategoryPropertySource extends AbstractJxseWritePropertySource<Stri
 
 	@Override
 	public boolean validate(String id, Object value) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
-
-	@Override
-	public Object getDefaultDirectives(IJxseDirectives id) {
-		// TODO Auto-generated method stub
-		return null;
-	}	
 }

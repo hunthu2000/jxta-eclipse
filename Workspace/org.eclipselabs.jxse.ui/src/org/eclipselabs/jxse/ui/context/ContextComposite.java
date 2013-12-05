@@ -236,9 +236,9 @@ public class ContextComposite extends Composite {
 		new SpinnerDataBinding<ContextProperties>( ContextProperties.PORT, properties, this.spinner, JxseContextPropertySource.DEF_MIN_PORT, JxseContextPropertySource.DEF_MAX_PORT );
 
 		obj = properties.getProperty( ContextProperties.PEER_ID );
-		this.btnAutoStart.setSelection((boolean) properties.getDefaultDirectives( IJxseDirectives.Directives.AUTO_START ));
-		//TODO this.btnPersist.setSelection((boolean) properties.getDefaultDirectives( IJxseDirectives.Directives.PEER_ID_PERSIST ));
-		//TODO obj = properties.getDirective( IJxseDirectives.Directives.PEER_ID_CREATE );
+		//TODO CP: this.btnAutoStart.setSelection((boolean) properties.getDefaultDirectives( IJxseDirectives.Directives.AUTO_START ));
+		//TODO CP: this.btnPersist.setSelection((boolean) properties.getDefaultDirectives( IJxseDirectives.Directives.PEER_ID_PERSIST ));
+		//TODO CP: obj = properties.getDirective( IJxseDirectives.Directives.PEER_ID_CREATE );
 		boolean create = ( obj == null )?false: (boolean )obj;
 		this.btnGenerate.setSelection(create);
 		this.combo_peer_id.setEnabled(!create);

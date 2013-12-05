@@ -103,13 +103,6 @@ public interface IJxsePropertySource< T extends Object, U extends IJxseDirective
 	public U getDirectiveFromString( String id);
 
 	/**
-	 * Get the default directives
-	 * @param id
-	 * @return
-	 */
-	public Object getDefaultDirectives( U id);
-
-	/**
 	 * Get an iterator over the directives
 	 * @return
 	 */

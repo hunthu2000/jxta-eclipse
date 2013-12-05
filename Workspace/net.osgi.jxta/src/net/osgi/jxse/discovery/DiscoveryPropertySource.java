@@ -1,6 +1,6 @@
 package net.osgi.jxse.discovery;
 
-import net.osgi.jxse.advertisement.AbstractAdvertisementFactory.AdvertisementTypes;
+import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.AbstractPeerGroupProviderPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
@@ -67,12 +67,5 @@ public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySo
 	public boolean validate(DiscoveryProperties id, Object value) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-
-	@Override
-	public Object getDefaultDirectives(IJxseDirectives id) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

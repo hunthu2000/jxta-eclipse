@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.service.discovery;
+package net.osgi.jxse.service.advertisement;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,49 +17,25 @@ import java.util.logging.Logger;
 
 import net.jxta.discovery.DiscoveryService;
 import net.jxta.document.Advertisement;
-import net.osgi.jxse.advertisement.AbstractAdvertisementFactory;
+import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementProperties;
+import net.osgi.jxse.advertisement.JxseAdvertisementFactory;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.discovery.DiscoveryServiceFactory;
+import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.service.core.AbstractJxseService;
+import net.osgi.jxse.service.discovery.JxseDiscoveryService;
 import net.osgi.jxse.utils.StringStyler;
 
-public class JxsePublishService extends JxseDiscoveryService{
+public class JxseAdvertisementService extends AbstractJxseService<Advertisement, AdvertisementProperties, IJxseDirectives>{
 
-	public enum PublishProperties{
-		LIFE_TIME,
-		EXPIRATION;
-
-	@Override
-	public String toString() {
-		return StringStyler.prettyString( super.toString() );
-	}}
-
-	private Collection<AbstractAdvertisementFactory<?,?,?>> adfactories;
-	
-	public JxsePublishService( DiscoveryServiceFactory factory ) {
+	public JxseAdvertisementService( JxseAdvertisementFactory factory ) {
 		super( factory );
-		adfactories = new ArrayList<AbstractAdvertisementFactory<?,?,?>>();
-	}
-
-	@Override
-	protected void fillDefaultValues() {
-		//this.putProperty( DiscoveryProperties.DISCOVERY_MODE, DiscoveryMode.DISCOVERY_AND_PUBLISH, true );
-		//this.putProperty( PublishProperties.EXPIRATION, 1200000, true );
-		//this.putProperty( PublishProperties.LIFE_TIME, 120000,true );
-		super.fillDefaultValues();
-	}
-
-	public void addAdvertisement( AbstractAdvertisementFactory<?,?,?> advertisement ){
-		this.adfactories.add(advertisement);
-	}
-
-	public void removeAdvertisement( AbstractAdvertisementFactory<?,?,?> advertisement ){
-		this.adfactories.remove(advertisement);
 	}
 	
 	@Override
 	protected boolean onInitialising() {
-		for( AbstractAdvertisementFactory<?,?,?> factory: this.adfactories ){
+		for( JxseAdvertisementFactory factory: this.adfactories ){
 			Advertisement ad = factory.createModule();
 			if( ad != null )
 				super.addAdvertisement( ad);

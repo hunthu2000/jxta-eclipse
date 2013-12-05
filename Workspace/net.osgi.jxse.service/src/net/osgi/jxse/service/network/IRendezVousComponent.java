@@ -1,10 +1,11 @@
 package net.osgi.jxse.service.network;
 
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.utils.StringStyler;
 
 public interface IRendezVousComponent {
 
-	public enum RendezVousServiceProperties{
+	public enum RendezVousServiceProperties  implements IJxseProperties{
 		STATUS,
 		AUTO_START,
 		IS_RENDEZVOUS,

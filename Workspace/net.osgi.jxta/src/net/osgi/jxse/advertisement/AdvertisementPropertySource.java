@@ -1,15 +1,23 @@
 package net.osgi.jxse.advertisement;
 
+import net.jxta.discovery.DiscoveryService;
+import net.jxta.document.Advertisement;
+import net.jxta.peergroup.PeerGroup;
+import net.jxta.protocol.ModuleClassAdvertisement;
+import net.jxta.protocol.ModuleSpecAdvertisement;
+import net.jxta.protocol.PeerGroupAdvertisement;
+import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.PartialPropertySource;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
 public class AdvertisementPropertySource extends AbstractJxseWritePropertySource<IJxseProperties> {
 
-	public static String S_ADVERTISEMENTS = "Adverisements";
+	public static String S_ADVERTISEMENTS = "AdvertisementService";
 	
 	/**
 	 * The scope of an advertisement determines whether it will be published or not
@@ -27,11 +35,10 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 		}
 	}
 
-	public enum AdvertisementProperties{
-		ID,
-		NAME,
-		DESCRIPTION,
-		TYPE;
+	public enum AdvertisementProperties implements IJxseProperties{
+		LIFE_TIME,
+		EXPIRATION,
+		DESCRIPTION;
 	
 		public static boolean isValidProperty( String str ){
 			if( Utils.isNull( str ))
@@ -50,6 +57,9 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 	}
 
 	public enum AdvertisementDirectives implements IJxseDirectives{
+		ID,
+		NAME,
+		PEERGROUP,
 		TYPE,
 		SCOPE;
 	
@@ -69,15 +79,132 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 		}
 	}
 
+	public enum AdvertisementTypes{
+		ADV,
+		PEERGROUP,
+		PEER,
+		MODULE_CLASS,
+		MODULE_SPEC,
+		PIPE;
+	
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString());
+		}
+		
+		/**
+		 * Convert the enum to a form that the jxta lib can understand
+		 * @param adType
+		 * @return
+		 */
+		public static String convert( AdvertisementTypes adType ){
+			switch( adType ){
+			case PEERGROUP:
+				return PeerGroupAdvertisement.getAdvertisementType();
+			case PIPE:
+				return PipeAdvertisement.getAdvertisementType();
+			case MODULE_CLASS:
+				return ModuleClassAdvertisement.getAdvertisementType();
+			case MODULE_SPEC:
+				return ModuleSpecAdvertisement.getAdvertisementType();
+			default:
+				return Advertisement.getAdvertisementType();
+			}
+		}
+
+		/**
+		 * Convert the enum to a form that the jxta lib can understand
+		 * @param adType
+		 * @return
+		 */
+		public static int convertForDiscovery( AdvertisementTypes adType ){
+			switch( adType ){
+			case PEERGROUP:
+				return DiscoveryService.GROUP;
+			case PEER:
+				return DiscoveryService.PEER;
+			default:
+				return DiscoveryService.ADV;
+			}
+		}
+
+		/**
+		 * Concert from advertisement type 
+		*/
+		public static AdvertisementTypes convertFrom( String tp ){
+			if( Utils.isNull(tp))
+				return AdvertisementTypes.ADV;
+			String type = StringStyler.styleToEnum(tp);
+			if( type.equals( PeerGroupAdvertisement.getAdvertisementType()))
+				return AdvertisementTypes.PEERGROUP;
+			if( type.equals(PipeAdvertisement.getAdvertisementType()))
+				  return AdvertisementTypes.PIPE;
+			if( type.equals(ModuleClassAdvertisement.getAdvertisementType()))
+				  return AdvertisementTypes.MODULE_CLASS;
+			if( type.equals(ModuleSpecAdvertisement.getAdvertisementType()))
+				  return AdvertisementTypes.MODULE_SPEC;
+			return AdvertisementTypes.ADV;
+		}
+
+		/**
+		 * Concert from advertisement type 
+		 */
+		public static String convertTo( AdvertisementTypes advType ){
+			switch( advType ){
+			case PEERGROUP:
+				return PeerGroupAdvertisement.getAdvertisementType();
+			case PIPE:
+				return PipeAdvertisement.getAdvertisementType();
+			case MODULE_CLASS: 
+				return ModuleClassAdvertisement.getAdvertisementType();
+			case MODULE_SPEC:
+				return ModuleSpecAdvertisement.getAdvertisementType();
+			default:
+				return null;
+			}
+		}
+	}
+
+	/**
+	 * The categories that are included as children
+	 * @author Kees
+	 *
+	 */
+	public enum AdvertisementCategories{
+		BODY,
+		EXTENDED;
+
+		public static boolean isValidCategory( String category ){
+			if( Utils.isNull( category ))
+				return false;
+			for( AdvertisementCategories cat: values() ){
+				if( cat.name().equals( category ))
+					return true;
+			}
+			return false;
+		}
+
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString() );
+		}
+	}
+
 	public AdvertisementPropertySource(IJxsePropertySource<?, IJxseDirectives> parent) {
 		super( S_ADVERTISEMENTS, parent);
-		super.setDirective(AdvertisementDirectives.SCOPE, Scope.REMOTE);
+		this.fillDefaultValues();
 	}
 
 	public AdvertisementPropertySource(String componentName,
 			IJxsePropertySource<?, IJxseDirectives> parent) {
 		super(componentName, parent);
-		super.setDirective(AdvertisementDirectives.SCOPE, Scope.REMOTE);
+		this.fillDefaultValues();
+	}
+
+	protected void fillDefaultValues(){
+		super.setDirective(AdvertisementDirectives.SCOPE, Scope.REMOTE.toString());
+		super.setProperty( AdvertisementProperties.LIFE_TIME, PeerGroup.DEFAULT_LIFETIME );
+		super.setProperty( AdvertisementProperties.EXPIRATION, PeerGroup.DEFAULT_EXPIRATION );	
 	}
 
 	@Override
@@ -89,16 +216,29 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 
 	@Override
 	public IJxseProperties getIdFromString(String key) {
+		if( AdvertisementProperties.isValidProperty(key))
+			return AdvertisementProperties.valueOf(key);
 		return null;
 	}
 
 	@Override
-	public boolean validate(IJxseProperties id, Object value) {
-		return false;
+	public boolean validate( IJxseProperties id, Object value) {
+		return AdvertisementProperties.isValidProperty( id.toString());
 	}
 
 	@Override
-	public Object getDefaultDirectives(IJxseDirectives id) {
+	public boolean addChild(IJxsePropertySource<?, ?> child) {
+		if( !AdvertisementCategories.isValidCategory( StringStyler.styleToEnum( child.getComponentName() )))
+			return false;
+		return super.addChild(child);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static PartialPropertySource<String,IJxseDirectives> getExtendedProperties( IJxsePropertySource<AdvertisementProperties, IJxseDirectives> source ){
+		for( IJxsePropertySource<?,?> child: source.getChildren() ){
+			if( child.getComponentName().equals( AdvertisementCategories.EXTENDED.toString().toLowerCase() ))
+				return (PartialPropertySource<String,IJxseDirectives>) child;
+		}
 		return null;
 	}
 }

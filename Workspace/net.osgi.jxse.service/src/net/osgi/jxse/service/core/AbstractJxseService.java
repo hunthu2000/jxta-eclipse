@@ -85,15 +85,8 @@ implements IJxseService<T,U>{
 		this.module = factory.createModule();		
 		if( !factory.isCompleted() )
 			throw new IllegalStateException( S_ERR_NOT_COMPLETED );
-		this.fillDefaultValues();
 		return false;
 	}
-
-	/**
-	 * Fill the properties with default values. Note that this is called BEFORE the
-	 * service component is loaded, so they are externally overridden 
-	 */
-	protected abstract void fillDefaultValues( );
 
 	/**
 	 * Make public

@@ -1,10 +1,11 @@
 package net.osgi.jxse.advertisement;
 
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.utils.StringStyler;
 
 public interface IPipeAdvertisementFactory {
 
-	public enum Properties{
+	public enum Properties implements IJxseProperties{
 		SOCKET_ID,
 		NAME,
 		TYPE;

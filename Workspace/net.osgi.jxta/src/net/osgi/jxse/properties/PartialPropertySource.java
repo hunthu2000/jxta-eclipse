@@ -15,7 +15,7 @@ import net.osgi.jxse.utils.Utils;
  * @param <T>
  * @param <U>
  */
-public class PartialPropertySource<T extends Enum<T>, U extends IJxseDirectives> extends PropertySourceWrapper<T, U> 
+public class PartialPropertySource<T extends Object, U extends IJxseDirectives> extends PropertySourceWrapper<T, U> 
 implements  IJxseWritePropertySource<T, U>{
 
 	private int offset;
@@ -110,7 +110,7 @@ implements  IJxseWritePropertySource<T, U>{
 	protected boolean isValidId( T id ){
 		if( id == null )
 			return false;
-		String check =  StringStyler.prettyString( id.name() ).toLowerCase();
+		String check =  id.toString().toLowerCase();
 		String cat = this.getCategory();
 		if( Utils.isNull( cat )){
 			return ( check.indexOf(".") < 0 );
@@ -156,12 +156,6 @@ implements  IJxseWritePropertySource<T, U>{
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Object getDefaultDirectives(IJxseDirectives id) {
-		return super.getSource().getDefaultDirectives((U) id);
-	}
-	
 	@Override
 	public Iterator<U> directiveIterator() {
 		if( Utils.isNull( this.componentName ))

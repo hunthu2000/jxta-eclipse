@@ -13,6 +13,9 @@ package net.osgi.jxse.builder;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import net.osgi.jxse.advertisement.AdvertisementPropertySource;
+import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
+import net.osgi.jxse.advertisement.JxseAdvertisementFactory;
 import net.osgi.jxse.builder.ICompositeBuilderListener.FactoryEvents;
 import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.discovery.DiscoveryPropertySource;
@@ -29,6 +32,7 @@ import net.osgi.jxse.peergroup.PeerGroupFactory;
 import net.osgi.jxse.peergroup.PeerGroupPropertySource;
 import net.osgi.jxse.properties.AbstractPeerGroupProviderPropertySource.PeerGroupDirectives;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.registration.RegistrationPropertySource;
 import net.osgi.jxse.registration.RegistrationServiceFactory;
@@ -116,6 +120,14 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 
 			ComponentNode<IPeerGroupProvider,?,?> provider = this.getPeerGroupProviderNotNull( peergroup, parent);
 			factory = new DiscoveryServiceFactory( (IPeerGroupProvider) provider.getFactory(), (DiscoveryPropertySource)source );
+			node = this.getNode(provider, factory);
+			newFactory = true;
+		}else if( source instanceof AdvertisementPropertySource ){
+			IJxsePropertySource<IJxseProperties, IJxseDirectives> advsource = 
+					(IJxsePropertySource<IJxseProperties, IJxseDirectives>) source;
+			String peergroup = (String) advsource.getDirective( AdvertisementDirectives.PEERGROUP );
+			ComponentNode<IPeerGroupProvider,?,?> provider = this.getPeerGroupProviderNotNull( peergroup, parent);
+			factory = new JxseAdvertisementFactory( (IPeerGroupProvider) provider.getFactory(), advsource );
 			node = this.getNode(provider, factory);
 			newFactory = true;
 		}else if( source instanceof PeerGroupPropertySource ){

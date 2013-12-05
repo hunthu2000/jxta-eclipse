@@ -15,10 +15,11 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public abstract class AbstractComponentFactory<T extends Object, U extends Enum<U>, V extends IJxseDirectives> implements IComponentFactory<T,U,V>{
+public abstract class AbstractComponentFactory<T extends Object, U extends IJxseProperties, V extends IJxseDirectives> implements IComponentFactory<T,U,V>{
 
 	private Collection<IComponentFactoryListener<T,U,V>> listeners;
 	private T module;

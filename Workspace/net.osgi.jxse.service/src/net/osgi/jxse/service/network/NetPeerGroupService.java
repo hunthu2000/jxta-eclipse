@@ -58,10 +58,4 @@ public class NetPeerGroupService extends AbstractJxseService<PeerGroup, PeerGrou
 	protected void deactivate() {
 		manager.stopNetwork();
 	}
-
-	@Override
-	protected void fillDefaultValues() {
-		// TODO Auto-generated method stub
-		
-	}
 }

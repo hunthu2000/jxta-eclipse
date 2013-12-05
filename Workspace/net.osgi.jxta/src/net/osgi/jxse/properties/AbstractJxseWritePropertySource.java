@@ -50,8 +50,7 @@ extends AbstractJxsePropertySource<T> implements IJxseWritePropertySource<T, IJx
 		ManagedProperty select = source.getOrCreateManagedProperty(id, value, derived);
 		if( validator != null )
 			select.setValidator(validator);
-		select.setValue(value);
-		return true;
+		return select.setValue(value);
 	}
 		
 	/**
