@@ -19,6 +19,7 @@ import net.jxta.discovery.DiscoveryService;
 import net.jxta.document.Advertisement;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementProperties;
 import net.osgi.jxse.advertisement.JxseAdvertisementFactory;
+import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.discovery.DiscoveryServiceFactory;
@@ -29,7 +30,7 @@ import net.osgi.jxse.utils.StringStyler;
 
 public class JxseAdvertisementService extends AbstractJxseService<Advertisement, AdvertisementProperties, IJxseDirectives>{
 
-	public JxseAdvertisementService( JxseAdvertisementFactory factory ) {
+	public JxseAdvertisementService( ComponentNode<Advertisement, AdvertisementProperties, IJxseDirectives> node ) {
 		super( factory );
 	}
 	
@@ -71,5 +72,11 @@ public class JxseAdvertisementService extends AbstractJxseService<Advertisement,
 		if(!( mode.equals( DiscoveryMode.DISCOVERY )))
 		  this.publishAdvertisements();		
 		super.onActiveState();
+	}
+
+	@Override
+	protected void deactivate() {
+		// TODO Auto-generated method stub
+		
 	}
 }

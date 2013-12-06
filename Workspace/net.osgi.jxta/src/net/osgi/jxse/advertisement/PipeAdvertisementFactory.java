@@ -69,24 +69,4 @@ public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdver
 		advertisement.setName( (String) source.getProperty( Properties.NAME ));
 		return advertisement;
 	}
-
-	@Override
-	protected void onParseDirectivePriorToCreation(IJxseDirectives.Directives directive,Object value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void onProperytySourceCreated(
-			IJxsePropertySource<?, ?> ps) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void onParseDirectiveAfterCreation(IJxseDirectives.Directives directive,
-			Object value) {
-		// TODO Auto-generated method stub
-		
-	}
 }

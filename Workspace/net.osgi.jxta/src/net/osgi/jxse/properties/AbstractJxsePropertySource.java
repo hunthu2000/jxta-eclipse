@@ -155,6 +155,14 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 		this.children.remove( child );
 	}
 
+	public IJxsePropertySource<?,?> getChild( String componentName ){
+		for( IJxsePropertySource<?,?> child: this.children ){
+			if( child.getComponentName().equals(componentName ))
+				return child;
+		}
+		return null;
+	}
+
 	@Override
 	public IJxsePropertySource<?, ?>[] getChildren() {
 		return this.children.toArray(new IJxsePropertySource[children.size()]);
@@ -168,5 +176,4 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 	public String toString() {
 		return super.toString() + "[" + this.getComponentName() + "]";
 	}
-	
 }

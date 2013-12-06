@@ -32,10 +32,6 @@ public class PeerGroupFactory extends
 	}
 
 	@Override
-	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value) {
-	}
-
-	@Override
 	protected PeerGroup onCreateModule( IJxsePropertySource<PeerGroupProperties, IJxseDirectives> properties) {
 		PeerGroup parent = parentContainer.getPeerGroup();
 		return parent;//.newGroup( null);
@@ -46,18 +42,6 @@ public class PeerGroupFactory extends
 		return null;
 	}
 	
-	@Override
-	protected void onProperytySourceCreated(
-			IJxsePropertySource<?, ?> ps) {
-		// TODO Auto-generated method stub		
-	}
-
-	@Override
-	protected void onParseDirectiveAfterCreation(IJxseDirectives directive,
-			Object value) {
-		// TODO Auto-generated method stub		
-	}
-
 	@Override
 	public PeerGroup getPeerGroup() {
 		return super.getModule();

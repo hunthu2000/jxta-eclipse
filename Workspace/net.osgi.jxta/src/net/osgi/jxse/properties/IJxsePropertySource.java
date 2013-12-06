@@ -113,6 +113,13 @@ public interface IJxsePropertySource< T extends Object, U extends IJxseDirective
 	 * @return
 	 */
 	public IJxsePropertySource<?,?>[] getChildren();
+	
+	/**
+	 * Get the child with the given component name
+	 * @param componentName
+	 * @return
+	 */
+	public IJxsePropertySource<?,?> getChild( String componentName );
 
 	public boolean isEmpty();
 }

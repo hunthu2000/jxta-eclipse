@@ -8,48 +8,37 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.service.discovery;
+package net.osgi.jxse.service.advertisement;
 
 import net.jxta.discovery.DiscoveryService;
+import net.jxta.document.Advertisement;
+import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementProperties;
+import net.osgi.jxse.advertisement.JxseAdvertisementFactory;
+import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.discovery.DiscoveryServiceFactory;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
-public class JxseDiscoveryServiceFactory extends
-		AbstractComponentFactory<JxseDiscoveryService, DiscoveryProperties, IJxseDirectives> {
+public class ChaupalAdvertisementFactory extends
+		AbstractComponentFactory<JxseAdvertisementService, IJxseProperties, IJxseDirectives> {
 
 	public static final String S_DISCOVERY_SERVICE = "JxseDiscoveryService";
 
-	private DiscoveryServiceFactory factory;
+	private ComponentNode<Advertisement, DiscoveryProperties, IJxseDirectives> node;
 
-	public JxseDiscoveryServiceFactory( DiscoveryServiceFactory factory ) {
+	public ChaupalAdvertisementFactory( JxseAdvertisementFactory factory ) {
 		super( factory.getPropertySource() );
-		this.factory = factory;
 	}
 
 	@Override
-	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value) {
-		
-	}
-
-	@Override
-	protected JxseDiscoveryService onCreateModule( IJxsePropertySource<DiscoveryProperties, IJxseDirectives> properties) {
-		DiscoveryService ds = factory.createModule();
-		if( ds == null )
-			return null;
-		JxseDiscoveryService service = new JxseDiscoveryService( factory );
-		return service;
-	}
-	
-
-	@Override
-	protected void onProperytySourceCreated( IJxsePropertySource<?, ?> ps) {
-	}
-
-	@Override
-	protected void onParseDirectiveAfterCreation(IJxseDirectives directive,
-			Object value) {
+	protected JxseAdvertisementService onCreateModule( IJxsePropertySource<IJxseProperties, IJxseDirectives> properties) {
+		//JxseAdvertisementService ds = node.getFactory().createModule();
+		//if( ds == null )
+		//	return null;
+		//JxseAdvertisementService service = new JxseAdvertisementService( factory );
+		return null;//service;
 	}
 }

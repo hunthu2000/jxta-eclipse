@@ -60,7 +60,12 @@ public abstract class AbstractComponentFactory<T extends Object, U extends IJxse
 		return true;
 	}
 
-	protected abstract void onParseDirectivePriorToCreation( V directive, Object value );
+	/**
+	 * All the directives are parsed prior to creating the factory 
+	 * @param directive
+	 * @param value
+	 */
+	protected void onParseDirectivePriorToCreation( V directive, Object value ){/* DO NOTHING*/}
 	
 	/**
 	 * Parse the directives for this factory
@@ -75,7 +80,12 @@ public abstract class AbstractComponentFactory<T extends Object, U extends IJxse
 		}
 	}
 
-	protected abstract void onParseDirectiveAfterCreation( V directive, Object value );
+	/**
+	 * All the directives are parsed after the factory is created 
+	 * @param directive
+	 * @param value
+	 */
+	protected void onParseDirectiveAfterCreation( V directive, Object value ){/* DO NOTHING*/}
 	
 	/**
 	 * Parse the directives for this factory
@@ -89,11 +99,6 @@ public abstract class AbstractComponentFactory<T extends Object, U extends IJxse
 			this.onParseDirectiveAfterCreation( directive, properties.getDirective( directive ));
 		}
 	}
-
-	/**
-	 * Do nothing
-	 */
-	protected abstract void onProperytySourceCreated( IJxsePropertySource<?,?> ps );
 
 	protected abstract T onCreateModule( IJxsePropertySource<U,V> properties);
 	
@@ -150,7 +155,6 @@ public abstract class AbstractComponentFactory<T extends Object, U extends IJxse
 		this.listeners.remove(listener);
 	}
 
-	
 	/**
 	 * Notify completed service components
 	 * @param component

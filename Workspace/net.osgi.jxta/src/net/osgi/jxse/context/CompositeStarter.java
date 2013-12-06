@@ -17,8 +17,8 @@ import java.util.Iterator;
 import net.osgi.jxse.activator.IActivator;
 import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
-import net.osgi.jxse.builder.ICompositeBuilderListener.FactoryEvents;
-import net.osgi.jxse.factory.ComponentFactoryEvent;
+import net.osgi.jxse.builder.ICompositeBuilderListener.BuilderEvents;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
@@ -29,13 +29,13 @@ import net.osgi.jxse.utils.Utils;
 
 public class CompositeStarter<T extends Object, U extends Enum<U>, V extends IJxseDirectives> {
 
-	private Collection<ICompositeBuilderListener> factoryListeners;
+	private Collection<ICompositeBuilderListener<?>> factoryListeners;
 	private ComponentNode<T,U,V> root;
 	private boolean completed;
 	
 	public CompositeStarter( ComponentNode<T,U,V> root ) {
 		this.root = root;
-		this.factoryListeners = new ArrayList<ICompositeBuilderListener>();
+		this.factoryListeners = new ArrayList<ICompositeBuilderListener<?>>();
 	}
 
 	public boolean isCompleted() {
@@ -45,18 +45,19 @@ public class CompositeStarter<T extends Object, U extends Enum<U>, V extends IJx
 	/* (non-Javadoc)
 	 * @see net.osgi.jxta.factory.ICompositeFactory#addListener(net.osgi.jxta.factory.ICompositeFactoryListener)
 	 */
-	public void addListener( ICompositeBuilderListener listener ){
+	public void addListener( ICompositeBuilderListener<?> listener ){
 		this.factoryListeners.add( listener);
 	}
 
 	/* (non-Javadoc)
 	 * @see net.osgi.jxta.factory.ICompositeFactory#removeListener(net.osgi.jxta.factory.ICompositeFactoryListener)
 	 */
-	public void removeListener( ICompositeBuilderListener listener ){
+	public void removeListener( ICompositeBuilderListener<?> listener ){
 		this.factoryListeners.remove( listener);
 	}
 
-	protected void notifyListeners( ComponentFactoryEvent event ){
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected void notifyListeners( ComponentBuilderEvent<?> event ){
 		for( ICompositeBuilderListener listener: factoryListeners )
 			listener.notifyCreated(event);
 	}
@@ -87,7 +88,7 @@ public class CompositeStarter<T extends Object, U extends Enum<U>, V extends IJx
 			return null;
 		}
 		factory.complete();
-		this.notifyListeners( new ComponentFactoryEvent( this, factory, FactoryEvents.COMPONENT_CREATED ));
+		this.notifyListeners( new ComponentBuilderEvent( this, factory, BuilderEvents.COMPONENT_CREATED ));
 		IJxsePropertySource<?,V> ps = (IJxsePropertySource<?, V>) factory.getPropertySource();
 		Iterator<?> iterator = ps.directiveIterator();
 		V directive;
@@ -153,7 +154,7 @@ public class CompositeStarter<T extends Object, U extends Enum<U>, V extends IJx
 			return;
 		Directives dir = ( Directives )directive;
 		switch( dir ){
-		case TYPE:
+		case CONTEXT:
 			if( Utils.isNull( value ))
 				break;
 			Types type = Types.valueOf( StringStyler.styleToEnum(value));

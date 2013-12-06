@@ -15,12 +15,13 @@ import java.util.logging.Logger;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager;
+import net.osgi.jxse.builder.BuilderContainer;
 import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.context.CompositeStarter;
 import net.osgi.jxse.context.Swarm;
-import net.osgi.jxse.factory.ComponentFactoryEvent;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
@@ -38,18 +39,20 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 	
 	private NetPeerGroupService service;
 	private XMLServiceContext host;
-	private ICompositeBuilderListener observer;
+	private ICompositeBuilderListener<?> observer;
 	private ComponentNode<NetworkManager,ContextProperties, IJxseDirectives> root;
 	
 	private String plugin_id;
 	private Class<?> clss;
 	private Swarm swarm;
+	private BuilderContainer builder;
 	
 	public XMLServiceContext( String plugin_id, Class<?> clss) {
 		this.host = this;
 		this.plugin_id = plugin_id;
 		this.clss = clss;	
 		this.swarm = new Swarm();
+		builder = new BuilderContainer();
 		super.setStatus( Status.AVAILABLE);
 	}
 	
@@ -65,11 +68,11 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 		return service.getNetworkManager();
 	}
 
-	public ICompositeBuilderListener getObserver() {
+	public ICompositeBuilderListener<?> getObserver() {
 		return observer;
 	}
 
-	public void setObserver(ICompositeBuilderListener observer) {
+	public void setObserver(ICompositeBuilderListener<?> observer) {
 		this.observer = observer;
 	}
 
@@ -81,11 +84,11 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 	@Override
 	protected boolean onInitialising() {
 		XMLFactoryBuilder builder = new XMLFactoryBuilder( plugin_id, clss );
-		ICompositeBuilderListener listener = new ICompositeBuilderListener(){
+		ICompositeBuilderListener<?> listener = new ICompositeBuilderListener<Object>(){
 
 			@Override
-			public void notifyCreated(ComponentFactoryEvent event) {
-				FactoryEvents fe = event.getFactoryEvent();
+			public void notifyCreated(ComponentBuilderEvent<Object> event) {
+				BuilderEvents fe = event.getFactoryEvent();
 				switch( fe ){
 				case FACTORY_CREATED:
 					break;
@@ -124,15 +127,15 @@ public class XMLServiceContext extends AbstractServiceContext<NetworkManager,Con
 		}
 		CompositeStarter<NetworkManager, ContextProperties, IJxseDirectives> starter = 
 				new CompositeStarter<NetworkManager, ContextProperties, IJxseDirectives>( this.root );
-		ICompositeBuilderListener listener = new ICompositeBuilderListener(){
+		ICompositeBuilderListener<?> listener = new ICompositeBuilderListener<Object>(){
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public void notifyCreated(ComponentFactoryEvent event) {
-				FactoryEvents fe = event.getFactoryEvent();
+			public void notifyCreated(ComponentBuilderEvent<Object> event) {
+				BuilderEvents fe = event.getFactoryEvent();
 				switch( fe ){
 				case COMPONENT_CREATED:
-					Object component = event.getFactory().getModule();
+					Object component = (( IComponentFactory<?,?,?> )event.getFactory()).getModule();
 					if( component instanceof NetworkConfigurator ){
 						break;
 					}

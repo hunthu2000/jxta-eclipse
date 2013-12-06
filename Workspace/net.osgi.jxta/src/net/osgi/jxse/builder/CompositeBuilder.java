@@ -16,11 +16,11 @@ import java.util.Collection;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.osgi.jxse.advertisement.JxseAdvertisementFactory;
-import net.osgi.jxse.builder.ICompositeBuilderListener.FactoryEvents;
+import net.osgi.jxse.builder.ICompositeBuilderListener.BuilderEvents;
 import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.discovery.DiscoveryPropertySource;
 import net.osgi.jxse.discovery.DiscoveryServiceFactory;
-import net.osgi.jxse.factory.ComponentFactoryEvent;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.network.NetworkConfigurationFactory;
 import net.osgi.jxse.network.NetworkConfigurationPropertySource;
@@ -43,42 +43,38 @@ import net.osgi.jxse.utils.Utils;
 
 public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJxseDirectives> implements ICompositeBuilder<T,U,V> {
 
-	private Collection<ICompositeBuilderListener> factoryListeners;
+	private Collection<ICompositeBuilderListener<?>> builderlisteners;
 	private ComponentNode<T,U,V> root;
 	private IJxsePropertySource<U,V> ps;
 
 	
 	public CompositeBuilder( IJxsePropertySource<U,V> propertySource) {
 		ps = propertySource;
-		this.factoryListeners = new ArrayList<ICompositeBuilderListener>();
+		this.builderlisteners = new ArrayList<ICompositeBuilderListener<?>>();
 	}
 
 	/* (non-Javadoc)
 	 * @see net.osgi.jxta.factory.ICompositeFactory#addListener(net.osgi.jxta.factory.ICompositeFactoryListener)
 	 */
 	@Override
-	public void addListener( ICompositeBuilderListener listener ){
-		this.factoryListeners.add( listener);
+	public void addListener( ICompositeBuilderListener<?> listener ){
+		this.builderlisteners.add( listener);
 	}
 
 	/* (non-Javadoc)
 	 * @see net.osgi.jxta.factory.ICompositeFactory#removeListener(net.osgi.jxta.factory.ICompositeFactoryListener)
 	 */
 	@Override
-	public void removeListener( ICompositeBuilderListener listener ){
-		this.factoryListeners.remove( listener);
+	public void removeListener( ICompositeBuilderListener<?> listener ){
+		this.builderlisteners.remove( listener);
 	}
 
-	private void notifyListeners( ComponentFactoryEvent event ){
-		for( ICompositeBuilderListener listener: factoryListeners )
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void notifyListeners( ComponentBuilderEvent event ){
+		for( ICompositeBuilderListener<?> listener: builderlisteners )
 			listener.notifyCreated(event);
 	}
  
-	/**
-	 * Do nothing
-	 */
-	protected void onProperytySourceCreated( IJxsePropertySource<?,?> ps ) {}
-
 	/**
 	 * Parse the directives for this factory
 	 * @param node
@@ -117,7 +113,6 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 		}else if( source instanceof DiscoveryPropertySource ){
 			DiscoveryPropertySource discsource = ( DiscoveryPropertySource )source;
 			String peergroup = (String) discsource.getDirective( PeerGroupDirectives.PEERGROUP );
-
 			ComponentNode<IPeerGroupProvider,?,?> provider = this.getPeerGroupProviderNotNull( peergroup, parent);
 			factory = new DiscoveryServiceFactory( (IPeerGroupProvider) provider.getFactory(), (DiscoveryPropertySource)source );
 			node = this.getNode(provider, factory);
@@ -145,7 +140,6 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 			node = this.getNode(parent, factory);
 			newFactory = true;
 		}
-		this.onProperytySourceCreated(source);
 		ComponentNode childNode = null;
 		for( IJxsePropertySource<?,?> child: source.getChildren()) {
 			childNode = this.parsePropertySources( child, node );
@@ -153,7 +147,7 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 				returnNode = childNode;
 		}
 		if( newFactory )
-			this.notifyListeners( new ComponentFactoryEvent( this, factory, FactoryEvents.FACTORY_CREATED ));
+			this.notifyListeners( new ComponentBuilderEvent( this, factory, BuilderEvents.FACTORY_CREATED ));
 		return returnNode;
 	}
 
@@ -166,9 +160,13 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 	@SuppressWarnings("unchecked")
 	private final ComponentNode<IPeerGroupProvider,?,?> getPeerGroupProvider( String name, ComponentNode<?, ?, ?> parent ){
 		IComponentFactory<?,?,?> factory = parent.getFactory();
+		ComponentNode<IPeerGroupProvider,?,?> returnNode= null;
 		if( Utils.isNull( name )){
 			if( factory instanceof IPeerGroupProvider )
 				return (ComponentNode<IPeerGroupProvider, ?, ?>) parent;
+			returnNode = findFirstPeerGroupProviderParent(parent, name);
+			if( returnNode != null )
+				return returnNode;
 			name = IPeerGroupProvider.S_NET_PEER_GROUP;
 		}else{
 			if( factory instanceof IPeerGroupProvider ){
@@ -177,7 +175,6 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 					return (ComponentNode<IPeerGroupProvider, ?, ?>) parent;
 			}
 		}
-		ComponentNode<IPeerGroupProvider,?,?> returnNode= null;
 		for( ComponentNode<?,?,?> child: parent.getChildren()) {
 			returnNode = this.getPeerGroupProvider( name, child );
 			if( returnNode != null )
@@ -187,6 +184,16 @@ public class CompositeBuilder<T extends Object, U extends Enum<U>, V extends IJx
 		return returnNode;
 	}
 
+	@SuppressWarnings("unchecked")
+	private ComponentNode<IPeerGroupProvider, ?, ?> findFirstPeerGroupProviderParent( ComponentNode<?, ?, ?> parent, String name ){
+		if( parent == null )
+			return null;
+		IComponentFactory<?,?,?> factory = parent.getFactory();
+		if( factory instanceof IPeerGroupProvider )
+			return (ComponentNode<IPeerGroupProvider, ?, ?>) parent;
+		 return findFirstPeerGroupProviderParent( parent.getParent(), name );
+	}
+	
 	/**
 	 * returns the node that contains a peergroup provider
 	 * @param name

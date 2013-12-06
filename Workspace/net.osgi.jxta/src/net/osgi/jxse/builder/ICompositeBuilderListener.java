@@ -10,12 +10,13 @@
  *******************************************************************************/
 package net.osgi.jxse.builder;
 
-import net.osgi.jxse.factory.ComponentFactoryEvent;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.utils.StringStyler;
 
-public interface ICompositeBuilderListener {
+public interface ICompositeBuilderListener<T extends Object> {
 
-	public enum FactoryEvents{
+	public enum BuilderEvents{
+		PROPERTY_SOURCE_CREATED,
 		FACTORY_CREATED,
 		COMPONENT_CREATED;
 
@@ -25,5 +26,5 @@ public interface ICompositeBuilderListener {
 		}
 	}
 	
-	public void notifyCreated( ComponentFactoryEvent event );
+	public void notifyCreated( ComponentBuilderEvent<T> event );
 }

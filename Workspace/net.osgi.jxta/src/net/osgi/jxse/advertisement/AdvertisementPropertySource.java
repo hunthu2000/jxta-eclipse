@@ -11,7 +11,6 @@ import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
-import net.osgi.jxse.properties.PartialPropertySource;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
@@ -59,6 +58,7 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 	public enum AdvertisementDirectives implements IJxseDirectives{
 		ID,
 		NAME,
+		CONTEXT,
 		PEERGROUP,
 		TYPE,
 		SCOPE;
@@ -172,7 +172,7 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 	 */
 	public enum AdvertisementCategories{
 		BODY,
-		EXTENDED;
+		DISCOVERY_SERVICE;
 
 		public static boolean isValidCategory( String category ){
 			if( Utils.isNull( category ))
@@ -231,14 +231,5 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 		if( !AdvertisementCategories.isValidCategory( StringStyler.styleToEnum( child.getComponentName() )))
 			return false;
 		return super.addChild(child);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static PartialPropertySource<String,IJxseDirectives> getExtendedProperties( IJxsePropertySource<AdvertisementProperties, IJxseDirectives> source ){
-		for( IJxsePropertySource<?,?> child: source.getChildren() ){
-			if( child.getComponentName().equals( AdvertisementCategories.EXTENDED.toString().toLowerCase() ))
-				return (PartialPropertySource<String,IJxseDirectives>) child;
-		}
-		return null;
 	}
 }

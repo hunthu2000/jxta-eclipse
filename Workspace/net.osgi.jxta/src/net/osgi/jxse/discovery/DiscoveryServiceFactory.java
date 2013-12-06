@@ -30,10 +30,6 @@ public class DiscoveryServiceFactory extends
 	}
 
 	@Override
-	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value) {
-	}
-
-	@Override
 	protected DiscoveryService onCreateModule( IJxsePropertySource<DiscoveryProperties, IJxseDirectives> properties) {
 		if( peerGroupContainer.getPeerGroup() == null ){
 			super.setCompleted(false );
@@ -42,16 +38,5 @@ public class DiscoveryServiceFactory extends
 			
 		DiscoveryService service = peerGroupContainer.getPeerGroup().getDiscoveryService();
 		return service;
-	}
-	
-
-	@Override
-	protected void onProperytySourceCreated(
-			IJxsePropertySource<?, ?> ps) {
-	}
-
-	@Override
-	protected void onParseDirectiveAfterCreation(IJxseDirectives directive,
-			Object value) {
 	}
 }

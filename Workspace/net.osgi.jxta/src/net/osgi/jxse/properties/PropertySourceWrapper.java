@@ -110,5 +110,10 @@ public class PropertySourceWrapper< T extends Object, U extends IJxseDirectives>
 	@Override
 	public Object getProperty(T id) {
 		return this.source.getProperty(id);
+	}
+
+	@Override
+	public IJxsePropertySource<?, ?> getChild(String componentName) {
+		return this.source.getChild(componentName);
 	}	
 }

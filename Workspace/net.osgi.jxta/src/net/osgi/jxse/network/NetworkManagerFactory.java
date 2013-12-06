@@ -106,19 +106,6 @@ implements IPeerGroupProvider{
 	}
 
 	@Override
-	protected void onProperytySourceCreated(
-			IJxsePropertySource<?, ?> ps) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void onParseDirectiveAfterCreation(IJxseDirectives directive,	Object value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public String getPeerGroupName() {
 		return IPeerGroupProvider.S_NET_PEER_GROUP;
 	}

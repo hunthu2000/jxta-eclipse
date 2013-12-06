@@ -60,10 +60,6 @@ public class NetworkConfigurationFactory extends
 	}
 
 	@Override
-	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value) {
-	}
-
-	@Override
 	protected NetworkConfigurator onCreateModule( IJxsePropertySource<NetworkConfiguratorProperties, IJxseDirectives> properties) {
 		NetworkConfigurator configurator = null;
 		try {
@@ -108,13 +104,6 @@ public class NetworkConfigurationFactory extends
 		preferences.fillConfigurator(configurator);
 		for( IJxsePropertySource<?, ?> child: super.getPropertySource().getChildren() )
 			this.fillPartialConfigurator( configurator, (IJxsePropertySource<NetworkConfiguratorProperties, IJxseDirectives>) child);
-	}
-
-	@Override
-	protected void onProperytySourceCreated(
-			IJxsePropertySource<?, ?> ps) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

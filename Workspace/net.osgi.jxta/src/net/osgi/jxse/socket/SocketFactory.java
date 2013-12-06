@@ -77,19 +77,4 @@ public class SocketFactory extends AbstractComponentFactory<JxtaSocket, ISocketF
 		PipeAdvertisement pipeAd = this.pipeFactory.getModule();
 		return null;//TODO Change to include parent factory: new JxtaSocketComponent( manager, pipeAd, super.getProperties() );
 	}
-
-
-	@Override
-	protected void onProperytySourceCreated(
-			IJxsePropertySource<?, ?> ps) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	protected void onParseDirectiveAfterCreation(IJxseDirectives.Directives directive,	Object value) {
-		// TODO Auto-generated method stub
-		
-	}	
 }

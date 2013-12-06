@@ -14,7 +14,7 @@ public interface IJxseDirectives{
 		SCHEMA_LOCATION,
 		ID,
 		NAME,
-		TYPE,
+		CONTEXT,
 		AUTO_START,
 		CLEAR_CONFIG,
 		CREATE_PARENT,

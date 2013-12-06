@@ -113,33 +113,9 @@ class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousServic
 	}
 
 	@Override
-	protected void onParseDirectivePriorToCreation(
-			IJxseDirectives.Directives directive,
-			Object value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	protected RendezVousService onCreateModule(
 			IJxsePropertySource<RendezVousServiceProperties, IJxseDirectives.Directives> properties) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	protected void onProperytySourceCreated(
-			IJxsePropertySource<?, ?> ps) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void onParseDirectiveAfterCreation(
-			IJxseDirectives.Directives directive,
-			Object value) {
-		// TODO Auto-generated method stub
-		
-	}
-	
+	}	
 }

@@ -42,13 +42,6 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 	}
 	
 	@Override
-	protected void onParseDirectivePriorToCreation(IJxseDirectives.Directives directive,
-			Object value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	protected JxtaServerSocket onCreateModule(IJxsePropertySource<Properties, IJxseDirectives.Directives> properties) {
 		this.pipeFactory = new SocketPipeAdvertisementFactory();
 		JxtaServerSocket socket = this.createSocket();
@@ -76,19 +69,5 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 			IOUtils.closeSocket( serverSocket );
 		}
 		return null;
-	}
-
-	@Override
-	protected void onProperytySourceCreated(
-			IJxsePropertySource<?, ?> ps) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void onParseDirectiveAfterCreation(IJxseDirectives.Directives directive, Object value) {
-		// TODO Auto-generated method stub
-		
-	}
-	
+	}	
 }

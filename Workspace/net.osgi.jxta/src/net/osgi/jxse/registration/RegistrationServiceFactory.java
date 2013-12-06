@@ -38,15 +38,4 @@ public class RegistrationServiceFactory extends
 		RegistrationService service = new RegistrationService( peerGroupContainer, (IJxseWritePropertySource<RegistrationProperties, IJxseDirectives>) properties );
 		return service;
 	}
-	
-
-	@Override
-	protected void onProperytySourceCreated(
-			IJxsePropertySource<?, ?> ps) {
-	}
-
-	@Override
-	protected void onParseDirectiveAfterCreation(IJxseDirectives directive,
-			Object value) {
-	}
 }

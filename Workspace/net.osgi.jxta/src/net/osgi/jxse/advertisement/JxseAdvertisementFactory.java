@@ -38,17 +38,12 @@ public class JxseAdvertisementFactory extends AbstractComponentFactory<Advertise
 	public JxseAdvertisementFactory( IPeerGroupProvider peerGroupContainer, IJxsePropertySource<IJxseProperties, IJxseDirectives> source ) {
 		super( source );
 		this.peerGroupContainer = peerGroupContainer;
-		//this.fillDefaultValues();	
 	}
 	
 	@Override
-	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value) {
-	}
-
-	@Override
 	protected Advertisement onCreateModule( IJxsePropertySource<IJxseProperties, IJxseDirectives> properties) {
 		if( peerGroupContainer.getPeerGroup() == null ){
-			super.setCompleted(false );
+			super.setCompleted( false );
 			return null;
 		}
 			
@@ -63,15 +58,13 @@ public class JxseAdvertisementFactory extends AbstractComponentFactory<Advertise
 		}
 	}
 	
-
-	@Override
-	protected void onProperytySourceCreated(
-			IJxsePropertySource<?, ?> ps) {
-	}
-
-	@Override
-	protected void onParseDirectiveAfterCreation(IJxseDirectives directive,
-			Object value) {
+	@SuppressWarnings("unchecked")
+	protected void checkDiscoveryService(){
+		IJxseWritePropertySource<IJxseProperties, IJxseDirectives> source = (IJxseWritePropertySource<IJxseProperties, IJxseDirectives>) super.getPropertySource();
+		IJxseWritePropertySource<IJxseProperties, IJxseDirectives> dsource = (IJxseWritePropertySource<IJxseProperties, IJxseDirectives>) source.getChild( Components.DISCOVERY_SERVICE.toString() );
+		if( dsource == null )
+			return;
+		
 	}
 	
 	protected PipeAdvertisement createPipeAdvertisement(){

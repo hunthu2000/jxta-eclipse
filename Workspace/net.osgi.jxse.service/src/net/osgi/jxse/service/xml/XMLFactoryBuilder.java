@@ -32,13 +32,15 @@ import net.osgi.jxse.advertisement.PipeAdvertisementPropertySource;
 import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilder;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
+import net.osgi.jxse.builder.ICompositeBuilderListener.BuilderEvents;
+import net.osgi.jxse.builder.IJxseModule;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.context.JxseContextPreferences;
 import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.discovery.DiscoveryPreferences;
 import net.osgi.jxse.discovery.DiscoveryPropertySource;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
-import net.osgi.jxse.factory.ComponentFactoryEvent;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.network.INetworkPreferences;
 import net.osgi.jxse.network.NetworkConfigurationFactory;
@@ -114,9 +116,7 @@ public class XMLFactoryBuilder implements ICompositeBuilder<NetworkManager, Cont
 	private JxseContextPropertySource properties;
 	private String location;
 	
-	private Collection<ICompositeBuilderListener> listeners;
-	
-	//private Logger logger = Logger.getLogger(XMLComponentFactory.class.getName() );
+	private Collection<ICompositeBuilderListener<Object>> listeners;
 	
 	private ComponentNode<NetworkManager, ContextProperties, IJxseDirectives> module;
 	
@@ -132,7 +132,7 @@ public class XMLFactoryBuilder implements ICompositeBuilder<NetworkManager, Cont
 		this.completed = false;
 		this.failed = false;
 		properties = new JxseContextPropertySource( pluginId, location);
-		this.listeners = new ArrayList<ICompositeBuilderListener>();
+		this.listeners = new ArrayList<ICompositeBuilderListener<Object>>();
 	}
 
 	/**
@@ -154,21 +154,22 @@ public class XMLFactoryBuilder implements ICompositeBuilder<NetworkManager, Cont
 	/* (non-Javadoc)
 	 * @see net.osgi.jxta.factory.ICompositeFactory#addListener(net.osgi.jxta.factory.ICompositeFactoryListener)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public void addListener( ICompositeBuilderListener listener ){
-		this.listeners.add( listener);
+	public void addListener( ICompositeBuilderListener<?> listener ){
+		this.listeners.add((ICompositeBuilderListener<Object>) listener);
 	}
 
 	/* (non-Javadoc)
 	 * @see net.osgi.jxta.factory.ICompositeFactory#removeListener(net.osgi.jxta.factory.ICompositeFactoryListener)
 	 */
 	@Override
-	public void removeListener( ICompositeBuilderListener listener ){
+	public void removeListener( ICompositeBuilderListener<?> listener ){
 		this.listeners.remove( listener);
 	}
 
-	void notifyListeners( ComponentFactoryEvent event ){
-		for( ICompositeBuilderListener listener: listeners )
+	void notifyListeners( ComponentBuilderEvent<Object> event ){
+		for( ICompositeBuilderListener<Object> listener: listeners )
 			listener.notifyCreated(event);
 	}
 
@@ -192,15 +193,15 @@ public class XMLFactoryBuilder implements ICompositeBuilder<NetworkManager, Cont
 		// note that if your XML already declares the XSD to which it has to conform, then there's no need to create a validator from a Schema object
 		Source schemaFile = new StreamSource( JxtaHandler.class.getResourceAsStream( S_SCHEMA_LOCATION ));
 		InputStream in = clss.getResourceAsStream( location );
-		ICompositeBuilderListener listener = new ICompositeBuilderListener(){
+		ICompositeBuilderListener<?> listener = new ICompositeBuilderListener<Object>(){
 
 			@Override
-			public void notifyCreated(ComponentFactoryEvent event) {
+			public void notifyCreated(ComponentBuilderEvent<Object> event) {
 				notifyListeners(event);
 			}
 		};
-		ICompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives> cf = new JxseCompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives>( this.getPropertySource() );
-		cf.addListener( listener );
+		
+		//First parse the XML file
 		try {
 			logger.info("Parsing JXSE Bundle: " + this.properties.getProperty( ContextProperties.BUNDLE_ID ));
 			//Schema schema = schemaFactory.newSchema(schemaFile);
@@ -213,11 +214,9 @@ public class XMLFactoryBuilder implements ICompositeBuilder<NetworkManager, Cont
 			//saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA); 
 			//saxParser.setProperty(JAXP_SCHEMA_SOURCE, new File(JXSE_XSD_SCHEMA)); 
 			JxtaHandler handler = new JxtaHandler( this );
+			handler.addListener(listener);
 			saxParser.parse( in, handler);
-			this.completed = true;
-			module = cf.build();
-			logger.info("JXSE Bundle Parsed: " + this.properties.getProperty( ContextProperties.BUNDLE_ID ));
-			return module;
+			handler.removeListener(listener);
 		} catch( SAXNotRecognizedException e ){
 			failed = true;
 			e.printStackTrace();			
@@ -233,8 +232,15 @@ public class XMLFactoryBuilder implements ICompositeBuilder<NetworkManager, Cont
 		}
 		finally{
 			IOUtils.closeInputStream(in);
-			cf.removeListener(listener);
 		}
+
+		//Then build the factories
+		ICompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives> cf = new JxseCompositeBuilder<NetworkManager, ContextProperties, IJxseDirectives>( this.getPropertySource() );
+		cf.addListener( listener );
+		module = cf.build();
+		cf.removeListener(listener);
+		logger.info("JXSE Bundle Parsed: " + this.properties.getProperty( ContextProperties.BUNDLE_ID ));
+		this.completed = true;
 		return module;
 	}
 
@@ -271,21 +277,38 @@ class JxtaHandler extends DefaultHandler{
 	private IJxseWritePropertySource source;
 	private ManagedProperty<Object,Object> property;
 
-
+	private Collection<IJxseModule<?,?,?>> modules;
+	
+	private Collection<ICompositeBuilderListener<Object>> listeners;
+	
 	private static Logger logger = Logger.getLogger( XMLFactoryBuilder.class.getName() );
 
 	public JxtaHandler( XMLFactoryBuilder owner ) {
-		super();
 		this.owner = owner;
+		modules = new ArrayList<IJxseModule<?,?,?>>();
+		listeners = new ArrayList<ICompositeBuilderListener<Object>>();
 	}
 
+	@SuppressWarnings("unchecked")
+	void addListener( ICompositeBuilderListener<?> listener ){
+		this.listeners.add( (ICompositeBuilderListener<Object>) listener);
+	}
+
+	void removeListener( ICompositeBuilderListener<?> listener ){
+		this.listeners.remove( listener);
+	}
+
+	private void notifyListeners( ComponentBuilderEvent<Object> event ){
+		for( ICompositeBuilderListener<Object> listener: this.listeners )
+			listener.notifyCreated( event);
+	}
+	
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void startElement(String uri, String localName, String qName, 
 			Attributes attributes) throws SAXException {
 
 		if( Components.isComponent( qName )){
-
 			current = Components.valueOf( StringStyler.styleToEnum( qName ));
 			IJxseWritePropertySource<?,?> newSource;
 			switch( current ){
@@ -312,6 +335,8 @@ class JxtaHandler extends DefaultHandler{
 				newSource = new PartialPropertySource( qName, source );
 				break;
 			case ADVERTISEMENT_SERVICE:
+				AdvertisementTypes type = this.getAdvertisementType(attributes, qName, source );
+				//this.modules.add( new AdvertisementModule( qName, type, source ));
 				newSource = this.getAdvertisementPropertysource(attributes, qName, source );
 				break;			
 			case REGISTRATION_SERVICE:
@@ -347,6 +372,22 @@ class JxtaHandler extends DefaultHandler{
 	}
 
 	/**
+	 * Get the correct advertisement type
+	 * @param attrs
+	 * @param qName
+	 * @param parent
+	 * @return
+	 */
+	protected AdvertisementTypes getAdvertisementType( Attributes attrs, String qName ,IJxsePropertySource<IJxseProperties, IJxseDirectives> parent ){
+		if(( attrs == null ) || ( attrs.getLength() == 0))
+				return AdvertisementTypes.ADV;
+		String type = attrs.getValue(AdvertisementDirectives.TYPE.toString().toLowerCase() );
+		if( Utils.isNull(type))
+			return AdvertisementTypes.ADV;
+		return AdvertisementTypes.valueOf( StringStyler.styleToEnum( type ));
+	}
+
+	/**
 	 * Get the correct property source
 	 * @param attrs
 	 * @param qName
@@ -355,12 +396,7 @@ class JxtaHandler extends DefaultHandler{
 	 */
 	protected AdvertisementPropertySource getAdvertisementPropertysource( Attributes attrs, String qName ,IJxsePropertySource<IJxseProperties, IJxseDirectives> parent ){
 		AdvertisementPropertySource source = new AdvertisementPropertySource( qName, parent );
-		if(( attrs == null ) || ( attrs.getLength() == 0))
-				return source;
-		String type = attrs.getValue(AdvertisementDirectives.TYPE.toString().toLowerCase() );
-		if( Utils.isNull(type))
-			return source;
-		AdvertisementTypes adv_type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( type ));
+		AdvertisementTypes adv_type = this.getAdvertisementType(attrs, qName, parent);
 		switch( adv_type ){
 		case PIPE:
 			return new PipeAdvertisementPropertySource( source );
@@ -394,11 +430,12 @@ class JxtaHandler extends DefaultHandler{
 		return prop;
 	}
 	
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 
 		if( Components.isComponent( qName )){
+			this.notifyListeners( new ComponentBuilderEvent( this, this.source, BuilderEvents.PROPERTY_SOURCE_CREATED ));
 			this.source = (IJxseWritePropertySource) source.getParent();
 		}
 		this.property = null;
