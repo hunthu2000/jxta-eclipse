@@ -12,11 +12,11 @@ package net.osgi.jxse.builder;
 
 import net.osgi.jxse.properties.IJxseDirectives;
 
-public interface ICompositeBuilder<T extends Object, U extends Enum<U>, V extends IJxseDirectives> {
+public interface ICompositeBuilder<T extends Object, U extends Object, V extends IJxseDirectives> {
 
 	public abstract void addListener(ICompositeBuilderListener<?> listener);
 
 	public abstract void removeListener(ICompositeBuilderListener<?> listener);
 
-	public ComponentNode<T,U,V> build();
+	public T build();
 }

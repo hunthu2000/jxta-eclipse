@@ -21,12 +21,13 @@ import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.validator.ClassValidator;
 import net.osgi.jxse.validator.RangeValidator;
 
-public class JxseContextPropertySource extends AbstractJxseWritePropertySource<ContextProperties>{
+public class JxseContextPropertySource extends AbstractJxseWritePropertySource<IJxseProperties>{
 
 	public static final String DEF_HOME_FOLDER = "${user.home}/.jxse/${bundle-id}";
 	public static final int DEF_MIN_PORT = 1000;
@@ -38,8 +39,6 @@ public class JxseContextPropertySource extends AbstractJxseWritePropertySource<C
 		super( bundleId, identifier, Components.JXSE_CONTEXT.toString() );
 		this.setProperty( ContextProperties.BUNDLE_ID, bundleId, 
 				new ClassValidator( ContextProperties.CONFIG_MODE, String.class ), false );
-		this.setProperty( ContextProperties.IDENTIFIER, identifier, 
-				new ClassValidator( ContextProperties.CONFIG_MODE, String.class ), false);
 		this.setProperty( ContextProperties.CONFIG_MODE, ConfigMode.EDGE, 
 				new ClassValidator( ContextProperties.CONFIG_MODE, ConfigMode.class ), false);
 		this.setProperty( ContextProperties.HOME_FOLDER, ProjectFolderUtils.getParsedUserDir(DEF_HOME_FOLDER, bundleId),
@@ -49,30 +48,17 @@ public class JxseContextPropertySource extends AbstractJxseWritePropertySource<C
 	}
 
 	@Override
-	public ContextProperties getIdFromString(String key) {
+	public IJxseProperties getIdFromString(String key) {
 		return ContextProperties.valueOf( key );
 	}
 
-	/**
-	 * Get the plugin ID
-	 * @return
-	 */
-	public String getBundleId(){
-		return (String) this.getProperty( ContextProperties.BUNDLE_ID );
-	}
-
-	/**
-	 * Get the identifier
-	 * @return
-	 */
-	public String getIdentifier(){
-		return (String) this.getProperty( ContextProperties.IDENTIFIER );
-	}
-
 	@Override
-	public Object getDefault(ContextProperties id) {
+	public Object getDefault( IJxseProperties id) {
+		if(!( id instanceof ContextProperties ))
+			return null;
+		ContextProperties cp = (ContextProperties )id;
 		String str = null;
-		switch( id ){
+		switch( cp ){
 		case HOME_FOLDER:
 			String bundle_id = (String) super.getProperty( ContextProperties.BUNDLE_ID );
 			str = ProjectFolderUtils.getParsedUserDir( DEF_HOME_FOLDER, bundle_id ).getPath();
@@ -83,7 +69,7 @@ public class JxseContextPropertySource extends AbstractJxseWritePropertySource<C
 		case RENDEZVOUZ_AUTOSTART:
 			return true;
 		case PEER_ID:
-			str = ( String )this.getProperty( ContextProperties.IDENTIFIER);
+			str = ( String )this.getIdentifier();
 			if( Utils.isNull(str))
 				return null;
 			PeerID pgId = IDFactory.newPeerID( PeerGroupID.defaultNetPeerGroupID, ( str.getBytes() ));
@@ -93,8 +79,6 @@ public class JxseContextPropertySource extends AbstractJxseWritePropertySource<C
 				e.printStackTrace();
 			}
 			break;
-		case IDENTIFIER:
-			return (String) super.getProperty( ContextProperties.IDENTIFIER );
 		case BUNDLE_ID:
 			return (String) super.getProperty( ContextProperties.BUNDLE_ID );
 		case PORT:
@@ -106,7 +90,7 @@ public class JxseContextPropertySource extends AbstractJxseWritePropertySource<C
 	}
 
 	@Override
-	public boolean validate(ContextProperties id, Object value) {
+	public boolean validate( IJxseProperties id, Object value) {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -40,6 +40,15 @@ public class JxseAdvertisementFactory extends AbstractComponentFactory<Advertise
 		this.peerGroupContainer = peerGroupContainer;
 	}
 	
+	/**
+	 * Get the peergroup container
+	 * @return
+	 */
+	public IPeerGroupProvider getPeerGroupContainer() {
+		return peerGroupContainer;
+	}
+
+
 	@Override
 	protected Advertisement onCreateModule( IJxsePropertySource<IJxseProperties, IJxseDirectives> properties) {
 		if( peerGroupContainer.getPeerGroup() == null ){

@@ -18,6 +18,7 @@ public interface IComponentFactory<T extends Object, U extends Object, V extends
 
 	public enum Components{
 		JXSE_CONTEXT,
+		STARTUP_SERVICE,
 		NETWORK_MANAGER,
 		NETWORK_CONFIGURATOR,
 		SEED_LIST,
@@ -53,10 +54,10 @@ public interface IComponentFactory<T extends Object, U extends Object, V extends
 	}
 
 	/**
-	 * Get the name of the component that is created
+	 * Get the component that is created
 	 * @return
 	 */
-	public Components getComponentName();
+	public Components getComponent();
 	
 	/**
 	 * Returns true if the factory can create its product

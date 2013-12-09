@@ -34,13 +34,13 @@ import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class RegistrationService extends AbstractActivator<IPeerGroupProvider> implements IJxseService<RegistrationService,RegistrationProperties>, Runnable, DiscoveryListener {
+public class RegistrationService extends AbstractActivator implements IJxseService<RegistrationService,RegistrationProperties>, Runnable, DiscoveryListener {
 	
 	private IJxseWritePropertySource<RegistrationProperties, IJxseDirectives> source;
 	private ExecutorService executor;
 	
 	public RegistrationService( IPeerGroupProvider provider, IJxseWritePropertySource<RegistrationProperties, IJxseDirectives> source ) {
-		super( provider );
+		super();
 		this.source = source;
 		executor = Executors.newSingleThreadExecutor();
 	}
@@ -174,12 +174,6 @@ public class RegistrationService extends AbstractActivator<IPeerGroupProvider> i
 
 	@Override
 	protected void onFinalising() {
-	}
-
-	@Override
-	protected boolean onSetAvailable(IPeerGroupProvider factory) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override

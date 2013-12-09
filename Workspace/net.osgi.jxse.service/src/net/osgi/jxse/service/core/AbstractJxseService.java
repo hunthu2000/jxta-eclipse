@@ -27,7 +27,7 @@ import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public abstract class AbstractJxseService<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends AbstractActivator<IComponentFactory<T,U,V>> 
+public abstract class AbstractJxseService<T extends Object, U extends Object, V extends IJxseDirectives> extends AbstractActivator
 implements IJxseService<T,U>{
 
 	public static final String S_SERVICE = "Service";
@@ -73,19 +73,6 @@ implements IJxseService<T,U>{
 		if( value == null )
 			return Calendar.getInstance().getTime();
 		return ( Date )value;
-	}
-
-	@Override
-	protected boolean onSetAvailable( IComponentFactory<T,U,V> factory ) 
-	{
-		if( !factory.canCreate() )
-			return false;
-		if( this.module != null )
-			throw new IllegalStateException( S_ERR_ILLEGAL_INIT );
-		this.module = factory.createModule();		
-		if( !factory.isCompleted() )
-			throw new IllegalStateException( S_ERR_NOT_COMPLETED );
-		return false;
 	}
 
 	/**

@@ -36,7 +36,7 @@ public abstract class AbstractComponentFactory<T extends Object, U extends IJxse
 	}
 
 	@Override
-	public Components getComponentName() {
+	public Components getComponent() {
 		return Components.valueOf( StringStyler.styleToEnum( this.properties.getComponentName()));
 	}
 	

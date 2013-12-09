@@ -24,11 +24,9 @@ import java.util.concurrent.Executors;
 
 import net.jxta.platform.NetworkManager;
 import net.jxta.socket.JxtaSocket;
-import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.service.core.AbstractJxseService;
 import net.osgi.jxse.socket.ISocketFactory;
-import net.osgi.jxse.socket.SocketFactory;
 import net.osgi.jxse.utils.IOUtils;
 
 public class SocketService extends AbstractJxseService<JxtaSocket, ISocketFactory.Properties, IJxseDirectives.Directives> implements Runnable{
@@ -56,20 +54,6 @@ public class SocketService extends AbstractJxseService<JxtaSocket, ISocketFactor
 		super( null );//component );
 		service = Executors.newCachedThreadPool();
 	}
-
-	
-	@Override
-	protected boolean onSetAvailable(IComponentFactory<JxtaSocket, ISocketFactory.Properties, IJxseDirectives.Directives> factory) {
-		if(!factory.canCreate() )
-			return false;
-
-		SocketFactory jsFactory = ( SocketFactory )factory;
-		nms = jsFactory.getManager();
-		this.socketService = jsFactory.getModule();
-		//this.pipeAdService = jsFactory.getPipeFactory().getComponent();
-		return super.onSetAvailable(factory);
-	}
-
 
 	@Override
 	protected void activate() {

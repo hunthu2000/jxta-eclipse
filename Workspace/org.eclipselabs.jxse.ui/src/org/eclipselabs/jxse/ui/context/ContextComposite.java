@@ -100,7 +100,7 @@ public class ContextComposite extends Composite {
 		text_identifier.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				properties.setProperty( ContextProperties.IDENTIFIER, (( Text )e.item ).getText() );
+				properties.setDirective( Directives.NAME, (( Text )e.item ).getText() );
 			}
 		});
 		text_identifier.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -207,6 +207,7 @@ public class ContextComposite extends Composite {
 		return properties;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void init( JxseContextPropertySource properties ){
 		this.properties = properties;
 		Object obj = properties.getProperty( ContextProperties.HOME_FOLDER );
@@ -218,11 +219,11 @@ public class ContextComposite extends Composite {
 			this.lbl_plugin_id.setText( " " + obj.toString() );
 			this.text_id.setText( obj.toString() + S_JXSE_CONTEXT_1);
 		}
-		StringDataBinding<ContextProperties> sdb = new StringDataBinding<ContextProperties>( ContextProperties.BUNDLE_ID, properties, this.text_id );  
+		StringDataBinding sdb = new StringDataBinding<ContextProperties>( ContextProperties.BUNDLE_ID, properties, this.text_id );  
 		sdb.setValidator( new StringValidator<ContextProperties>( ContextProperties.BUNDLE_ID, StringValidator.S_BUNDLE_ID_REGEX ));
 
-		obj = properties.getProperty( ContextProperties.IDENTIFIER );
-		sdb = new StringDataBinding<ContextProperties>( ContextProperties.IDENTIFIER, properties, this.text_identifier );  
+		obj = properties.getIdentifier();
+		sdb = new StringDataBinding<Directives>( Directives.NAME, properties, this.text_identifier );  
 		sdb.setValidator( new StringValidator<ContextProperties>( ContextProperties.BUNDLE_ID, StringValidator.S_NAME_REGEX ));
 
 		obj = properties.getProperty( ContextProperties.CONFIG_MODE );
@@ -231,7 +232,7 @@ public class ContextComposite extends Composite {
 			mode = ( ConfigMode )obj;
 		this.combo.setItems( JxseContextPreferences.getConfigModes());
 		this.combo.select(mode.ordinal());
-		new ComboDataBinding<ContextProperties, ConfigMode>( ContextProperties.CONFIG_MODE, properties, combo);  
+		new ComboDataBinding( ContextProperties.CONFIG_MODE, properties, combo);  
 		
 		new SpinnerDataBinding<ContextProperties>( ContextProperties.PORT, properties, this.spinner, JxseContextPropertySource.DEF_MIN_PORT, JxseContextPropertySource.DEF_MAX_PORT );
 
@@ -254,8 +255,6 @@ public class ContextComposite extends Composite {
 		if( !properties.setProperty( ContextProperties.HOME_FOLDER, URI.create( this.text_home_folder.getText() )))
 			return false;
 		if( !properties.setProperty( ContextProperties.BUNDLE_ID, this.lbl_plugin_id.getText() ))
-			return false;
-		if( !properties.setProperty( ContextProperties.IDENTIFIER, this.text_identifier.getText() ))
 			return false;
 		if( !properties.setProperty( ContextProperties.CONFIG_MODE, this.combo.getText() ))
 			return false;

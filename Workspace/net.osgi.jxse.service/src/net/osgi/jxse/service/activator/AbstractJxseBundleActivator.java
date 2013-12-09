@@ -19,9 +19,7 @@ import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.jxta.platform.NetworkManager;
-import net.osgi.jxse.context.IJxseServiceContext;
-import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
+import net.osgi.jxse.context.JxseServiceContext;
 import net.osgi.jxse.log.JxseLevel;
 
 import org.osgi.framework.BundleActivator;
@@ -43,7 +41,7 @@ public abstract class AbstractJxseBundleActivator implements BundleActivator {
 	 * Create the context
 	 * @return
 	 */
-	protected abstract IJxseServiceContext<NetworkManager, ContextProperties> createContext();
+	protected abstract JxseServiceContext createContext();
 	
 	/*
 	 * (non-Javadoc)
@@ -93,7 +91,7 @@ public abstract class AbstractJxseBundleActivator implements BundleActivator {
 		logServiceTracker = null;
 	}
 
-	public IJxseServiceContext<NetworkManager, ContextProperties> getServiceContext(){
+	public JxseServiceContext getServiceContext(){
 		return jxtaActivator.getServiceContext();
 	}
 }

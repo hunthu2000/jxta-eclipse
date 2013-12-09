@@ -17,10 +17,9 @@ import net.jxta.document.Advertisement;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.utils.StringStyler;
 
-public interface IJxseComponent<T extends Object, U extends Enum<U>>{
+public interface IJxseComponent<T extends Object, U extends Object>{
 	
 	public enum ModuleProperties implements IJxseDirectives{
-		ID,
 		CREATE_DATE;
 
 		@Override

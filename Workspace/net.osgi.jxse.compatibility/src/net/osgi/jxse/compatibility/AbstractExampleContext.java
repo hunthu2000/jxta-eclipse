@@ -14,14 +14,15 @@ import org.eclipse.core.runtime.Platform;
 
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.context.AbstractServiceContext;
-import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
+import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 
-public abstract class AbstractExampleContext extends AbstractServiceContext<NetworkManager, NetworkManagerProperties, IJxseDirectives.Directives>{
+public abstract class AbstractExampleContext extends AbstractServiceContext<IJxseProperties, IJxseDirectives>{
 
 	
-	protected AbstractExampleContext(String identifier) {
-		super(identifier);
+	protected AbstractExampleContext( String bundle_id, String identifier) {
+		super(new JxseContextPropertySource( bundle_id, identifier ));
 	}
 
 	@Override

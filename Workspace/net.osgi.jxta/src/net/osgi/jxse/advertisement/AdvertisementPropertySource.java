@@ -56,9 +56,6 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 	}
 
 	public enum AdvertisementDirectives implements IJxseDirectives{
-		ID,
-		NAME,
-		CONTEXT,
 		PEERGROUP,
 		TYPE,
 		SCOPE;

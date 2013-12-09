@@ -19,52 +19,58 @@ import java.util.Map;
 import java.util.Properties;
 
 import net.jxta.document.Advertisement;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
 
-public class JxseComponent<T extends Object,U extends Enum<U>> implements IJxseComponent<T,U>, Comparable< IJxseComponent<?,?>>{
+public class JxseComponent<T extends Object, U extends Object> implements IJxseComponent<T,U>, Comparable< IJxseComponent<?,?>>{
 
 	private T module;
-	private Map<Object,Object> properties;
+	private Map<U,Object> properties;
 	private IJxseComponent<?,?> parent;
 	private Collection<Advertisement> advertisements;
 
 	public JxseComponent( T component ) {
-		this( null, component, new HashMap<Object,Object>() );
+		this( null, component, new HashMap<U,Object>() );
 	}
 
-	public JxseComponent( T component, Map<Object,Object> properties ) {
+	public JxseComponent( T component, Map<U,Object> properties ) {
 		this( null, component, properties );
 	}
 
-	protected JxseComponent( IJxseComponent<?,?> parent, Map<Object,Object> properties ) {
+	@SuppressWarnings("unchecked")
+	protected JxseComponent( IJxseComponent<?,?> parent, Map<U,Object> properties ) {
 		this.module = null;
 		this.parent = parent;
-		this.properties = new Properties();
+		this.properties = (Map<U, Object>) new Properties();
 		advertisements = new ArrayList<Advertisement>();
 		this.fillProperties(properties);
 	}
 
-	public JxseComponent( IJxseComponent<?,?> parent, T component, Map<Object,Object> properties ) {
+	@SuppressWarnings("unchecked")
+	public JxseComponent( IJxseComponent<?,?> parent, T component, Map<U,Object> properties ) {
 		this.module = component;
 		this.properties = properties;
 		this.parent = parent;
-		this.properties = new Properties();
+		this.properties = (Map<U, Object>) new Properties();
 		advertisements = new ArrayList<Advertisement>();
 		this.fillProperties(properties);
 	}
 
+	@SuppressWarnings("unchecked")
 	public JxseComponent( IJxseComponent<?,?> parent, T component ) {
-		this( component, new Properties() );
+		this( component, (Map<U, Object>) new Properties() );
 	}
 
 	/**
 	 * Fill the internal properties 
 	 * @param properties
 	 */
-	protected void fillProperties( Map<Object,Object> props){
+	@SuppressWarnings("unchecked")
+	protected void fillProperties( Map<U,Object> props){
 		Iterator<?> iterator = props.keySet().iterator();	
-		Object key, value;
+		U key;
+		Object value;
 		while( iterator.hasNext()){
-			key = iterator.next();
+			key = (U) iterator.next();
 			value = props.get(key);
 			if( value != null )
 				this.properties.put(key, value);
@@ -74,7 +80,7 @@ public class JxseComponent<T extends Object,U extends Enum<U>> implements IJxseC
 	
 	@Override
 	public String getId() {
-		return ( String )this.properties.get(ModuleProperties.ID);
+		return ( String )this.properties.get(Directives.ID);
 	}
 
 	/**
@@ -136,7 +142,7 @@ public class JxseComponent<T extends Object,U extends Enum<U>> implements IJxseC
 		return properties.get(key);
 	}
 
-	protected void putProperty(Object key, Object value ) {
+	protected void putProperty(U key, Object value ) {
 		properties.put( key, value );
 	}
 
@@ -147,6 +153,6 @@ public class JxseComponent<T extends Object,U extends Enum<U>> implements IJxseC
 
 	@Override
 	public Iterator<U> iterator() {
-		return null;
+		return properties.keySet().iterator();
 	}
 }

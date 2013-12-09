@@ -20,6 +20,7 @@ import net.jxta.document.Advertisement;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.activator.AbstractActivator;
 import net.osgi.jxse.activator.IActivator;
+import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.component.ComponentChangedEvent;
 import net.osgi.jxse.component.ComponentEventDispatcher;
 import net.osgi.jxse.component.IJxseComponent;
@@ -28,58 +29,47 @@ import net.osgi.jxse.component.JxseComponent;
 import net.osgi.jxse.component.JxseComponentNode;
 import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
 import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.factory.IComponentFactory.Components;
+import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends AbstractActivator<IComponentFactory<T,U,V>> implements
-		IJxseServiceContext<T,U>{
+public class AbstractServiceContext<U extends IJxseProperties, V extends IJxseDirectives> extends AbstractActivator 
+implements	IJxseServiceContext<NetworkManager,U,V>{
 
 	public static final String S_SERVICE_CONTAINER = "JXSE Container";
 	
 	private Collection<IJxseComponent<?,?>> children;
-	private String identifier;
 	private Collection<Advertisement> advertisements;
-	private IJxseWritePropertySource<U, V> properties;
+	private IJxsePropertySource<U, V> properties;
 	
 	private NetworkManager networkManager; 
 	
 	private ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 
-	protected AbstractServiceContext() {
+	@SuppressWarnings("unchecked")
+	protected AbstractServiceContext( String bundleId, String identifier) {
+		this( (IJxsePropertySource<U, V>) new JxseContextPropertySource( bundleId, identifier));
+	}
+
+	protected AbstractServiceContext( IJxsePropertySource<U,V> source ) {
+		super();
 		this.children = new ArrayList<IJxseComponent<?,?>>();
 		this.advertisements = new ArrayList<Advertisement>();
+		this.properties = source;
 	}
 
-	protected AbstractServiceContext( IComponentFactory<T,U,V> factory ) {
-		this( factory, false );
-	}
-
-	protected AbstractServiceContext( IComponentFactory<T,U,V> factory, boolean skipAvailable ) {
-		super( factory, skipAvailable );
-		this.children = new ArrayList<IJxseComponent<?,?>>();
-		this.advertisements = new ArrayList<Advertisement>();
-	}
-
-
-	protected AbstractServiceContext( IJxseComponent<?,?> parent ) {
-		this();
-	}
-
-	protected AbstractServiceContext( String identifier ) {
-		this();
-		this.identifier = identifier;
-	}
-
-	
-	protected IJxsePropertySource<U, V> getProperties() {
+	public IJxsePropertySource<U, V> getProperties() {
 		return properties;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public String getId() {
-		return (String) this.properties.getProperty( (U) ModuleProperties.ID );
+		return (String) this.properties.getDirective( (V) Directives.ID );
 	}
 
 	@Override
@@ -101,20 +91,13 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 	@SuppressWarnings("unchecked")
 	@Override
 	public Date getCreateDate(){
-		return (Date) this.properties.getProperty( (U) ModuleProperties.CREATE_DATE);
+		return (Date) this.properties.getDirective( (V) ModuleProperties.CREATE_DATE);
 	}
 
 	public void clearModules(){
 		children.clear();
 	}
 
-	@Override
-	protected boolean onSetAvailable( IComponentFactory<T,U,V> obj ) {
-		this.properties = (IJxseWritePropertySource<U, V>) obj.getPropertySource();
-		return true;
-	}
-
-	
 	protected void setProperties(IJxseWritePropertySource<U, V> properties) {
 		this.properties = properties;
 	}
@@ -129,7 +112,7 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 	protected void putProperty(Object key, Object value) {
 		if( value == null )
 			return;
-		this.properties.setProperty(( U) key, value);
+		((AbstractJxseWritePropertySource<IJxseProperties>) this.properties).setProperty(( U) key, value);
 	}
 
 	public void addAdvertisement( Advertisement advertisement ){
@@ -156,15 +139,9 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 
 	@Override
 	public String getIdentifier() {
-		return identifier;
+		return this.properties.getIdentifier();
 	}
-
 	
-	@Override
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
-
 	@Override
 	public boolean isRoot() {
 		return true;
@@ -235,7 +212,7 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static IJxseComponent<?,?> addModule( AbstractServiceContext<?,?,?> context, Object module ){
+	public static IJxseComponent<?,?> addModule( AbstractServiceContext<?,?> context, Object module ){
 		if( module instanceof Advertisement ){
 			context.addAdvertisement( (Advertisement) module );
 			return new JxseComponent( context, (Advertisement)module );
@@ -263,7 +240,7 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 		}
 	}
 
-	protected static void removeModule( AbstractServiceContext<?,?,?> context, Object module ){
+	protected static void removeModule( AbstractServiceContext<?,?> context, Object module ){
 		if( module instanceof Advertisement ){
 			context.removeAdvertisement( (Advertisement) module );
 			return;
@@ -278,6 +255,25 @@ public abstract class AbstractServiceContext<T extends Object, U extends Enum<U>
 	@Override
 	public Iterator<U> iterator(){
 		return this.properties.propertyIterator();
+	}
+
+	@Override
+	public NetworkManager getModule() {
+		return this.networkManager;
+	}
+
+	/**
+	 * Get the startup service 
+	 * @param context
+	 * @return
+	 */
+	public static ComponentNode<?,?,?> getChild( Components component, ComponentNode<JxseServiceContext, IJxseProperties, IJxseDirectives> context ){
+		for( ComponentNode<?,?,?> node: context.getChildren() ){
+			if( node.getFactory().getComponent().equals( component )){
+				return node;
+			}
+		}
+		return null;
 	}
 
 }

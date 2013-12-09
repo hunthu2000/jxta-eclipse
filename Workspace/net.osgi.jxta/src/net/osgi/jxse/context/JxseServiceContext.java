@@ -10,24 +10,17 @@
  *******************************************************************************/
 package net.osgi.jxse.context;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.context.AbstractServiceContext;
-import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
+import net.osgi.jxse.properties.IJxsePropertySource;
 
-public class JxseServiceContext extends AbstractServiceContext<NetworkManager, NetworkManagerProperties,  IJxseDirectives>{
+public class JxseServiceContext extends AbstractServiceContext<IJxseProperties,  IJxseDirectives>{
 
-	private NetworkManager manager;
-	
-	private Map<Object,Object> properties;
-	
-	public JxseServiceContext( String identifier ) {
-		super( identifier );
-		properties = new HashMap<Object, Object>();
+	public JxseServiceContext( IJxsePropertySource<IJxseProperties, IJxseDirectives> iJxsePropertySource ) {
+		super( iJxsePropertySource );
 	}
 
 	@Override
@@ -71,21 +64,6 @@ public class JxseServiceContext extends AbstractServiceContext<NetworkManager, N
 			}
 		}
 		super.deactivate();
-	}
-	
-	@Override
-	public Object getProperty(Object key) {
-		return properties.get(key);
-	}
-
-	@Override
-	public void putProperty(Object key, Object value) {
-		properties.put(key, value);
-	}
-
-	@Override
-	public NetworkManager getModule() {
-		return manager;
 	}
 
 	@Override

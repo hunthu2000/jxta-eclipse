@@ -25,6 +25,7 @@ import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.properties.AbstractJxsePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.service.xml.PreferenceStore.Persistence;
 import net.osgi.jxse.service.xml.PreferenceStore.SupportedAttributes;
@@ -152,7 +153,7 @@ public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProper
 
 	@Override
 	public String getComponentName() {
-		return store.getValue( ContextProperties.IDENTIFIER.toString() );
+		return store.getValue( Directives.NAME.toString() );
 	}
 
 	@Override

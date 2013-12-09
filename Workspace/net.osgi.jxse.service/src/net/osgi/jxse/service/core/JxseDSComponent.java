@@ -15,9 +15,8 @@ import net.osgi.jxse.utils.Utils;
 
 import org.eclipselabs.osgi.ds.broker.service.AbstractAttendeeProviderComponent;
 
-import net.jxta.platform.NetworkManager;
-import net.osgi.jxse.context.IJxseServiceContext;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
+import net.osgi.jxse.context.JxseServiceContext;
 
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
 import org.eclipselabs.osgi.ds.broker.service.AbstractProvider;
@@ -44,13 +43,13 @@ public class JxseDSComponent extends AbstractAttendeeProviderComponent {
 		this.setActivator(activator);
 	}
 
-	protected IJxseServiceContext<NetworkManager, ContextProperties> getContext() {
+	protected JxseServiceContext getContext() {
 		return provider.getContainer();
 	}
 
 	private final void setActivator(AbstractJxseBundleActivator activator) {
 		try{
-			IJxseServiceContext<NetworkManager, ContextProperties> context = activator.getServiceContext();
+			JxseServiceContext context = activator.getServiceContext();
 			String pass = (String) context.getProperty( ContextProperties.PASS_1);
 			if( !Utils.isNull( pass ))
 				this.introduction = pass;
@@ -69,7 +68,6 @@ public class JxseDSComponent extends AbstractAttendeeProviderComponent {
 	protected void initialise() {
 		super.addAttendee( this.provider );
 	}
-
 }
 
 /**
@@ -77,9 +75,9 @@ public class JxseDSComponent extends AbstractAttendeeProviderComponent {
  * @author Kees
  *
  */
-class JxseContextProvider extends AbstractProvider<String, Object, IJxseServiceContext<NetworkManager, ContextProperties> > {
+class JxseContextProvider extends AbstractProvider<String, Object, JxseServiceContext> {
 
-	private IJxseServiceContext<NetworkManager, ContextProperties>  container;
+	private JxseServiceContext  container;
 	
 	JxseContextProvider() {
 		super( new Palaver());
@@ -93,7 +91,7 @@ class JxseContextProvider extends AbstractProvider<String, Object, IJxseServiceC
 	 * Get the container
 	 * @return
 	 */
-	IJxseServiceContext<NetworkManager, ContextProperties> getContainer() {
+	JxseServiceContext getContainer() {
 		return container;
 	}
 
@@ -101,7 +99,7 @@ class JxseContextProvider extends AbstractProvider<String, Object, IJxseServiceC
 	 * Add a container and 
 	 * @param container
 	 */
-	public void setContainer(IJxseServiceContext<NetworkManager, ContextProperties>  container) {
+	public void setContainer(JxseServiceContext  container) {
 		if( container == null )
 			throw new NullPointerException();
 		this.container = container;

@@ -9,6 +9,7 @@ public abstract class AbstractPeerGroupProviderPropertySource<E extends Enum<E>>
 {
 
 	public enum PeerGroupDirectives implements IJxseDirectives{
+		TYPE,
 		PEERGROUP;
 	
 		@Override

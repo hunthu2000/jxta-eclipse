@@ -34,7 +34,7 @@ public class SeedListFactory implements IComponentFactory<String, String, IJxseD
 	}
 	
 	@Override
-	public Components getComponentName() {
+	public Components getComponent() {
 		return Components.SEED_LIST;
 	}
 

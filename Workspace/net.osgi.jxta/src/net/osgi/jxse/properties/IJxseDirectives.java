@@ -42,7 +42,7 @@ public interface IJxseDirectives{
 	 * @author Kees
 	 *
 	 */
-	public enum Types{
+	public enum Contexts{
 		JXTA,
 		JXSE,
 		CHAUPAL;

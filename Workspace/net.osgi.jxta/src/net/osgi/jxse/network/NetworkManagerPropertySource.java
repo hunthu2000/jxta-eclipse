@@ -42,11 +42,11 @@ public class NetworkManagerPropertySource extends AbstractJxseWritePropertySourc
 	}
 
 	private void fill( JxseContextPropertySource source ){
-		Iterator<ContextProperties> iterator = source.propertyIterator();
+		Iterator<IJxseProperties> iterator = source.propertyIterator();
 		this.setDirective( Directives.AUTO_START, source.getDirective( Directives.AUTO_START ));
 		this.setDirective( Directives.CLEAR_CONFIG, source.getDirective( Directives.CLEAR_CONFIG ));
 		while( iterator.hasNext() ){
-			ContextProperties cp = iterator.next();
+			ContextProperties cp = (ContextProperties) iterator.next();
 			NetworkManagerProperties nmp = convertFrom( cp );
 			if( nmp == null )
 				continue;
@@ -95,8 +95,6 @@ public class NetworkManagerPropertySource extends AbstractJxseWritePropertySourc
 	 */
 	public NetworkManagerProperties convertFrom( ContextProperties context ){
 		switch( context ){
-		case IDENTIFIER:
-			return NetworkManagerProperties.INSTANCE_NAME;
 		case CONFIG_MODE:
 			return NetworkManagerProperties.MODE;
 		case HOME_FOLDER:
@@ -121,8 +119,6 @@ public class NetworkManagerPropertySource extends AbstractJxseWritePropertySourc
 			return ContextProperties.CONFIG_MODE;
 		case INSTANCE_HOME:
 			return ContextProperties.HOME_FOLDER;
-		case INSTANCE_NAME:
-			return ContextProperties.IDENTIFIER;
 		case PEER_ID:
 			return ContextProperties.PEER_ID;
 		default:

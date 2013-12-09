@@ -16,7 +16,7 @@ import java.util.TreeSet;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
 
-public class ComponentNode<T extends Object, U extends Enum<U>, V extends IJxseDirectives> implements Comparable<ComponentNode<?,?,?>> {
+public class ComponentNode<T extends Object, U extends Object, V extends IJxseDirectives> implements Comparable<ComponentNode<?,?,?>> {
 
 	private IComponentFactory<T,U,V> factory;
 	
@@ -82,6 +82,6 @@ public class ComponentNode<T extends Object, U extends Enum<U>, V extends IJxseD
 		if(( this.factory == null ) && ( arg0.getFactory() != null ))
 				return -1;
 
-		return this.factory.getComponentName().compareTo( arg0.getFactory().getComponentName());
+		return this.factory.getComponent().compareTo( arg0.getFactory().getComponent());
 	}
 }

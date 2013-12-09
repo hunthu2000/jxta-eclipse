@@ -18,23 +18,26 @@ import net.osgi.jxse.activator.IActivator;
 import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.builder.ICompositeBuilderListener.BuilderEvents;
+import net.osgi.jxse.component.IJxseComponentHost;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
-import net.osgi.jxse.properties.IJxseDirectives.Types;
+import net.osgi.jxse.properties.IJxseDirectives.Contexts;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
-public class CompositeStarter<T extends Object, U extends Enum<U>, V extends IJxseDirectives> {
+public class CompositeStarter<T extends Object, U extends Object, V extends IJxseDirectives> {
 
 	private Collection<ICompositeBuilderListener<?>> factoryListeners;
 	private ComponentNode<T,U,V> root;
 	private boolean completed;
+	private boolean autostart;
 	
-	public CompositeStarter( ComponentNode<T,U,V> root ) {
+	public CompositeStarter( ComponentNode<T,U,V> root, boolean autostart ) {
 		this.root = root;
+		this.autostart = autostart;
 		this.factoryListeners = new ArrayList<ICompositeBuilderListener<?>>();
 	}
 
@@ -77,7 +80,23 @@ public class CompositeStarter<T extends Object, U extends Enum<U>, V extends IJx
 		Object module = null;
 		if(!factory.isCompleted() ){
 			this.parseDirectives( node );
-			module = factory.createModule();
+			try{
+				module = factory.createModule();
+			}
+			catch( Exception ex ){
+				ex.printStackTrace();
+			}
+			if( node.getParent() != null ){
+				IComponentFactory<?,?,?> parentFactory = node.getParent().getFactory();
+				if(( parentFactory != null ) && ( parentFactory.getModule() instanceof IJxseComponentHost )){
+					IJxseComponentHost host = (IJxseComponentHost) parentFactory.getModule();
+					//TODO CP host.addChild((IJxseComponent) module);
+				}
+			}
+		}
+		if(!this.autostart ){
+			this.completed = true;
+			return node;
 		}
 		for( ComponentNode<?,?,?> child: node.getChildren())
 			parseFactories( (ComponentNode<?, ?, V>) child );
@@ -157,7 +176,7 @@ public class CompositeStarter<T extends Object, U extends Enum<U>, V extends IJx
 		case CONTEXT:
 			if( Utils.isNull( value ))
 				break;
-			Types type = Types.valueOf( StringStyler.styleToEnum(value));
+			Contexts type = Contexts.valueOf( StringStyler.styleToEnum(value));
 			switch( type ){
 			case CHAUPAL:
 				break;

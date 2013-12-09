@@ -20,7 +20,7 @@ import java.util.Collection;
  * @author keesp
  *
  */
-public abstract class AbstractActivator<T extends Object> implements IActivator
+public abstract class AbstractActivator implements IActivator
 {
 
 	private Status status;
@@ -36,24 +36,6 @@ public abstract class AbstractActivator<T extends Object> implements IActivator
 		listeners = new ArrayList<IActivatorListener>();
 	}
 
-	/**
-	 * 
-	 */
-	public AbstractActivator( T factory )
-	{
-		this( factory, false );
-	}
-
-	/**
-	 * 
-	 */
-	protected AbstractActivator( T factory, boolean skipAvailable )
-	{
-		this.status = Status.IDLE;
-		listeners = new ArrayList<IActivatorListener>();
-		if(!skipAvailable )
-		  this.setAvailable( factory );
-	}
 	public void addActivatorListener( IActivatorListener listener ){
 		this.listeners.add( listener );
 	}
@@ -89,15 +71,6 @@ public abstract class AbstractActivator<T extends Object> implements IActivator
 	protected void clear(){
 		this.setStatus( Status.IDLE );
 	}
-
-	/**
-	 * Make the activator AVAILABLE
-	 */
-	protected void setAvailable( T factory ){
-		if( this.onSetAvailable( factory ))
-			this.setStatus( Status.AVAILABLE );
-	}
-	protected abstract boolean onSetAvailable( T factory );
 
 	/**
 	 * Initialise the activator. If the method returns false, the status remains on initialising

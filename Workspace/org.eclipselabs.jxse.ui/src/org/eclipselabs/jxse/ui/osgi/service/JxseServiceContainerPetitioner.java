@@ -13,7 +13,7 @@ import java.util.Scanner;
 import net.jxta.document.Advertisement;
 import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.component.IJxseComponentNode;
-import net.osgi.jxse.context.IJxseServiceContext;
+import net.osgi.jxse.context.JxseServiceContext;
 import net.osgi.jxse.service.IServiceChangedListener;
 import net.osgi.jxse.service.ServiceChangedEvent;
 import net.osgi.jxse.service.ServiceEventDispatcher;
@@ -26,8 +26,8 @@ import org.eclipselabs.osgi.ds.broker.service.AbstractPetitioner;
 import org.eclipselabs.osgi.ds.broker.service.IParlezListener.Notifications;
 import org.eclipselabs.osgi.ds.broker.service.ParlezEvent;
 
-public class JxseServiceContainerPetitioner<T extends Enum<T>> extends AbstractPetitioner<String, String, IJxseServiceContext<?,?>>
-	implements IJxseComponentNode<Collection<IJxseServiceContext<?,?>>,T>, IServiceChangedListener
+public class JxseServiceContainerPetitioner<T extends Enum<T>> extends AbstractPetitioner<String, String, JxseServiceContext>
+	implements IJxseComponentNode<Collection<JxseServiceContext>,T>, IServiceChangedListener
 {
 	public static final String S_JXSE = "Jxse";
 
@@ -50,15 +50,15 @@ public class JxseServiceContainerPetitioner<T extends Enum<T>> extends AbstractP
 		return attendee;
 	}
 
-	public IJxseServiceContext<?,?> getJxtaContainer( String identifier ) {
-		for( IJxseServiceContext<?,?> container: super.getCollection() )
+	public JxseServiceContext getJxtaContainer( String identifier ) {
+		for( JxseServiceContext container: super.getCollection() )
 			if( container.getIdentifier().equals( identifier ))
 				return container;
 		return null;
 	}
 
 	@Override
-	protected void onDataReceived( ParlezEvent<IJxseServiceContext<?,?>> event ) {
+	protected void onDataReceived( ParlezEvent<JxseServiceContext> event ) {
 		  super.onDataReceived( event );
 		  this.addChild( event.getData());
 		  System.out.println("Container added: " + event.getData().getIdentifier( ));
@@ -99,7 +99,7 @@ public class JxseServiceContainerPetitioner<T extends Enum<T>> extends AbstractP
 	}
 
 	@Override
-	public Collection<IJxseServiceContext<?,?>> getModule() {
+	public Collection<JxseServiceContext> getModule() {
 		return super.getCollection();
 	}
 

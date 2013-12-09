@@ -3,6 +3,7 @@ package org.eclipselabs.jxse.ui.component;
 import java.util.Map;
 
 import org.eclipselabs.jxse.ui.property.PeerGroupPropertySource;
+import org.eclipselabs.jxse.ui.property.PeerGroupPropertySource.PeerGroupProperties;
 
 import net.jxta.peergroup.PeerGroup;
 import net.osgi.jxse.component.IJxseComponent;
@@ -19,8 +20,9 @@ public class PeerGroupComponent extends JxseComponent<PeerGroup, PeerGroupProper
 		super(component);
 	}
 
+	
 	@Override
-	protected void fillProperties(Map<Object, Object> props) {
+	protected void fillProperties(Map<PeerGroupProperties, Object> props) {
 		PeerGroup pg = super.getModule();
 		super.addAdvertisement( pg.getImplAdvertisement() );
 		super.addAdvertisement( pg.getConfigAdvertisement());

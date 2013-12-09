@@ -8,9 +8,9 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.activator;
+package net.osgi.jxse.component;
 
-import net.osgi.jxse.component.IJxseComponent;
-
-public interface IJxseService<T extends Object, U extends Object> extends IJxseComponent<T,U>, IActivator{
+public interface IJxseComponentHost<T extends Object, U extends Object> extends IJxseComponent<T,U>{
+	
+	public void addChild( IJxseComponent<?,?> child );
 }

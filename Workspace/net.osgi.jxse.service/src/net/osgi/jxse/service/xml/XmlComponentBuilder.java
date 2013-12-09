@@ -12,7 +12,7 @@ import net.osgi.jxse.properties.PropertySourceUtils;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
-public class XmlComponentBuilder<T extends Enum<T>, U extends IJxseDirectives> {
+public class XmlComponentBuilder<T extends Object, U extends IJxseDirectives> {
 
 	public static final String DOC_HEAD = "<?xml version='1.0' encoding='UTF-8'?>\n";
 	public static final String DOC_PROPERTY = "<properties>\n";

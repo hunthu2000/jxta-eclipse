@@ -21,7 +21,7 @@ extends AbstractJxsePropertySource<T> implements IJxseWritePropertySource<T, IJx
 		super( bundleId, identifier, componentName );
 	}
 
-	protected AbstractJxseWritePropertySource( String componentName, IJxsePropertySource<?,?> parent ) {
+	protected AbstractJxseWritePropertySource( String componentName, IJxsePropertySource<?,IJxseDirectives> parent ) {
 		super( componentName, parent );
 	}
 

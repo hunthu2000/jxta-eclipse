@@ -1,6 +1,5 @@
 package net.osgi.jxse.service.core;
 
-import net.jxta.document.AdvertisementFactory;
 import net.osgi.jxse.advertisement.JxseAdvertisementFactory;
 import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.CompositeBuilder;
@@ -9,13 +8,13 @@ import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
-import net.osgi.jxse.properties.IJxseDirectives.Types;
+import net.osgi.jxse.properties.IJxseDirectives.Contexts;
 import net.osgi.jxse.service.advertisement.ChaupalAdvertisementFactory;
 import net.osgi.jxse.service.discovery.ChaupalDiscoveryServiceFactory;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
-public class JxseCompositeBuilder<T extends Object, U extends Enum<U>, V extends IJxseDirectives> extends CompositeBuilder<T,U,V> {
+public class JxseCompositeBuilder<T extends Object, U extends Object, V extends IJxseDirectives> extends CompositeBuilder<T,U,V> {
 
 	public JxseCompositeBuilder(IJxsePropertySource<U,V> propertySource) {
 		super(propertySource);
@@ -27,9 +26,9 @@ public class JxseCompositeBuilder<T extends Object, U extends Enum<U>, V extends
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	protected ComponentNode<?, ?, ?> getNode(ComponentNode<?, ?, ?> node, IComponentFactory<?, ?, ?> factory) {
+	protected ComponentNode<?, ?, ?> createNode(ComponentNode<?, ?, ?> node, IComponentFactory<?, ?, ?> factory) {
 		IComponentFactory<?, ?, ?> jxseFactory = getFactoryFromType( (IComponentFactory<?, ?, IJxseDirectives>) factory );
-		return super.getNode(node, jxseFactory);
+		return super.createNode(node, jxseFactory);
 	}
 
 	/**
@@ -38,15 +37,15 @@ public class JxseCompositeBuilder<T extends Object, U extends Enum<U>, V extends
 	 * @return
 	 */
 	protected static IComponentFactory<?,?,IJxseDirectives> getFactoryFromType( IComponentFactory<?,?,IJxseDirectives> factory ){
-		String typeStr = (String) factory.getPropertySource().getDirective( Directives.CONTEXT );
-		if( Utils.isNull(typeStr))
+		String contextStr = (String) factory.getPropertySource().getDirective( Directives.CONTEXT );
+		if( Utils.isNull(contextStr))
 			return factory;
-		Types type = Types.valueOf( StringStyler.styleToEnum( typeStr ));
-		switch( type ){
+		Contexts context = Contexts.valueOf( StringStyler.styleToEnum( contextStr ));
+		switch( context ){
 		case CHAUPAL:
 			if( factory instanceof DiscoveryServiceFactory )
 				return new ChaupalDiscoveryServiceFactory((DiscoveryServiceFactory) factory );
-			if( factory instanceof AdvertisementFactory )
+			if( factory instanceof JxseAdvertisementFactory )
 				return new ChaupalAdvertisementFactory((JxseAdvertisementFactory) factory );
 		case JXSE:
 		default:

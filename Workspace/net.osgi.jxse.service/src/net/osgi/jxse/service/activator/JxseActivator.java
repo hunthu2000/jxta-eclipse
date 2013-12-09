@@ -13,13 +13,14 @@ package net.osgi.jxse.service.activator;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.activator.ISimpleActivator;
 import net.osgi.jxse.activator.JxseContextStarter;
-import net.osgi.jxse.context.IJxseServiceContext;
-import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
+import net.osgi.jxse.context.JxseServiceContext;
+import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 
 public class JxseActivator implements ISimpleActivator {
 
-	private IJxseServiceContext<NetworkManager, ContextProperties> jxtaContext;
-	private JxseContextStarter<IJxseServiceContext<NetworkManager, ContextProperties>,NetworkManager, ContextProperties> starter;
+	private JxseServiceContext jxtaContext;
+	private JxseContextStarter<JxseServiceContext, NetworkManager, IJxseProperties, IJxseDirectives> starter;
 	
 	private boolean active;
 		
@@ -27,7 +28,7 @@ public class JxseActivator implements ISimpleActivator {
 		active = false;
 	}
 
-	void setJxtaContext(IJxseServiceContext<NetworkManager, ContextProperties> jxtaContext) {
+	void setJxtaContext(JxseServiceContext jxtaContext) {
 		this.jxtaContext = jxtaContext;
 	}
 
@@ -38,7 +39,7 @@ public class JxseActivator implements ISimpleActivator {
 	@Override
 	public boolean start(){
 		try{
-			starter = new JxseContextStarter<IJxseServiceContext<NetworkManager, ContextProperties>,NetworkManager, ContextProperties>( jxtaContext );
+			starter = new JxseContextStarter<JxseServiceContext,NetworkManager, IJxseProperties, IJxseDirectives>( jxtaContext );
 			starter.createContext();
 			this.active = true;
 		}
@@ -59,7 +60,7 @@ public class JxseActivator implements ISimpleActivator {
 		starter.removeContext();
 	}
 
-	public IJxseServiceContext<NetworkManager, ContextProperties> getServiceContext(){
+	public JxseServiceContext getServiceContext(){
 		return jxtaContext;
 	}
 

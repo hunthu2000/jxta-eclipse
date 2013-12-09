@@ -47,14 +47,15 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 		this.parent = null;
 	}
 
-	protected AbstractJxsePropertySource( IJxsePropertySource<?,?> parent ) {
+	protected AbstractJxsePropertySource( IJxsePropertySource<?, IJxseDirectives> parent ) {
 		this( parent.getBundleId(), parent.getIdentifier(), parent.getComponentName(), parent.getDepth() + 1 );
 		this.parent = parent;
 	}
 
-	protected AbstractJxsePropertySource( String componentName, IJxsePropertySource<?,?> parent ) {
+	protected AbstractJxsePropertySource( String componentName, IJxsePropertySource<?, IJxseDirectives> parent ) {
 		this( parent );
 		this.componentName = componentName;
+		this.directives.put( IJxseDirectives.Directives.CONTEXT, parent.getDirective(IJxseDirectives.Directives.CONTEXT) );
 	}
 
 	public IJxsePropertySource<?,?> getParent(){

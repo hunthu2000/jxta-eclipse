@@ -8,41 +8,37 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.service.advertisement;
+package net.osgi.jxse.context;
 
 import net.jxta.peergroup.PeerGroup;
-import net.osgi.jxse.advertisement.JxseAdvertisementFactory;
+import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
-public class ChaupalAdvertisementFactory extends
-		AbstractComponentFactory<JxseAdvertisementService, IJxseProperties, IJxseDirectives> implements IPeerGroupProvider{
-
-	public static final String S_DISCOVERY_SERVICE = "JxseDiscoveryService";
-
-	private JxseAdvertisementFactory factory;
+public class ContextFactory extends AbstractComponentFactory<JxseServiceContext, IJxseProperties, IJxseDirectives>
+	implements IPeerGroupProvider
+{
+	private IJxseServiceContext<NetworkManager, IJxseProperties, IJxseDirectives> context;
 	
-	public ChaupalAdvertisementFactory( JxseAdvertisementFactory factory ) {
-		super( factory.getPropertySource() );
-		this.factory = factory;
+	public ContextFactory(JxseContextPropertySource source) {
+		super(source );
 	}
-
+	
 	@Override
-	protected JxseAdvertisementService onCreateModule( IJxsePropertySource<IJxseProperties, IJxseDirectives> properties) {
-		JxseAdvertisementService ds = new JxseAdvertisementService ( factory );
-		return ds;
+	protected JxseServiceContext onCreateModule( IJxsePropertySource<IJxseProperties, IJxseDirectives> properties) {
+		return new JxseServiceContext( super.getPropertySource() );
 	}
-
+	
 	@Override
 	public String getPeerGroupName() {
-		return this.factory.getPeerGroupContainer().getPeerGroupName();
+		return context.getModule().getNetPeerGroup().getPeerGroupName();
 	}
 
 	@Override
 	public PeerGroup getPeerGroup() {
-		return this.factory.getPeerGroupContainer().getPeerGroup();
+		return context.getModule().getNetPeerGroup();
 	}
 }
