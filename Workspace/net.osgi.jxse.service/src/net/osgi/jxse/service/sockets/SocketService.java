@@ -24,8 +24,8 @@ import java.util.concurrent.Executors;
 
 import net.jxta.platform.NetworkManager;
 import net.jxta.socket.JxtaSocket;
+import net.osgi.jxse.component.AbstractJxseService;
 import net.osgi.jxse.properties.IJxseDirectives;
-import net.osgi.jxse.service.core.AbstractJxseService;
 import net.osgi.jxse.socket.ISocketFactory;
 import net.osgi.jxse.utils.IOUtils;
 

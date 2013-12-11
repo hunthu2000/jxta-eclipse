@@ -24,12 +24,12 @@ public class PeerGroupComponent extends JxseComponent<PeerGroup, PeerGroupProper
 	@Override
 	protected void fillProperties(Map<PeerGroupProperties, Object> props) {
 		PeerGroup pg = super.getModule();
-		super.addAdvertisement( pg.getImplAdvertisement() );
-		super.addAdvertisement( pg.getConfigAdvertisement());
-		super.addAdvertisement( pg.getPeerAdvertisement() );
-		super.addAdvertisement( pg.getPeerGroupAdvertisement() );
+		//super.addAdvertisement( pg.getImplAdvertisement() );
+		//super.addAdvertisement( pg.getConfigAdvertisement());
+		//super.addAdvertisement( pg.getPeerAdvertisement() );
+		//super.addAdvertisement( pg.getPeerGroupAdvertisement() );
 		try {
-			super.addAdvertisement( pg.getAllPurposePeerGroupImplAdvertisement() );
+			//super.addAdvertisement( pg.getAllPurposePeerGroupImplAdvertisement() );
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

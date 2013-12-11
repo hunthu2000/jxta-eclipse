@@ -15,17 +15,17 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-import net.jxta.document.Advertisement;
 import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
+import net.osgi.jxse.properties.IJxseProperties;
 
-public class JxseComponentNode<T extends Object, U extends Enum<U>> implements IJxseComponentNode<T,U>{
+public class JxseComponentNode<T extends Object, U extends Object> implements IJxseComponentNode<T,U>{
 
 	private IJxseComponent<T,U> component;
 	private IJxseComponentNode<?,?> parent;	
 	private Collection<IJxseComponent<?,?>> children;
 	private ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 	
-	public JxseComponentNode( IJxseComponentNode<?,?> parent, IJxseComponent<T,U> component ) {
+	public JxseComponentNode( IJxseComponentNode<?,IJxseProperties> parent, IJxseComponent<T,U> component ) {
 		this.component = component;
 		this.parent = parent;
 		this.children = new ArrayList<IJxseComponent<?,?>>();
@@ -97,23 +97,13 @@ public class JxseComponentNode<T extends Object, U extends Enum<U>> implements I
 	}
 
 	@Override
-	public Advertisement[] getAdvertisements() {
-		return this.component.getAdvertisements();
-	}
-	
-	/**
-	 * Returns true if the component has advertisements
-	 * @return
-	 */
-	@Override
-	public boolean hasAdvertisements(){
-		return this.component.hasAdvertisements();
+	public Iterator<U> iterator() {
+		return this.component.iterator();
 	}
 
 	@Override
-	public Iterator<U> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getCategory(Object key) {
+		return this.component.getCategory(key);
 	}
 
 }

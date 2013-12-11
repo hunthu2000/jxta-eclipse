@@ -62,14 +62,6 @@ public class XMLServiceBuilder implements ICompositeBuilder<ComponentNode<JxseSe
 		this.addListenerToBuilder( cf );
 		root = cf.build();
 		this.removeListenerFromBuilder( cf );
-		/*
-		super.setIdentifier( builder.getPropertySource().getIdentifier() );
-		super.setProperties( (IJxseWritePropertySource<IJxseProperties, IJxseDirectives>) root.getFactory().getPropertySource() );
-		super.putProperty( ContextProperties.PASS_1, 
-				builder.getPropertySource().getProperty( ContextProperties.PASS_1 ));
-		super.putProperty( ContextProperties.PASS_2, 
-				builder.getPropertySource().getProperty( ContextProperties.PASS_2 ));
-		*/
 		return this.root;
 	}
 

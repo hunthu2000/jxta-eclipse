@@ -10,27 +10,25 @@
  *******************************************************************************/
 package net.osgi.jxse.activator;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import net.jxta.document.Advertisement;
-import net.jxta.exception.PeerGroupException;
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.component.IJxseComponent;
+import net.osgi.jxse.component.IJxseComponentNode;
 import net.osgi.jxse.context.CompositeStarter;
 import net.osgi.jxse.context.JxseServiceContext;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
-import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.network.NetPeerGroupService;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 
-public class JxseStartupService extends AbstractActivator implements IJxseComponent<IJxseProperties, IJxseDirectives>{
+public class JxseStartupService extends AbstractActivator implements IJxseService<NetworkManager,IJxseProperties>{
 
 	public static final String S_ERR_NO_SERVICE_LOADED = "\n\t!!! No service is loaded. Not starting context:  ";
 	public static final String S_ERR_CONTEXT_NOT_BUILT = "\n\t!!! The context was not built! Not starting context:  ";
@@ -77,7 +75,8 @@ public class JxseStartupService extends AbstractActivator implements IJxseCompon
 				BuilderEvents fe = event.getFactoryEvent();
 				switch( fe ){
 				case COMPONENT_CREATED:
-					Object component = (( IComponentFactory<?,?,?> )event.getFactory()).getModule();
+					ComponentNode<?,?,?> node = (ComponentNode<?, ?, ?>) event.getComponent();
+					Object component = node.getFactory().getModule();
 					if( component.equals( service )){
 						break;
 					}
@@ -85,19 +84,25 @@ public class JxseStartupService extends AbstractActivator implements IJxseCompon
 						break;
 					}
 					if( component instanceof NetworkManager ){
-						//JxseServiceContext.addModule( service, component );
 						NetworkManager manager = ( NetworkManager)component;
-						try {
-							manager.startNetwork();
-						} catch (PeerGroupException e) {
-							e.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						NetPeerGroupService npg = 
+								new NetPeerGroupService( source.getBundleId(), source.getIdentifier(), manager );
+						npg.start();
+						JxseServiceContext.addModule( service, npg );
 					}
-					JxseServiceContext.addModule( service, component );
-					if( event.getFactory() instanceof IPeerGroupProvider ){
-						IPeerGroupProvider provider = ( IPeerGroupProvider )event.getFactory();
+					ComponentNode<?,?,?> parentNode = node.getParent();
+					if( parentNode == null )
+						break;
+					Object po = node.getParent().getFactory().getModule();
+					if(!( po instanceof IJxseComponentNode ))
+						break;
+					IJxseComponentNode<?,?> parent = (IJxseComponentNode<?, ?>) po;
+					if( parent.equals( service ))
+						JxseServiceContext.addModule( service, component );
+					else
+						parent.addChild((IJxseComponent<?, ?>) component);
+					if( event.getComponent() instanceof IPeerGroupProvider ){
+						IPeerGroupProvider provider = ( IPeerGroupProvider )event.getComponent();
 						//swarm.addPeerGroup( provider.getPeerGroup() );
 					}
 					break;
@@ -164,27 +169,11 @@ public class JxseStartupService extends AbstractActivator implements IJxseCompon
 		return this.source.getId();
 	}
 
-
 	@Override
 	public Date getCreateDate() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-	@Override
-	public Advertisement[] getAdvertisements() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public boolean hasAdvertisements() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 
 	@Override
 	public Object getProperty(Object key) {
@@ -193,15 +182,19 @@ public class JxseStartupService extends AbstractActivator implements IJxseCompon
 
 
 	@Override
-	public IJxseProperties getModule() {
-		// TODO Auto-generated method stub
-		return null;
+	public NetworkManager getModule() {
+		return this.manager;
 	}
 
 
 	@Override
-	public Iterator<IJxseDirectives> iterator() {
-		return this.source.directiveIterator();
+	public Iterator<IJxseProperties> iterator() {
+		return this.source.propertyIterator();
+	}
+
+	@Override
+	public String getCategory(Object key) {
+		return this.source.getCategory( (IJxseProperties) key);
 	}
 	
 }

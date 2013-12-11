@@ -11,10 +11,10 @@
 package net.osgi.jxse.service.peergroup;
 
 import net.jxta.peergroup.PeerGroup;
+import net.osgi.jxse.component.AbstractJxseService;
 import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.peergroup.IPeerGroupProperties.PeerGroupProperties;
 import net.osgi.jxse.properties.IJxseDirectives;
-import net.osgi.jxse.service.core.AbstractJxseService;
-import net.osgi.jxse.service.peergroup.IPeerGroupProperties.PeerGroupProperties;
 
 public class PeerGroupService extends AbstractJxseService<PeerGroup, PeerGroupProperties, IJxseDirectives>{
 

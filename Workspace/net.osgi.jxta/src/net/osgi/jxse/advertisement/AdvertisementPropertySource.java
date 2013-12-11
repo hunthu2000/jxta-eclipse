@@ -11,6 +11,7 @@ import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
@@ -34,7 +35,25 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 		}
 	}
 
+	/**
+	 * The mode gives clues on what to do with the service. either advertisements are only discovered,
+	 * or they are (also) published
+	 * @author Kees
+	 *
+	 */
+	public enum AdvertisementMode{
+		DISCOVERY,
+		PUBLISH,
+		DISCOVERY_AND_PUBLISH;
+
+	@Override
+	public String toString() {
+		return StringStyler.prettyString( super.toString() );
+	}}
+
+
 	public enum AdvertisementProperties implements IJxseProperties{
+		MODE,
 		LIFE_TIME,
 		EXPIRATION,
 		DESCRIPTION;
@@ -200,8 +219,9 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 
 	protected void fillDefaultValues(){
 		super.setDirective(AdvertisementDirectives.SCOPE, Scope.REMOTE.toString());
-		super.setProperty( AdvertisementProperties.LIFE_TIME, PeerGroup.DEFAULT_LIFETIME );
-		super.setProperty( AdvertisementProperties.EXPIRATION, PeerGroup.DEFAULT_EXPIRATION );	
+		super.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( AdvertisementProperties.LIFE_TIME, PeerGroup.DEFAULT_LIFETIME ));
+		super.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( AdvertisementProperties.EXPIRATION, PeerGroup.DEFAULT_EXPIRATION ));	
+		super.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( AdvertisementProperties.MODE, AdvertisementMode.DISCOVERY, true ));
 	}
 
 	@Override

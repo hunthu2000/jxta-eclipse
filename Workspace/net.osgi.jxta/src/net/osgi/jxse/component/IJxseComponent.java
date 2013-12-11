@@ -13,7 +13,6 @@ package net.osgi.jxse.component;
 import java.util.Date;
 import java.util.Iterator;
 
-import net.jxta.document.Advertisement;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.utils.StringStyler;
 
@@ -37,23 +36,18 @@ public interface IJxseComponent<T extends Object, U extends Object>{
 	public Date getCreateDate();
 	
 	/**
-	 * A JXTA service component can use, find or create a number of advertisements. This have to be listed
-	 * @return
-	 */
-	public Advertisement[] getAdvertisements();
-	
-	/**
-	 * Returns true if the component has advertisements
-	 * @return
-	 */
-	public boolean hasAdvertisements();
-	
-	/**
 	 * Get a property for the service component
 	 * @param key
 	 * @return
 	 */
 	public Object getProperty( Object key );
+
+	/**
+	 * Get the category for the given key
+	 * @param key
+	 * @return
+	 */
+	public String getCategory( Object key );
 
 	/**
 	 * Get the module that is contained in the component

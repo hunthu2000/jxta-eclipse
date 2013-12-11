@@ -54,7 +54,7 @@ public interface IJxsePropertySource< T extends Object, U extends IJxseDirective
 	 * @return
 	 */
 	public String getId();
-	
+
 	/**
 	 * Get the depth of the component (root = 0)
 	 * @return
@@ -72,6 +72,13 @@ public interface IJxsePropertySource< T extends Object, U extends IJxseDirective
 	 * Get the current value for the given property
 	 */
 	public Object getProperty( T id );
+
+	/**
+	 * Get the category for the given key
+	 * @param key
+	 * @return
+	 */
+	public String getCategory( T id );
 
 	public ManagedProperty<T,Object> getManagedProperty( T id );
 	

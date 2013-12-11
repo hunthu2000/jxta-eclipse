@@ -8,42 +8,48 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.service.advertisement;
+package net.osgi.jxse.service.network;
 
 import net.jxta.peergroup.PeerGroup;
-import net.osgi.jxse.advertisement.JxseAdvertisementFactory;
 import net.osgi.jxse.factory.AbstractComponentFactory;
+import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.network.NetworkManagerFactory;
+import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
-public class ChaupalAdvertisementFactory extends
-		AbstractComponentFactory<JxseAdvertisementService, IJxseProperties, IJxseDirectives> implements IPeerGroupProvider{
+public class ChaupalNetworkManagerFactory extends
+		AbstractComponentFactory<JxseNetworkManagerService, NetworkManagerProperties, IJxseDirectives> implements IPeerGroupProvider{
 
 	public static final String S_DISCOVERY_SERVICE = "JxseDiscoveryService";
 
-	private JxseAdvertisementFactory factory;
+	private NetworkManagerFactory factory;
+	private IComponentFactory<?, IJxseProperties, IJxseDirectives> parent;
 	
-	public ChaupalAdvertisementFactory( JxseAdvertisementFactory factory ) {
+	@SuppressWarnings("unchecked")
+	public ChaupalNetworkManagerFactory( IComponentFactory<?, IJxseProperties, IJxseDirectives> parent, 
+			NetworkManagerFactory factory ) {
 		super( factory.getPropertySource() );
 		this.factory = factory;
+		this.parent = (IComponentFactory<?, IJxseProperties, IJxseDirectives>) parent.getModule();
 	}
 
 	@Override
-	protected JxseAdvertisementService onCreateModule( IJxsePropertySource<IJxseProperties, IJxseDirectives> properties) {
+	protected JxseNetworkManagerService onCreateModule( IJxsePropertySource<NetworkManagerProperties, IJxseDirectives> properties) {
 		factory.createModule();
-		JxseAdvertisementService ds = new JxseAdvertisementService ( factory );
+		JxseNetworkManagerService ds = new JxseNetworkManagerService ( parent, factory );
 		return ds;
 	}
 
 	@Override
 	public String getPeerGroupName() {
-		return this.factory.getPeerGroupContainer().getPeerGroupName();
+		return this.factory.getModule().getNetPeerGroup().getPeerGroupName();
 	}
 
 	@Override
 	public PeerGroup getPeerGroup() {
-		return this.factory.getPeerGroupContainer().getPeerGroup();
+		return this.factory.getModule().getNetPeerGroup();
 	}
 }

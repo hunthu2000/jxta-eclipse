@@ -109,7 +109,7 @@ public class AdvertisementTableViewer extends ViewPart {
 		if(!( element instanceof IJxseComponent<?,?>))
 			return;
 		IJxseComponent<?,?> component = (IJxseComponent<?,?> )element;
-		this.tableViewer.setInput( component.getAdvertisements() );
+		//this.tableViewer.setInput( component.getAdvertisements() );
 	}
 
 	@Override

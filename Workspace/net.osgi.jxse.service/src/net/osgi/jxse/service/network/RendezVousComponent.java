@@ -15,12 +15,13 @@ import java.util.logging.Logger;
 import net.jxta.rendezvous.RendezVousService;
 import net.jxta.rendezvous.RendezvousEvent;
 import net.jxta.rendezvous.RendezvousListener;
+import net.osgi.jxse.component.AbstractJxseService;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.log.JxseLevel;
+import net.osgi.jxse.network.NetPeerGroupService;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.service.ServiceEventDispatcher;
-import net.osgi.jxse.service.core.AbstractJxseService;
 import net.osgi.jxse.service.network.IRendezVousComponent.RendezVousServiceProperties;
 
 public class RendezVousComponent extends AbstractJxseService<RendezVousService, IRendezVousComponent.RendezVousServiceProperties, IJxseDirectives.Directives> implements RendezvousListener, IRendezVousComponent{
@@ -109,7 +110,7 @@ class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousServic
 
 	@Override
 	public RendezVousService createModule() {
-		return parent.getModule().getRendezVousService();
+		return null;//parent.getModule().getRendezVousService();
 	}
 
 	@Override

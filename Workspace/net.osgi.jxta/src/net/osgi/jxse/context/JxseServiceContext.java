@@ -27,7 +27,17 @@ public class JxseServiceContext extends AbstractServiceContext<IJxseProperties, 
 	public void clearModules(){
 		super.getChildren().clear();
 	}
-	
+
+	@Override
+	public NetworkManager getModule() {
+		for( IJxseComponent<?,?> component: super.getChildren() ){
+			if( component.getModule() instanceof NetworkManager ){
+				return ( NetworkManager )component.getModule();
+			}
+		}
+		return super.getModule();
+	}
+
 	/**
 	 * Add a module to the container
 	 * @param module

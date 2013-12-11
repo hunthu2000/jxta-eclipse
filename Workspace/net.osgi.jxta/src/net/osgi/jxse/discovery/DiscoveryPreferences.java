@@ -15,7 +15,6 @@ import java.net.URISyntaxException;
 
 import net.jxta.peer.PeerID;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.properties.AbstractPreferences;
 import net.osgi.jxse.properties.IJxseDirectives;
@@ -47,8 +46,6 @@ public class DiscoveryPreferences<T extends IJxseDirectives> extends AbstractPre
 		case THRESHOLD:
 		case WAIT_TIME:
 			return Integer.valueOf( value);
-		case DISCOVERY_MODE:
-			return DiscoveryMode.valueOf( value );
 		case PEER_ID:
 			return PeerID.create( URI.create( value ));
 		default:

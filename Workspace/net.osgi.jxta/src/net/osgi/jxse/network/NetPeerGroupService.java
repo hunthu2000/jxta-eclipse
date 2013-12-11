@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.service.network;
+package net.osgi.jxse.network;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -17,10 +17,10 @@ import java.util.logging.Logger;
 import net.jxta.exception.PeerGroupException;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkManager;
+import net.osgi.jxse.component.AbstractJxseService;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
-import net.osgi.jxse.service.core.AbstractJxseService;
-import net.osgi.jxse.service.peergroup.IPeerGroupProperties.PeerGroupProperties;
+import net.osgi.jxse.peergroup.IPeerGroupProperties.PeerGroupProperties;
 
 public class NetPeerGroupService extends AbstractJxseService<PeerGroup, PeerGroupProperties, IJxseDirectives>{
 
@@ -31,6 +31,11 @@ public class NetPeerGroupService extends AbstractJxseService<PeerGroup, PeerGrou
 	public NetPeerGroupService( IComponentFactory<PeerGroup, PeerGroupProperties, IJxseDirectives> factory ) {
 		super( factory );
 		this.manager = (NetworkManager) factory.getModule();
+	}
+
+	public NetPeerGroupService( String bundleId, String identifier, NetworkManager manager) {
+		super( bundleId, identifier, S_NETWORK_MANAGER );
+		this.manager = manager;
 	}
 
 	public Object getProperty( PeerGroupProperties key ){

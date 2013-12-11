@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-import net.jxta.document.Advertisement;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.activator.AbstractActivator;
 import net.osgi.jxse.activator.IActivator;
@@ -26,8 +25,8 @@ import net.osgi.jxse.component.ComponentEventDispatcher;
 import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.component.IJxseComponentNode;
 import net.osgi.jxse.component.JxseComponent;
-import net.osgi.jxse.component.JxseComponentNode;
 import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
+import net.osgi.jxse.component.JxseComponentNode;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
@@ -43,7 +42,6 @@ implements	IJxseServiceContext<NetworkManager,U,V>{
 	public static final String S_SERVICE_CONTAINER = "JXSE Container";
 	
 	private Collection<IJxseComponent<?,?>> children;
-	private Collection<Advertisement> advertisements;
 	private IJxsePropertySource<U, V> properties;
 	
 	private NetworkManager networkManager; 
@@ -58,7 +56,6 @@ implements	IJxseServiceContext<NetworkManager,U,V>{
 	protected AbstractServiceContext( IJxsePropertySource<U,V> source ) {
 		super();
 		this.children = new ArrayList<IJxseComponent<?,?>>();
-		this.advertisements = new ArrayList<Advertisement>();
 		this.properties = source;
 	}
 
@@ -115,26 +112,14 @@ implements	IJxseServiceContext<NetworkManager,U,V>{
 		((AbstractJxseWritePropertySource<IJxseProperties>) this.properties).setProperty(( U) key, value);
 	}
 
-	public void addAdvertisement( Advertisement advertisement ){
-		this.advertisements.add( advertisement );
-	}
-
-	public void removeAdvertisement( Advertisement advertisement ){
-		this.advertisements.add( advertisement );
-	}
-
-	@Override
-	public Advertisement[] getAdvertisements() {
-		return this.advertisements.toArray(new Advertisement[ this.advertisements.size() ]);
-	}
-
 	/**
-	 * Returns true if the component has advertisements
+	 * Get the category for the given key
+	 * @param key
 	 * @return
 	 */
-	@Override
-	public boolean hasAdvertisements(){
-		return !this.advertisements.isEmpty();
+	@SuppressWarnings("unchecked")
+	public String getCategory( Object key ){
+		return this.properties.getCategory( (U) key );
 	}
 
 	@Override
@@ -213,10 +198,6 @@ implements	IJxseServiceContext<NetworkManager,U,V>{
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static IJxseComponent<?,?> addModule( AbstractServiceContext<?,?> context, Object module ){
-		if( module instanceof Advertisement ){
-			context.addAdvertisement( (Advertisement) module );
-			return new JxseComponent( context, (Advertisement)module );
-		}
 		IJxseComponent<Object,?> component = null;
 		if( module instanceof IJxseComponent )
 			component = (IJxseComponent<Object,?>) module;
@@ -235,16 +216,13 @@ implements	IJxseServiceContext<NetworkManager,U,V>{
 			context.addChild(node);
 			return node;
 		}else{
+		
 			context.addChild( component );
 			return component;
 		}
 	}
 
 	protected static void removeModule( AbstractServiceContext<?,?> context, Object module ){
-		if( module instanceof Advertisement ){
-			context.removeAdvertisement( (Advertisement) module );
-			return;
-		}
 		Collection<IJxseComponent<?,?>> temp = new ArrayList<IJxseComponent<?,?>>( context.getChildren() );
 		for( IJxseComponent<?,?> component: temp ){
 			if( component.getModule().equals( module ))

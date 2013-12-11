@@ -10,6 +10,8 @@ import net.osgi.jxse.utils.Utils;
 
 public class ManagedProperty<T, U extends Object> {
 	
+	public static final String S_DEFAULT_CATEGORY = "JXSE";
+	
 	public enum Attributes{
 		PERSIST,
 		CREATE;
@@ -26,12 +28,18 @@ public class ManagedProperty<T, U extends Object> {
 	private boolean dirty;
 	private IJxseValidator<T,U> validator;
 	private boolean derived;
+	private String category;
 
 	private Collection<IManagedPropertyListener<T,U>> listeners;
-	
+
 	public ManagedProperty( T id ) {
+		this( id, S_DEFAULT_CATEGORY );
+	}
+	
+	public ManagedProperty( T id, String category ) {
 		super();
 		this.id = id;
+		this.category = category;
 		attributes = new HashMap<String, String>();
 		this.listeners = new ArrayList<IManagedPropertyListener<T,U>>();
 	}
@@ -50,8 +58,32 @@ public class ManagedProperty<T, U extends Object> {
 		this.derived = derived;
 	}
 
+	/**
+	 * Create a managed property with the given id and value. If derives is true, it means that the property
+	 * is managed by another one.
+	 * @param id
+	 * @param value
+	 * @param derived
+	 */
+	public ManagedProperty( T id, U value, String category, boolean derived ) {
+		this( id, value, derived );
+	}
+	
 	public ManagedProperty( T id, U value ) {
 		this( id, value, false );
+	}
+
+	public ManagedProperty( T id, U value, String category ) {
+		this( id, value, category, false );
+	}
+
+	
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	/**

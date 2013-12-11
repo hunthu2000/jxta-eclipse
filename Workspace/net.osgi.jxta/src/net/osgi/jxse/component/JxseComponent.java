@@ -10,54 +10,32 @@
  *******************************************************************************/
 package net.osgi.jxse.component;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import net.jxta.document.Advertisement;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
+import net.osgi.jxse.properties.ManagedProperty;
 
 public class JxseComponent<T extends Object, U extends Object> implements IJxseComponent<T,U>, Comparable< IJxseComponent<?,?>>{
 
 	private T module;
 	private Map<U,Object> properties;
 	private IJxseComponent<?,?> parent;
-	private Collection<Advertisement> advertisements;
 
 	public JxseComponent( T component ) {
-		this( null, component, new HashMap<U,Object>() );
-	}
-
-	public JxseComponent( T component, Map<U,Object> properties ) {
-		this( null, component, properties );
-	}
-
-	@SuppressWarnings("unchecked")
-	protected JxseComponent( IJxseComponent<?,?> parent, Map<U,Object> properties ) {
-		this.module = null;
-		this.parent = parent;
-		this.properties = (Map<U, Object>) new Properties();
-		advertisements = new ArrayList<Advertisement>();
-		this.fillProperties(properties);
-	}
-
-	@SuppressWarnings("unchecked")
-	public JxseComponent( IJxseComponent<?,?> parent, T component, Map<U,Object> properties ) {
-		this.module = component;
-		this.properties = properties;
-		this.parent = parent;
-		this.properties = (Map<U, Object>) new Properties();
-		advertisements = new ArrayList<Advertisement>();
-		this.fillProperties(properties);
+		this( null, component );
 	}
 
 	@SuppressWarnings("unchecked")
 	public JxseComponent( IJxseComponent<?,?> parent, T component ) {
-		this( component, (Map<U, Object>) new Properties() );
+		this.module = component;
+		this.properties = new HashMap<U,Object>();
+		this.parent = parent;
+		this.properties = (Map<U, Object>) new Properties();
+		this.fillProperties(properties);
 	}
 
 	/**
@@ -77,7 +55,6 @@ public class JxseComponent<T extends Object, U extends Object> implements IJxseC
 		}
 	}
 
-	
 	@Override
 	public String getId() {
 		return ( String )this.properties.get(Directives.ID);
@@ -111,35 +88,18 @@ public class JxseComponent<T extends Object, U extends Object> implements IJxseC
 		return this.module;
 	}
 
-	public void addAdvertisement( Advertisement advertisement ){
-		this.advertisements.add( advertisement );
-	}
-
-	public void removedAdvertisement( Advertisement advertisement ){
-		this.advertisements.add( advertisement );
-	}
-
-	/**
-	 * A JXTA service component can use, find or create a number of advertisements. This have to be listed
-	 * @return
-	 */
-	@Override
-	public Advertisement[] getAdvertisements(){
-		return advertisements.toArray( new Advertisement[ this.advertisements.size() ]);
-	}
-
-	/**
-	 * Returns true if the component has advertisements
-	 * @return
-	 */
-	@Override
-	public boolean hasAdvertisements(){
-		return !this.advertisements.isEmpty();
-	}
-
 	@Override
 	public Object getProperty(Object key) {
 		return properties.get(key);
+	}
+
+	/**
+	 * Get the category for the given key
+	 * @param key
+	 * @return
+	 */
+	public String getCategory( Object key ){
+		return ManagedProperty.S_DEFAULT_CATEGORY;
 	}
 
 	protected void putProperty(U key, Object value ) {

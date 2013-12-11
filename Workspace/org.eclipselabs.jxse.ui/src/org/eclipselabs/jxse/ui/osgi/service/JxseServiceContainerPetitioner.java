@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
-import net.jxta.document.Advertisement;
 import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.component.IJxseComponentNode;
 import net.osgi.jxse.context.JxseServiceContext;
@@ -135,22 +134,13 @@ public class JxseServiceContainerPetitioner<T extends Enum<T>> extends AbstractP
 	}
 
 	@Override
-	public Advertisement[] getAdvertisements() {
+	public Iterator<T> iterator() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	/**
-	 * Returns true if the component has advertisements
-	 * @return
-	 */
-	@Override
-	public boolean hasAdvertisements(){
-		return false;
-	}
 
 	@Override
-	public Iterator<T> iterator() {
+	public String getCategory(Object key) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -126,7 +126,9 @@ implements  IJxseWritePropertySource<T, U>{
 		if(!isValidId(id))
 			return null;
 		IJxseWritePropertySource<T,U> source = (IJxseWritePropertySource<T, U>) this.getParent();
-		return source.getOrCreateManagedProperty(id, value, derived);
+		ManagedProperty<T, Object> mp = source.getOrCreateManagedProperty(id, value, derived);
+		mp.setCategory( this.getCategory());
+		return mp;
 	}
 
 	@Override

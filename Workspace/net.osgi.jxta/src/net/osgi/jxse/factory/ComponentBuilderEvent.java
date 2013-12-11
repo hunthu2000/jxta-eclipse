@@ -27,7 +27,7 @@ public class ComponentBuilderEvent<T extends Object> extends EventObject {
 		this.builderEvent = factoryEvent;
 	}
 	
-	public T getFactory() {
+	public T getComponent() {
 		return component;
 	}
 

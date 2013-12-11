@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.service.peergroup;
+package net.osgi.jxse.peergroup;
 
 import net.osgi.jxse.utils.StringStyler;
 

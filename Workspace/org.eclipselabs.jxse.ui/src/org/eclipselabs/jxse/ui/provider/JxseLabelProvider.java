@@ -1,7 +1,7 @@
 package org.eclipselabs.jxse.ui.provider;
 
+import net.osgi.jxse.component.AbstractJxseService;
 import net.osgi.jxse.component.IJxseComponent;
-import net.osgi.jxse.service.core.AbstractJxseService;
 import net.osgi.jxse.service.discovery.JxseDiscoveryService;
 import net.osgi.jxse.service.utils.Utils;
 
@@ -15,12 +15,12 @@ public class JxseLabelProvider extends LabelProvider{
 	@SuppressWarnings("unchecked")
 	@Override
 	public Image getImage(Object element) {
-		if(!( element instanceof IJxseComponent ))
+		if(!( element instanceof IJxseComponent<?,?> ))
 			return super.getImage(element);
 		IJxseComponent<?,?> component = (IJxseComponent<?,?> )element;
 		StatusImages images = new StatusImages();
 		if( component instanceof AbstractJxseService ){
-			AbstractJxseService<?,?,?> service = (net.osgi.jxse.service.core.AbstractJxseService<Object,?,?> )component;
+			AbstractJxseService<?,?,?> service = (AbstractJxseService<Object,?,?> )component;
 			return images.getImage( service.getStatus() );
 		}
 		return images.getImage( Images.COMPONENT );

@@ -115,5 +115,10 @@ public class PropertySourceWrapper< T extends Object, U extends IJxseDirectives>
 	@Override
 	public IJxsePropertySource<?, ?> getChild(String componentName) {
 		return this.source.getChild(componentName);
+	}
+
+	@Override
+	public String getCategory(T id) {
+		return this.source.getCategory(id);
 	}	
 }

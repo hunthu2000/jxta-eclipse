@@ -17,7 +17,7 @@ public class JxseComponentPropertySource implements IPropertySource {
 	public static final String S_PROPERTY_JXTA_COMPONENT_ID = "org.condast.jxta.service.component";
 	public static final String S_PROPERTY_JXTA_COMPONENT_TEXT_ID = "org.condast.jxta.service.component.text";
 
-	public static final String S_PROPERTY_JXTA_TEXT = "JXTA";
+	public static final String S_PROPERTY_JXSE_TEXT = "JXSE";
 	public static final String S_PROPERTY_JTTA_SERVICE_COMPONENT_TEXT = "ServiceComponent";
 	public static final String S_PROPERTY_TEXT = "Properties";
 
@@ -38,12 +38,12 @@ public class JxseComponentPropertySource implements IPropertySource {
 	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		PropertyDescriptor descriptor = new JxseComponentPropertyDescriptor( S_PROPERTY_JXTA_COMPONENT_ID, S_PROPERTY_JTTA_SERVICE_COMPONENT_TEXT );
-		descriptor.setCategory(S_PROPERTY_JXTA_TEXT);
+		descriptor.setCategory(S_PROPERTY_JXSE_TEXT);
 		Iterator<?> iterator = this.source.iterator();
 		Collection<IPropertyDescriptor> descriptors = new ArrayList<IPropertyDescriptor>();
 		descriptors.add( descriptor);
 		Object key;
-		String category = S_PROPERTY_JXTA_TEXT;
+		String category = S_PROPERTY_JXSE_TEXT;
 		String attribute;
 		TextPropertyDescriptor textDescriptor; 
 		while( iterator.hasNext() ){

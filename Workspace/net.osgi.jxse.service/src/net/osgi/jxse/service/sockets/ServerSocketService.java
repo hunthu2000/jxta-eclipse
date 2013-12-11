@@ -20,8 +20,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.jxta.socket.JxtaServerSocket;
+import net.osgi.jxse.component.AbstractJxseService;
 import net.osgi.jxse.properties.IJxseDirectives;
-import net.osgi.jxse.service.core.AbstractJxseService;
 import net.osgi.jxse.socket.IServerSocketFactory;
 import net.osgi.jxse.utils.IOUtils;
 

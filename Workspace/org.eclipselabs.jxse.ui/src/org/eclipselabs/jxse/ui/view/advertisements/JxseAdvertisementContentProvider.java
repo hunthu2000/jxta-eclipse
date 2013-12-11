@@ -16,7 +16,7 @@ public class JxseAdvertisementContentProvider implements ITreeContentProvider {
 		if(( parentElement == null ) || !( parentElement instanceof IJxseComponent<?,?> ))
 			return null;
 		IJxseComponent<?,?> decorator = (IJxseComponent<?,?> )parentElement;
-		return decorator.getAdvertisements();
+		return null;//decorator.getAdvertisements();
 	}
 
 	@Override
@@ -24,7 +24,7 @@ public class JxseAdvertisementContentProvider implements ITreeContentProvider {
 		if(!( element instanceof IJxseComponent ))
 			return false;
 		IJxseComponent<?,?> decorator = (IJxseComponent<?,?> )element;
-		return decorator.hasAdvertisements();
+		return false;//decorator.hasAdvertisements();
 	}
 
 	@Override

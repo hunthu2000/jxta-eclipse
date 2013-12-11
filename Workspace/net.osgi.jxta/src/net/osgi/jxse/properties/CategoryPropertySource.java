@@ -63,7 +63,7 @@ public class CategoryPropertySource extends AbstractJxseWritePropertySource<Stri
 	 * @param id
 	 * @return
 	 */
-	public static String getCategory( String id ){
+	public String getCategory( String id ){
 		String cat = id.toLowerCase().replace("_8", ".");
 		String[] split = cat.split("[.]");
 		if( split.length <= 1 )

@@ -8,22 +8,18 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.service.core;
+package net.osgi.jxse.component;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-import net.jxta.document.Advertisement;
 import net.osgi.jxse.activator.AbstractActivator;
 import net.osgi.jxse.activator.IActivator;
 import net.osgi.jxse.activator.IJxseService;
-import net.osgi.jxse.component.ComponentChangedEvent;
-import net.osgi.jxse.component.ComponentEventDispatcher;
 import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
 import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.properties.DefaultPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
@@ -38,17 +34,19 @@ implements IJxseService<T,U>{
 			"The factory did not create the component. The flag setCompleted must be true, which is usually checked  with setAvailable.";
 	
 	private T module;
-	private Collection<Advertisement> advertisements;
-	
 	private IJxseWritePropertySource<U, V> properties;
 	
 	private ComponentEventDispatcher dispatcher;
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected AbstractJxseService( String bundleId, String identifier, String componentName) {
+		this( new DefaultPropertySource( bundleId, identifier, componentName),null);
+	}
+
 	protected AbstractJxseService( IJxseWritePropertySource<U, V> properties, T module ) {
+		dispatcher = ComponentEventDispatcher.getInstance();
 		this.properties = properties;
 		this.module = module;
-		dispatcher = ComponentEventDispatcher.getInstance();
-		advertisements = new ArrayList<Advertisement>();
 		super.setStatus( Status.AVAILABLE );
 		super.initialise();
 	}
@@ -102,32 +100,6 @@ implements IJxseService<T,U>{
 		this.module = null;
 	}
 
-	public void addAdvertisement( Advertisement advertisement ){
-		this.advertisements.add( advertisement );
-	}
-
-	public void removedAdvertisement( Advertisement advertisement ){
-		this.advertisements.add( advertisement );
-	}
-
-	/**
-	 * A JXTA service component can use, find or create a number of advertisements. This have to be listed
-	 * @return
-	 */
-	@Override
-	public Advertisement[] getAdvertisements(){
-		return advertisements.toArray( new Advertisement[ this.advertisements.size() ]);
-	}
-
-	/**
-	 * Returns true if the component has advertisements
-	 * @return
-	 */
-	@Override
-	public boolean hasAdvertisements(){
-		return !this.advertisements.isEmpty();
-	}
-
 	@Override
 	public T getModule(){
 		return module;
@@ -149,6 +121,15 @@ implements IJxseService<T,U>{
 		properties.getOrCreateManagedProperty( key, value, false);
 	}
 
+	/**
+	 * Get the category for the given key
+	 * @param key
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public String getCategory( Object key ){
+		return this.properties.getCategory( (U) key );
+	}
 	
 	@Override
 	public Iterator<U> iterator() {

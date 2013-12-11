@@ -10,12 +10,9 @@
  *******************************************************************************/
 package net.osgi.jxse.service.discovery;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jxta.discovery.DiscoveryEvent;
@@ -24,16 +21,17 @@ import net.jxta.discovery.DiscoveryService;
 import net.jxta.document.Advertisement;
 import net.jxta.protocol.DiscoveryResponseMsg;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
+import net.osgi.jxse.component.AbstractJxseService;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.discovery.DiscoveryServiceFactory;
 import net.osgi.jxse.log.JxseLevel;
 import net.osgi.jxse.properties.IJxseDirectives;
-import net.osgi.jxse.service.core.AbstractJxseService;
 
-public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, DiscoveryProperties, IJxseDirectives> implements Runnable {
+public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, DiscoveryProperties, IJxseDirectives>{
 	
 	private ExecutorService executor;
+	private Runnable runnable;
 	
 	private DiscoveryListener listener;
 	private int size;
@@ -54,7 +52,6 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 			String attribute = ( String )this.getProperty( DiscoveryProperties.ATTRIBUTE );
 			String wildcard = ( String )this.getProperty( DiscoveryProperties.WILDCARD );
 			int threshold = ( Integer )this.getProperty( DiscoveryProperties.THRESHOLD );
-
 			int adType = AdvertisementTypes.convertForDiscovery(( AdvertisementTypes) this.getProperty( DiscoveryProperties.ADVERTISEMENT_TYPE ));
 			Enumeration<Advertisement> enm= discovery.getLocalAdvertisements( adType, attribute, wildcard );
 			this.calculateSize(enm);
@@ -78,37 +75,26 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 			size++;
 		this.putProperty( DiscoveryProperties.FOUND, size );
 	}
-	
-	/**
-	 * Get the local cache of the discovery service
-	 * @return
-	 */
-	@Override
-	public Advertisement[] getAdvertisements(){
-		DiscoveryService discovery = super.getModule();
-		Collection<Advertisement> advertisements = new ArrayList<Advertisement>();
-		try {
-			Enumeration<Advertisement> enm = discovery.getLocalAdvertisements( DiscoveryService.ADV, null, null);
-			while( enm.hasMoreElements())
-				advertisements.add( enm.nextElement());
-		} catch (Exception e) {
-			Logger log = Logger.getLogger( this.getClass().getName() );
-			log.log( Level.SEVERE, e.getMessage() );
-			e.printStackTrace();
-			return null;
-		}
-		return advertisements.toArray(new Advertisement[advertisements.size()]);
-	}
-	
+		
 	/**
 	 * The activities performed in an active state. By default this is discovery
 	 */
 	protected void onActiveState(){
-		DiscoveryMode mode = ( DiscoveryMode )this.getProperty( DiscoveryProperties.DISCOVERY_MODE );
-		if(!( mode.equals( DiscoveryMode.PUBLISH )))
-		  this.discovery();		
+		this.discovery();		
 	}
 
+	protected int getCount(){
+		int count = ( Integer )getProperty( DiscoveryProperties.COUNT );
+		DiscoveryMode mode = (DiscoveryMode) getProperty( DiscoveryProperties.MODE );
+		switch( mode ){
+		case CONTINUOUS:
+			return -1;
+		case ONE_SHOT:
+			return 1;
+		default:
+			return count;
+		}
+	}
 	
 	@Override
 	public boolean start() {
@@ -134,24 +120,29 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 			}	
 		};
 		discovery.addDiscoveryListener(listener);
-		this.executor.execute(this);
+		this.runnable = new Runnable(){
+			@Override
+			public void run() {
+				int wait_time = ( Integer )getProperty( DiscoveryProperties.WAIT_TIME );
+				int count = getCount();
+				while (( isActive() ) && ( count > 0 )) {
+					onActiveState();
+					try {
+						Thread.sleep(wait_time);
+					} catch (Exception e) {
+						Logger log = Logger.getLogger( this.getClass().getName() );
+						log.log( JxseLevel.JXSELEVEL, this.getClass().getSimpleName() + "Interrupted" );
+					}
+					if( count > 0 )
+						count--;
+				}
+				stop();
+			}		
+		};
+		this.executor.execute(runnable);
 		return retval;
 	}
 
-	@Override
-	public void run() {
-		int wait_time = ( Integer )this.getProperty( DiscoveryProperties.WAIT_TIME );
-		while ( super.isActive()) {
-			this.onActiveState();
-			try {
-				Thread.sleep(wait_time);
-			} catch (Exception e) {
-				Logger log = Logger.getLogger( this.getClass().getName() );
-				log.log( JxseLevel.JXSELEVEL, this.getClass().getSimpleName() + "Interrupted" );
-			}
-		}
-	}
-	
 	@Override
 	protected void deactivate() {
 		Thread.currentThread().interrupt();

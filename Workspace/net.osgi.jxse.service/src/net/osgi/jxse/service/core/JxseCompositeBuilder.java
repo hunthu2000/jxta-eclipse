@@ -5,12 +5,15 @@ import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.CompositeBuilder;
 import net.osgi.jxse.discovery.DiscoveryServiceFactory;
 import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.network.NetworkManagerFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxseDirectives.Contexts;
 import net.osgi.jxse.service.advertisement.ChaupalAdvertisementFactory;
 import net.osgi.jxse.service.discovery.ChaupalDiscoveryServiceFactory;
+import net.osgi.jxse.service.network.ChaupalNetworkManagerFactory;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
@@ -27,7 +30,9 @@ public class JxseCompositeBuilder<T extends Object, U extends Object, V extends 
 	@Override
 	@SuppressWarnings("unchecked")
 	protected ComponentNode<?, ?, ?> createNode(ComponentNode<?, ?, ?> node, IComponentFactory<?, ?, ?> factory) {
-		IComponentFactory<?, ?, ?> jxseFactory = getFactoryFromType( (IComponentFactory<?, ?, IJxseDirectives>) factory );
+		if( node == null )
+			return super.createNode(node, factory);
+		IComponentFactory<?, ?, ?> jxseFactory = getFactoryFromType( (IComponentFactory<?, IJxseProperties, IJxseDirectives>) node.getFactory(), (IComponentFactory<?, ?, IJxseDirectives>) factory );
 		return super.createNode(node, jxseFactory);
 	}
 
@@ -36,13 +41,15 @@ public class JxseCompositeBuilder<T extends Object, U extends Object, V extends 
 	 * @param factory
 	 * @return
 	 */
-	protected static IComponentFactory<?,?,IJxseDirectives> getFactoryFromType( IComponentFactory<?,?,IJxseDirectives> factory ){
+	protected static IComponentFactory<?,?,IJxseDirectives> getFactoryFromType(  IComponentFactory<?, IJxseProperties, IJxseDirectives> parent, IComponentFactory<?, ?,IJxseDirectives> factory ){
 		String contextStr = (String) factory.getPropertySource().getDirective( Directives.CONTEXT );
 		if( Utils.isNull(contextStr))
 			return factory;
 		Contexts context = Contexts.valueOf( StringStyler.styleToEnum( contextStr ));
 		switch( context ){
 		case CHAUPAL:
+			if( factory instanceof NetworkManagerFactory )
+				return new ChaupalNetworkManagerFactory( parent, ( NetworkManagerFactory )factory );
 			if( factory instanceof DiscoveryServiceFactory )
 				return new ChaupalDiscoveryServiceFactory((DiscoveryServiceFactory) factory );
 			if( factory instanceof JxseAdvertisementFactory )

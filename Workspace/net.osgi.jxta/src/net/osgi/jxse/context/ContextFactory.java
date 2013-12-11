@@ -11,7 +11,6 @@
 package net.osgi.jxse.context;
 
 import net.jxta.peergroup.PeerGroup;
-import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
@@ -21,7 +20,7 @@ import net.osgi.jxse.properties.IJxsePropertySource;
 public class ContextFactory extends AbstractComponentFactory<JxseServiceContext, IJxseProperties, IJxseDirectives>
 	implements IPeerGroupProvider
 {
-	private IJxseServiceContext<NetworkManager, IJxseProperties, IJxseDirectives> context;
+	private JxseServiceContext context;
 	
 	public ContextFactory(JxseContextPropertySource source) {
 		super(source );
@@ -29,7 +28,8 @@ public class ContextFactory extends AbstractComponentFactory<JxseServiceContext,
 	
 	@Override
 	protected JxseServiceContext onCreateModule( IJxsePropertySource<IJxseProperties, IJxseDirectives> properties) {
-		return new JxseServiceContext( super.getPropertySource() );
+		this.context = new JxseServiceContext( super.getPropertySource() );
+		return context;
 	}
 	
 	@Override

@@ -19,6 +19,8 @@ import java.util.Map;
 
 public abstract class AbstractJxsePropertySource< T extends Object> implements IJxsePropertySource<T, IJxseDirectives> {
 	
+	public static final String S_RUNTIME = "Runtime"; //used for runtime properties
+			
 	private Map<T,ManagedProperty<T,Object>> properties;
 	private Map<IJxseDirectives,Object> directives;
 	
@@ -96,6 +98,17 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 		if( select == null )
 			return null;
 		return select.getValue();
+	}
+
+	/**
+	 * Get the category for the given key
+	 * @param key
+	 * @return
+	 */
+	public String getCategory( T id ){
+		ManagedProperty<T,Object> select = this.getManagedProperty(id);
+		return select.getCategory();
+		
 	}
 
 	protected boolean setManagedProperty( ManagedProperty<T,Object> property ) {

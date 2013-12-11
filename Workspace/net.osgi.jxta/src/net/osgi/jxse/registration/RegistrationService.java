@@ -10,14 +10,11 @@
  *******************************************************************************/
 package net.osgi.jxse.registration;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jxta.discovery.DiscoveryEvent;
@@ -26,6 +23,7 @@ import net.jxta.document.Advertisement;
 import net.jxta.protocol.DiscoveryResponseMsg;
 import net.osgi.jxse.activator.AbstractActivator;
 import net.osgi.jxse.activator.IJxseService;
+import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementMode;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.registration.RegistrationPropertySource.RegistrationProperties;
@@ -65,31 +63,11 @@ public class RegistrationService extends AbstractActivator implements IJxseServi
 	}
 	
 	/**
-	 * Get the local cache of the discovery service
-	 * @return
-	 */
-	@Override
-	public Advertisement[] getAdvertisements(){
-		Collection<Advertisement> advertisements = new ArrayList<Advertisement>();
-		try {
-			Enumeration<Advertisement> enm = null;//service.getLocalAdvertisements( RegistrationService.ADV, null, null);
-			while( enm.hasMoreElements())
-				advertisements.add( enm.nextElement());
-		} catch (Exception e) {
-			Logger log = Logger.getLogger( this.getClass().getName() );
-			log.log( Level.SEVERE, e.getMessage() );
-			e.printStackTrace();
-			return null;
-		}
-		return advertisements.toArray(new Advertisement[advertisements.size()]);
-	}
-	
-	/**
 	 * The activities performed in an active state. By defalt this is discovery
 	 */
 	protected void onActiveState(){
 		DiscoveryMode mode = ( DiscoveryMode )this.getProperty( RegistrationProperties.DISCOVERY_MODE );
-		if(!( mode.equals( DiscoveryMode.PUBLISH )))
+		if(!( mode.equals( AdvertisementMode.PUBLISH )))
 		  this.discovery();		
 	}
 
@@ -149,11 +127,6 @@ public class RegistrationService extends AbstractActivator implements IJxseServi
 	}
 
 	@Override
-	public boolean hasAdvertisements() {
-		return false;
-	}
-
-	@Override
 	public Object getProperty(Object id) {
 		return this.source.getProperty((RegistrationProperties) id);
 	}
@@ -178,6 +151,12 @@ public class RegistrationService extends AbstractActivator implements IJxseServi
 
 	@Override
 	public Iterator<RegistrationProperties> iterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getCategory(Object key) {
 		// TODO Auto-generated method stub
 		return null;
 	}

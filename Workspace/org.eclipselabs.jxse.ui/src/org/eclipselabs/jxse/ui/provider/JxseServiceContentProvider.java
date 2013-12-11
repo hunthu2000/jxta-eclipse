@@ -108,12 +108,12 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 	 * @return
 	 */
 	public static Object decorateComponent( Object element ){
+		if( element instanceof IJxseService<?,?> )
+			return element;
 		if( element instanceof IJxseComponentNode )
 			return element;
 		if(!( element instanceof IJxseComponent<?,?> ))
 			return getComponent( element );
-		if( element instanceof IJxseService<?,?> )
-			return element;
 		IJxseComponent<?,?> component = (IJxseComponent<?,?> )element;
 		return getComponent( component.getModule() );
 	}

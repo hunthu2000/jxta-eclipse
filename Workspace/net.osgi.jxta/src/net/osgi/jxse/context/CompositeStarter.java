@@ -18,7 +18,7 @@ import net.osgi.jxse.activator.IActivator;
 import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.builder.ICompositeBuilderListener.BuilderEvents;
-import net.osgi.jxse.component.IJxseComponentHost;
+import net.osgi.jxse.component.IJxseComponentNode;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
@@ -88,8 +88,8 @@ public class CompositeStarter<T extends Object, U extends Object, V extends IJxs
 			}
 			if( node.getParent() != null ){
 				IComponentFactory<?,?,?> parentFactory = node.getParent().getFactory();
-				if(( parentFactory != null ) && ( parentFactory.getModule() instanceof IJxseComponentHost )){
-					IJxseComponentHost host = (IJxseComponentHost) parentFactory.getModule();
+				if(( parentFactory != null ) && ( parentFactory.getModule() instanceof IJxseComponentNode )){
+					IJxseComponentNode host = (IJxseComponentNode) parentFactory.getModule();
 					//TODO CP host.addChild((IJxseComponent) module);
 				}
 			}
@@ -107,7 +107,7 @@ public class CompositeStarter<T extends Object, U extends Object, V extends IJxs
 			return null;
 		}
 		factory.complete();
-		this.notifyListeners( new ComponentBuilderEvent( this, factory, BuilderEvents.COMPONENT_CREATED ));
+		this.notifyListeners( new ComponentBuilderEvent( this, node, BuilderEvents.COMPONENT_CREATED ));
 		IJxsePropertySource<?,V> ps = (IJxsePropertySource<?, V>) factory.getPropertySource();
 		Iterator<?> iterator = ps.directiveIterator();
 		V directive;
