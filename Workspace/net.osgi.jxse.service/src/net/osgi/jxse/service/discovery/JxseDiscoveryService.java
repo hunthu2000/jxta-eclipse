@@ -22,23 +22,29 @@ import net.jxta.document.Advertisement;
 import net.jxta.protocol.DiscoveryResponseMsg;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jxse.component.AbstractJxseService;
+import net.osgi.jxse.component.ComponentChangedEvent;
+import net.osgi.jxse.component.ComponentEventDispatcher;
+import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.discovery.DiscoveryServiceFactory;
 import net.osgi.jxse.log.JxseLevel;
-import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.AbstractJxsePropertySource;
+import net.osgi.jxse.properties.IJxseProperties;
 
-public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, DiscoveryProperties, IJxseDirectives>{
+public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, IJxseProperties>{
 	
 	private ExecutorService executor;
 	private Runnable runnable;
 	
 	private DiscoveryListener listener;
 	private int size;
+	private JxseDiscoveryService service;
 
 	public JxseDiscoveryService( DiscoveryServiceFactory factory ) {
 		super( factory );
 		this.size = 0;
+		this.service = this;
 		executor = Executors.newSingleThreadExecutor();
 	}
 
@@ -125,6 +131,7 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 			public void run() {
 				int wait_time = ( Integer )getProperty( DiscoveryProperties.WAIT_TIME );
 				int count = getCount();
+				getProperties().getOrCreateManagedProperty( DiscoveryProperties.COUNTER, AbstractJxsePropertySource.S_RUNTIME, false );
 				while (( isActive() ) && ( count > 0 )) {
 					onActiveState();
 					try {
@@ -135,6 +142,9 @@ public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, 
 					}
 					if( count > 0 )
 						count--;
+					getProperties().setProperty( DiscoveryProperties.COUNTER, count);
+					ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
+					dispatcher.serviceChanged( new ComponentChangedEvent( service, AbstractServiceContext.ServiceChange.COMPONENT_EVENT ));
 				}
 				stop();
 			}		

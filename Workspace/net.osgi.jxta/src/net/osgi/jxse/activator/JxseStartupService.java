@@ -23,10 +23,11 @@ import net.osgi.jxse.component.IJxseComponentNode;
 import net.osgi.jxse.context.CompositeStarter;
 import net.osgi.jxse.context.JxseServiceContext;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
-import net.osgi.jxse.network.NetPeerGroupService;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
+import net.osgi.jxse.netpeergroup.NetPeerGroupService;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
 
 public class JxseStartupService extends AbstractActivator implements IJxseService<NetworkManager,IJxseProperties>{
 
@@ -36,10 +37,10 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 	
 	private JxseStartupPropertySource source;
 	
-	private ComponentNode<JxseServiceContext,IJxseProperties, IJxseDirectives> root;
+	private ComponentNode<JxseServiceContext, IJxseProperties> root;
 	private NetworkManager manager;
 	
-	public JxseStartupService( ComponentNode<JxseServiceContext,IJxseProperties, IJxseDirectives> root, JxseStartupPropertySource source ) {
+	public JxseStartupService( ComponentNode<JxseServiceContext, IJxseProperties> root, JxseStartupPropertySource source ) {
 		this.source = source;
 		this.root = root;
 	}
@@ -57,6 +58,11 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 	 * @return
 	 */
 	private boolean prepare(){
+		IJxseWritePropertySource<?> writeRoot = (IJxseWritePropertySource<?>) this.root.getFactory().getPropertySource();
+		if( JxseStartupPropertySource.isAutoStart( this.source ) && 
+				!JxseStartupPropertySource.isAutoStart( writeRoot ))
+			writeRoot.setDirective( Directives.AUTO_START, Boolean.TRUE.toString());
+			
 		String identifier = source.getIdentifier();
 		Logger logger = Logger.getLogger( this.getClass().getName() );
 		logger.info( S_INFO_AUTOSTART + identifier + ": " + this.isAutoStart());
@@ -65,17 +71,17 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 			return false;
 		}
 		
-		CompositeStarter<JxseServiceContext, IJxseProperties, IJxseDirectives> starter = 
-				new CompositeStarter<JxseServiceContext, IJxseProperties, IJxseDirectives>( this.root, this.isAutoStart() );
+		CompositeStarter<JxseServiceContext, IJxseProperties> starter = 
+				new CompositeStarter<JxseServiceContext, IJxseProperties>( this.root );
 		ICompositeBuilderListener<?> listener = new ICompositeBuilderListener<Object>(){
 
 			@Override
 			public void notifyCreated(ComponentBuilderEvent<Object> event) {
 				JxseServiceContext service = root.getFactory().getModule();
-				BuilderEvents fe = event.getFactoryEvent();
+				BuilderEvents fe = event.getBuilderEvent();
 				switch( fe ){
 				case COMPONENT_CREATED:
-					ComponentNode<?,?,?> node = (ComponentNode<?, ?, ?>) event.getComponent();
+					ComponentNode<?,?> node = (ComponentNode<?, ?>) event.getComponent();
 					Object component = node.getFactory().getModule();
 					if( component.equals( service )){
 						break;
@@ -83,14 +89,13 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 					if( component instanceof NetworkConfigurator ){
 						break;
 					}
-					if( component instanceof NetworkManager ){
+					if( component instanceof NetPeerGroupService ){
 						NetworkManager manager = ( NetworkManager)component;
-						NetPeerGroupService npg = 
-								new NetPeerGroupService( source.getBundleId(), source.getIdentifier(), manager );
+						NetPeerGroupService npg = (NetPeerGroupService) component;
 						npg.start();
 						JxseServiceContext.addModule( service, npg );
 					}
-					ComponentNode<?,?,?> parentNode = node.getParent();
+					ComponentNode<?,?> parentNode = node.getParent();
 					if( parentNode == null )
 						break;
 					Object po = node.getParent().getFactory().getModule();
@@ -101,10 +106,6 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 						JxseServiceContext.addModule( service, component );
 					else
 						parent.addChild((IJxseComponent<?, ?>) component);
-					if( event.getComponent() instanceof IPeerGroupProvider ){
-						IPeerGroupProvider provider = ( IPeerGroupProvider )event.getComponent();
-						//swarm.addPeerGroup( provider.getPeerGroup() );
-					}
 					break;
 				default:
 					break;
@@ -113,10 +114,6 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 		};
 		starter.addListener(listener);
 		starter.start();
-		//This will happen if the network needs to start before new services can be added.
-		//if( !starter.isCompleted() ){
-		//	starter.start();
-		//}
 		starter.removeListener(listener);	
 		return true;
 	}

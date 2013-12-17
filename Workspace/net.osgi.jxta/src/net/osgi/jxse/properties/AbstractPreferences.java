@@ -6,15 +6,15 @@ import net.osgi.jxse.persistence.PersistedProperty;
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 
-public abstract class AbstractPreferences<E extends Object, U extends IJxseDirectives> {
+public abstract class AbstractPreferences<E extends Object> {
 
-	private IJxseWritePropertySource<E, U> source;
+	private IJxseWritePropertySource<E> source;
 	
-	public AbstractPreferences( IJxseWritePropertySource<E, U> source ) {
+	public AbstractPreferences( IJxseWritePropertySource<E> source ) {
 		this.source = source;
 	}
 
-	public IJxseWritePropertySource<E, U> getSource() {
+	public IJxseWritePropertySource<E> getSource() {
 		return source;
 	}
 

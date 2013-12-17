@@ -12,11 +12,11 @@ package net.osgi.jxse.properties;
 
 import java.util.Iterator;
 
-public class PropertySourceWrapper< T extends Object, U extends IJxseDirectives> implements IJxsePropertySource<T, U> {
+public class PropertySourceWrapper< T extends Object> implements IJxsePropertySource<T> {
 
-	private IJxsePropertySource<T, U> source;
+	private IJxsePropertySource<T> source;
 	
-	public PropertySourceWrapper( IJxsePropertySource<T, U> source ) {
+	public PropertySourceWrapper( IJxsePropertySource<T> source ) {
 		this.source = source;
 	}
 
@@ -24,7 +24,7 @@ public class PropertySourceWrapper< T extends Object, U extends IJxseDirectives>
 	 * Get the property source
 	 * @return
 	 */
-	protected  IJxsePropertySource<T, U> getSource(){
+	protected  IJxsePropertySource<T> getSource(){
 		return source;
 	}
 	
@@ -32,6 +32,7 @@ public class PropertySourceWrapper< T extends Object, U extends IJxseDirectives>
 		return source.getId();
 	}
 
+	
 	@Override
 	public String getBundleId() {
 		return source.getBundleId();
@@ -73,22 +74,22 @@ public class PropertySourceWrapper< T extends Object, U extends IJxseDirectives>
 	}
 
 	@Override
-	public Object getDirective(U id) {
+	public Object getDirective(IJxseDirectives id) {
 		return this.source.getDirective(id);
 	}
 
 	@Override
-	public U getDirectiveFromString(String id) {
+	public IJxseDirectives getDirectiveFromString(String id) {
 		return this.source.getDirectiveFromString(id);
 	}
 
 	@Override
-	public Iterator<U> directiveIterator() {
+	public Iterator<IJxseDirectives> directiveIterator() {
 		return this.source.directiveIterator();
 	}
 	
 	@Override
-	public IJxsePropertySource<?, ?>[] getChildren() {
+	public IJxsePropertySource<?>[] getChildren() {
 		return this.source.getChildren();
 	}
 
@@ -98,7 +99,7 @@ public class PropertySourceWrapper< T extends Object, U extends IJxseDirectives>
 	}
 
 	@Override
-	public IJxsePropertySource<?, ?> getParent() {
+	public IJxsePropertySource<?> getParent() {
 		return source.getParent();
 	}
 
@@ -113,12 +114,22 @@ public class PropertySourceWrapper< T extends Object, U extends IJxseDirectives>
 	}
 
 	@Override
-	public IJxsePropertySource<?, ?> getChild(String componentName) {
+	public IJxsePropertySource<?> getChild(String componentName) {
 		return this.source.getChild(componentName);
 	}
 
 	@Override
 	public String getCategory(T id) {
 		return this.source.getCategory(id);
+	}
+
+	@Override
+	public boolean addChild(IJxsePropertySource<?> child) {
+		return this.source.addChild(child);
+	}
+
+	@Override
+	public void removeChild(IJxsePropertySource<?> child) {
+		this.removeChild(child);
 	}	
 }

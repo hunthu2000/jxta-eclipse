@@ -3,7 +3,7 @@
  */
 package org.eclipselabs.jxse.ui.network;
 
-import net.osgi.jxse.network.NetworkConfigurationPropertySource;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;

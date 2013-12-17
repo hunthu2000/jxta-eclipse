@@ -1,52 +1,63 @@
 package net.osgi.jxse.advertisement;
 
+import org.xml.sax.Attributes;
+
 import net.jxta.document.Advertisement;
+import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.osgi.jxse.builder.IJxseModule;
+import net.osgi.jxse.component.AbstractJxseModule;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.factory.IComponentFactory.Components;
+import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
-import net.osgi.jxse.properties.IJxseWritePropertySource;
+import net.osgi.jxse.utils.StringStyler;
+import net.osgi.jxse.utils.Utils;
 
-public class AdvertisementModule implements IJxseModule<Advertisement, IJxseProperties, IJxseDirectives> {
+public class AdvertisementModule extends AbstractJxseModule<Advertisement, AdvertisementPropertySource> {
 
-	private IJxsePropertySource<?,?> parentSource;
-	private IJxseWritePropertySource<IJxseProperties, IJxseDirectives> source;
-	private String name;
 	private AdvertisementTypes type;
-
-	public AdvertisementModule( String name, AdvertisementTypes type ) {
-		this( name, type, null );
-	}
-
-	public AdvertisementModule( String name, AdvertisementTypes type, IJxseWritePropertySource<?,?> parentSource) {
-		this.parentSource = parentSource;
-		this.name = name;
+	
+	public AdvertisementModule(  AdvertisementTypes type ) {
 		this.type = type;
-		this.source = this.getAdvertisementPropertysource();
+	}
+
+	public AdvertisementModule(  AdvertisementTypes type, IJxsePropertySource<?> parent) {
+		super(parent);
+		this.type = type;
 	}
 
 	@Override
-	public String getName() {
-		return name;
+	public String getComponentName() {
+		return Components.PIPE_SERVICE.toString();
 	}
 
 	@Override
-	public IJxsePropertySource<IJxseProperties, IJxseDirectives> getPropertySource() {
+	protected AdvertisementPropertySource onCreatePropertySource() {
+		AdvertisementPropertySource source = new AdvertisementPropertySource( super.getParent() );
 		return source;
 	}
 
 	@Override
-	public void setProperty( IJxseProperties id, Object value ){
-		this.source.setProperty(id, value);
+	public IComponentFactory<Advertisement, IJxseProperties> createFactory( IPeerGroupProvider provider ) {
+		return new JxseAdvertisementFactory( provider, super.getPropertySource() );
 	}
 
-	@Override
-	public IComponentFactory<Advertisement, IJxseProperties, IJxseDirectives> createFactory() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	/**
+	 * Get the correct advertisement type
+	 * @param attrs
+	 * @param qName
+	 * @param parent
+	 * @return
+	 */
+	public static AdvertisementTypes getAdvertisementType( Attributes attrs, String qName ,IJxsePropertySource<IJxseProperties> parent ){
+		if(( attrs == null ) || ( attrs.getLength() == 0))
+				return AdvertisementTypes.ADV;
+		String type = attrs.getValue(AdvertisementDirectives.TYPE.toString().toLowerCase() );
+		if( Utils.isNull(type))
+			return AdvertisementTypes.ADV;
+		return AdvertisementTypes.valueOf( StringStyler.styleToEnum( type ));
+	}	
 
 	/**
 	 * Get the correct property source
@@ -55,14 +66,14 @@ public class AdvertisementModule implements IJxseModule<Advertisement, IJxseProp
 	 * @param parent
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	protected IJxseWritePropertySource<IJxseProperties, IJxseDirectives> getAdvertisementPropertysource(){
-		AdvertisementPropertySource source = new AdvertisementPropertySource( this.getName(), (IJxsePropertySource<?, IJxseDirectives>) this.parentSource );
-		switch( type){
-		case PIPE:
-			return new PipeAdvertisementPropertySource( source );
-		default:
+	protected AdvertisementPropertySource getAdvertisementPropertysource( Attributes attrs, String qName ,IJxsePropertySource<IJxseProperties> parent ){
+		AdvertisementPropertySource source = new AdvertisementPropertySource( qName, parent );
+		AdvertisementTypes adv_type = this.getAdvertisementType(attrs, qName, parent);
+		//switch( adv_type ){
+		//case PIPE:
+		//	return new PipePropertySource( source );
+		//default:
 			return source;
-		}
+		//}
 	}
 }

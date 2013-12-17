@@ -23,7 +23,7 @@ public class Utils
 	 */
 	public static String getLabel( IJxseComponent<?,?> component) {
 		if( component instanceof IJxseServiceContext ){
-			IJxseServiceContext<?,?,?> container = (IJxseServiceContext<?,?,?> )component;
+			IJxseServiceContext<?,?> container = (IJxseServiceContext<?,?> )component;
 			return container.getIdentifier();			
 		}
 		if( component.getModule() == null )

@@ -17,17 +17,17 @@ import java.util.Iterator;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.network.INetworkPreferences;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
-import net.osgi.jxse.properties.IJxseDirectives;
-import net.osgi.jxse.properties.PartialPropertySource;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.partial.PartialPropertySource;
+import net.osgi.jxse.properties.IJxseProperties;
 
 public class SecurityPreferences implements INetworkPreferences{
 
 	public static final String S_SCURITY_CONFIGURATION = "Security Configuration";
 	
-	private PartialPropertySource<NetworkConfiguratorProperties, IJxseDirectives> source;
+	private PartialPropertySource source;
 	
-	public SecurityPreferences( PartialPropertySource<NetworkConfiguratorProperties, IJxseDirectives> source ) {
+	public SecurityPreferences( PartialPropertySource source ) {
 		this.source = source;
 	}
 	
@@ -50,10 +50,10 @@ public class SecurityPreferences implements INetworkPreferences{
 	*/
 	@Override
 	public boolean fillConfigurator( NetworkConfigurator configurator ){
-		Iterator<NetworkConfiguratorProperties> iterator = source.propertyIterator();
+		Iterator<IJxseProperties> iterator = source.propertyIterator();
 		boolean retval = true;
 		while( iterator.hasNext() ){
-			NetworkConfiguratorProperties id = iterator.next();
+			NetworkConfiguratorProperties id = (NetworkConfiguratorProperties) iterator.next();
 			retval &= fillConfigurator(configurator, id, source.getProperty(id));
 		}
 		return retval;

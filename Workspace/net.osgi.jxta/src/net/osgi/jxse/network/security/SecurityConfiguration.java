@@ -15,9 +15,9 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
 import net.jxta.platform.NetworkConfigurator;
-import net.osgi.jxse.network.NetworkConfigurationFactory;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.network.configurator.NetworkConfigurationFactory;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
 public class SecurityConfiguration {
 

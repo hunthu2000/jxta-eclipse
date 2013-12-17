@@ -16,11 +16,12 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
-import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.IOUtils;
+import net.osgi.jxse.utils.StringProperty;
 
-public class SeedListPropertySource<T extends IJxseDirectives> extends AbstractJxseWritePropertySource<String> {
+public class SeedListPropertySource extends AbstractJxseWritePropertySource<IJxseProperties> {
 
 	public static final String S_SEED_LIST = "Seed List";
 
@@ -28,11 +29,11 @@ public class SeedListPropertySource<T extends IJxseDirectives> extends AbstractJ
 
 	private boolean hasSeeds;
 	
-	public SeedListPropertySource( IJxsePropertySource<?, IJxseDirectives> parent ) {
+	public SeedListPropertySource( IJxsePropertySource<?> parent ) {
 		super( S_SEED_LIST, parent );
 	}
 
-	public SeedListPropertySource( IJxsePropertySource<?, IJxseDirectives> parent, Class<?> clss ) {
+	public SeedListPropertySource( IJxsePropertySource<?> parent, Class<?> clss ) {
 		this( parent );
 		this.hasSeeds = false;
 		this.fillProperties( clss );
@@ -54,7 +55,7 @@ public class SeedListPropertySource<T extends IJxseDirectives> extends AbstractJ
 				seedInfo.parse(key, value );
 				if( seedInfo.isCommentedOut() )
 					continue;
-				this.setProperty(key, seedInfo );
+				this.setProperty( new StringProperty( key ), seedInfo );
 				
 			}
 		} catch (IOException e) {
@@ -66,7 +67,7 @@ public class SeedListPropertySource<T extends IJxseDirectives> extends AbstractJ
 	}
 
 	
-	public boolean setProperty(String id, SeedInfo value ) {
+	public boolean setProperty(IJxseProperties id, SeedInfo value ) {
 		boolean retval = super.setProperty(id, value);
 		this.hasSeeds |= retval;
 		return retval;
@@ -81,13 +82,12 @@ public class SeedListPropertySource<T extends IJxseDirectives> extends AbstractJ
 	}
 
 	@Override
-	public String getIdFromString(String key) {
-		return key;
+	public IJxseProperties getIdFromString(String key) {
+		return new StringProperty( key );
 	}
 
 	@Override
-	public boolean validate(String id, Object value) {
-		// TODO Auto-generated method stub
+	public boolean validate(IJxseProperties id, Object value) {
 		return false;
 	}
 }

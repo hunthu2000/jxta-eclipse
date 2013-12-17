@@ -206,13 +206,13 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 		}
 	}
 
-	public AdvertisementPropertySource(IJxsePropertySource<?, IJxseDirectives> parent) {
+	public AdvertisementPropertySource(IJxsePropertySource<?> parent) {
 		super( S_ADVERTISEMENTS, parent);
 		this.fillDefaultValues();
 	}
 
 	public AdvertisementPropertySource(String componentName,
-			IJxsePropertySource<?, IJxseDirectives> parent) {
+			IJxsePropertySource<?> parent) {
 		super(componentName, parent);
 		this.fillDefaultValues();
 	}
@@ -244,7 +244,7 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 	}
 
 	@Override
-	public boolean addChild(IJxsePropertySource<?, ?> child) {
+	public boolean addChild(IJxsePropertySource<?> child) {
 		if( !AdvertisementCategories.isValidCategory( StringStyler.styleToEnum( child.getComponentName() )))
 			return false;
 		return super.addChild(child);

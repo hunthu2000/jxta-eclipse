@@ -15,16 +15,15 @@ import java.net.URISyntaxException;
 
 import net.jxta.id.IDFactory;
 import net.jxta.pipe.PipeService;
-import net.osgi.jxse.advertisement.PipeAdvertisementPropertySource.PipeAdvertisementProperties;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
+import net.osgi.jxse.pipe.PipePropertySource.PipeProperties;
 import net.osgi.jxse.properties.AbstractPreferences;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.utils.StringStyler;
 
-public class AdvertisementPreferences extends AbstractPreferences<IJxseProperties, IJxseDirectives>{
+public class AdvertisementPreferences extends AbstractPreferences<IJxseProperties>{
 
 	private IPeerGroupProvider provider;
 	
@@ -55,7 +54,7 @@ public class AdvertisementPreferences extends AbstractPreferences<IJxsePropertie
 		}
 	}
 
-	public AdvertisementPreferences( IPeerGroupProvider provider, IJxseWritePropertySource<IJxseProperties, IJxseDirectives> source ) {
+	public AdvertisementPreferences( IPeerGroupProvider provider, IJxseWritePropertySource<IJxseProperties> source ) {
 		super( source );
 		this.provider = provider;
 	}
@@ -65,9 +64,9 @@ public class AdvertisementPreferences extends AbstractPreferences<IJxsePropertie
 	 */
 	@Override
 	public Object convertValue( IJxseProperties id, String value ){
-		if( !( id instanceof PipeAdvertisementProperties ))
+		if( !( id instanceof PipeProperties ))
 			return null;
-		PipeAdvertisementProperties pid = ( PipeAdvertisementProperties )id;
+		PipeProperties pid = ( PipeProperties )id;
 		switch( pid ){
 		case PIPE_ID:
 			URI uri = URI.create(value);
@@ -95,9 +94,9 @@ public class AdvertisementPreferences extends AbstractPreferences<IJxsePropertie
 			return null;
 		
 		Object value = null;
-		if( !( id instanceof PipeAdvertisementProperties ))
+		if( !( id instanceof PipeProperties ))
 			return null;
-		PipeAdvertisementProperties pid = ( PipeAdvertisementProperties )id;
+		PipeProperties pid = ( PipeProperties )id;
 		switch( pid ){
 		case PIPE_ID:
 			value = IDFactory.newPipeID( provider.getPeerGroup().getPeerGroupID() );

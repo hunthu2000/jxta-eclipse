@@ -28,16 +28,17 @@ import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperti
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager, NetworkManagerProperties, IJxseDirectives> 
-implements IPeerGroupProvider{
+public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager, IJxseProperties> 
+implements INetworkManagerProvider, IPeerGroupProvider{
 		
-	public NetworkManagerFactory( IJxsePropertySource<NetworkManagerProperties, IJxseDirectives> propertySource ) {
+	public NetworkManagerFactory( IJxsePropertySource<IJxseProperties> propertySource ) {
 		super( propertySource );
 	}
-
+	
 	@Override
 	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value) {
 		switch(( IJxseDirectives.Directives )directive ){
@@ -54,10 +55,9 @@ implements IPeerGroupProvider{
 	}
 
 	@Override
-	protected NetworkManager onCreateModule( IJxsePropertySource<NetworkManagerProperties, IJxseDirectives> properties) {
+	protected NetworkManager onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
 		// Removing any existing configuration?
-		NetworkManagerPreferences<IJxseDirectives> preferences = 
-				new NetworkManagerPreferences<IJxseDirectives>( (IJxseWritePropertySource<NetworkManagerProperties, IJxseDirectives>) properties );
+		NetworkManagerPreferences preferences = new NetworkManagerPreferences( (IJxseWritePropertySource<IJxseProperties>) properties );
 		String name = preferences.getInstanceName();
 		try {
 			Path path = Paths.get( preferences.getHomeFolder() );
@@ -81,7 +81,7 @@ implements IPeerGroupProvider{
 	
 	@Override
 	public boolean complete() {
-		IJxsePropertySource<NetworkManagerProperties, IJxseDirectives> properties = super.getPropertySource();
+		IJxsePropertySource<IJxseProperties> properties = super.getPropertySource();
 		Object value = properties.getDirective( Directives.AUTO_START );
 		if( value == null )
 			value = Boolean.FALSE.toString();
@@ -108,5 +108,10 @@ implements IPeerGroupProvider{
 	@Override
 	public String getPeerGroupName() {
 		return IPeerGroupProvider.S_NET_PEER_GROUP;
+	}
+
+	@Override
+	public NetworkManager getNetworkManager() {
+		return this.getModule();
 	}
 }

@@ -20,7 +20,7 @@ public class JxseLabelProvider extends LabelProvider{
 		IJxseComponent<?,?> component = (IJxseComponent<?,?> )element;
 		StatusImages images = new StatusImages();
 		if( component instanceof AbstractJxseService ){
-			AbstractJxseService<?,?,?> service = (AbstractJxseService<Object,?,?> )component;
+			AbstractJxseService<?,?> service = (AbstractJxseService<Object,?> )component;
 			return images.getImage( service.getStatus() );
 		}
 		return images.getImage( Images.COMPONENT );

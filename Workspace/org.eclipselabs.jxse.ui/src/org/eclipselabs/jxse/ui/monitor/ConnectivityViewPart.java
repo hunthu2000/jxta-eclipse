@@ -370,7 +370,7 @@ public class ConnectivityViewPart extends ViewPart implements Runnable{
             	setContentDescription( msg );
                         
 
-                peerNameTextField.setText(peerGroup.getPeerName());
+                peerNameTextField.setText(peerGroup.getPeerGroupName());
                 peerIDTextField.setText(peerGroup.getPeerID().toString());
 
                 peerGroupNameTextField.setText(peerGroup.getPeerGroupName());

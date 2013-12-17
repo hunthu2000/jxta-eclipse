@@ -10,11 +10,10 @@
  *******************************************************************************/
 package net.osgi.jxse.factory;
 
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public interface IComponentFactory<T extends Object, U extends Object, V extends IJxseDirectives> {
+public interface IComponentFactory<T extends Object, U extends Object> {
 
 	public enum Components{
 		JXSE_CONTEXT,
@@ -27,14 +26,15 @@ public interface IComponentFactory<T extends Object, U extends Object, V extends
 		HTTP,
 		HTTP2,
 		MULTICAST,
+		NET_PEERGROUP_SERVICE,
 		PEERGROUP_SERVICE,
 		DISCOVERY_SERVICE,
 		REGISTRATION_SERVICE,
 		RENDEZVOUS_SERVICE,
+		PIPE_SERVICE,
 		JXSE_SOCKET,
 		JXSE_SERVER_SOCKET,
-		ADVERTISEMENT_SERVICE,
-		EXTENDED;
+		ADVERTISEMENT_SERVICE;
 
 		@Override
 		public String toString() {
@@ -69,7 +69,7 @@ public interface IComponentFactory<T extends Object, U extends Object, V extends
 	 * Get the property source
 	 * @return
 	 */
-	public IJxsePropertySource<U,V> getPropertySource();
+	public IJxsePropertySource<U> getPropertySource();
 
 	/**
 	 * First time creation of the service component.
@@ -93,4 +93,10 @@ public interface IComponentFactory<T extends Object, U extends Object, V extends
 	 * @return
 	 */
 	public T getModule();
+	
+	/**
+	 * Returns true if the module is activated
+	 * @return
+	 */
+	public boolean moduleActive();
 }

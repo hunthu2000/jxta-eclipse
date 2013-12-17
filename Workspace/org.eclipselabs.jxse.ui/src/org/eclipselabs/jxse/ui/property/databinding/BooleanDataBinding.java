@@ -7,7 +7,7 @@ import net.osgi.jxse.properties.ManagedPropertyEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 
-public class BooleanDataBinding<T extends Enum<T>> extends AbstractManagedPropertySourceDatabinding<T, Boolean>{
+public class BooleanDataBinding<T extends Object> extends AbstractManagedPropertySourceDatabinding<T, Boolean>{
 
 	private Button button;
 	
@@ -19,7 +19,7 @@ public class BooleanDataBinding<T extends Enum<T>> extends AbstractManagedProper
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public BooleanDataBinding( T id, IJxsePropertySource<T, ?> source, Button button) {
+	public BooleanDataBinding( T id, IJxsePropertySource<T> source, Button button) {
 		this((ManagedProperty)source.getManagedProperty(id), button);
 	}
 

@@ -10,11 +10,12 @@
  *******************************************************************************/
 package net.osgi.jxse.peergroup;
 
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.utils.StringStyler;
 
 public interface IPeerGroupProperties {
 
-	public enum PeerGroupProperties{
+	public enum PeerGroupProperties implements IJxseProperties{
 		NAME,
 		IDENTIFIER,
 		PUBLISH,

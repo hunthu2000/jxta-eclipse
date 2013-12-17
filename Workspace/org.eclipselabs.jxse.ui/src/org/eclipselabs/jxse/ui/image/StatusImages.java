@@ -22,9 +22,11 @@ public class StatusImages extends AbstractImages{
 	public static final String S_FINALISED_ICON = "shutdown.png";
 
 	public static final String S_COMPONENT_ICON = "component.png";
+	public static final String S_WORLD_ICON = "world.png";
 
 	public enum Images{
-		COMPONENT;
+		COMPONENT,
+		WORLD;
 
 		@Override
 		public String toString() {
@@ -59,6 +61,7 @@ public class StatusImages extends AbstractImages{
 		setImage( S_FINALISING_ICON );
 		setImage( S_FINALISED_ICON );
 		setImage( S_COMPONENT_ICON );
+		setImage( S_WORLD_ICON );
 	}
 
 	/**
@@ -102,6 +105,8 @@ public class StatusImages extends AbstractImages{
 		switch( desc ){
 		case COMPONENT:
 			return getImageFromName( S_COMPONENT_ICON );
+		case WORLD:
+			return getImageFromName( S_WORLD_ICON );
 		default:
 			return getImageFromName( S_COMPONENT_ICON );				
 		}

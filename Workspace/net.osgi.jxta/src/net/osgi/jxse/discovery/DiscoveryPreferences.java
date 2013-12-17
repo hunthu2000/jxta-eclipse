@@ -17,13 +17,12 @@ import net.jxta.peer.PeerID;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.properties.AbstractPreferences;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public class DiscoveryPreferences<T extends IJxseDirectives> extends AbstractPreferences<DiscoveryProperties, T>
+public class DiscoveryPreferences extends AbstractPreferences<DiscoveryProperties>
 {
-	public DiscoveryPreferences( IJxseWritePropertySource<DiscoveryProperties, T> source )
+	public DiscoveryPreferences( IJxseWritePropertySource<DiscoveryProperties> source )
 	{
 		super( source );
 	}

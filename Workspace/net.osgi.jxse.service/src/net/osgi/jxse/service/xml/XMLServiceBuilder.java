@@ -19,28 +19,27 @@ import net.osgi.jxse.builder.ICompositeBuilder;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.context.JxseServiceContext;
 import net.osgi.jxse.context.Swarm;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
-import net.osgi.jxse.service.core.JxseCompositeBuilder;
+import net.osgi.jxse.service.core.ChaupalCompositeBuilder;
 
-public class XMLServiceBuilder implements ICompositeBuilder<ComponentNode<JxseServiceContext, IJxseProperties, IJxseDirectives>, IJxseProperties, IJxseDirectives>{
+public class XMLServiceBuilder implements ICompositeBuilder<ComponentNode<JxseServiceContext, IJxseProperties>, IJxseProperties>{
 
-	private ComponentNode<JxseServiceContext,IJxseProperties, IJxseDirectives> root;
+	private ComponentNode<JxseServiceContext,IJxseProperties> root;
 	
 	private String plugin_id;
 	private Class<?> clss;
+	private BuilderContainer container;
 	private Swarm swarm;
-	private BuilderContainer builder;
 	
 	private Collection<ICompositeBuilderListener<?>> listeners;
 	
 	public XMLServiceBuilder( String plugin_id, Class<?> clss) {
 		this.plugin_id = plugin_id;
 		this.clss = clss;	
-		this.swarm = new Swarm();
 		this.listeners = new ArrayList<ICompositeBuilderListener<?>>();
-		builder = new BuilderContainer();
+		container = new BuilderContainer();
+
 	}
 	
 	public JxseServiceContext getModule() {
@@ -48,17 +47,17 @@ public class XMLServiceBuilder implements ICompositeBuilder<ComponentNode<JxseSe
 	}
 
 	@Override
-	public ComponentNode<JxseServiceContext, IJxseProperties, IJxseDirectives> build() {
-		XMLPropertySourceBuilder builder = new XMLPropertySourceBuilder( plugin_id, clss );
+	public ComponentNode<JxseServiceContext, IJxseProperties> build() {
+		XMLPropertySourceBuilder builder = new XMLPropertySourceBuilder( plugin_id, clss, container );
 		
 		//First build the property sources
 		this.addListenerToBuilder(builder);
-		IJxsePropertySource<IJxseProperties, IJxseDirectives> source = builder.build();
+		IJxsePropertySource<IJxseProperties> source = builder.build();
 		this.removeListenerFromBuilder(builder);
 		
 		//Then build the factories
-		ICompositeBuilder<ComponentNode<JxseServiceContext, IJxseProperties, IJxseDirectives>, IJxseProperties, IJxseDirectives> cf = 
-				new JxseCompositeBuilder<ComponentNode<JxseServiceContext, IJxseProperties, IJxseDirectives>, IJxseProperties, IJxseDirectives>( source );
+		ICompositeBuilder<ComponentNode<JxseServiceContext, IJxseProperties>, IJxseProperties> cf = 
+				new ChaupalCompositeBuilder<ComponentNode<JxseServiceContext, IJxseProperties>, IJxseProperties>( source, container, swarm );
 		this.addListenerToBuilder( cf );
 		root = cf.build();
 		this.removeListenerFromBuilder( cf );
@@ -75,12 +74,12 @@ public class XMLServiceBuilder implements ICompositeBuilder<ComponentNode<JxseSe
 		this.listeners.remove(listener);
 	}
 
-	private final void addListenerToBuilder(ICompositeBuilder<?,?,?> builder) {
+	private final void addListenerToBuilder(ICompositeBuilder<?,?> builder) {
 		for( ICompositeBuilderListener<?> listener: this.listeners )
 			builder.addListener(listener);
 	}
 
-	private void removeListenerFromBuilder(ICompositeBuilder<?,?,?> builder) {
+	private void removeListenerFromBuilder(ICompositeBuilder<?,?> builder) {
 		for( ICompositeBuilderListener<?> listener: this.listeners )
 			builder.removeListener(listener);
 	}

@@ -14,23 +14,32 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import net.osgi.jxse.activator.IActivator;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public abstract class AbstractComponentFactory<T extends Object, U extends IJxseProperties, V extends IJxseDirectives> implements IComponentFactory<T,U,V>{
+public abstract class AbstractComponentFactory<T extends Object, U extends IJxseProperties> implements IComponentFactory<T,U>{
 
-	private Collection<IComponentFactoryListener<T,U,V>> listeners;
-	private T module;
-	private IJxsePropertySource<U,V> properties;
+	public static final String S_FACTORY = "Factory:";
 	
+	private Collection<IComponentFactoryListener<T,U>> listeners;
+	private T module;
+	private IJxsePropertySource<U> properties;
+	
+	private boolean canCreate;
 	private boolean completed;
 	private boolean failed;
-	
-	protected AbstractComponentFactory( IJxsePropertySource<U,V> properties ) {
-		listeners = new ArrayList<IComponentFactoryListener<T,U,V>>();
+
+	protected AbstractComponentFactory( IJxsePropertySource<U> properties ) {
+		this( properties, true );
+	}
+
+	protected AbstractComponentFactory( IJxsePropertySource<U> properties, boolean canCreate ) {
+		listeners = new ArrayList<IComponentFactoryListener<T,U>>();
 		this.properties = properties;
+		this.canCreate = canCreate;
 		this.completed = false;
 		this.failed = false;
 	}
@@ -40,12 +49,12 @@ public abstract class AbstractComponentFactory<T extends Object, U extends IJxse
 		return Components.valueOf( StringStyler.styleToEnum( this.properties.getComponentName()));
 	}
 	
-	protected void setPropertySource( IJxsePropertySource<U,V> properties ){
+	protected void setPropertySource( IJxsePropertySource<U> properties ){
 		this.properties = properties;
 	}
 	
 	@Override
-	public IJxsePropertySource<U,V> getPropertySource(){
+	public IJxsePropertySource<U> getPropertySource(){
 		return this.properties;
 	}
 
@@ -57,23 +66,28 @@ public abstract class AbstractComponentFactory<T extends Object, U extends IJxse
 	
 	@Override
 	public boolean canCreate() {
-		return true;
+		return this.canCreate;
 	}
+
+	protected void setCanCreate(boolean canCreate) {
+		this.canCreate = canCreate;
+	}
+
 
 	/**
 	 * All the directives are parsed prior to creating the factory 
 	 * @param directive
 	 * @param value
 	 */
-	protected void onParseDirectivePriorToCreation( V directive, Object value ){/* DO NOTHING*/}
+	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value ){/* DO NOTHING*/}
 	
 	/**
 	 * Parse the directives for this factory
 	 * @param node
 	 */
 	private final void parseDirectivesPrior( ){
-		Iterator<V> iterator = this.properties.directiveIterator();
-		V directive;
+		Iterator<IJxseDirectives> iterator = this.properties.directiveIterator();
+		IJxseDirectives directive;
 		while( iterator.hasNext()){
 			directive = iterator.next();
 			this.onParseDirectivePriorToCreation( directive, properties.getDirective( directive ));
@@ -85,22 +99,22 @@ public abstract class AbstractComponentFactory<T extends Object, U extends IJxse
 	 * @param directive
 	 * @param value
 	 */
-	protected void onParseDirectiveAfterCreation( V directive, Object value ){/* DO NOTHING*/}
+	protected void onParseDirectiveAfterCreation( IJxseDirectives directive, Object value ){/* DO NOTHING*/}
 	
 	/**
 	 * Parse the directives for this factory
 	 * @param node
 	 */
 	private final void parseDirectivesAfter(){
-		Iterator<V> iterator = this.properties.directiveIterator();
-		V directive;
+		Iterator<IJxseDirectives> iterator = this.properties.directiveIterator();
+		IJxseDirectives directive;
 		while( iterator.hasNext()){
 			directive = iterator.next();
 			this.onParseDirectiveAfterCreation( directive, properties.getDirective( directive ));
 		}
 	}
 
-	protected abstract T onCreateModule( IJxsePropertySource<U,V> properties);
+	protected abstract T onCreateModule( IJxsePropertySource<U> properties);
 	
 	@Override
 	public T createModule() {
@@ -147,11 +161,24 @@ public abstract class AbstractComponentFactory<T extends Object, U extends IJxse
 		return module;
 	}
 
-	public void addComponentListener( IComponentFactoryListener<T,U,V> listener ){
+	/**
+	 * Returns true if the module is activated
+	 * @return
+	 */
+	public boolean moduleActive(){
+		if( this.module == null )
+			return false;
+		if(!( this.module instanceof IActivator ))
+			return true;
+		IActivator activator = ( IActivator )this.module;
+		return activator.isActive();
+	}
+
+	public void addComponentListener( IComponentFactoryListener<T,U> listener ){
 		this.listeners.add(listener);
 	}
 
-	public void removeComponentListener( IComponentFactoryListener<T,U,V> listener ){
+	public void removeComponentListener( IComponentFactoryListener<T,U> listener ){
 		this.listeners.remove(listener);
 	}
 
@@ -160,8 +187,13 @@ public abstract class AbstractComponentFactory<T extends Object, U extends IJxse
 	 * @param component
 	 */
 	protected void notifyServiceComponentCompleted( T component ) {
-		JxseComponentEvent<T,U,V> event = new JxseComponentEvent<T,U,V>( this, component );
-		for( IComponentFactoryListener<T,U,V> listener: listeners)
+		JxseComponentEvent<T,U> event = new JxseComponentEvent<T,U>( this, component );
+		for( IComponentFactoryListener<T,U> listener: listeners)
 			listener.notifyComponentCompleted(event);
 	}
+
+	@Override
+	public String toString() {
+		return S_FACTORY + this.getPropertySource().getComponentName() + super.toString();
+	}	
 }

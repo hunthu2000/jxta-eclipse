@@ -1,17 +1,17 @@
-package net.osgi.jxse.network;
+package net.osgi.jxse.network.configurator;
 
 import java.util.Iterator;
 
 import net.osgi.jxse.factory.IComponentFactory.Components;
+import net.osgi.jxse.network.NetworkManagerPropertySource;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public class NetworkConfigurationPropertySource extends AbstractJxseWritePropertySource<NetworkConfigurationPropertySource.NetworkConfiguratorProperties>
-	implements IJxseWritePropertySource<NetworkConfigurationPropertySource.NetworkConfiguratorProperties, IJxseDirectives>
+public class NetworkConfigurationPropertySource extends AbstractJxseWritePropertySource<IJxseProperties>
+	implements IJxseWritePropertySource<IJxseProperties>
 
 {
 	public static String S_NETWORK_CONFIGURATOR = "NetworkConfigurator";
@@ -87,11 +87,6 @@ public class NetworkConfigurationPropertySource extends AbstractJxseWritePropert
 		}
 	}
 
-	public NetworkConfigurationPropertySource( NetworkManagerFactory factory ) {
-		this( (NetworkManagerPropertySource) factory.getPropertySource() );
-		this.fill();
-	}
-
 	public NetworkConfigurationPropertySource( NetworkManagerPropertySource nmps ) {
 		super( S_NETWORK_CONFIGURATOR, nmps );
 		this.fill();
@@ -99,10 +94,10 @@ public class NetworkConfigurationPropertySource extends AbstractJxseWritePropert
 
 	private void fill(){
 		NetworkManagerPropertySource source = (NetworkManagerPropertySource) super.getParent();
-		Iterator<NetworkManagerProperties> iterator = source.propertyIterator();
+		Iterator<IJxseProperties> iterator = source.propertyIterator();
 		NetworkConfiguratorProperties nmp = null;
 		while( iterator.hasNext() ){
-			NetworkManagerProperties cp = iterator.next();
+			NetworkManagerProperties cp = (NetworkManagerProperties) iterator.next();
 			nmp = convertTo( cp );
 			if( nmp != null ){
 				Object value = source.getProperty( cp );
@@ -125,14 +120,6 @@ public class NetworkConfigurationPropertySource extends AbstractJxseWritePropert
 	}
 
 	@Override
-	public String getBundleId() {
-		NetworkManagerPropertySource source = (NetworkManagerPropertySource) super.getParent();
-		if( source != null )
-			return source.getBundleId();
-		return null;
-	}
-
-	@Override
 	public String getIdentifier() {
 		NetworkManagerPropertySource source = (NetworkManagerPropertySource) super.getParent();
 		if( source != null )
@@ -141,8 +128,7 @@ public class NetworkConfigurationPropertySource extends AbstractJxseWritePropert
 	}
 
 	@Override
-	public boolean validate(NetworkConfiguratorProperties id, Object value) {
-		// TODO Auto-generated method stub
+	public boolean validate(IJxseProperties id, Object value) {
 		return false;
 	}
 

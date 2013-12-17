@@ -18,7 +18,8 @@ public interface ICompositeBuilderListener<T extends Object> {
 	public enum BuilderEvents{
 		PROPERTY_SOURCE_CREATED,
 		FACTORY_CREATED,
-		COMPONENT_CREATED;
+		COMPONENT_CREATED,
+		COMPONENT_STARTED;
 
 		@Override
 		public String toString() {

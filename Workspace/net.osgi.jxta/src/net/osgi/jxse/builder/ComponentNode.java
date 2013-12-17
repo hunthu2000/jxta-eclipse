@@ -14,48 +14,50 @@ import java.util.Collection;
 import java.util.TreeSet;
 
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.utils.Utils;
 
-public class ComponentNode<T extends Object, U extends Object, V extends IJxseDirectives> implements Comparable<ComponentNode<?,?,?>> {
+public class ComponentNode<T extends Object, U extends Object> implements Comparable<ComponentNode<?,?>> {
 
-	private IComponentFactory<T,U,V> factory;
+	public static final String S_NODE = "Node:";
 	
-	private ComponentNode<?,?,?> parent;
+	private IComponentFactory<T,U> factory;
 	
-	private Collection<ComponentNode<IComponentFactory<?,?,?>,?,?>> children;
+	private ComponentNode<?,?> parent;
+	
+	private Collection<ComponentNode<IComponentFactory<?,?>,?>> children;
 
 	public ComponentNode() {
 		this( null );
 	}
 
-	public ComponentNode( IComponentFactory<T,U,V> factory ) {
+	public ComponentNode( IComponentFactory<T,U> factory ) {
 		this.factory = factory;
-		children = new TreeSet<ComponentNode<IComponentFactory<?,?,?>,?,?>>();
+		children = new TreeSet<ComponentNode<IComponentFactory<?,?>,?>>();
 	}
 
-	ComponentNode( IComponentFactory<T,U,V> factory, ComponentNode<?,?,?> parent ) {
+	ComponentNode( IComponentFactory<T,U> factory, ComponentNode<?,?> parent ) {
 		this( factory );
 		this.parent = parent;
 	}
 
-	public ComponentNode<?,?,?> getParent() {
+	public ComponentNode<?,?> getParent() {
 		return parent;
 	}
 
 	
-	public IComponentFactory<T,U,V> getFactory() {
+	public IComponentFactory<T,U> getFactory() {
 		return factory;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public ComponentNode<IComponentFactory<?,?,?>,?,?> addChild( IComponentFactory<?,?,?> factory ){
-		ComponentNode<IComponentFactory<?,?,?>,?,?> node = new ComponentNode( factory, this );
+	public ComponentNode<IComponentFactory<?,?>,?> addChild( IComponentFactory<?,?> factory ){
+		ComponentNode<IComponentFactory<?,?>,?> node = new ComponentNode( factory, this );
 		children.add( node );
 		return node;
 	}
 
-	public boolean removeChild( IComponentFactory<?,?,?> factory ){
-		for( ComponentNode<IComponentFactory<?,?,?>,?,?> nd: children ){
+	public boolean removeChild( IComponentFactory<?,?> factory ){
+		for( ComponentNode<IComponentFactory<?,?>,?> nd: children ){
 			if( nd.getFactory().equals( factory )){
 				return children.remove(nd);
 			}
@@ -67,12 +69,12 @@ public class ComponentNode<T extends Object, U extends Object, V extends IJxseDi
 		return this.children.size();
 	}
 	
-	public ComponentNode<?,?,?>[] getChildren(){
-		return this.children.toArray( new ComponentNode<?,?,?>[ this.children.size() ] );
+	public ComponentNode<?,?>[] getChildren(){
+		return this.children.toArray( new ComponentNode<?,?>[ this.children.size() ] );
 	}
 
 	@Override
-	public int compareTo(ComponentNode<?,?,?> arg0) {
+	public int compareTo(ComponentNode<?,?> arg0) {
 		if( arg0 == null )
 			return 1;
 		if(( this.factory == null ) && ( arg0.getFactory() == null ))
@@ -84,4 +86,26 @@ public class ComponentNode<T extends Object, U extends Object, V extends IJxseDi
 
 		return this.factory.getComponent().compareTo( arg0.getFactory().getComponent());
 	}
+	
+	/**
+	 * Get the child with the given name
+	 * @param node
+	 * @param componentName
+	 * @return
+	 */
+	public static ComponentNode<?,?> getChild( ComponentNode<?,?> node, String componentName ){
+		if( Utils.isNull( componentName ))
+			return null;
+		for( ComponentNode<?,?> child: node.getChildren()){
+			if( child.getFactory().getPropertySource().getComponentName().equals( componentName ))
+				return child;
+		}
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		return S_NODE + this.getFactory().getPropertySource().getComponentName();
+	}
+
 }

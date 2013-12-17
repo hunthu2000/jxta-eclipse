@@ -23,7 +23,7 @@ import net.jxta.peer.PeerID;
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.component.IJxseComponent;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.utils.EnumUtils;
 
 public class NetworkConfiguratorPropertySource extends AbstractJxsePropertySource<NetworkConfigurator, NetworkConfiguratorProperties> {

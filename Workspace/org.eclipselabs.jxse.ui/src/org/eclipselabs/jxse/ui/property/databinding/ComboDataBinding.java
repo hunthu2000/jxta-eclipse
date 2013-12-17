@@ -8,7 +8,7 @@ import net.osgi.jxse.utils.Utils;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Combo;
 
-public class ComboDataBinding<T extends Enum<T>, U extends Enum<U>> extends AbstractManagedPropertySourceDatabinding<T, U>{
+public class ComboDataBinding<T extends Object, U extends Enum<U>> extends AbstractManagedPropertySourceDatabinding<T, U>{
 
 	private Combo combo;
 	
@@ -21,7 +21,7 @@ public class ComboDataBinding<T extends Enum<T>, U extends Enum<U>> extends Abst
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ComboDataBinding( T id, IJxsePropertySource<T, ?> source, Combo combo) {
+	public ComboDataBinding( T id, IJxsePropertySource<T> source, Combo combo) {
 		this(( ManagedProperty ) source.getManagedProperty(id), combo);
 	}
 

@@ -5,19 +5,18 @@ import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 import net.osgi.jxse.properties.AbstractPreferences;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.utils.Utils;
 
 public class PersistedProperty<E extends Object> {
 
-	private AbstractPreferences<E, IJxseDirectives> prefs;
+	private AbstractPreferences<E> prefs;
 	private Preferences preferences;
 	
-	public PersistedProperty( IScopeContext scope, AbstractPreferences<E, IJxseDirectives> prefs ) {
+	public PersistedProperty( IScopeContext scope, AbstractPreferences<E> prefs ) {
 		this.prefs = prefs;
-		IJxsePropertySource<E,IJxseDirectives> source = prefs.getSource();
+		IJxsePropertySource<E> source = prefs.getSource();
 		Preferences pref1 = scope.getNode( source.getBundleId() );
 		Preferences pref2 = pref1.node( source.getIdentifier() );
 		this.preferences = pref2.node( source.getComponentName() );

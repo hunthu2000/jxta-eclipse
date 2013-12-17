@@ -11,14 +11,14 @@
 package net.osgi.jxse.service.discovery;
 
 import net.jxta.discovery.DiscoveryService;
-import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.discovery.DiscoveryServiceFactory;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class ChaupalDiscoveryServiceFactory extends
-		AbstractComponentFactory<JxseDiscoveryService, DiscoveryProperties, IJxseDirectives> {
+		AbstractComponentFactory<JxseDiscoveryService, IJxseProperties> {
 
 	public static final String S_DISCOVERY_SERVICE = "JxseDiscoveryService";
 
@@ -35,7 +35,7 @@ public class ChaupalDiscoveryServiceFactory extends
 	}
 
 	@Override
-	protected JxseDiscoveryService onCreateModule( IJxsePropertySource<DiscoveryProperties, IJxseDirectives> properties) {
+	protected JxseDiscoveryService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
 		DiscoveryService ds = factory.createModule();
 		if( ds == null )
 			return null;

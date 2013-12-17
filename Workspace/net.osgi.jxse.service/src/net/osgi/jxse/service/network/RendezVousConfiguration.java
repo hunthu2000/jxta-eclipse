@@ -18,7 +18,7 @@ import java.util.Set;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.component.IJxseComponent;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
 public class RendezVousConfiguration {
 

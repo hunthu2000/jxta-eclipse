@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
+import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.properties.IJxseProperties;
 
 public class JxseComponentNode<T extends Object, U extends Object> implements IJxseComponentNode<T,U>{
@@ -77,13 +77,13 @@ public class JxseComponentNode<T extends Object, U extends Object> implements IJ
 	@Override
 	public void addChild( IJxseComponent<?,?> child ){
 		this.children.add( child );
-		dispatcher.serviceChanged( new ComponentChangedEvent( this, ServiceChange.CHILD_ADDED ));
+		dispatcher.serviceChanged( new ComponentChangedEvent( this, AbstractServiceContext.ServiceChange.CHILD_ADDED ));
 	}
 
 	@Override
 	public void removeChild( IJxseComponent<?,?> child ){
 		this.children.remove( child );
-		dispatcher.serviceChanged( new ComponentChangedEvent( this, ServiceChange.CHILD_REMOVED ));
+		dispatcher.serviceChanged( new ComponentChangedEvent( this, AbstractServiceContext.ServiceChange.CHILD_REMOVED ));
 	}
 
 	@Override

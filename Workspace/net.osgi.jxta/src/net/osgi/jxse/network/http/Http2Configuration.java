@@ -11,9 +11,9 @@
 package net.osgi.jxse.network.http;
 
 import net.jxta.platform.NetworkConfigurator;
-import net.osgi.jxse.network.NetworkConfigurationFactory;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.network.configurator.NetworkConfigurationFactory;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
 public class Http2Configuration {
 

@@ -16,13 +16,12 @@ import java.net.URISyntaxException;
 import net.jxta.peer.PeerID;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.properties.AbstractPreferences;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.registration.RegistrationPropertySource.RegistrationProperties;
 
-public class RegistrationPreferences<T extends IJxseDirectives> extends AbstractPreferences<RegistrationProperties, T>
+public class RegistrationPreferences extends AbstractPreferences<RegistrationProperties>
 {
-	public RegistrationPreferences( IJxseWritePropertySource<RegistrationProperties, T> source )
+	public RegistrationPreferences( IJxseWritePropertySource<RegistrationProperties> source )
 	{
 		super( source );
 	}
@@ -36,7 +35,7 @@ public class RegistrationPreferences<T extends IJxseDirectives> extends Abstract
 	 */
 	@Override
 	public Object convertValue( RegistrationProperties id, String value ){
-		IJxseWritePropertySource<RegistrationProperties, T> source = super.getSource();
+		IJxseWritePropertySource<RegistrationProperties> source = super.getSource();
 		switch( id ){
 		case ATTRIBUTE:
 		case WILDCARD:

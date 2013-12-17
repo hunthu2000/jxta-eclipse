@@ -13,18 +13,18 @@ package net.osgi.jxse.registration;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
-import net.osgi.jxse.registration.RegistrationPropertySource.RegistrationProperties;
 
 public class RegistrationServiceFactory extends
-		AbstractComponentFactory<RegistrationService, RegistrationProperties, IJxseDirectives> {
+		AbstractComponentFactory<RegistrationService, IJxseProperties> {
 
 	public static final String S_DISCOVERY_SERVICE = "DiscoveryService";
 
 	private IPeerGroupProvider peerGroupContainer;
 
-	public RegistrationServiceFactory( IPeerGroupProvider peerGroupContainer, IJxsePropertySource<RegistrationProperties, IJxseDirectives> source ) {
+	public RegistrationServiceFactory( IPeerGroupProvider peerGroupContainer, IJxsePropertySource<IJxseProperties> source ) {
 		super( source );
 		this.peerGroupContainer = peerGroupContainer;
 	}
@@ -34,8 +34,8 @@ public class RegistrationServiceFactory extends
 	}
 
 	@Override
-	protected RegistrationService onCreateModule( IJxsePropertySource<RegistrationProperties, IJxseDirectives> properties) {
-		RegistrationService service = new RegistrationService( peerGroupContainer, (IJxseWritePropertySource<RegistrationProperties, IJxseDirectives>) properties );
+	protected RegistrationService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
+		RegistrationService service = new RegistrationService( peerGroupContainer, (IJxseWritePropertySource<IJxseProperties>) properties );
 		return service;
 	}
 }

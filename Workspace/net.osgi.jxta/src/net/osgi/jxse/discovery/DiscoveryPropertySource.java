@@ -4,13 +4,12 @@ import net.osgi.jxse.advertisement.AdvertisementPropertySource;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.AbstractPeerGroupProviderPropertySource;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.utils.StringStyler;
 
-public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySource<DiscoveryPropertySource.DiscoveryProperties>
+public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySource<IJxseProperties>
 {
 	public static final String S_NAME = "Name";
 	
@@ -42,36 +41,36 @@ public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySo
 		}
 	}
 
-	public DiscoveryPropertySource( IJxsePropertySource<?,IJxseDirectives> parent) {
+	public DiscoveryPropertySource( IJxsePropertySource<?> parent) {
 		this( Components.DISCOVERY_SERVICE.toString(), parent );
 	}
 
 
-	public DiscoveryPropertySource( String componentName, IJxsePropertySource<?,IJxseDirectives> parent) {
+	public DiscoveryPropertySource( String componentName, IJxsePropertySource<?> parent) {
 		super( componentName,parent );
 		this.fillDefaultValues();
 		this.fillDefaultValues(parent);
 	}
 
-	protected void fillDefaultValues( IJxsePropertySource<?,IJxseDirectives> parent) {
+	protected void fillDefaultValues( IJxsePropertySource<?> parent) {
 		if(!( parent instanceof AdvertisementPropertySource ))
 			return;
 		AdvertisementPropertySource aps = (AdvertisementPropertySource) parent;
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.ATTRIBUTE, S_NAME, false ));
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.WILDCARD, aps.getIdentifier() ));
+		this.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( DiscoveryProperties.ATTRIBUTE, S_NAME, false ));
+		this.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( DiscoveryProperties.WILDCARD, aps.getIdentifier() ));
 	}
 
 	protected void fillDefaultValues( ) {
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.MODE, DiscoveryMode.COUNT, false ));
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.COUNT, 20, false ));
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.COUNTER, 20, S_RUNTIME, false ));
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.WAIT_TIME, 20000, false ));
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.PEER_ID, null, false ));
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.ATTRIBUTE, null, false ));
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.WILDCARD, null, false ));
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.ADVERTISEMENT_TYPE, AdvertisementTypes.ADV, false ));
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.THRESHOLD, 1, false ));
-		this.setManagedProperty( new ManagedProperty<DiscoveryProperties, Object>( DiscoveryProperties.FOUND, 0, false ));
+		this.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( DiscoveryProperties.MODE, DiscoveryMode.COUNT, false ));
+		this.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( DiscoveryProperties.COUNT, 20, false ));
+		this.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( DiscoveryProperties.COUNTER, 20, S_RUNTIME, false ));
+		this.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( DiscoveryProperties.WAIT_TIME, 20000, false ));
+		this.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( DiscoveryProperties.PEER_ID, null, false ));
+		this.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( DiscoveryProperties.ATTRIBUTE, null, false ));
+		this.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( DiscoveryProperties.WILDCARD, null, false ));
+		this.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( DiscoveryProperties.ADVERTISEMENT_TYPE, AdvertisementTypes.ADV, false ));
+		this.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( DiscoveryProperties.THRESHOLD, 1, false ));
+		this.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( DiscoveryProperties.FOUND, 0, false ));
 	}
 
 	@Override
@@ -80,7 +79,7 @@ public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySo
 	}
 
 	@Override
-	public boolean validate(DiscoveryProperties id, Object value) {
+	public boolean validate(IJxseProperties id, Object value) {
 		// TODO Auto-generated method stub
 		return false;
 	}

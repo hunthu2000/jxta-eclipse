@@ -10,21 +10,8 @@
  *******************************************************************************/
 package net.osgi.jxse.component;
 
-import net.osgi.jxse.utils.StringStyler;
 
 public interface IComponentChangedListener {
 
-	public enum ServiceChange{
-		CHILD_ADDED,
-		CHILD_REMOVED,
-		STATUS_CHANGE,
-		COMPONENT_EVENT;
-
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString() );
-		}
-	}
-	
 	public void notifyServiceChanged( ComponentChangedEvent event );
 }

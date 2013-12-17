@@ -12,7 +12,7 @@ package net.osgi.jxse.component;
 
 import java.util.EventObject;
 
-import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
+import net.osgi.jxse.context.AbstractServiceContext.ServiceChange;
 
 public class ComponentChangedEvent extends EventObject {
 	private static final long serialVersionUID = 1L;
@@ -24,7 +24,7 @@ public class ComponentChangedEvent extends EventObject {
 		this.change = change;
 	}
 
-	protected ServiceChange getChange() {
+	public ServiceChange getChange() {
 		return change;
 	}
 }

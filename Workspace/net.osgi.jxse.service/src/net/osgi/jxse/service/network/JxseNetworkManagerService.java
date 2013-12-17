@@ -4,12 +4,11 @@ import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.component.DefaultJxseComponent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.network.NetworkManagerFactory;
-import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
-import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 
-public class JxseNetworkManagerService extends DefaultJxseComponent<NetworkManager, NetworkManagerProperties, IJxseDirectives>{
+public class JxseNetworkManagerService extends DefaultJxseComponent<NetworkManager, IJxseProperties>{
 
-	public JxseNetworkManagerService( IComponentFactory<?, ?, IJxseDirectives> parent, NetworkManagerFactory factory) {
+	public JxseNetworkManagerService( IComponentFactory<?, ?> parent, NetworkManagerFactory factory) {
 		super(factory );
 	}
 }

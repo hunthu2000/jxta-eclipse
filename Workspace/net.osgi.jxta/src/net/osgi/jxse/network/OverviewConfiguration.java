@@ -16,7 +16,9 @@ import java.net.URI;
 import net.jxta.peer.PeerID;
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.network.configurator.NetworkConfigurationFactory;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
 public class OverviewConfiguration {
 

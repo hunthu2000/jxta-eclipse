@@ -21,12 +21,10 @@ import net.jxta.pipe.PipeID;
 import net.jxta.pipe.PipeService;
 import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.properties.IJxseDirectives;
-import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdvertisement, net.osgi.jxse.advertisement.IPipeAdvertisementFactory.Properties, IJxseDirectives.Directives> implements IPipeAdvertisementFactory {
+public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdvertisement, net.osgi.jxse.advertisement.IPipeAdvertisementFactory.Properties> implements IPipeAdvertisementFactory {
 
 	public static final String S_PIPE_ADVERTISEMENT_SERVICE = "PipeAdvertisementService";
 
@@ -39,8 +37,7 @@ public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdver
 	}
 
 	protected void fillDefaultValues() {
-		IJxseWritePropertySource<Properties, IJxseDirectives.Directives> source =
-				(IJxseWritePropertySource<Properties, Directives>) super.getPropertySource();
+		IJxseWritePropertySource<Properties> source = (IJxseWritePropertySource<Properties>) super.getPropertySource();
 		try {
 			source.setProperty( Properties.SOCKET_ID, new URI( SOCKETIDSTR ));
 		} catch (URISyntaxException e) {
@@ -54,9 +51,9 @@ public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdver
 
 	@Override
 	protected PipeAdvertisement onCreateModule(
-			IJxsePropertySource<Properties, IJxseDirectives.Directives> properties) {
+			IJxsePropertySource<Properties> properties) {
 		PipeID socketID = null;
-		IJxsePropertySource<Properties, IJxseDirectives.Directives> source = super.getPropertySource();
+		IJxsePropertySource<Properties> source = super.getPropertySource();
 		try {
 			socketID = (PipeID) IDFactory.fromURI( (URI) source.getProperty( Properties.SOCKET_ID ));
 		} catch (URISyntaxException use) {

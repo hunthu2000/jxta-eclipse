@@ -18,13 +18,12 @@ import net.jxta.rendezvous.RendezvousListener;
 import net.osgi.jxse.component.AbstractJxseService;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.log.JxseLevel;
-import net.osgi.jxse.network.NetPeerGroupService;
-import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.netpeergroup.NetPeerGroupService;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.service.ServiceEventDispatcher;
 import net.osgi.jxse.service.network.IRendezVousComponent.RendezVousServiceProperties;
 
-public class RendezVousComponent extends AbstractJxseService<RendezVousService, IRendezVousComponent.RendezVousServiceProperties, IJxseDirectives.Directives> implements RendezvousListener, IRendezVousComponent{
+public class RendezVousComponent extends AbstractJxseService<RendezVousService, IRendezVousComponent.RendezVousServiceProperties> implements RendezvousListener, IRendezVousComponent{
 
 	public static final String S_RENDEZ_VOUS_SERVICE = "RendezVous Service";
 
@@ -99,7 +98,7 @@ public class RendezVousComponent extends AbstractJxseService<RendezVousService, 
 	}
 }
 
-class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousService, IRendezVousComponent.RendezVousServiceProperties, IJxseDirectives.Directives>{
+class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousService, IRendezVousComponent.RendezVousServiceProperties>{
 
 	private NetPeerGroupService parent;
 	
@@ -115,7 +114,7 @@ class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousServic
 
 	@Override
 	protected RendezVousService onCreateModule(
-			IJxsePropertySource<RendezVousServiceProperties, IJxseDirectives.Directives> properties) {
+			IJxsePropertySource<RendezVousServiceProperties> properties) {
 		// TODO Auto-generated method stub
 		return null;
 	}	

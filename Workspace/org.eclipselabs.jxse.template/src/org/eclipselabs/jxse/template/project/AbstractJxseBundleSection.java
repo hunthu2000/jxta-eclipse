@@ -21,7 +21,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import net.osgi.jxse.context.JxseContextPropertySource;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.service.xml.XmlComponentBuilder;
 import net.osgi.jxse.utils.io.IOUtils;
@@ -254,8 +253,7 @@ public abstract class AbstractJxseBundleSection extends OptionTemplateSection {
 	
 	
 	private void createComponent( IProgressMonitor monitor ){
-		XmlComponentBuilder<IJxseProperties, IJxseDirectives> builder = 
-				new XmlComponentBuilder<IJxseProperties, IJxseDirectives>();
+		XmlComponentBuilder<IJxseProperties> builder = 	new XmlComponentBuilder<IJxseProperties>();
 		InputStream source = null;
 		try{
 			source = new ByteArrayInputStream( builder.build( this.properties ).getBytes()); 

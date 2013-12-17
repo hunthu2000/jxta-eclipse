@@ -19,14 +19,14 @@ import net.jxta.peergroup.PeerGroupID;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jxse.properties.AbstractPreferences;
-import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 
-public class NetworkManagerPreferences<T extends IJxseDirectives> extends AbstractPreferences<NetworkManagerProperties, T> implements INetworkManagerPreferences<T>
+public class NetworkManagerPreferences extends AbstractPreferences<IJxseProperties> implements INetworkManagerPreferences
 {
-	public NetworkManagerPreferences( IJxseWritePropertySource<NetworkManagerProperties, T> source )
+	public NetworkManagerPreferences( IJxseWritePropertySource<IJxseProperties> source )
 	{
 		super( source );
 	}
@@ -39,7 +39,7 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> extends Abstra
 	 */
 	@Override
 	public ConfigMode getConfigMode( ){
-		IJxsePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		IJxsePropertySource<IJxseProperties> source = super.getSource();
 		return ( ConfigMode ) source.getProperty( NetworkManagerProperties.MODE );
 	}
 
@@ -48,7 +48,7 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> extends Abstra
 	 */
 	@Override
 	public void setConfigMode( ConfigMode mode ){
-		IJxseWritePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		IJxseWritePropertySource<IJxseProperties> source = super.getSource();
 		source.setProperty( NetworkManagerProperties.MODE, mode );
 	}
 
@@ -68,7 +68,7 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> extends Abstra
 	 */
 	@Override
 	public URI getHomeFolder( ) throws URISyntaxException{
-		IJxsePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		IJxsePropertySource<IJxseProperties> source = super.getSource();
 		return (URI)source.getProperty( NetworkManagerProperties.INSTANCE_HOME );
 	}
 
@@ -77,7 +77,7 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> extends Abstra
 	 */
 	@Override
 	public void setHomeFolder( URI homeFolder ){
-		IJxseWritePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		IJxseWritePropertySource<IJxseProperties> source = super.getSource();
 		source.setProperty( NetworkManagerProperties.INSTANCE_HOME, homeFolder );
 	}
 
@@ -91,7 +91,7 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> extends Abstra
 		if( split.length > 1 ){
 			  folder = System.getProperty( split[0] ) + split[1]; 
 		}
-		IJxseWritePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		IJxseWritePropertySource<IJxseProperties> source = super.getSource();
 		source.setProperty( NetworkManagerProperties.INSTANCE_HOME, folder );
 	}
 
@@ -103,10 +103,10 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> extends Abstra
 	 */
 	@Override
 	public PeerID getPeerID() throws URISyntaxException{
-		IJxseWritePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		IJxseWritePropertySource<IJxseProperties> source = super.getSource();
 		String name = source.getIdentifier();
 		PeerID pgId = IDFactory.newPeerID( PeerGroupID.defaultNetPeerGroupID, name.getBytes() );
-		ManagedProperty<NetworkManagerProperties, Object> property = source.getOrCreateManagedProperty( NetworkManagerProperties.PEER_ID, pgId.toString(), false );
+		ManagedProperty<IJxseProperties, Object> property = source.getOrCreateManagedProperty( NetworkManagerProperties.PEER_ID, pgId.toString(), false );
 		String str = (String) property.getValue();
 		URI uri = new URI( str );
 		return (PeerID) IDFactory.fromURI( uri );
@@ -117,7 +117,7 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> extends Abstra
 	 */
 	@Override
 	public void setPeerID( PeerID peerID ){
-		IJxseWritePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		IJxseWritePropertySource<IJxseProperties> source = super.getSource();
 		source.setProperty( NetworkManagerProperties.PEER_ID, peerID.toString() );
 	}
 
@@ -126,7 +126,7 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> extends Abstra
 	 */
 	@Override
 	public String getInstanceName(){
-		IJxsePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		IJxsePropertySource<IJxseProperties> source = super.getSource();
 		return (String) source.getProperty( NetworkManagerProperties.INSTANCE_NAME );
 	}
 
@@ -135,7 +135,7 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> extends Abstra
 	 */
 	@Override
 	public void setInstanceName( String name ){
-		IJxseWritePropertySource<NetworkManagerProperties, T> source = super.getSource();
+		IJxseWritePropertySource<IJxseProperties> source = super.getSource();
 		source.setProperty( NetworkManagerProperties.INSTANCE_NAME, name );
 	}
 	
@@ -146,11 +146,14 @@ public class NetworkManagerPreferences<T extends IJxseDirectives> extends Abstra
 	 * @return
 	 * @throws URISyntaxException
 	 */
-	public Object convertValue( NetworkManagerProperties id, String value ){
-		IJxseWritePropertySource<NetworkManagerProperties, T> source = super.getSource();
+	public Object convertValue( IJxseProperties id, String value ){
+		if( !( id instanceof NetworkManagerProperties ))
+			return null;
+		NetworkManagerProperties props = (NetworkManagerProperties) id;
+		IJxseWritePropertySource<IJxseProperties> source = super.getSource();
 		if( value == null )
 			return null;
-		switch( id ){
+		switch( props ){
 		case CONFIG_PERSISTENT:
 			return source.setProperty(id, Boolean.parseBoolean( value ));
 		case INSTANCE_NAME:

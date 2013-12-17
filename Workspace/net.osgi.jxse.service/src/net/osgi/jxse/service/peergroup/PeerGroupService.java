@@ -14,13 +14,12 @@ import net.jxta.peergroup.PeerGroup;
 import net.osgi.jxse.component.AbstractJxseService;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.peergroup.IPeerGroupProperties.PeerGroupProperties;
-import net.osgi.jxse.properties.IJxseDirectives;
 
-public class PeerGroupService extends AbstractJxseService<PeerGroup, PeerGroupProperties, IJxseDirectives>{
+public class PeerGroupService extends AbstractJxseService<PeerGroup, PeerGroupProperties>{
 
 	public static final String S_PEERGROUP = "Jxta PeerGroup";
 
-	public PeerGroupService(IComponentFactory<PeerGroup, PeerGroupProperties, IJxseDirectives> factory ) {
+	public PeerGroupService(IComponentFactory<PeerGroup, PeerGroupProperties> factory ) {
 		super( factory );
 	}
 

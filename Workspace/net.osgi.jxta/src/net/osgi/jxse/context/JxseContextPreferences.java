@@ -17,15 +17,15 @@ import net.jxta.id.IDFactory;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.properties.AbstractPreferences;
-import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.Utils;
 
-public class JxseContextPreferences extends AbstractPreferences<ContextProperties, IJxseDirectives.Directives>
+public class JxseContextPreferences extends AbstractPreferences<IJxseProperties>
 {
-	public JxseContextPreferences( IJxseWritePropertySource<ContextProperties, IJxseDirectives.Directives> source )
+	public JxseContextPreferences( JxseContextPropertySource source )
 	{
 		super( source );
 	}
@@ -35,7 +35,7 @@ public class JxseContextPreferences extends AbstractPreferences<ContextPropertie
 	 * @see net.osgi.jxta.preferences.IJxtaPreferences#getRendezVousAutostart()
 	 */
 	public boolean getRendezVousAutostart( ){
-		IJxsePropertySource<ContextProperties,IJxseDirectives.Directives> source = super.getSource();
+		IJxsePropertySource<IJxseProperties> source = super.getSource();
 		Object retval = source.getProperty( ContextProperties.RENDEZVOUZ_AUTOSTART );
 		if( retval == null )
 			return false;
@@ -43,7 +43,7 @@ public class JxseContextPreferences extends AbstractPreferences<ContextPropertie
 	}
 
 	public void setRendezVousAutostart( boolean autostart ){
-		IJxseWritePropertySource<ContextProperties,IJxseDirectives.Directives> source = super.getSource();
+		IJxseWritePropertySource<IJxseProperties> source = super.getSource();
 		source.setProperty( ContextProperties.RENDEZVOUZ_AUTOSTART, autostart );
 	}
 
@@ -51,12 +51,12 @@ public class JxseContextPreferences extends AbstractPreferences<ContextPropertie
 	 * @see net.osgi.jxta.preferences.IJxtaPreferences#getConfigMode()
 	 */
 	public ConfigMode getConfigMode( ){
-		IJxsePropertySource<ContextProperties,IJxseDirectives.Directives> source = super.getSource();
+		IJxsePropertySource<IJxseProperties> source = super.getSource();
 		return ConfigMode.valueOf( (String)source.getProperty( ContextProperties.CONFIG_MODE ));
 	}
 
 	public void setConfigMode( ConfigMode mode ){
-		IJxseWritePropertySource<ContextProperties,IJxseDirectives.Directives> source = super.getSource();
+		IJxseWritePropertySource<IJxseProperties> source = super.getSource();
 		source.setProperty( ContextProperties.CONFIG_MODE, mode );
 	}
 
@@ -68,23 +68,29 @@ public class JxseContextPreferences extends AbstractPreferences<ContextPropertie
 	 * @see net.osgi.jxta.preferences.IJxtaPreferences#getHomeFolder()
 	 */
 	public URI getHomeFolder( ) throws URISyntaxException{
-		IJxsePropertySource<ContextProperties,IJxseDirectives.Directives> source = super.getSource();
+		IJxsePropertySource<IJxseProperties> source = super.getSource();
 		return (URI) source.getProperty( ContextProperties.HOME_FOLDER );
 	}
 
 	public void setHomeFolder( URI homeFolder ){
-		IJxseWritePropertySource<ContextProperties,IJxseDirectives.Directives> source = super.getSource();
+		IJxseWritePropertySource<IJxseProperties> source = super.getSource();
 		source.setProperty( ContextProperties.HOME_FOLDER, homeFolder );
 	}
 
-	public Object convertValue( ContextProperties id, String value ){
-		if(( id == null ) || ( Utils.isNull(value )))
+	@Override
+	public Object convertValue( IJxseProperties props, String value ){
+		if(( props == null ) || ( Utils.isNull(value )))
 			return false;
+		if( !( props instanceof ContextProperties ))
+			return false;
+		ContextProperties id = (ContextProperties) props;
 		switch( id ){
 		case CONFIG_MODE:
 			return ConfigMode.valueOf( value );
 		case HOME_FOLDER:
-			return ProjectFolderUtils.getParsedUserDir(value, super.getSource().getBundleId());
+			JxseContextPropertySource source = (JxseContextPropertySource) super.getSource();
+			String bundleId = source.getBundleId();
+			return ProjectFolderUtils.getParsedUserDir(value, bundleId );
 		case PEER_ID:
 			URI uri = URI.create(value);
 			try {

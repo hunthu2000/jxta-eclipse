@@ -16,10 +16,9 @@ import java.util.Iterator;
 
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.DefaultPropertySource;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class DefaultJxseComponent<T extends Object, U extends Object, V extends IJxseDirectives> implements IJxseComponent<T,U>{
+public class DefaultJxseComponent<T extends Object, U extends Object> implements IJxseComponent<T,U>{
 
 	public static final String S_SERVICE = "Service";
 	
@@ -29,20 +28,20 @@ public class DefaultJxseComponent<T extends Object, U extends Object, V extends 
 			"The factory did not create the component. The flag setCompleted must be true, which is usually checked  with setAvailable.";
 	
 	private T module;
-	private IJxseWritePropertySource<U, V> properties;
+	private IJxseWritePropertySource<U> properties;
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected DefaultJxseComponent( String bundleId, String identifier, String componentName) {
 		this( new DefaultPropertySource( bundleId, identifier, componentName),null);
 	}
 
-	protected DefaultJxseComponent( IJxseWritePropertySource<U, V> properties, T module ) {
+	protected DefaultJxseComponent( IJxseWritePropertySource<U> properties, T module ) {
 		this.properties = properties;
 		this.module = module;
 	}
 
-	protected DefaultJxseComponent( IComponentFactory<T,U,V> factory ) {
-		this( (IJxseWritePropertySource<U, V>) factory.getPropertySource(), factory.getModule() );
+	protected DefaultJxseComponent( IComponentFactory<T,U> factory ) {
+		this( (IJxseWritePropertySource<U>) factory.getPropertySource(), factory.getModule() );
 	}
 
 	/**

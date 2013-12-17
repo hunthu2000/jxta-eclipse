@@ -31,7 +31,7 @@ public class ComponentBuilderEvent<T extends Object> extends EventObject {
 		return component;
 	}
 
-	public BuilderEvents getFactoryEvent() {
+	public BuilderEvents getBuilderEvent() {
 		return builderEvent;
 	}
 }

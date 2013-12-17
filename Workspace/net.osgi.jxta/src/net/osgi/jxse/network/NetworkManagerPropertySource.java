@@ -6,15 +6,14 @@ import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.StringStyler;
 
-public class NetworkManagerPropertySource extends AbstractJxseWritePropertySource<NetworkManagerPropertySource.NetworkManagerProperties>
-	implements IJxseWritePropertySource<NetworkManagerPropertySource.NetworkManagerProperties, IJxseDirectives>
+public class NetworkManagerPropertySource extends AbstractJxseWritePropertySource<IJxseProperties>
+	implements IJxseWritePropertySource<IJxseProperties>
 {
 
 	public enum NetworkManagerProperties implements IJxseProperties{
@@ -47,7 +46,7 @@ public class NetworkManagerPropertySource extends AbstractJxseWritePropertySourc
 		this.setDirective( Directives.CLEAR_CONFIG, source.getDirective( Directives.CLEAR_CONFIG ));
 		while( iterator.hasNext() ){
 			ContextProperties cp = (ContextProperties) iterator.next();
-			NetworkManagerProperties nmp = convertFrom( cp );
+			IJxseProperties nmp = convertFrom( cp );
 			if( nmp == null )
 				continue;
 			Object retval = source.getProperty( cp );
@@ -63,7 +62,7 @@ public class NetworkManagerPropertySource extends AbstractJxseWritePropertySourc
 	}
 
 	@Override
-	public Object getDefault(NetworkManagerProperties id) {
+	public Object getDefault( IJxseProperties id) {
 		JxseContextPropertySource source = (JxseContextPropertySource) super.getParent();
 		return source.getDefault( convertTo( id ));
 	}
@@ -82,7 +81,7 @@ public class NetworkManagerPropertySource extends AbstractJxseWritePropertySourc
 	}
 	
 	@Override
-	public boolean validate(NetworkManagerProperties id, Object value) {
+	public boolean validate( IJxseProperties id, Object value) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -93,7 +92,7 @@ public class NetworkManagerPropertySource extends AbstractJxseWritePropertySourc
 	 * @param context
 	 * @return
 	 */
-	public NetworkManagerProperties convertFrom( ContextProperties context ){
+	public IJxseProperties convertFrom( ContextProperties context ){
 		switch( context ){
 		case CONFIG_MODE:
 			return NetworkManagerProperties.MODE;
@@ -113,7 +112,10 @@ public class NetworkManagerPropertySource extends AbstractJxseWritePropertySourc
 	 * @param context
 	 * @return
 	 */
-	public ContextProperties convertTo( NetworkManagerProperties props ){
+	public ContextProperties convertTo( IJxseProperties id ){
+		if(!( id instanceof IJxseProperties ))
+			return null;
+		NetworkManagerProperties props = (NetworkManagerProperties) id;
 		switch( props ){
 		case MODE:
 			return ContextProperties.CONFIG_MODE;

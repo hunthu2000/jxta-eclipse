@@ -15,13 +15,13 @@ public class PropertySourceUtils {
 		if( source == null )
 			return null;
 		StringBuffer buffer = new StringBuffer();
-		for( IJxsePropertySource<Object,?> child: source.getChildren() )
+		for( IJxsePropertySource<Object> child: source.getChildren() )
 			printPropertySource( buffer, child, expand);
 		return buffer.toString();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static void printPropertySource( StringBuffer buffer, IJxsePropertySource<Object,?> source, boolean expand ){
+	private static void printPropertySource( StringBuffer buffer, IJxsePropertySource<Object> source, boolean expand ){
 		String offset = "";
 		for( int i=0; i<source.getDepth(); i++ )
 			offset += "\t";

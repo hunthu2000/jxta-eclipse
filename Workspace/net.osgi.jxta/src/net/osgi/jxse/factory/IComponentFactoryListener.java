@@ -10,9 +10,8 @@
  *******************************************************************************/
 package net.osgi.jxse.factory;
 
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 
-public interface IComponentFactoryListener<T extends Object, U extends IJxseProperties, V extends IJxseDirectives> {
-	public void notifyComponentCompleted( JxseComponentEvent<T,U,V> event );
+public interface IComponentFactoryListener<T extends Object, U extends IJxseProperties> {
+	public void notifyComponentCompleted( JxseComponentEvent<T,U> event );
 }

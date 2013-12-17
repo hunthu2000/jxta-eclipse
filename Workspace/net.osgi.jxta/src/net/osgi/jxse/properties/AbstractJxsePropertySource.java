@@ -17,16 +17,16 @@ import java.util.Iterator;
 import java.util.Map;
 
 
-public abstract class AbstractJxsePropertySource< T extends Object> implements IJxsePropertySource<T, IJxseDirectives> {
+public abstract class AbstractJxsePropertySource< T extends Object> implements IJxsePropertySource<T> {
 	
 	public static final String S_RUNTIME = "Runtime"; //used for runtime properties
 			
 	private Map<T,ManagedProperty<T,Object>> properties;
 	private Map<IJxseDirectives,Object> directives;
 	
-	private IJxsePropertySource<?,?> parent;
+	private IJxsePropertySource<?> parent;
 
-	private Collection<IJxsePropertySource<?,?>> children;
+	private Collection<IJxsePropertySource<?>> children;
 
 	private int depth = 0;
 	private String id_root;
@@ -44,23 +44,23 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 		this.id_root = this.bundleId;
 		this.directives.put( IJxseDirectives.Directives.NAME, identifier );
 		this.componentName = componentName;
-		children = new ArrayList<IJxsePropertySource<?,?>>();
+		children = new ArrayList<IJxsePropertySource<?>>();
 		this.depth = depth;
 		this.parent = null;
 	}
 
-	protected AbstractJxsePropertySource( IJxsePropertySource<?, IJxseDirectives> parent ) {
+	protected AbstractJxsePropertySource( IJxsePropertySource<?> parent ) {
 		this( parent.getBundleId(), parent.getIdentifier(), parent.getComponentName(), parent.getDepth() + 1 );
 		this.parent = parent;
 	}
 
-	protected AbstractJxsePropertySource( String componentName, IJxsePropertySource<?, IJxseDirectives> parent ) {
+	protected AbstractJxsePropertySource( String componentName, IJxsePropertySource<?> parent ) {
 		this( parent );
 		this.componentName = componentName;
 		this.directives.put( IJxseDirectives.Directives.CONTEXT, parent.getDirective(IJxseDirectives.Directives.CONTEXT) );
 	}
 
-	public IJxsePropertySource<?,?> getParent(){
+	public IJxsePropertySource<?> getParent(){
 		return this.parent;
 	}
 
@@ -161,16 +161,18 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 		return directives.keySet().iterator();
 	}
 
-	public boolean addChild( IJxsePropertySource<?, ?> child ){
+	@Override
+	public boolean addChild( IJxsePropertySource<?> child ){
 		return this.children.add( child );
 	}
 
-	public void removeChild( IJxsePropertySource<?, ?> child ){
+	@Override
+	public void removeChild( IJxsePropertySource<?> child ){
 		this.children.remove( child );
 	}
 
-	public IJxsePropertySource<?,?> getChild( String componentName ){
-		for( IJxsePropertySource<?,?> child: this.children ){
+	public IJxsePropertySource<?> getChild( String componentName ){
+		for( IJxsePropertySource<?> child: this.children ){
 			if( child.getComponentName().equals(componentName ))
 				return child;
 		}
@@ -178,7 +180,7 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 	}
 
 	@Override
-	public IJxsePropertySource<?, ?>[] getChildren() {
+	public IJxsePropertySource<?>[] getChildren() {
 		return this.children.toArray(new IJxsePropertySource[children.size()]);
 	}
 	
@@ -190,4 +192,13 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 	public String toString() {
 		return super.toString() + "[" + this.getComponentName() + "]";
 	}
+	
+	/**
+	 * If true, the service is autostarted
+	 * @return
+	 */
+	public static boolean isAutoStart( IJxsePropertySource<?> source ){
+		return Boolean.parseBoolean( (String) source.getDirective( IJxseDirectives.Directives.AUTO_START ));		
+	}
+
 }

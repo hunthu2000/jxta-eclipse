@@ -14,12 +14,11 @@ import net.jxta.peergroup.PeerGroup;
 import net.osgi.jxse.advertisement.JxseAdvertisementFactory;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class ChaupalAdvertisementFactory extends
-		AbstractComponentFactory<JxseAdvertisementService, IJxseProperties, IJxseDirectives> implements IPeerGroupProvider{
+		AbstractComponentFactory<JxseAdvertisementService, IJxseProperties> implements IPeerGroupProvider{
 
 	public static final String S_DISCOVERY_SERVICE = "JxseDiscoveryService";
 
@@ -31,7 +30,7 @@ public class ChaupalAdvertisementFactory extends
 	}
 
 	@Override
-	protected JxseAdvertisementService onCreateModule( IJxsePropertySource<IJxseProperties, IJxseDirectives> properties) {
+	protected JxseAdvertisementService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
 		factory.createModule();
 		JxseAdvertisementService ds = new JxseAdvertisementService ( factory );
 		return ds;

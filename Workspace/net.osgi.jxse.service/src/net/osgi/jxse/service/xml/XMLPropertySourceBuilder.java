@@ -24,43 +24,55 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import net.osgi.jxse.activator.JxseStartupPropertySource;
+import net.osgi.jxse.activator.StartupModule;
+import net.osgi.jxse.advertisement.AdvertisementModule;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource;
-import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementProperties;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.osgi.jxse.advertisement.PipeAdvertisementPropertySource;
+import net.osgi.jxse.builder.BuilderContainer;
 import net.osgi.jxse.builder.ICompositeBuilder;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.builder.ICompositeBuilderListener.BuilderEvents;
 import net.osgi.jxse.builder.IJxseModule;
+import net.osgi.jxse.context.ContextModule;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.context.JxseContextPreferences;
 import net.osgi.jxse.context.JxseContextPropertySource;
+import net.osgi.jxse.discovery.DiscoveryModule;
 import net.osgi.jxse.discovery.DiscoveryPreferences;
 import net.osgi.jxse.discovery.DiscoveryPropertySource;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory.Components;
+import net.osgi.jxse.netpeergroup.NetPeerGroupModule;
 import net.osgi.jxse.network.INetworkPreferences;
-import net.osgi.jxse.network.NetworkConfigurationFactory;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.network.NetworkManagerModule;
 import net.osgi.jxse.network.NetworkManagerPreferences;
 import net.osgi.jxse.network.NetworkManagerPropertySource;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
+import net.osgi.jxse.network.configurator.NetworkConfigurationFactory;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.network.configurator.NetworkConfiguratorModule;
 import net.osgi.jxse.network.OverviewPreferences;
-import net.osgi.jxse.properties.CategoryPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
-import net.osgi.jxse.properties.PartialPropertySource;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
+import net.osgi.jxse.partial.PartialModule;
+import net.osgi.jxse.partial.PartialPropertySource;
+import net.osgi.jxse.peergroup.PeerGroupModule;
 import net.osgi.jxse.peergroup.PeerGroupPropertySource;
+import net.osgi.jxse.pipe.PipeModule;
+import net.osgi.jxse.pipe.PipePropertySource;
+import net.osgi.jxse.registration.RegistrationModule;
 import net.osgi.jxse.registration.RegistrationPreferences;
 import net.osgi.jxse.registration.RegistrationPropertySource;
 import net.osgi.jxse.registration.RegistrationPropertySource.RegistrationProperties;
 import net.osgi.jxse.seeds.SeedInfo;
+import net.osgi.jxse.seeds.SeedListModule;
 import net.osgi.jxse.seeds.SeedListPropertySource;
 import net.osgi.jxse.service.xml.PreferenceStore.Persistence;
 import net.osgi.jxse.service.xml.PreferenceStore.SupportedAttributes;
@@ -69,7 +81,7 @@ import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.utils.io.IOUtils;
 
-public class XMLPropertySourceBuilder implements ICompositeBuilder<JxseContextPropertySource, IJxseProperties, IJxseDirectives> {
+public class XMLPropertySourceBuilder implements ICompositeBuilder<JxseContextPropertySource, IJxseProperties> {
 
 	protected static final String JAXP_SCHEMA_SOURCE =
 		    "http://java.sun.com/xml/jaxp/properties/schemaSource";
@@ -113,17 +125,19 @@ public class XMLPropertySourceBuilder implements ICompositeBuilder<JxseContextPr
 	private boolean completed, failed;
 	private JxseContextPropertySource properties;
 	private String location;
+	private BuilderContainer container;
 	
 	private Collection<ICompositeBuilderListener<Object>> listeners;
 		
 	private Logger logger = Logger.getLogger( XMLPropertySourceBuilder.class.getName() );
 	
-	public XMLPropertySourceBuilder( String pluginId, Class<?> clss) {
-		this( pluginId, clss, S_DEFAULT_LOCATION );
+	public XMLPropertySourceBuilder( String pluginId, Class<?> clss, BuilderContainer container ) {
+		this( pluginId, clss, S_DEFAULT_LOCATION, container );
 	}
 
-	protected XMLPropertySourceBuilder( String pluginId, Class<?> clss, String location ) {
+	protected XMLPropertySourceBuilder( String pluginId, Class<?> clss, String location, BuilderContainer container ) {
 		this.clss = clss;
+		this.container = container;
 		this.location = location;
 		this.completed = false;
 		this.failed = false;
@@ -209,7 +223,7 @@ public class XMLPropertySourceBuilder implements ICompositeBuilder<JxseContextPr
 			
 			//saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA); 
 			//saxParser.setProperty(JAXP_SCHEMA_SOURCE, new File(JXSE_XSD_SCHEMA)); 
-			JxtaHandler handler = new JxtaHandler( this );
+			JxtaHandler handler = new JxtaHandler( this, container );
 			handler.addListener(listener);
 			saxParser.parse( in, handler);
 			handler.removeListener(listener);
@@ -251,7 +265,7 @@ public class XMLPropertySourceBuilder implements ICompositeBuilder<JxseContextPr
 		return failed;
 	}
 
-	public IJxsePropertySource<IJxseProperties, IJxseDirectives> getPropertySource() {
+	public IJxsePropertySource<IJxseProperties> getPropertySource() {
 		return this.properties;
 	}
 	
@@ -271,17 +285,17 @@ class JxtaHandler extends DefaultHandler{
 	private IJxseWritePropertySource source;
 	private ManagedProperty<Object,Object> property;
 
-	private Collection<IJxseModule<?,?,?>> modules;
+	private BuilderContainer modules;
 	private boolean startupService;
 	
 	private Collection<ICompositeBuilderListener<Object>> listeners;
 	
 	private static Logger logger = Logger.getLogger( XMLPropertySourceBuilder.class.getName() );
 
-	public JxtaHandler( XMLPropertySourceBuilder owner ) {
+	public JxtaHandler( XMLPropertySourceBuilder owner, BuilderContainer modules ) {
 		this.owner = owner;
 		this.startupService = false;
-		modules = new ArrayList<IJxseModule<?,?,?>>();
+		this.modules = modules;
 		listeners = new ArrayList<ICompositeBuilderListener<Object>>();
 	}
 
@@ -308,61 +322,62 @@ class JxtaHandler extends DefaultHandler{
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void startElement(String uri, String localName, String qName, 
 			Attributes attributes) throws SAXException {
-
+		IJxseModule<?> module = null;
 		if( Components.isComponent( qName )){
 			current = Components.valueOf( StringStyler.styleToEnum( qName ));
-			IJxseWritePropertySource<?,?> newSource;
 			switch( current ){
 			case JXSE_CONTEXT:
-				newSource = (IJxseWritePropertySource) owner.getPropertySource();
+				module = new ContextModule((JxseContextPropertySource) owner.getPropertySource() );
 				break;
 			case STARTUP_SERVICE:
-				newSource = new JxseStartupPropertySource( (JxseContextPropertySource) source );
+				module = new StartupModule( owner.getPropertySource() );
 				this.startupService = true;
 				break;
 			case NETWORK_MANAGER:
-				newSource = new NetworkManagerPropertySource( (JxseContextPropertySource) source );
+				module = new NetworkManagerModule( owner.getPropertySource() );
 				break;
 			case NETWORK_CONFIGURATOR:
-				newSource = new NetworkConfigurationPropertySource((NetworkManagerPropertySource)source );
-				SeedListPropertySource slps = new SeedListPropertySource( newSource, owner.clss );
-				if( slps.hasSeeds() )
-					newSource.addChild(slps);
+				module = new NetworkConfiguratorModule(owner.clss, (NetworkManagerPropertySource)source );
 				break;
 			case SEED_LIST:
-				newSource = new SeedListPropertySource((NetworkConfigurationPropertySource)source );
+				module = new SeedListModule( source );
 				break;
 			case TCP:
 			case HTTP:
 			case HTTP2:
 			case MULTICAST:
 			case SECURITY:
-				newSource = new PartialPropertySource( qName, source );
+				module = (IJxseModule<?>) new PartialModule( qName, source );
 				break;
+			case NET_PEERGROUP_SERVICE:
+				module = new NetPeerGroupModule();
+				break;			
 			case ADVERTISEMENT_SERVICE:
-				AdvertisementTypes type = this.getAdvertisementType(attributes, qName, source );
-				//this.modules.add( new AdvertisementModule( qName, type, source ));
-				newSource = this.getAdvertisementPropertysource(attributes, qName, source );
+				AdvertisementTypes type = AdvertisementModule.getAdvertisementType(attributes, qName, source );
+				module = new AdvertisementModule( type, source );
+				break;			
+			case PIPE_SERVICE:
+				module = new PipeModule( source );
 				break;			
 			case REGISTRATION_SERVICE:
-				newSource = new RegistrationPropertySource( qName, source );
+				module = new RegistrationModule( source );
 				break;
 			case DISCOVERY_SERVICE:
-				newSource = new DiscoveryPropertySource( qName, source );
+				module = new DiscoveryModule( source );
 				break;			
 			case PEERGROUP_SERVICE:
-				newSource = new PeerGroupPropertySource( qName, source );
-				break;			
-			case EXTENDED:
-				newSource = new PartialPropertySource( qName, source );
+				module = new PeerGroupModule();
 				break;			
 			default:
-				newSource = new CategoryPropertySource( qName, source );
 				break;
 			}
-			if( source != null )
-				source.addChild( newSource );
-			source = newSource;
+			if( module != null ){
+				modules.addModule(module);
+				module.createPropertySource(owner.getPropertySource());
+				if( source != null )
+					source.addChild( module.getPropertySource() );
+				source = (IJxseWritePropertySource) module.getPropertySource();
+			}
 			
 			for( int i=0; i<attributes.getLength(); i++  ){
 				if( !Utils.isNull( attributes.getLocalName(i))){
@@ -375,41 +390,6 @@ class JxtaHandler extends DefaultHandler{
 		}
 		logger.info(" Group value: " + qName );
 	}
-
-	/**
-	 * Get the correct advertisement type
-	 * @param attrs
-	 * @param qName
-	 * @param parent
-	 * @return
-	 */
-	protected AdvertisementTypes getAdvertisementType( Attributes attrs, String qName ,IJxsePropertySource<IJxseProperties, IJxseDirectives> parent ){
-		if(( attrs == null ) || ( attrs.getLength() == 0))
-				return AdvertisementTypes.ADV;
-		String type = attrs.getValue(AdvertisementDirectives.TYPE.toString().toLowerCase() );
-		if( Utils.isNull(type))
-			return AdvertisementTypes.ADV;
-		return AdvertisementTypes.valueOf( StringStyler.styleToEnum( type ));
-	}
-
-	/**
-	 * Get the correct property source
-	 * @param attrs
-	 * @param qName
-	 * @param parent
-	 * @return
-	 */
-	protected AdvertisementPropertySource getAdvertisementPropertysource( Attributes attrs, String qName ,IJxsePropertySource<IJxseProperties, IJxseDirectives> parent ){
-		AdvertisementPropertySource source = new AdvertisementPropertySource( qName, parent );
-		AdvertisementTypes adv_type = this.getAdvertisementType(attrs, qName, parent);
-		switch( adv_type ){
-		case PIPE:
-			return new PipeAdvertisementPropertySource( source );
-		default:
-			return source;
-		}
-	}
-	
 
 	/**
 	 * Create the property
@@ -439,10 +419,19 @@ class JxtaHandler extends DefaultHandler{
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 
-		if( Components.isComponent( qName )){
-			this.notifyListeners( new ComponentBuilderEvent( this, this.source, BuilderEvents.PROPERTY_SOURCE_CREATED ));
-			this.source = (IJxseWritePropertySource) source.getParent();
+		if( !Components.isComponent( qName ))
+			return;
+		Components comp = Components.valueOf( StringStyler.styleToEnum( qName ));
+		switch( comp ){
+		case JXSE_CONTEXT:
+				if( Boolean.valueOf(( String ) source.getDirective( Directives.AUTO_START )))
+					source.addChild( new JxseStartupPropertySource( (JxseContextPropertySource) source ));
+		default:
+			break;
+
 		}
+		this.notifyListeners( new ComponentBuilderEvent( this, this.source, BuilderEvents.PROPERTY_SOURCE_CREATED ));
+		this.source = (IJxseWritePropertySource) source.getParent();
 		this.property = null;
 	}
 
@@ -468,12 +457,12 @@ class JxtaHandler extends DefaultHandler{
 			return;
 		
 		if( source instanceof JxseContextPropertySource ){
-			JxseContextPreferences preferences = new JxseContextPreferences( source );
+			JxseContextPreferences preferences = new JxseContextPreferences( (JxseContextPropertySource) source );
 			preferences.setPropertyFromString((ContextProperties) property.getKey(), value);
 			return;
 		}
 		if( source instanceof NetworkManagerPropertySource ){
-			NetworkManagerPreferences<IJxseDirectives> preferences = new NetworkManagerPreferences<IJxseDirectives>( source );
+			NetworkManagerPreferences preferences = new NetworkManagerPreferences( source );
 			preferences.setPropertyFromString( (NetworkManagerProperties) property.getKey(), value);
 			return;
 		}
@@ -483,7 +472,7 @@ class JxtaHandler extends DefaultHandler{
 			return;
 		}
 		if( source instanceof DiscoveryPropertySource ){
-			DiscoveryPreferences<IJxseDirectives> preferences = new DiscoveryPreferences<IJxseDirectives>( source );
+			DiscoveryPreferences preferences = new DiscoveryPreferences( source );
 			preferences.setPropertyFromString(( DiscoveryProperties) property.getKey(), value);
 			return;
 		}
@@ -492,26 +481,31 @@ class JxtaHandler extends DefaultHandler{
 			aps.setProperty( (AdvertisementProperties) property.getKey(), value);
 			return;
 		}
+		if( source instanceof PipePropertySource ){
+			PipePropertySource pps = ( PipePropertySource )source ;
+			//pps.setPropertyFromString( (PipeProperties) property.getKey(), value);
+			return;
+		}
 		if( source instanceof PeerGroupPropertySource ){
 			//DiscoveryPreferences<IJxseDirectives> preferences = new DiscoveryPreferences<IJxseDirectives>( source );
 			//preferences.setPropertyFromString(( DiscoveryProperties) property.getKey(), value);
 			return;
 		}
 		if( source instanceof RegistrationPropertySource ){
-			RegistrationPreferences<IJxseDirectives> preferences = new RegistrationPreferences<IJxseDirectives>( source );
+			RegistrationPreferences preferences = new RegistrationPreferences( source );
 			preferences.setPropertyFromString(( RegistrationProperties) property.getKey(), value);
 			return;
 		}
 		if( source instanceof PartialPropertySource ){
-			INetworkPreferences preferences = NetworkConfigurationFactory.getPreferences((PartialPropertySource<NetworkConfiguratorProperties, IJxseDirectives>) source);
+			INetworkPreferences preferences = NetworkConfigurationFactory.getPreferences((PartialPropertySource) source);
 			if( preferences != null )
 				preferences.setPropertyFromString( (NetworkConfiguratorProperties) property.getKey(), value);
 			return;
 		}
 		if( source instanceof SeedListPropertySource ){
-			SeedListPropertySource<?> slps = (SeedListPropertySource<?>) source;
-			SeedInfo seedInfo = new SeedInfo((String) property.getKey(), ( String )value );
-			slps.setProperty((String) property.getKey(), seedInfo );
+			SeedListPropertySource slps = (SeedListPropertySource) source;
+			SeedInfo seedInfo = new SeedInfo((( IJxseProperties )property.getKey()).name(), ( String )value );
+			slps.setProperty( (IJxseProperties) property.getKey(), seedInfo );
 			return;
 		}
 		this.property.setValue(value);

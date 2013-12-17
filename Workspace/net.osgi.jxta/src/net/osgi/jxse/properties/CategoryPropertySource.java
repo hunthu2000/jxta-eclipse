@@ -12,7 +12,7 @@ package net.osgi.jxse.properties;
 
 import net.osgi.jxse.utils.Utils;
 
-public class CategoryPropertySource extends AbstractJxseWritePropertySource<String> implements IJxseWritePropertySource<String,IJxseDirectives> {
+public class CategoryPropertySource extends AbstractJxseWritePropertySource<String> implements IJxseWritePropertySource<String> {
 
 	public static final String S_DOT_REGEX = "[.]";
 	
@@ -25,7 +25,7 @@ public class CategoryPropertySource extends AbstractJxseWritePropertySource<Stri
 		this.id = identifier + "." + category;
 	}
 
-	public CategoryPropertySource( String cat, IJxsePropertySource<?, IJxseDirectives> parent ) {
+	public CategoryPropertySource( String cat, IJxsePropertySource<?> parent ) {
 		super( cat, parent );
 		String[] split = cat.split("[.]");
 		this.category = split[0];
@@ -48,7 +48,7 @@ public class CategoryPropertySource extends AbstractJxseWritePropertySource<Stri
 	}
 	
 	@Override
-	public boolean addChild(IJxsePropertySource<?, ?> child) {
+	public boolean addChild(IJxsePropertySource<?> child) {
 		return super.addChild(child);
 	}
 
@@ -73,7 +73,7 @@ public class CategoryPropertySource extends AbstractJxseWritePropertySource<Stri
 			return cat.trim();
 	}	
 	
-	public static IJxsePropertySource<?, IJxseDirectives> createCategoryPropertySource( String category,  IJxseWritePropertySource<String, IJxseDirectives> root ){
+	public static IJxsePropertySource<?> createCategoryPropertySource( String category,  IJxseWritePropertySource<String> root ){
 		String[] split = breakCategory(category);
 		if( split == null )
 			return null;
@@ -83,14 +83,14 @@ public class CategoryPropertySource extends AbstractJxseWritePropertySource<Stri
 		return child;
 	}
 	
-	public static CategoryPropertySource findCategoryPropertySource( String category, IJxsePropertySource<?,?> source ){
+	public static CategoryPropertySource findCategoryPropertySource( String category, IJxsePropertySource<?> source ){
 		String[] split = breakCategory( category);
 		if( split == null )
 			return null;
-		for( IJxsePropertySource<?, ?> ps: source.getChildren() ){
+		for( IJxsePropertySource<?> ps: source.getChildren() ){
 			String name = ps.getComponentName();
 			if( name.equals(split[0])){
-				CategoryPropertySource child = findCategoryPropertySource( split[2],(IJxsePropertySource<?, ?>)ps);
+				CategoryPropertySource child = findCategoryPropertySource( split[2],(IJxsePropertySource<?>)ps);
 				if( child == null )
 					return (CategoryPropertySource) ps;
 			}

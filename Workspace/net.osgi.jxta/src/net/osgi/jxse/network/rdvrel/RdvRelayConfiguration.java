@@ -8,15 +8,15 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.network.seed;
+package net.osgi.jxse.network.rdvrel;
 
 import java.util.List;
 import java.util.Set;
 
 import net.jxta.platform.NetworkConfigurator;
-import net.osgi.jxse.network.NetworkConfigurationFactory;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.network.configurator.NetworkConfigurationFactory;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
 public class RdvRelayConfiguration {
 

@@ -5,9 +5,8 @@ import java.net.URISyntaxException;
 
 import net.jxta.peer.PeerID;
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.osgi.jxse.properties.IJxseDirectives;
 
-public interface INetworkManagerPreferences<T extends IJxseDirectives> {
+public interface INetworkManagerPreferences {
 
 	/* (non-Javadoc)
 	 * @see net.osgi.jxta.preferences.IJxtaPreferences#getConfigMode()

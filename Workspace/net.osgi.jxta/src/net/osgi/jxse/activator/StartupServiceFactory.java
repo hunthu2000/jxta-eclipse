@@ -11,24 +11,32 @@
 package net.osgi.jxse.activator;
 
 import net.osgi.jxse.builder.ComponentNode;
+import net.osgi.jxse.builder.ICompositeBuilderListener;
+import net.osgi.jxse.context.IJxseServiceContext;
 import net.osgi.jxse.context.JxseServiceContext;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
-public class StartupServiceFactory extends AbstractComponentFactory<JxseStartupService, IJxseProperties, IJxseDirectives>
+public class StartupServiceFactory extends AbstractComponentFactory<JxseStartupService, IJxseProperties> implements ICompositeBuilderListener<ComponentNode<?,IJxseProperties>>
 {
 	
-	private ComponentNode<JxseServiceContext, IJxseProperties, IJxseDirectives> root;
+	private ComponentNode<JxseServiceContext, IJxseProperties> root;
 	
-	public StartupServiceFactory( ComponentNode<JxseServiceContext, IJxseProperties, IJxseDirectives> root, JxseStartupPropertySource source) {
+	public StartupServiceFactory( JxseStartupPropertySource source) {
 		super(source );
-		this.root = root;
 	}
 	
 	@Override
-	protected JxseStartupService onCreateModule( IJxsePropertySource<IJxseProperties, IJxseDirectives> properties) {
+	protected JxseStartupService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
 		return new JxseStartupService( root, (JxseStartupPropertySource) super.getPropertySource() );
+	}
+
+	@Override
+	public void notifyCreated(
+			ComponentBuilderEvent<ComponentNode<?, IJxseProperties>> event) {
+		if(!( event.getComponent() instanceof IJxseServiceContext ))
+			return;
 	}
 }

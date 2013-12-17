@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.network;
+package net.osgi.jxse.network.configurator;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,34 +20,38 @@ import java.util.logging.Logger;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.network.INetworkManagerProvider;
+import net.osgi.jxse.network.INetworkPreferences;
+import net.osgi.jxse.network.OverviewPreferences;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.network.http.Http2Preferences;
 import net.osgi.jxse.network.http.HttpPreferences;
 import net.osgi.jxse.network.multicast.MulticastPreferences;
 import net.osgi.jxse.network.security.SecurityPreferences;
 import net.osgi.jxse.network.tcp.TcpPreferences;
+import net.osgi.jxse.partial.PartialPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
-import net.osgi.jxse.properties.PartialPropertySource;
 import net.osgi.jxse.seeds.ISeedListFactory;
 import net.osgi.jxse.seeds.SeedListFactory;
 import net.osgi.jxse.seeds.SeedListPropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
 public class NetworkConfigurationFactory extends
-		AbstractComponentFactory<NetworkConfigurator, NetworkConfiguratorProperties, IJxseDirectives> {
+		AbstractComponentFactory<NetworkConfigurator, IJxseProperties> {
 
 	public static final String S_NETWORK_CONFIGURATION_SERVICE = "NetworkConfigurationService";
 
 	private Collection<ISeedListFactory> seedLists;
 	
-	private NetworkManagerFactory nmFactory;
+	private INetworkManagerProvider provider;
 
-	public NetworkConfigurationFactory( NetworkManagerFactory nmFactory, NetworkConfigurationPropertySource source ) {
+	public NetworkConfigurationFactory( INetworkManagerProvider provider, NetworkConfigurationPropertySource source ) {
 		super( source );
-		this.nmFactory = nmFactory;
+		this.provider = provider;
 		this.seedLists = new ArrayList<ISeedListFactory>();
 	}
 
@@ -60,10 +64,10 @@ public class NetworkConfigurationFactory extends
 	}
 
 	@Override
-	protected NetworkConfigurator onCreateModule( IJxsePropertySource<NetworkConfiguratorProperties, IJxseDirectives> properties) {
+	protected NetworkConfigurator onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
 		NetworkConfigurator configurator = null;
 		try {
-			configurator = nmFactory.getModule().getConfigurator();
+			configurator = provider.getNetworkManager().getConfigurator();
 			URI home = (URI) super.getPropertySource().getProperty( NetworkConfiguratorProperties.HOME );
 			if( home != null )
 				configurator.setHome( new File( home ));
@@ -88,8 +92,8 @@ public class NetworkConfigurationFactory extends
 		this.fillPartialConfigurator( configurator, super.getPropertySource());
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void fillPartialConfigurator( NetworkConfigurator configurator ,IJxsePropertySource<?,IJxseDirectives> source ) throws IOException{
+	@SuppressWarnings({ "unchecked" })
+	private void fillPartialConfigurator( NetworkConfigurator configurator ,IJxsePropertySource<?> source ) throws IOException{
 		INetworkPreferences preferences;
 		if( source instanceof PartialPropertySource ){
 			preferences = getPreferences(( PartialPropertySource )source);
@@ -100,10 +104,10 @@ public class NetworkConfigurationFactory extends
 			this.seedLists.add( new SeedListFactory((SeedListPropertySource) source ));
 			return;
 		}
-		preferences = new OverviewPreferences( (IJxseWritePropertySource<NetworkConfiguratorProperties, IJxseDirectives>) source );
+		preferences = new OverviewPreferences( (IJxseWritePropertySource<NetworkConfiguratorProperties>) source );
 		preferences.fillConfigurator(configurator);
-		for( IJxsePropertySource<?, ?> child: super.getPropertySource().getChildren() )
-			this.fillPartialConfigurator( configurator, (IJxsePropertySource<NetworkConfiguratorProperties, IJxseDirectives>) child);
+		for( IJxsePropertySource<?> child: super.getPropertySource().getChildren() )
+			this.fillPartialConfigurator( configurator, (IJxsePropertySource<NetworkConfiguratorProperties>) child);
 	}
 
 	@Override
@@ -125,7 +129,7 @@ public class NetworkConfigurationFactory extends
 	 * @param source
 	 * @return
 	 */
-	public static INetworkPreferences getPreferences( PartialPropertySource<NetworkConfiguratorProperties,IJxseDirectives> source ){
+	public static INetworkPreferences getPreferences( PartialPropertySource source ){
 		Components component = Components.valueOf( StringStyler.styleToEnum( source.getComponentName()));
 		switch( component ){
 		case TCP:

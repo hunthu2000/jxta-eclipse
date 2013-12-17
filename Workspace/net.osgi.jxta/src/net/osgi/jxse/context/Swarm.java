@@ -21,6 +21,18 @@ public class Swarm {
 		return this.peergroups.remove( peergroup );
 	}
 	
+	public PeerGroup getPeerGroup( String peergroupName ){
+		for( PeerGroup peergroup: this.peergroups ){
+			if( peergroup.getPeerGroupName().equals( peergroupName ))
+				return peergroup;
+		}
+		return null;
+	}
+	
+	public PeerGroup[] getPeerGroups(){
+		return this.peergroups.toArray( new PeerGroup[1] );
+	}
+	
 	public int size(){
 		return this.peergroups.size();
 	}

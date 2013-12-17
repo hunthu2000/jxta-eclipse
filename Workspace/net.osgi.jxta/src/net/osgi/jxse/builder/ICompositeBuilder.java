@@ -10,9 +10,7 @@
  *******************************************************************************/
 package net.osgi.jxse.builder;
 
-import net.osgi.jxse.properties.IJxseDirectives;
-
-public interface ICompositeBuilder<T extends Object, U extends Object, V extends IJxseDirectives> {
+public interface ICompositeBuilder<T extends Object, U extends Object> {
 
 	public abstract void addListener(ICompositeBuilderListener<?> listener);
 

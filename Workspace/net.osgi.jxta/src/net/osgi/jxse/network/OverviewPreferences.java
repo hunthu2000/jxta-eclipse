@@ -20,17 +20,16 @@ import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.properties.AbstractPreferences;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 
-public class OverviewPreferences extends AbstractPreferences<NetworkConfiguratorProperties, IJxseDirectives> implements INetworkPreferences{
+public class OverviewPreferences extends AbstractPreferences<NetworkConfiguratorProperties> implements INetworkPreferences{
 
 	public static final String S_OVERVIEW = "Overview";
 
-	public OverviewPreferences( IJxseWritePropertySource<NetworkConfiguratorProperties, IJxseDirectives> source ) {
+	public OverviewPreferences( IJxseWritePropertySource<NetworkConfiguratorProperties> source ) {
 		super( source );
 	}
 

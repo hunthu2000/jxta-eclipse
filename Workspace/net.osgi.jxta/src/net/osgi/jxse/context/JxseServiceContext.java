@@ -13,13 +13,12 @@ package net.osgi.jxse.context;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.context.AbstractServiceContext;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
-public class JxseServiceContext extends AbstractServiceContext<IJxseProperties,  IJxseDirectives>{
+public class JxseServiceContext extends AbstractServiceContext<IJxseProperties>{
 
-	public JxseServiceContext( IJxsePropertySource<IJxseProperties, IJxseDirectives> iJxsePropertySource ) {
+	public JxseServiceContext( IJxsePropertySource<IJxseProperties> iJxsePropertySource ) {
 		super( iJxsePropertySource );
 	}
 

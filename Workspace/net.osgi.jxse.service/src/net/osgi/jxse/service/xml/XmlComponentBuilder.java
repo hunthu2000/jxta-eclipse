@@ -4,15 +4,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import net.osgi.jxse.partial.PartialPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
-import net.osgi.jxse.properties.PartialPropertySource;
 import net.osgi.jxse.properties.PropertySourceUtils;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
-public class XmlComponentBuilder<T extends Object, U extends IJxseDirectives> {
+public class XmlComponentBuilder<T extends Object> {
 
 	public static final String DOC_HEAD = "<?xml version='1.0' encoding='UTF-8'?>\n";
 	public static final String DOC_PROPERTY = "<properties>\n";
@@ -24,11 +25,11 @@ public class XmlComponentBuilder<T extends Object, U extends IJxseDirectives> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public final String build( IJxsePropertySource<T,U> source ){
+	public final String build( IJxsePropertySource<T> source ){
 		System.err.println( PropertySourceUtils.printPropertySource( source, true ));
 		StringBuffer buffer = new StringBuffer();
 		buffer.append( DOC_HEAD);
-		buildSource( 0, buffer, ( IJxsePropertySource<Enum<?>,IJxseDirectives> )source );
+		buildSource( 0, buffer, ( IJxsePropertySource<IJxseProperties> )source );
 		return buffer.toString();
 	}
 	
@@ -37,16 +38,16 @@ public class XmlComponentBuilder<T extends Object, U extends IJxseDirectives> {
 	 * @param source
 	 */
 	@SuppressWarnings("unchecked")
-	protected static void buildSource( int offset, StringBuffer buffer, IJxsePropertySource<Enum<?>,IJxseDirectives> source ){
-		IJxsePropertySource<Enum<?>,IJxseDirectives> expand = PartialPropertySource.expand(source );
+	protected static void buildSource( int offset, StringBuffer buffer, IJxsePropertySource<IJxseProperties> source ){
+		IJxsePropertySource<IJxseProperties> expand = PartialPropertySource.expand(source );
 		String component = StringStyler.xmlStyleString( expand.getComponentName());
 		buffer.append( createComponent( offset, component, expand ));
 		offset +=2;
 		String str = createProperties( offset, expand );
 		if( !Utils.isNull( str ))
 			buffer.append(str );
-		for( IJxsePropertySource<?,?> child: expand.getChildren()){
-			buildSource( offset, buffer, ( IJxsePropertySource<Enum<?>,IJxseDirectives>)child );
+		for( IJxsePropertySource<?> child: expand.getChildren()){
+			buildSource( offset, buffer, ( IJxsePropertySource<IJxseProperties>)child );
 		}
 		offset-=2;
 		buffer.append( insertOffset( offset ));
@@ -59,7 +60,7 @@ public class XmlComponentBuilder<T extends Object, U extends IJxseDirectives> {
 	 * @param source
 	 * @return
 	 */
-	private static final String createComponent( int offset, String component, IJxsePropertySource<Enum<?>,IJxseDirectives> source ){
+	private static final String createComponent( int offset, String component, IJxsePropertySource<IJxseProperties> source ){
 		StringBuffer buffer = new StringBuffer();
 		Map<String,String> directives = new HashMap<String, String>();
 		if(!Utils.isNull( source.getId() ))
@@ -96,8 +97,8 @@ public class XmlComponentBuilder<T extends Object, U extends IJxseDirectives> {
 				properties = true;
 			}
 		}
-		for( IJxsePropertySource<?,?> child: source.getChildren()){
-			buildSource( offset, buffer,  ( IJxsePropertySource<Enum<?>,IJxseDirectives>)child );
+		for( IJxsePropertySource<?> child: source.getChildren()){
+			buildSource( offset, buffer,  ( IJxsePropertySource<IJxseProperties>)child );
 		}
 		if( !properties )
 			return null;

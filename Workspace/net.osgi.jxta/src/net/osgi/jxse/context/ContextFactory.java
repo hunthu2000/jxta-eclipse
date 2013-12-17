@@ -12,22 +12,33 @@ package net.osgi.jxse.context;
 
 import net.jxta.peergroup.PeerGroup;
 import net.osgi.jxse.factory.AbstractComponentFactory;
+import net.osgi.jxse.netpeergroup.NetPeerGroupPropertySource;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
-public class ContextFactory extends AbstractComponentFactory<JxseServiceContext, IJxseProperties, IJxseDirectives>
+public class ContextFactory extends AbstractComponentFactory<JxseServiceContext, IJxseProperties>
 	implements IPeerGroupProvider
 {
 	private JxseServiceContext context;
 	
 	public ContextFactory(JxseContextPropertySource source) {
 		super(source );
+		this.extendPropertySource( source );
+	}
+
+	protected void extendPropertySource( JxseContextPropertySource propertySource ){
+		IJxsePropertySource<?> source = propertySource.getChild( Components.NET_PEERGROUP_SERVICE.toString() );
+		if( source != null )
+			return;
+		if( JxseContextPropertySource.isAutoStart( propertySource )){
+			propertySource.addChild( new NetPeerGroupPropertySource( propertySource ));
+		}
 	}
 	
+
 	@Override
-	protected JxseServiceContext onCreateModule( IJxsePropertySource<IJxseProperties, IJxseDirectives> properties) {
+	protected JxseServiceContext onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
 		this.context = new JxseServiceContext( super.getPropertySource() );
 		return context;
 	}
@@ -39,6 +50,8 @@ public class ContextFactory extends AbstractComponentFactory<JxseServiceContext,
 
 	@Override
 	public PeerGroup getPeerGroup() {
+		if( context.getModule() == null )
+			return null;
 		return context.getModule().getNetPeerGroup();
 	}
 }

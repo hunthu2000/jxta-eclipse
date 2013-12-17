@@ -3,12 +3,11 @@ package net.osgi.jxse.peergroup;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.peergroup.PeerGroupPropertySource;
 import net.osgi.jxse.properties.AbstractPeerGroupProviderPropertySource;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public class PeerGroupPropertySource extends AbstractPeerGroupProviderPropertySource<PeerGroupPropertySource.PeerGroupProperties>
+public class PeerGroupPropertySource extends AbstractPeerGroupProviderPropertySource<IJxseProperties>
 {
 	public enum PeerGroupProperties implements IJxseProperties{
 		DISCOVERY_MODE,
@@ -24,12 +23,12 @@ public class PeerGroupPropertySource extends AbstractPeerGroupProviderPropertySo
 		}
 	}
 	
-	public PeerGroupPropertySource( IJxsePropertySource<?,IJxseDirectives> parent) {
+	public PeerGroupPropertySource( IJxsePropertySource<?> parent) {
 		this( Components.PEERGROUP_SERVICE.toString(), parent );
 	}
 
 
-	public PeerGroupPropertySource( String componentName, IJxsePropertySource<?,IJxseDirectives> parent) {
+	public PeerGroupPropertySource( String componentName, IJxsePropertySource<?> parent) {
 		super( componentName,parent );
 		this.fillDefaultValues();
 	}
@@ -50,7 +49,7 @@ public class PeerGroupPropertySource extends AbstractPeerGroupProviderPropertySo
 
 
 	@Override
-	public boolean validate(PeerGroupProperties id, Object value) {
+	public boolean validate(IJxseProperties id, Object value) {
 		// TODO Auto-generated method stub
 		return false;
 	}

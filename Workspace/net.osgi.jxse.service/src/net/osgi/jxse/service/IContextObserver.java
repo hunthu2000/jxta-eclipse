@@ -12,18 +12,17 @@ package net.osgi.jxse.service;
 
 import net.osgi.jxse.context.IJxseServiceContext;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 
-public interface IContextObserver<T extends Object, U extends IJxseProperties, V extends IJxseDirectives> {
+public interface IContextObserver<T extends Object, U extends IJxseProperties> {
 
-	public void buildStarted( IJxseServiceContext<T,U,V> context );
+	public void buildStarted( IJxseServiceContext<T,U> context );
 	
 	/**
 	 * Observes the creation of a factory in a context 
 	 * @param factory
 	 */
-	public void factoryCreated( IComponentFactory<?,?,?> factory );
+	public void factoryCreated( IComponentFactory<?,?> factory );
 
 	/**
 	 * Observes the creation of a component in a context 
@@ -31,6 +30,6 @@ public interface IContextObserver<T extends Object, U extends IJxseProperties, V
 	 */
 	public void componentCreated( Object component );
 
-	public void buildCompleted( IJxseServiceContext<T,U,V> context );
+	public void buildCompleted( IJxseServiceContext<T,U> context );
 
 }

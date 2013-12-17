@@ -47,6 +47,14 @@ public class JxseContextPropertySource extends AbstractJxseWritePropertySource<I
 				new RangeValidator( ContextProperties.PORT, 65535 ), false);
 	}
 
+	/**
+	 * Get the bundle id
+	 * @return
+	 */
+	public String getBundleId(){
+		return (String) super.getProperty( ContextProperties.BUNDLE_ID );
+	}
+	
 	@Override
 	public IJxseProperties getIdFromString(String key) {
 		return ContextProperties.valueOf( key );

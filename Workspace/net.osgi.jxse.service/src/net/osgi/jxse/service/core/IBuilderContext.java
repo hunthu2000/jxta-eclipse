@@ -10,14 +10,13 @@
  *******************************************************************************/
 package net.osgi.jxse.service.core;
 
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.service.IContextObserver;
 
-public interface IBuilderContext<T extends Object,U extends IJxseProperties, V extends IJxseDirectives> {
+public interface IBuilderContext<T extends Object,U extends IJxseProperties> {
 
-	public abstract IContextObserver<T,U,V> getObserver();
+	public abstract IContextObserver<T,U> getObserver();
 
-	public abstract void setObserver(IContextObserver<T,U,V> observer);
+	public abstract void setObserver(IContextObserver<T,U> observer);
 
 }

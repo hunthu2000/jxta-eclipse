@@ -5,7 +5,7 @@ import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public abstract class AbstractPeerGroupProviderPropertySource<E extends Enum<E>> extends AbstractJxseWritePropertySource<E>
+public abstract class AbstractPeerGroupProviderPropertySource<E extends Object> extends AbstractJxseWritePropertySource<E>
 {
 
 	public enum PeerGroupDirectives implements IJxseDirectives{
@@ -26,7 +26,7 @@ public abstract class AbstractPeerGroupProviderPropertySource<E extends Enum<E>>
 		}
 	}
 
-	public AbstractPeerGroupProviderPropertySource( String componentName, IJxsePropertySource<?,IJxseDirectives> parent) {
+	public AbstractPeerGroupProviderPropertySource( String componentName, IJxsePropertySource<?> parent) {
 		super( componentName,parent );
 	}
 

@@ -16,16 +16,15 @@ import net.jxta.id.ID;
 import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.osgi.jxse.advertisement.PipeAdvertisementPropertySource.PipeAdvertisementProperties;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
-import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.pipe.PipePropertySource.PipeProperties;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public class JxseAdvertisementFactory extends AbstractComponentFactory<Advertisement, IJxseProperties, IJxseDirectives> {
+public class JxseAdvertisementFactory extends AbstractComponentFactory<Advertisement, IJxseProperties> {
 
 	public static final String S_DEFAULT_NAME = "Default JXTA Advertisement";
 
@@ -35,7 +34,7 @@ public class JxseAdvertisementFactory extends AbstractComponentFactory<Advertise
 
 	private IPeerGroupProvider peerGroupContainer;
 
-	public JxseAdvertisementFactory( IPeerGroupProvider peerGroupContainer, IJxsePropertySource<IJxseProperties, IJxseDirectives> source ) {
+	public JxseAdvertisementFactory( IPeerGroupProvider peerGroupContainer, IJxsePropertySource<IJxseProperties> source ) {
 		super( source );
 		this.peerGroupContainer = peerGroupContainer;
 	}
@@ -50,13 +49,13 @@ public class JxseAdvertisementFactory extends AbstractComponentFactory<Advertise
 
 
 	@Override
-	protected Advertisement onCreateModule( IJxsePropertySource<IJxseProperties, IJxseDirectives> properties) {
+	protected Advertisement onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
 		if( peerGroupContainer.getPeerGroup() == null ){
 			super.setCompleted( false );
 			return null;
 		}
 			
-		IJxsePropertySource<IJxseProperties, IJxseDirectives> source = super.getPropertySource();
+		IJxsePropertySource<IJxseProperties> source = super.getPropertySource();
 		String tp = StringStyler.styleToEnum((String) source.getDirective( AdvertisementDirectives.TYPE ));
 		AdvertisementTypes type = AdvertisementTypes.valueOf(tp);
 		switch( type ){
@@ -69,21 +68,21 @@ public class JxseAdvertisementFactory extends AbstractComponentFactory<Advertise
 	
 	@SuppressWarnings("unchecked")
 	protected void checkDiscoveryService(){
-		IJxseWritePropertySource<IJxseProperties, IJxseDirectives> source = (IJxseWritePropertySource<IJxseProperties, IJxseDirectives>) super.getPropertySource();
-		IJxseWritePropertySource<IJxseProperties, IJxseDirectives> dsource = (IJxseWritePropertySource<IJxseProperties, IJxseDirectives>) source.getChild( Components.DISCOVERY_SERVICE.toString() );
+		IJxseWritePropertySource<IJxseProperties> source = (IJxseWritePropertySource<IJxseProperties>) super.getPropertySource();
+		IJxseWritePropertySource<IJxseProperties> dsource = (IJxseWritePropertySource<IJxseProperties>) source.getChild( Components.DISCOVERY_SERVICE.toString() );
 		if( dsource == null )
 			return;
 		
 	}
 	
 	protected PipeAdvertisement createPipeAdvertisement(){
-		IJxseWritePropertySource<IJxseProperties, IJxseDirectives> source = (IJxseWritePropertySource<IJxseProperties, IJxseDirectives>) super.getPropertySource();
+		IJxseWritePropertySource<IJxseProperties> source = (IJxseWritePropertySource<IJxseProperties>) super.getPropertySource();
 		AdvertisementTypes type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( (String) source.getDirective( AdvertisementDirectives.TYPE )));
 		AdvertisementPreferences preferences = new AdvertisementPreferences( this.peerGroupContainer, source );
 		PipeAdvertisement pipead = ( PipeAdvertisement )AdvertisementFactory.newAdvertisement( AdvertisementTypes.convertTo(type));
-		preferences.createDefaultValue( PipeAdvertisementProperties.PIPE_ID);
-		pipead.setPipeID( (ID) source.getProperty( PipeAdvertisementProperties.PIPE_ID ));
-		pipead.setType((String) source.getProperty(PipeAdvertisementProperties.TYPE ));
+		preferences.createDefaultValue( PipeProperties.PIPE_ID);
+		pipead.setPipeID( (ID) source.getProperty( PipeProperties.PIPE_ID ));
+		pipead.setType((String) source.getProperty(PipeProperties.TYPE ));
 		return pipead;
 	}
 }

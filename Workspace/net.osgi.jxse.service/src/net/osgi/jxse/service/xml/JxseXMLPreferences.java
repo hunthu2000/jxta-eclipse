@@ -24,7 +24,6 @@ import net.jxta.peergroup.PeerGroupID;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.properties.AbstractJxsePropertySource;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.service.xml.PreferenceStore.Persistence;
@@ -33,7 +32,7 @@ import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
-public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProperties> implements IJxsePropertySource<ContextProperties, IJxseDirectives> {
+public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProperties> implements IJxsePropertySource<ContextProperties> {
 
 	public static final String S_XML_ROOT = "JXSE Component Root";
 	private PreferenceStore store;

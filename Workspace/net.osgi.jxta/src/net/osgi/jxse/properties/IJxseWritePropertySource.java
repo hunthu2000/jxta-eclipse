@@ -10,7 +10,7 @@
  *******************************************************************************/
 package net.osgi.jxse.properties;
 
-public interface IJxseWritePropertySource< T extends Object, U extends IJxseDirectives> extends IJxsePropertySource<T,U> {
+public interface IJxseWritePropertySource< T extends Object> extends IJxsePropertySource<T> {
 	
 	public ManagedProperty<T,Object> getOrCreateManagedProperty(T id, Object value, boolean derived );
 
@@ -27,7 +27,7 @@ public interface IJxseWritePropertySource< T extends Object, U extends IJxseDire
 	 * @param child
 	 * @return
 	 */
-	public boolean addChild( IJxsePropertySource<?,?> child );
+	public boolean addChild( IJxsePropertySource<?> child );
 	
-	boolean setDirective(U id, Object value); 
+	boolean setDirective(IJxseDirectives id, Object value); 
 }

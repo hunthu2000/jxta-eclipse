@@ -14,11 +14,10 @@ import net.jxta.peergroup.PeerGroup;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.peergroup.PeerGroupPropertySource.PeerGroupProperties;
-import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
-public class PeerGroupFactory extends
-		AbstractComponentFactory<PeerGroup, PeerGroupProperties, IJxseDirectives> 
+public class PeerGroupFactory extends AbstractComponentFactory<PeerGroup, IJxseProperties> 
 	implements IPeerGroupProvider
 {
 
@@ -32,7 +31,7 @@ public class PeerGroupFactory extends
 	}
 
 	@Override
-	protected PeerGroup onCreateModule( IJxsePropertySource<PeerGroupProperties, IJxseDirectives> properties) {
+	protected PeerGroup onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
 		PeerGroup parent = parentContainer.getPeerGroup();
 		return parent;//.newGroup( null);
 	}

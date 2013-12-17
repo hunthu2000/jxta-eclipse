@@ -14,22 +14,22 @@ import java.util.Iterator;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.seeds.SeedInfo;
 
-public class SeedListFactory implements IComponentFactory<String, String, IJxseDirectives>, ISeedListFactory{
+public class SeedListFactory implements IComponentFactory<String, IJxseProperties>, ISeedListFactory{
 
-	private SeedListPropertySource<IJxseDirectives> source;
+	private SeedListPropertySource source;
 	private NetworkConfigurator configurator;
 	private boolean completed = false;
 	
-	public SeedListFactory( SeedListPropertySource<IJxseDirectives> source ) {
+	public SeedListFactory( SeedListPropertySource source ) {
 		super();
 		this.source = source;
 	}
 
-	public void addSeed( String name, String value ){
+	public void addSeed( IJxseProperties name, String value ){
 		source.setProperty( name, value);
 	}
 	
@@ -44,7 +44,7 @@ public class SeedListFactory implements IComponentFactory<String, String, IJxseD
 	}
 
 	@Override
-	public IJxsePropertySource<String, IJxseDirectives> getPropertySource() {
+	public IJxsePropertySource<IJxseProperties> getPropertySource() {
 		return source;
 	}
 	
@@ -55,9 +55,9 @@ public class SeedListFactory implements IComponentFactory<String, String, IJxseD
 
 	@Override
 	public String createModule() {
-		Iterator<String> iterator = source.propertyIterator();
+		Iterator<IJxseProperties> iterator = source.propertyIterator();
 		while( iterator.hasNext() ){
-			String key = iterator.next();
+			IJxseProperties key = iterator.next();
 			SeedInfo seedInfo = ( SeedInfo ) source.getProperty( key);
 			switch( seedInfo.getSeedType() ){
 			case RDV:
@@ -89,5 +89,10 @@ public class SeedListFactory implements IComponentFactory<String, String, IJxseD
 	@Override
 	public String getModule() {
 		return null;
+	}
+
+	@Override
+	public boolean moduleActive() {
+		return true;
 	}		
 }

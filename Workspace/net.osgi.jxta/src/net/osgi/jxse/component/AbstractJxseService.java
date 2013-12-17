@@ -17,13 +17,12 @@ import java.util.Iterator;
 import net.osgi.jxse.activator.AbstractActivator;
 import net.osgi.jxse.activator.IActivator;
 import net.osgi.jxse.activator.IJxseService;
-import net.osgi.jxse.component.IComponentChangedListener.ServiceChange;
+import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.DefaultPropertySource;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public abstract class AbstractJxseService<T extends Object, U extends Object, V extends IJxseDirectives> extends AbstractActivator
+public abstract class AbstractJxseService<T extends Object, U extends Object> extends AbstractActivator
 implements IJxseService<T,U>{
 
 	public static final String S_SERVICE = "Service";
@@ -34,7 +33,7 @@ implements IJxseService<T,U>{
 			"The factory did not create the component. The flag setCompleted must be true, which is usually checked  with setAvailable.";
 	
 	private T module;
-	private IJxseWritePropertySource<U, V> properties;
+	private IJxseWritePropertySource<U> properties;
 	
 	private ComponentEventDispatcher dispatcher;
 
@@ -43,7 +42,7 @@ implements IJxseService<T,U>{
 		this( new DefaultPropertySource( bundleId, identifier, componentName),null);
 	}
 
-	protected AbstractJxseService( IJxseWritePropertySource<U, V> properties, T module ) {
+	protected AbstractJxseService( IJxseWritePropertySource<U> properties, T module ) {
 		dispatcher = ComponentEventDispatcher.getInstance();
 		this.properties = properties;
 		this.module = module;
@@ -51,8 +50,8 @@ implements IJxseService<T,U>{
 		super.initialise();
 	}
 
-	protected AbstractJxseService( IComponentFactory<T,U,V> factory ) {
-		this( (IJxseWritePropertySource<U, V>) factory.getPropertySource(), factory.getModule() );
+	protected AbstractJxseService( IComponentFactory<T,U> factory ) {
+		this( (IJxseWritePropertySource<U>) factory.getPropertySource(), factory.getModule() );
 	}
 
 	/**
@@ -109,6 +108,11 @@ implements IJxseService<T,U>{
 		this.module = module;
 	}
 	
+	
+	protected IJxseWritePropertySource<U> getProperties() {
+		return properties;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object getProperty(Object key) {
@@ -139,7 +143,7 @@ implements IJxseService<T,U>{
 	@Override
 	protected void notifyListeners(Status previous, Status status) {
 		super.notifyListeners(previous, status);
-		ComponentChangedEvent event = new ComponentChangedEvent( this, ServiceChange.STATUS_CHANGE );
+		ComponentChangedEvent event = new ComponentChangedEvent( this, AbstractServiceContext.ServiceChange.STATUS_CHANGE );
 		dispatcher.serviceChanged(event);
 	}
 }

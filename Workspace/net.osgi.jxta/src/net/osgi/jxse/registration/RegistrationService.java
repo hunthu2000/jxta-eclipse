@@ -29,15 +29,15 @@ import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.registration.RegistrationPropertySource.RegistrationProperties;
 import net.osgi.jxse.log.JxseLevel;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
-import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
 public class RegistrationService extends AbstractActivator implements IJxseService<RegistrationService,RegistrationProperties>, Runnable, DiscoveryListener {
 	
-	private IJxseWritePropertySource<RegistrationProperties, IJxseDirectives> source;
+	private IJxseWritePropertySource<IJxseProperties> source;
 	private ExecutorService executor;
 	
-	public RegistrationService( IPeerGroupProvider provider, IJxseWritePropertySource<RegistrationProperties, IJxseDirectives> source ) {
+	public RegistrationService( IPeerGroupProvider provider, IJxseWritePropertySource<IJxseProperties> source ) {
 		super();
 		this.source = source;
 		executor = Executors.newSingleThreadExecutor();

@@ -20,7 +20,7 @@ import org.eclipse.ui.navigator.CommonViewer;
 
 public class JxseContainerNavigator extends CommonNavigator{
 
-	public static final String PATH_ID = "org.eclipse.jxse.ui.context.view";
+	public static final String PATH_ID = "org.eclipselabs.jxse.ui.context.view";
 	
 	private CommonViewer viewer;
 	

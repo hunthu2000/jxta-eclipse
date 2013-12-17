@@ -47,6 +47,22 @@
             parentCategory="org.eclipse.ui">
       </category>
       <view
+            allowMultiple="false"
+            category="org.eclipse.jxse.ui.connectivity"
+            class="org.eclipselabs.jxse.ui.context.JxseContainerNavigator"
+            id="org.eclipse.jxse.ui.context.view"
+            name="JXSE Service Context View"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.eclipse.jxse.ui.connectivity"
+            class="org.eclipselabs.jxse.ui.peergroup.PeerGroupNavigator"
+            id="org.eclipselabs.jxse.ui.context.peergroups"
+            name="JXSE PeerGroup Viewer"
+            restorable="true">
+      </view>
+      <view
             category="org.eclipse.jxse.ui.connectivity"
             class="org.eclipselabs.jxse.ui.monitor.ConnectivityViewPart"
             id="org.eclipse.jxse.ui.monitor.ConnectivityViewPart"
@@ -66,14 +82,6 @@
             restorable="true">
       </view>
       <view
-            allowMultiple="false"
-            category="org.eclipse.jxse.ui.connectivity"
-            class="org.eclipselabs.jxse.ui.context.JxseContainerNavigator"
-            id="org.eclipse.jxse.ui.context.view"
-            name="JXSE Service Context View"
-            restorable="true">
-      </view>
-      <view
             allowMultiple="true"
             class="org.eclipselabs.jxse.ui.view.advertisements.AdvertisementNavigator"
             id="org.condast.jxta.ide.view.jxta.advertisements"
@@ -83,7 +91,7 @@
    </extension>
    <extension
          id="org.eclipse.jxse.content"
-         name="JXTA Content"
+         name="JXSE Content"
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
             activeByDefault="true"
@@ -149,6 +157,26 @@
             </instanceof>
          </possibleChildren>
       </navigatorContent>
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="org.eclipselabs.jxse.ui.peergroup.PeerGroupContentProvider"
+            id="org.eclipse.jxse.content.peergroup"
+            labelProvider="org.eclipselabs.jxse.ui.peergroup.JxsePeerGroupLabelProvider"
+            name="JXSE PeerGroup Context"
+            priority="normal">
+         <triggerPoints>
+            <or>
+               <instanceof
+                     value="net.osgi.jxse.context.Swarm">
+               </instanceof>
+            </or>
+         </triggerPoints>
+         <possibleChildren>
+            <instanceof
+                  value="net.jxta.peergroup.PeerGroup">
+            </instanceof>
+         </possibleChildren>
+      </navigatorContent>
   </extension>
    <extension
          id="org.condast.jxta.ide.view.jxta.container.viewer"
@@ -166,7 +194,16 @@
             viewerId="org.condast.jxta.ide.view.jxta.advertisements">
          <includes>
             <contentExtension
-                  pattern="org.condast.jxta.advertisement">
+                  pattern="org.condast.jxse.advertisement">
+            </contentExtension>
+         </includes>
+      </viewerContentBinding>
+      <viewerContentBinding
+            viewerId="org.eclipselabs.jxse.ui.context.peergroups">
+         <includes>
+            <contentExtension
+                  isRoot="true"
+                  pattern="org.eclipse.jxse.content.peergroup">
             </contentExtension>
          </includes>
       </viewerContentBinding>
@@ -200,6 +237,16 @@
                minimized="false"
                relationship="bottom"
                relative="org.eclipse.jxse.ui.context.view"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="org.eclipselabs.jxse.ui.context.peergroups"
+               minimized="false"
+               relationship="stack"
+               relative="org.eclipse.ui.views.PropertySheet"
+               showTitle="true"
+               standalone="true"
                visible="true">
          </view>
          <view

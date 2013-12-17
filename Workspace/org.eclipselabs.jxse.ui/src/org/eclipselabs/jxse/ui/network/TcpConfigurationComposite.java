@@ -1,7 +1,7 @@
 package org.eclipselabs.jxse.ui.network;
 
-import net.osgi.jxse.network.NetworkConfigurationPropertySource;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipselabs.jxse.ui.property.databinding.BooleanDataBinding;
@@ -22,7 +22,7 @@ public class TcpConfigurationComposite extends AbstractProtocolConfigurationComp
 		super.init( source );
 		Object value = source.getDefault( NetworkConfiguratorProperties.TCP_8ENABLED  );
 		//if( value != null)
-			new BooleanDataBinding<NetworkConfiguratorProperties>( NetworkConfiguratorProperties.TCP_8ENABLED, source, this.btnEnabled);
+			new BooleanDataBinding( NetworkConfiguratorProperties.TCP_8ENABLED, source, this.btnEnabled);
 		value = source.getDefault( NetworkConfiguratorProperties.TCP_8INCOMING_STATUS  );
 		if( value != null)
 			this.btnIncomingStatus.setSelection((boolean) value);

@@ -12,7 +12,7 @@ package net.osgi.jxse.properties;
 
 import java.util.Iterator;
 
-public interface IJxsePropertySource< T extends Object, U extends IJxseDirectives> {
+public interface IJxsePropertySource< T extends Object> {
 
 	public static final String JXTA_SETTINGS = "jxta.settings";
 	public static final String S_USER_HOME = "user.home";
@@ -22,7 +22,7 @@ public interface IJxsePropertySource< T extends Object, U extends IJxseDirective
 	 * Returns the parent, or null of the property source is a root
 	 * @return
 	 */
-	public IJxsePropertySource<?,?> getParent();
+	public IJxsePropertySource<?> getParent();
 	
 	/**
 	 * Get the id from a string representation
@@ -100,33 +100,46 @@ public interface IJxsePropertySource< T extends Object, U extends IJxseDirective
 	 * @param id
 	 * @return
 	 */
-	public Object getDirective( U id );
+	public Object getDirective( IJxseDirectives id );
 
 	/**
 	 * Get the directive from a String
 	 * @param id
 	 * @return
 	 */
-	public U getDirectiveFromString( String id);
+	public IJxseDirectives getDirectiveFromString( String id);
 
 	/**
 	 * Get an iterator over the directives
 	 * @return
 	 */
-	public Iterator<U> directiveIterator();
+	public Iterator<IJxseDirectives> directiveIterator();
+
+	/**
+	 * add a child to the property source
+	 * @param child
+	 * @return
+	 */
+	public boolean addChild( IJxsePropertySource<?> child );
+
+	/**
+	 * Remove a child from the property source
+	 * @param child
+	 */
+	public void removeChild( IJxsePropertySource<?> child );
 
 	/**
 	 * Get the children of the property source
 	 * @return
 	 */
-	public IJxsePropertySource<?,?>[] getChildren();
+	public IJxsePropertySource<?>[] getChildren();
 	
 	/**
 	 * Get the child with the given component name
 	 * @param componentName
 	 * @return
 	 */
-	public IJxsePropertySource<?,?> getChild( String componentName );
+	public IJxsePropertySource<?> getChild( String componentName );
 
 	public boolean isEmpty();
 }

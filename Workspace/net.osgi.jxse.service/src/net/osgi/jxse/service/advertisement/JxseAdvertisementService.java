@@ -15,16 +15,21 @@ import java.util.logging.Logger;
 
 import net.jxta.document.Advertisement;
 import net.osgi.jxse.component.AbstractJxseServiceNode;
+import net.osgi.jxse.component.ComponentChangedEvent;
+import net.osgi.jxse.component.ComponentEventDispatcher;
+import net.osgi.jxse.component.IComponentChangedListener;
 import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.component.IJxseComponentNode;
+import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.service.discovery.JxseDiscoveryService;
 
-public class JxseAdvertisementService extends AbstractJxseServiceNode<Advertisement, IJxseProperties, IJxseDirectives> implements IJxseComponentNode<Advertisement, IJxseProperties>{
+public class JxseAdvertisementService extends AbstractJxseServiceNode<Advertisement, IJxseProperties> implements IJxseComponentNode<Advertisement, IJxseProperties>{
 
-	public JxseAdvertisementService( IComponentFactory<Advertisement, IJxseProperties, IJxseDirectives> factory ) {
+	private IComponentChangedListener listener;
+
+	public JxseAdvertisementService( IComponentFactory<Advertisement, IJxseProperties> factory ) {
 		super( null, factory );
 	}
 	
@@ -53,6 +58,23 @@ public class JxseAdvertisementService extends AbstractJxseServiceNode<Advertisem
 	public boolean start() {
 		JxseDiscoveryService service = getDiscoveryService( this );
 		if( service != null ){
+			ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
+			this.listener = new IComponentChangedListener(){
+
+				@Override
+				public void notifyServiceChanged(ComponentChangedEvent event) {
+					JxseDiscoveryService service = (JxseDiscoveryService) event.getSource();
+					if( event.getSource().equals( service )){
+						if( event.getChange().equals( AbstractServiceContext.ServiceChange.STATUS_CHANGE )){
+							if( !service.isActive())
+								publishAdvertisements();
+						}
+					}
+					
+				}
+				
+			};
+			dispatcher.addServiceChangeListener(listener);;
 			return service.start();
 		}
 		else

@@ -21,27 +21,12 @@ public class JxseStartupPropertySource extends AbstractJxseWritePropertySource<I
 	
 	public JxseStartupPropertySource( JxseContextPropertySource parent ) {
 		super( Components.STARTUP_SERVICE.toString(), parent );
+		super.setDirective( Directives.AUTO_START, parent.getDirective( Directives.AUTO_START ));
 	}
 
 	@Override
 	public IJxseProperties getIdFromString(String key) {
 		return ContextProperties.valueOf( key );
-	}
-
-	/**
-	 * Get the plugin ID
-	 * @return
-	 */
-	public String getBundleId(){
-		return (String) this.getProperty( ContextProperties.BUNDLE_ID );
-	}
-
-	/**
-	 * Get the identifier
-	 * @return
-	 */
-	public String getIdentifier(){
-		return (String) this.getDirective( Directives.NAME );
 	}
 
 	@Override

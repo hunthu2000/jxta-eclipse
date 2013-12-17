@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.network;
+package net.osgi.jxse.netpeergroup;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -16,40 +16,29 @@ import java.util.logging.Logger;
 
 import net.jxta.exception.PeerGroupException;
 import net.jxta.peergroup.PeerGroup;
-import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.component.AbstractJxseService;
-import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.network.NetworkManagerFactory;
 import net.osgi.jxse.peergroup.IPeerGroupProperties.PeerGroupProperties;
 
-public class NetPeerGroupService extends AbstractJxseService<PeerGroup, PeerGroupProperties, IJxseDirectives>{
+public class NetPeerGroupService extends AbstractJxseService<PeerGroup, PeerGroupProperties>{
 
-	public static final String S_NETWORK_MANAGER = "Jxta Network Manager";
+	public static final String S_NETPEERGROUP_SERVICE = "Jxse Net Peergroup Service";
 
-	private NetworkManager manager;
+	private NetworkManagerFactory factory;
 
-	public NetPeerGroupService( IComponentFactory<PeerGroup, PeerGroupProperties, IJxseDirectives> factory ) {
-		super( factory );
-		this.manager = (NetworkManager) factory.getModule();
-	}
-
-	public NetPeerGroupService( String bundleId, String identifier, NetworkManager manager) {
-		super( bundleId, identifier, S_NETWORK_MANAGER );
-		this.manager = manager;
+	public NetPeerGroupService( NetworkManagerFactory factory ) {
+		super( factory.getPropertySource().getBundleId(), factory.getPropertySource().getIdentifier(), S_NETPEERGROUP_SERVICE );
+		this.factory = factory;
 	}
 
 	public Object getProperty( PeerGroupProperties key ){
 		return super.getProperty(key);
 	}
 	
-	public NetworkManager getNetworkManager(){
-		return manager;
-	}
-
 	@Override
 	protected void activate() {
 		try {
-			PeerGroup peergroup = manager.startNetwork();
+			PeerGroup peergroup = factory.getModule().startNetwork();
 			super.setModule( peergroup );
 		} catch (PeerGroupException | IOException e) {
 			Logger log = Logger.getLogger( this.getClass().getName() );
@@ -61,6 +50,6 @@ public class NetPeerGroupService extends AbstractJxseService<PeerGroup, PeerGrou
 
 	@Override
 	protected void deactivate() {
-		manager.stopNetwork();
+		factory.getModule().stopNetwork();
 	}
 }

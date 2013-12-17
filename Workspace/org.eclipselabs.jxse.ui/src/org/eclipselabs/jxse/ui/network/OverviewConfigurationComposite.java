@@ -5,8 +5,9 @@ import java.net.URI;
 import net.jxta.peer.PeerID;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.JxseContextPreferences;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource;
-import net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.validator.StringValidator;
 
 import org.eclipse.swt.widgets.Composite;
@@ -132,7 +133,7 @@ public class OverviewConfigurationComposite extends Composite {
 		value = source.getDefault( NetworkConfiguratorProperties.MODE );
 		ConfigMode mode = ( value == null )? ConfigMode.EDGE: (ConfigMode ) value;
 		this.combo.select( mode.ordinal() );
-		new ComboDataBinding<NetworkConfiguratorProperties, ConfigMode>( NetworkConfiguratorProperties.MODE, source, combo );		
+		new ComboDataBinding<IJxseProperties, ConfigMode>( NetworkConfiguratorProperties.MODE, source, combo );		
 
 		value = source.getDefault( NetworkConfiguratorProperties.PEER_ID );
 		if( value != null)

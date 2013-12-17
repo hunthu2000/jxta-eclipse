@@ -13,7 +13,7 @@ public class DefaultPropertySource<T extends Object> extends AbstractJxseWritePr
 	}
 
 	public DefaultPropertySource(String componentName,
-			IJxsePropertySource<?,IJxseDirectives> parent) {
+			IJxsePropertySource<?> parent) {
 		super(componentName, parent);
 	}
 

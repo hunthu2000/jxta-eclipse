@@ -15,10 +15,9 @@ import org.eclipse.core.runtime.Platform;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.context.JxseContextPropertySource;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 
-public abstract class AbstractExampleContext extends AbstractServiceContext<IJxseProperties, IJxseDirectives>{
+public abstract class AbstractExampleContext extends AbstractServiceContext<IJxseProperties>{
 
 	
 	protected AbstractExampleContext( String bundle_id, String identifier) {
