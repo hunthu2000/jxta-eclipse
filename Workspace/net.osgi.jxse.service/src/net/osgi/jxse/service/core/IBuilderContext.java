@@ -15,8 +15,8 @@ import net.osgi.jxse.service.IContextObserver;
 
 public interface IBuilderContext<T extends Object,U extends IJxseProperties> {
 
-	public abstract IContextObserver<T,U> getObserver();
+	public abstract IContextObserver<T> getObserver();
 
-	public abstract void setObserver(IContextObserver<T,U> observer);
+	public abstract void setObserver(IContextObserver<T> observer);
 
 }

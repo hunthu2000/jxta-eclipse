@@ -18,22 +18,24 @@ import java.util.List;
 import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.builder.ICompositeBuilderListener.BuilderEvents;
+import net.osgi.jxse.builder.IJxseModule;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
+import net.osgi.jxse.factory.FactoryNode;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
-public class CompositeStarter<T extends Object, U extends Object> {
+public class CompositeStarter<T extends Object> {
 
 	private Collection<ICompositeBuilderListener<?>> factoryListeners;
-	private ComponentNode<T,U> root;
+	private FactoryNode<T> root;
 	private boolean completed;
-	private List<ComponentNode<?,?>> nodes;
+	private List<ComponentNode<?>> nodes;
 	
-	public CompositeStarter( ComponentNode<T,U> root ) {
+	public CompositeStarter( FactoryNode<T> root ) {
 		this.root = root;
-		nodes = new ArrayList<ComponentNode<?,?>>();
+		nodes = new ArrayList<ComponentNode<?>>();
 		this.factoryListeners = new ArrayList<ICompositeBuilderListener<?>>();
 	}
 
@@ -65,8 +67,8 @@ public class CompositeStarter<T extends Object, U extends Object> {
 	 * Parse the directives for this factory
 	 * @param node
 	 */
-	private synchronized final void parseFactories( ComponentNode<?, ?> node ){
-		IComponentFactory<?,?> factory = node.getFactory();
+	private synchronized final void parseFactories( FactoryNode<?> node ){
+		IComponentFactory<?> factory = node.getData();
 		if( factory == null ){
 			this.completed = false;
 			return;
@@ -74,8 +76,8 @@ public class CompositeStarter<T extends Object, U extends Object> {
 		nodes.add( node );
 		if( factory instanceof ICompositeBuilderListener )
 			this.addListener((ICompositeBuilderListener<?>) factory);
-		for( ComponentNode<?,?> child: node.getChildren())
-			parseFactories( (ComponentNode<?, ?>) child );
+		for( ComponentNode<?> child: node.getChildren())
+			parseFactories( (FactoryNode<?>) child );
 		factory.complete();
 	}
 	
@@ -84,14 +86,14 @@ public class CompositeStarter<T extends Object, U extends Object> {
 	 * @param node
 	 * @return
 	 */
-	private Object createModule( ComponentNode<?, ?> node ){
-		IComponentFactory<?,?> factory = node.getFactory();
+	private Object createModule( FactoryNode<?> node ){
+		IComponentFactory<?> factory = node.getData();
 		Object module = null;
 		if(factory.isCompleted() )
-			return factory.getModule();
+			return factory.getComponent();
 		
 		try{
-			module = factory.createModule();
+			module = factory.createComponent();
 		}
 		catch( Exception ex ){
 			ex.printStackTrace();
@@ -100,12 +102,12 @@ public class CompositeStarter<T extends Object, U extends Object> {
 		if(!auto_start ){
 			return module;
 		}
-		for( ComponentNode<?,?> child: node.getChildren())
-			parseFactories( (ComponentNode<?, ?>) child );
+		for( ComponentNode<?> child: node.getChildren())
+			parseFactories( (FactoryNode<?>) child );
 		if( module == null )
 			return null;
 		
-		this.notifyListeners( new ComponentBuilderEvent<ComponentNode<?,?>>( this, node, BuilderEvents.COMPONENT_CREATED ));
+		this.notifyListeners( new ComponentBuilderEvent<ComponentNode<?>>( this, (IJxseModule<ComponentNode<?>>) node, BuilderEvents.COMPONENT_CREATED ));
 		factory.complete();
 		return module;
 	}
@@ -115,13 +117,13 @@ public class CompositeStarter<T extends Object, U extends Object> {
 	 */
 	private synchronized void startModules(){
 		while( this.nodes.size() > 0 ){
-			ComponentNode<?,?> node;
+			FactoryNode<?> node;
 			for( int i=0; i<nodes.size(); i++ ){
-				node = this.nodes.get(i);
-				if( node.getFactory().moduleActive() ){
+				node = (FactoryNode<?>) this.nodes.get(i);
+				if( node.getData().moduleActive() ){
 					this.nodes.remove(node);
-					if( node.getFactory() instanceof ICompositeBuilderListener )
-						this.removeListener((ICompositeBuilderListener<?>) node.getFactory());
+					if( node.getData() instanceof ICompositeBuilderListener )
+						this.removeListener((ICompositeBuilderListener<?>) node.getData());
 				}
 				else
 					this.createModule(node);
@@ -137,12 +139,12 @@ public class CompositeStarter<T extends Object, U extends Object> {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected ComponentNode<?,?> getNode( ComponentNode<?,?> node, IComponentFactory<?,?> factory ){
-		ComponentNode<?,?> childNode = null;
+	protected ComponentNode<?> getNode( ComponentNode<?> node, IComponentFactory<?> factory ){
+		FactoryNode<?> childNode = null;
 		if( node == null )
-			childNode = new ComponentNode( factory );
+			childNode = new FactoryNode( factory );
 		else
-			childNode = node.addChild( factory );
+			childNode = ( FactoryNode )node.addChild( factory );
 		return childNode;
 	}
 	
@@ -151,10 +153,10 @@ public class CompositeStarter<T extends Object, U extends Object> {
 	 * Parse the directives for this factory
 	 * @param node
 	 */
-	private final void parseDirectives( ComponentNode<?,?> node ){
-		IJxsePropertySource<?> propertySource = this.root.getFactory().getPropertySource();
-		if( node.getFactory() != null )
-			propertySource = node.getFactory().getPropertySource();
+	private final void parseDirectives( FactoryNode<?> node ){
+		IJxsePropertySource<?> propertySource = this.root.getData().getPropertySource();
+		if( node.getData() != null )
+			propertySource = node.getData().getPropertySource();
 		Iterator<IJxseDirectives> iterator = propertySource.directiveIterator();
 		IJxseDirectives directive;
 		while( iterator.hasNext()) {

@@ -16,12 +16,23 @@ import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxseProperties;
+import net.osgi.jxse.utils.StringStyler;
 
 public class JxseStartupPropertySource extends AbstractJxseWritePropertySource<IJxseProperties>{
+	
+	public enum StartupProperties implements IJxseProperties{
+		RETRIES;
+
+		@Override
+		public String toString() {
+			return StringStyler.prettyString(super.toString());
+		}
+	}
 	
 	public JxseStartupPropertySource( JxseContextPropertySource parent ) {
 		super( Components.STARTUP_SERVICE.toString(), parent );
 		super.setDirective( Directives.AUTO_START, parent.getDirective( Directives.AUTO_START ));
+		super.setProperty( StartupProperties.RETRIES, 10 );
 	}
 
 	@Override

@@ -19,10 +19,11 @@ import net.jxta.protocol.PipeAdvertisement;
 import net.jxta.socket.JxtaServerSocket;
 import net.osgi.jxse.advertisement.PipeAdvertisementFactory;
 import net.osgi.jxse.factory.AbstractComponentFactory;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.IOUtils;
 
-public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSocket, net.osgi.jxse.socket.IServerSocketFactory.Properties> implements IServerSocketFactory {
+public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSocket> implements IServerSocketFactory {
 
 	public static final String S_JXSE_SERVER_SOCKET_SERVICE = "JxtaServerSocketService";	
 	
@@ -41,7 +42,7 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 	}
 	
 	@Override
-	protected JxtaServerSocket onCreateModule(IJxsePropertySource<Properties> properties) {
+	protected JxtaServerSocket onCreateModule(IJxsePropertySource<IJxseProperties> properties) {
 		this.pipeFactory = new SocketPipeAdvertisementFactory();
 		JxtaServerSocket socket = this.createSocket();
 		super.setCompleted(true);
@@ -54,10 +55,10 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 	 * @return
 	 */
 	private JxtaServerSocket createSocket() {
-		PipeAdvertisement pipeAd = this.pipeFactory.getModule();
+		PipeAdvertisement pipeAd = this.pipeFactory.getComponent();
 		JxtaServerSocket serverSocket = null;
 		try {
-			IJxsePropertySource<Properties> source = super.getPropertySource();
+			IJxsePropertySource<IJxseProperties> source = super.getPropertySource();
 			serverSocket = new JxtaServerSocket( manager.getNetPeerGroup(), pipeAd, ( boolean )source.getProperty( Properties.TIME_OUT ));
 			serverSocket.setSoTimeout(( int )source.getProperty( Properties.SO_TIME_OUT ));
 			return serverSocket;

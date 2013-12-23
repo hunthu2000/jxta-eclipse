@@ -4,7 +4,7 @@ import net.osgi.jxse.component.IJxseComponent;
 
 public class ContextRegistration{
 
-	private JxseServiceContainerPetitioner<?> petitioner = JxseServiceContainerPetitioner.getInstance();
+	private JxseServiceContainerPetitioner petitioner = JxseServiceContainerPetitioner.getInstance();
 	
 	
 	public ContextRegistration() {

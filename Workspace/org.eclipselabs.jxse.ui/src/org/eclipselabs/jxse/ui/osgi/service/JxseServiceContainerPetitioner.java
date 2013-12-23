@@ -13,6 +13,7 @@ import java.util.Scanner;
 import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.component.IJxseComponentNode;
 import net.osgi.jxse.context.JxseServiceContext;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.service.IServiceChangedListener;
 import net.osgi.jxse.service.ServiceChangedEvent;
 import net.osgi.jxse.service.ServiceEventDispatcher;
@@ -25,12 +26,11 @@ import org.eclipselabs.osgi.ds.broker.service.AbstractPetitioner;
 import org.eclipselabs.osgi.ds.broker.service.IParlezListener.Notifications;
 import org.eclipselabs.osgi.ds.broker.service.ParlezEvent;
 
-public class JxseServiceContainerPetitioner<T extends Enum<T>> extends AbstractPetitioner<String, String, JxseServiceContext>
-	implements IJxseComponentNode<Collection<JxseServiceContext>,T>, IServiceChangedListener
+public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, String, JxseServiceContext>
+	implements IJxseComponentNode<Collection<JxseServiceContext>>, IServiceChangedListener
 {
 	public static final String S_JXSE = "Jxse";
 
-	@SuppressWarnings("rawtypes")
 	private static JxseServiceContainerPetitioner attendee = new JxseServiceContainerPetitioner();
 	
 	private List<IJxseComponent<?,?>> children;
@@ -45,7 +45,7 @@ public class JxseServiceContainerPetitioner<T extends Enum<T>> extends AbstractP
 		this.date = Calendar.getInstance().getTime();
 	}
 	
-	public static JxseServiceContainerPetitioner<?> getInstance(){
+	public static JxseServiceContainerPetitioner getInstance(){
 		return attendee;
 	}
 
@@ -82,7 +82,7 @@ public class JxseServiceContainerPetitioner<T extends Enum<T>> extends AbstractP
 	}
 
 	@Override
-	public IJxseComponentNode<?,?> getParent() {
+	public IJxseComponentNode<?> getParent() {
 		return null;
 	}
 
@@ -134,7 +134,7 @@ public class JxseServiceContainerPetitioner<T extends Enum<T>> extends AbstractP
 	}
 
 	@Override
-	public Iterator<T> iterator() {
+	public Iterator<IJxseProperties> iterator() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -144,7 +144,6 @@ public class JxseServiceContainerPetitioner<T extends Enum<T>> extends AbstractP
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
 
 /**

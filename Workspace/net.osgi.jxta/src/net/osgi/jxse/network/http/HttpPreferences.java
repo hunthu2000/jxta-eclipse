@@ -145,7 +145,7 @@ public class HttpPreferences implements INetworkPreferences {
 	 * @see net.osgi.jxse.network.INetworkPreferences#setPropertyFromString(net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties, java.lang.String)
 	 */
 	@Override
-	public boolean setPropertyFromString( NetworkConfiguratorProperties id, String value ){
+	public boolean setPropertyFromString( IJxseProperties id, String value ){
 		Object val = convertStringToCorrectType( id, value);
 		source.setProperty( id, val );
 		return true;
@@ -157,8 +157,11 @@ public class HttpPreferences implements INetworkPreferences {
 	 * @param property
 	 * @param value
 	 */
-	public static Object convertStringToCorrectType( NetworkConfiguratorProperties property, String value ){
-		switch( property ){
+	public static Object convertStringToCorrectType( IJxseProperties property, String value ){
+		if(!(property instanceof NetworkConfiguratorProperties ))
+			return null;
+		NetworkConfiguratorProperties id = (NetworkConfiguratorProperties) property;
+		switch( id ){
 		case HTTP_8INTERFACE_ADDRESS:
 		case HTTP_8PUBLIC_ADDRESS:
 		case HTTP_8PUBLIC_ADDRESS_EXCLUSIVE:

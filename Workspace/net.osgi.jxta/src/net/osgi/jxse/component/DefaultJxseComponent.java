@@ -40,8 +40,9 @@ public class DefaultJxseComponent<T extends Object, U extends Object> implements
 		this.module = module;
 	}
 
-	protected DefaultJxseComponent( IComponentFactory<T,U> factory ) {
-		this( (IJxseWritePropertySource<U>) factory.getPropertySource(), factory.getModule() );
+	@SuppressWarnings("unchecked")
+	protected DefaultJxseComponent( IComponentFactory<T> factory ) {
+		this( (IJxseWritePropertySource<U>) factory.getPropertySource(), factory.getComponent() );
 	}
 
 	/**

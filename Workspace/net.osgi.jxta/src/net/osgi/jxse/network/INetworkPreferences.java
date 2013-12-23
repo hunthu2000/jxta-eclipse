@@ -1,7 +1,7 @@
 package net.osgi.jxse.network;
 
 import net.jxta.platform.NetworkConfigurator;
-import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jxse.properties.IJxseProperties;
 
 public interface INetworkPreferences {
 
@@ -11,8 +11,7 @@ public interface INetworkPreferences {
 	 */
 	public String getName();
 	
-	public abstract boolean setPropertyFromString(
-			NetworkConfiguratorProperties id, String value);
+	public abstract boolean setPropertyFromString(IJxseProperties id, String value);
 
 	/**
 	 * Fill the given configurator with the source

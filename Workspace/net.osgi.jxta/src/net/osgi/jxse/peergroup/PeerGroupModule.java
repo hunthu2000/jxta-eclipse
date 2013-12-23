@@ -1,13 +1,15 @@
 package net.osgi.jxse.peergroup;
 
 import net.jxta.peergroup.PeerGroup;
-import net.osgi.jxse.component.AbstractJxseModule;
+import net.osgi.jxse.builder.AbstractJxseModule;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
-import net.osgi.jxse.properties.IJxseProperties;
 
 public class PeerGroupModule extends AbstractJxseModule<PeerGroup, PeerGroupPropertySource> {
+
+	private  IPeerGroupProvider provider;
 
 	@Override
 	public String getComponentName() {
@@ -16,11 +18,17 @@ public class PeerGroupModule extends AbstractJxseModule<PeerGroup, PeerGroupProp
 	
 	@Override
 	protected PeerGroupPropertySource onCreatePropertySource() {
-		return new PeerGroupPropertySource( super.getParent());
+		return new PeerGroupPropertySource( super.getParent().getPropertySource());
 	}
 
 	@Override
-	public IComponentFactory<PeerGroup, IJxseProperties> createFactory( IPeerGroupProvider provider ) {
+	public IComponentFactory<PeerGroup> onCreateFactory() {
 		return new PeerGroupFactory( provider, super.getPropertySource() );
+	}
+
+	@Override
+	public void notifyCreated(ComponentBuilderEvent<Object> event) {
+		// TODO Auto-generated method stub
+		
 	}
 }

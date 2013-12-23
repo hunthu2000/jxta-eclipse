@@ -19,15 +19,14 @@ import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.component.IJxseComponentNode;
 import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.service.advertisement.JxseAdvertisementService;
 import net.osgi.jxse.service.discovery.JxseDiscoveryService;
 
-public class ChaupalPipeService extends AbstractJxseServiceNode<PipeService, IJxseProperties> implements IJxseComponentNode<PipeService, IJxseProperties>{
+public class ChaupalPipeService extends AbstractJxseServiceNode<PipeService> implements IJxseComponentNode<PipeService>{
 
 	private IComponentChangedListener listener;
 
-	public ChaupalPipeService( IComponentFactory<PipeService, IJxseProperties> factory ) {
+	public ChaupalPipeService( IComponentFactory<PipeService> factory ) {
 		super( null, factory );
 	}
 		

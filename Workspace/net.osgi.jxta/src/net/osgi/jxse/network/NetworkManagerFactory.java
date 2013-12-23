@@ -32,7 +32,7 @@ import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager, IJxseProperties> 
+public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager> 
 implements INetworkManagerProvider, IPeerGroupProvider{
 		
 	public NetworkManagerFactory( IJxsePropertySource<IJxseProperties> propertySource ) {
@@ -87,7 +87,7 @@ implements INetworkManagerProvider, IPeerGroupProvider{
 			value = Boolean.FALSE.toString();
 		if( Boolean.parseBoolean( (String) value )){
 			try {
-				super.getModule().startNetwork();
+				super.getComponent().startNetwork();
 				return super.complete();
 			} catch (PeerGroupException e) {
 				e.printStackTrace();
@@ -102,7 +102,7 @@ implements INetworkManagerProvider, IPeerGroupProvider{
 	public PeerGroup getPeerGroup() {
 		if(!super.isCompleted() )
 			return null;
-		return super.getModule().getNetPeerGroup();
+		return super.getComponent().getNetPeerGroup();
 	}
 
 	@Override
@@ -112,6 +112,6 @@ implements INetworkManagerProvider, IPeerGroupProvider{
 
 	@Override
 	public NetworkManager getNetworkManager() {
-		return this.getModule();
+		return this.getComponent();
 	}
 }

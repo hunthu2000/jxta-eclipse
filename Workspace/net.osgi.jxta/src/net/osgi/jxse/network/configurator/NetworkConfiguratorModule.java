@@ -1,26 +1,25 @@
 package net.osgi.jxse.network.configurator;
 
 import net.jxta.platform.NetworkConfigurator;
-import net.osgi.jxse.component.AbstractJxseModule;
+import net.jxta.platform.NetworkManager;
+import net.osgi.jxse.builder.AbstractJxseModule;
+import net.osgi.jxse.builder.IJxseModule;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.network.INetworkManagerProvider;
 import net.osgi.jxse.network.NetworkManagerPropertySource;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
-import net.osgi.jxse.properties.IJxseProperties;
-import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.seeds.SeedListPropertySource;
 
 public class NetworkConfiguratorModule extends AbstractJxseModule<NetworkConfigurator, NetworkConfigurationPropertySource> {
 
 	private Class<?> clss;
 	
-	public NetworkConfiguratorModule( Class<?> clss) {
-		this.clss = clss;
-	}
-
-	public NetworkConfiguratorModule( Class<?> clss, IJxsePropertySource<?> parent) {
-		super(parent);
+	private NetworkManager manager;
+	
+	public NetworkConfiguratorModule( Class<?> clss, IJxseModule<?> parent) {
+		super(parent, 3);
 		this.clss = clss;
 	}
 
@@ -31,7 +30,7 @@ public class NetworkConfiguratorModule extends AbstractJxseModule<NetworkConfigu
 
 	@Override
 	protected NetworkConfigurationPropertySource onCreatePropertySource() {
-		NetworkConfigurationPropertySource source = new NetworkConfigurationPropertySource( (NetworkManagerPropertySource) super.getParent() );
+		NetworkConfigurationPropertySource source = new NetworkConfigurationPropertySource( (NetworkManagerPropertySource) super.getParent().getPropertySource() );
 		SeedListPropertySource slps = new SeedListPropertySource( source, clss );
 		if( slps.hasSeeds() )
 			source.addChild(slps);
@@ -39,7 +38,16 @@ public class NetworkConfiguratorModule extends AbstractJxseModule<NetworkConfigu
 	}
 
 	@Override
-	public IComponentFactory<NetworkConfigurator, IJxseProperties> createFactory( IPeerGroupProvider provider ) {
-		return new NetworkConfigurationFactory( (INetworkManagerProvider) provider, super.getPropertySource() );
+	public IComponentFactory<NetworkConfigurator> onCreateFactory() {
+		return new NetworkConfigurationFactory( super.getPropertySource(), manager );
+	}
+
+	@Override
+	public void notifyCreated(ComponentBuilderEvent<Object> event) {
+		if( !event.getBuilderEvent().equals( BuilderEvents.COMPONENT_CREATED ))
+			return;
+		if( Components.NETWORK_MANAGER.toString().equals( event.getModule().getComponentName() ))
+			this.manager = (NetworkManager) event.getModule().getComponent();
+		
 	}
 }

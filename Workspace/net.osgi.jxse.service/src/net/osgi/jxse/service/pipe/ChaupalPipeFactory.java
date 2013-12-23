@@ -16,7 +16,7 @@ import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class ChaupalPipeFactory extends
-		AbstractComponentFactory<ChaupalPipeService, IJxseProperties>{
+		AbstractComponentFactory<ChaupalPipeService>{
 
 	public static final String S_PIPE_SERVICE = "JxsePipeService";
 
@@ -29,7 +29,7 @@ public class ChaupalPipeFactory extends
 
 	@Override
 	protected ChaupalPipeService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		factory.createModule();
+		factory.createComponent();
 		ChaupalPipeService ds = new ChaupalPipeService ( factory );
 		return ds;
 	}

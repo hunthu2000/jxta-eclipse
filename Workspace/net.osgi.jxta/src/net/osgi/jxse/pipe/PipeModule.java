@@ -1,16 +1,18 @@
 package net.osgi.jxse.pipe;
 
 import net.jxta.pipe.PipeService;
-import net.osgi.jxse.component.AbstractJxseModule;
+import net.osgi.jxse.builder.AbstractJxseModule;
+import net.osgi.jxse.builder.IJxseModule;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
-import net.osgi.jxse.properties.IJxseProperties;
-import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class PipeModule extends AbstractJxseModule<PipeService, PipePropertySource> {
 
-	public PipeModule(IJxsePropertySource<?> parent) {
+	private  IPeerGroupProvider provider;
+
+	public PipeModule(IJxseModule<?> parent) {
 		super(parent);
 	}
 
@@ -22,11 +24,17 @@ public class PipeModule extends AbstractJxseModule<PipeService, PipePropertySour
 
 	@Override
 	protected PipePropertySource onCreatePropertySource() {
-		return new PipePropertySource( super.getParent() );
+		return new PipePropertySource( super.getParent().getPropertySource() );
 	}
 
 	@Override
-	public IComponentFactory<PipeService, IJxseProperties> createFactory( IPeerGroupProvider provider ) {
+	public IComponentFactory<PipeService> onCreateFactory() {
 		return new PipeServiceFactory( provider, super.getPropertySource() );
+	}
+
+	@Override
+	public void notifyCreated(ComponentBuilderEvent<Object> event) {
+		// TODO Auto-generated method stub
+		
 	}
 }

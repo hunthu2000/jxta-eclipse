@@ -19,8 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jxta.platform.NetworkConfigurator;
+import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.network.INetworkManagerProvider;
 import net.osgi.jxse.network.INetworkPreferences;
 import net.osgi.jxse.network.OverviewPreferences;
 import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
@@ -41,18 +41,19 @@ import net.osgi.jxse.seeds.SeedListPropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
 public class NetworkConfigurationFactory extends
-		AbstractComponentFactory<NetworkConfigurator, IJxseProperties> {
+		AbstractComponentFactory<NetworkConfigurator> {
 
 	public static final String S_NETWORK_CONFIGURATION_SERVICE = "NetworkConfigurationService";
 
 	private Collection<ISeedListFactory> seedLists;
 	
-	private INetworkManagerProvider provider;
+	private NetworkManager manager;
 
-	public NetworkConfigurationFactory( INetworkManagerProvider provider, NetworkConfigurationPropertySource source ) {
+	public NetworkConfigurationFactory( NetworkConfigurationPropertySource source, NetworkManager manager ) {
 		super( source );
-		this.provider = provider;
+		this.manager = manager;
 		this.seedLists = new ArrayList<ISeedListFactory>();
+		super.setCanCreate(this.manager != null );
 	}
 
 	public boolean addSeedlist( ISeedListFactory factory ){
@@ -67,7 +68,7 @@ public class NetworkConfigurationFactory extends
 	protected NetworkConfigurator onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
 		NetworkConfigurator configurator = null;
 		try {
-			configurator = provider.getNetworkManager().getConfigurator();
+			configurator = manager.getConfigurator();
 			URI home = (URI) super.getPropertySource().getProperty( NetworkConfiguratorProperties.HOME );
 			if( home != null )
 				configurator.setHome( new File( home ));
@@ -75,7 +76,7 @@ public class NetworkConfigurationFactory extends
 			configurator.clearRendezvousSeeds();
 			for( ISeedListFactory factory: this.seedLists ){
 				factory.setConfigurator(configurator);
-				factory.createModule();
+				factory.createComponent();
 			}
 			this.fillConfigurator(configurator);
 			configurator.save();
@@ -104,7 +105,7 @@ public class NetworkConfigurationFactory extends
 			this.seedLists.add( new SeedListFactory((SeedListPropertySource) source ));
 			return;
 		}
-		preferences = new OverviewPreferences( (IJxseWritePropertySource<NetworkConfiguratorProperties>) source );
+		preferences = new OverviewPreferences((IJxseWritePropertySource<IJxseProperties>) source );
 		preferences.fillConfigurator(configurator);
 		for( IJxsePropertySource<?> child: super.getPropertySource().getChildren() )
 			this.fillPartialConfigurator( configurator, (IJxsePropertySource<NetworkConfiguratorProperties>) child);

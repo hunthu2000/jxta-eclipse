@@ -5,17 +5,16 @@ import java.util.Collection;
 
 import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.properties.IJxseProperties;
 
-public abstract class AbstractJxseServiceNode<T extends Object, U extends Object>
-		extends AbstractJxseService<T, U> implements IJxseComponentNode<T,U> {
+public abstract class AbstractJxseServiceNode<T extends Object>
+		extends AbstractJxseService<T> implements IJxseComponentNode<T> {
 
-	private IJxseComponentNode<?,IJxseProperties> parent;
+	private IJxseComponentNode<?> parent;
 	private Collection<IJxseComponent<?,?>> children;
 
 	private ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 
-	protected AbstractJxseServiceNode( IJxseComponentNode<?,IJxseProperties> parent, IComponentFactory<T,U> factory  ) {
+	protected AbstractJxseServiceNode( IJxseComponentNode<?> parent, IComponentFactory<T> factory  ) {
 		super( factory );
 		this.children = new ArrayList<IJxseComponent<?,?>>();
 	}

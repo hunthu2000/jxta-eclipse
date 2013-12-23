@@ -6,18 +6,18 @@ import net.osgi.jxse.advertisement.AdvertisementPropertySource;
 import net.osgi.jxse.advertisement.JxseAdvertisementFactory;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.osgi.jxse.builder.BuilderContainer;
 import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.CompositeBuilder;
-import net.osgi.jxse.context.Swarm;
+import net.osgi.jxse.component.ModuleNode;
+import net.osgi.jxse.context.ContextModule;
 import net.osgi.jxse.discovery.DiscoveryPropertySource;
 import net.osgi.jxse.discovery.DiscoveryServiceFactory;
+import net.osgi.jxse.factory.FactoryNode;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.network.NetworkManagerFactory;
 import net.osgi.jxse.pipe.PipeServiceFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
-import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxseDirectives.Contexts;
@@ -28,24 +28,22 @@ import net.osgi.jxse.service.pipe.ChaupalPipeFactory;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
-public class ChaupalCompositeBuilder<T extends Object, U extends Object> extends CompositeBuilder<T,U> {
+public class ChaupalCompositeBuilder extends CompositeBuilder {
 
-	public ChaupalCompositeBuilder(IJxsePropertySource<U> propertySource, BuilderContainer container, Swarm swarm) {
-		super(propertySource, container, swarm );
+	public ChaupalCompositeBuilder( ModuleNode<ContextModule> root ) {
+		super( root );
 	}
-
 	
 	/**
 	 * This builder overrides the default behaviour by allowing a jxse service instead of a default JXTA service .
 	 * The factory has just been created, so components have not been created and nothing has been started yet.
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
-	protected ComponentNode<?, ?> createNode(ComponentNode<?, ?> node, IComponentFactory<?, ?> factory) {
+	protected FactoryNode<?> createNode(ComponentNode<?> node, IComponentFactory<?> factory) {
 		if( node == null )
 			return super.createNode(node, factory);
 		
-		IComponentFactory<?, ?> jxseFactory = getFactoryFromType( (IComponentFactory<?, IJxseProperties>) node.getFactory(), (IComponentFactory<?, ?>) factory );
+		IComponentFactory<?> jxseFactory = getFactoryFromType( (IComponentFactory<?>) node.getData(), (IComponentFactory<?>) factory );
 		this.extendPropertySource( factory.getPropertySource() );
 		return super.createNode(node, jxseFactory);
 	}
@@ -104,7 +102,7 @@ public class ChaupalCompositeBuilder<T extends Object, U extends Object> extends
 	 * @param factory
 	 * @return
 	 */
-	protected static IComponentFactory<?,?> getFactoryFromType(  IComponentFactory<?, IJxseProperties> parent, IComponentFactory<?, ?> factory ){
+	protected static IComponentFactory<?> getFactoryFromType(  IComponentFactory<?> parent, IComponentFactory<?> factory ){
 		String contextStr = (String) factory.getPropertySource().getDirective( Directives.CONTEXT );
 		if( Utils.isNull(contextStr))
 			return factory;

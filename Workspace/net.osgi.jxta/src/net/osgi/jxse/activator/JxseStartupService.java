@@ -14,22 +14,18 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import net.jxta.platform.NetworkConfigurator;
-import net.jxta.platform.NetworkManager;
-import net.osgi.jxse.builder.ComponentNode;
-import net.osgi.jxse.builder.ICompositeBuilderListener;
-import net.osgi.jxse.component.IJxseComponent;
-import net.osgi.jxse.component.IJxseComponentNode;
-import net.osgi.jxse.context.CompositeStarter;
-import net.osgi.jxse.context.JxseServiceContext;
+import net.osgi.jxse.builder.ICompositeBuilderListener.BuilderEvents;
+import net.osgi.jxse.builder.IJxseModule;
+import net.osgi.jxse.builder.container.BuilderContainer;
+import net.osgi.jxse.builder.container.BuilderContainerEvent;
+import net.osgi.jxse.builder.container.IBuilderContainerListener;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
-import net.osgi.jxse.netpeergroup.NetPeerGroupService;
+import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
-import net.osgi.jxse.properties.IJxseWritePropertySource;
-import net.osgi.jxse.properties.IJxseDirectives.Directives;
 
-public class JxseStartupService extends AbstractActivator implements IJxseService<NetworkManager,IJxseProperties>{
+public class JxseStartupService extends AbstractActivator implements IJxseService<BuilderContainer>{
 
 	public static final String S_ERR_NO_SERVICE_LOADED = "\n\t!!! No service is loaded. Not starting context:  ";
 	public static final String S_ERR_CONTEXT_NOT_BUILT = "\n\t!!! The context was not built! Not starting context:  ";
@@ -37,12 +33,14 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 	
 	private JxseStartupPropertySource source;
 	
-	private ComponentNode<JxseServiceContext, IJxseProperties> root;
-	private NetworkManager manager;
+	private BuilderContainer container;
 	
-	public JxseStartupService( ComponentNode<JxseServiceContext, IJxseProperties> root, JxseStartupPropertySource source ) {
+	private IBuilderContainerListener<Object> listener;
+	
+	public JxseStartupService( BuilderContainer container, JxseStartupPropertySource source ) {
 		this.source = source;
-		this.root = root;
+		this.container = container;
+		super.setStatus(Status.AVAILABLE);
 	}
 
 	/**
@@ -52,101 +50,83 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 	protected boolean isAutoStart(){
 		return Boolean.parseBoolean( (String) this.source.getDirective( IJxseDirectives.Directives.AUTO_START ));		
 	}
-	
-	/**
-	 * Prepare the context by running the factories
-	 * @return
-	 */
-	private boolean prepare(){
-		IJxseWritePropertySource<?> writeRoot = (IJxseWritePropertySource<?>) this.root.getFactory().getPropertySource();
-		if( JxseStartupPropertySource.isAutoStart( this.source ) && 
-				!JxseStartupPropertySource.isAutoStart( writeRoot ))
-			writeRoot.setDirective( Directives.AUTO_START, Boolean.TRUE.toString());
-			
-		String identifier = source.getIdentifier();
-		Logger logger = Logger.getLogger( this.getClass().getName() );
-		logger.info( S_INFO_AUTOSTART + identifier + ": " + this.isAutoStart());
-		if( this.root == null ){
-			logger.severe( S_ERR_CONTEXT_NOT_BUILT + identifier + " !!!\n");
-			return false;
-		}
 		
-		CompositeStarter<JxseServiceContext, IJxseProperties> starter = 
-				new CompositeStarter<JxseServiceContext, IJxseProperties>( this.root );
-		ICompositeBuilderListener<?> listener = new ICompositeBuilderListener<Object>(){
+	/**
+	 * Start a module
+	 * @param module
+	 */
+	protected void startModule( IJxseModule<Object> module ){
+		IComponentFactory<?> factory = null;
+		if(( module.canCreate()) && ( !module.isCompleted() )){
+				factory = module.createFactory();
+				container.notifyCreated( new ComponentBuilderEvent<Object>( this, module, BuilderEvents.FACTORY_CREATED ));
+		}
+		if( JxseStartupPropertySource.isAutoStart( module.getPropertySource()) ){
+			factory.createComponent();
+			container.notifyCreated( new ComponentBuilderEvent<Object>( this, module, BuilderEvents.COMPONENT_CREATED ));			
+		}
+		if( module.canActivate() ){
+			IActivator service = (IActivator) module.getComponent();
+			if( !service.isActive())
+				service.start();
+		}		
+	}
 
-			@Override
-			public void notifyCreated(ComponentBuilderEvent<Object> event) {
-				JxseServiceContext service = root.getFactory().getModule();
-				BuilderEvents fe = event.getBuilderEvent();
-				switch( fe ){
-				case COMPONENT_CREATED:
-					ComponentNode<?,?> node = (ComponentNode<?, ?>) event.getComponent();
-					Object component = node.getFactory().getModule();
-					if( component.equals( service )){
-						break;
-					}
-					if( component instanceof NetworkConfigurator ){
-						break;
-					}
-					if( component instanceof NetPeerGroupService ){
-						NetworkManager manager = ( NetworkManager)component;
-						NetPeerGroupService npg = (NetPeerGroupService) component;
-						npg.start();
-						JxseServiceContext.addModule( service, npg );
-					}
-					ComponentNode<?,?> parentNode = node.getParent();
-					if( parentNode == null )
-						break;
-					Object po = node.getParent().getFactory().getModule();
-					if(!( po instanceof IJxseComponentNode ))
-						break;
-					IJxseComponentNode<?,?> parent = (IJxseComponentNode<?, ?>) po;
-					if( parent.equals( service ))
-						JxseServiceContext.addModule( service, component );
-					else
-						parent.addChild((IJxseComponent<?, ?>) component);
-					break;
-				default:
-					break;
-				}
-			}
-		};
-		starter.addListener(listener);
-		starter.start();
-		starter.removeListener(listener);	
-		return true;
+	/**
+	 * Start a module
+	 * @param module
+	 */
+	protected void stopModule( IJxseModule<Object> module ){
+		if( module.canActivate() ){
+			IActivator service = (IActivator) module.getComponent();
+			if( service.isActive())
+				service.stop();
+		}		
 	}
 	
+
 	/**
 	 * Perform the activation
 	 */
-	public void activate() {
+	@SuppressWarnings("unchecked")
+	public synchronized void activate() {
+		if(!this.isAutoStart() )
+			return;
+		
 		Logger logger = Logger.getLogger( this.getClass().getName() );
-		if( !this.prepare())
-			return;
-		JxseServiceContext service = root.getFactory().getModule();
-		try{
-			service.start();
+		
+		//First start the modules that are already present
+		for( IJxseModule<?> module: container.getChildren()){
+			if( Components.STARTUP_SERVICE.toString().equals( module.getComponentName() ))
+				continue;
+			this.startModule( (IJxseModule<Object>) module);
 		}
-		catch( Exception ex ){
-			ex.printStackTrace();
-		}
-		if( service == null ){
-			String identifier = source.getIdentifier();
-			logger.severe( S_ERR_NO_SERVICE_LOADED + identifier + " !!!\n");
-			return;
-		}
+		
+		//Then listen to new additions
+		listener = new IBuilderContainerListener<Object>(){
+
+			@Override
+			public void notifyAdded(BuilderContainerEvent<Object> event) {
+				startModule( event.getModule() );
+			}
+
+			@Override
+			public void notifyRemoved(BuilderContainerEvent<Object> event) {
+				stopModule( event.getModule() );
+			}
+			
+		};
+		container.addListener( listener);
 	}
 	
 	//Make public
+	@SuppressWarnings("unchecked")
 	@Override
 	public void deactivate() {
-		try{
-			manager.stopNetwork();
-		}
-		catch( Exception ex ){
-			ex.printStackTrace();
+		if( this.listener != null )
+			container.removeListener(listener);
+		for( IJxseModule<?> module: container.getChildren()){
+			this.stopModule((IJxseModule<Object>) module);
 		}
 	}
 
@@ -179,8 +159,8 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 
 
 	@Override
-	public NetworkManager getModule() {
-		return this.manager;
+	public BuilderContainer getModule() {
+		return this.container;
 	}
 
 

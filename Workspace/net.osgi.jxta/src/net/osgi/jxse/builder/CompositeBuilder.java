@@ -14,53 +14,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import net.jxta.platform.NetworkManager;
-import net.osgi.jxse.activator.JxseStartupPropertySource;
-import net.osgi.jxse.activator.StartupServiceFactory;
-import net.osgi.jxse.advertisement.AdvertisementPropertySource;
-import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
-import net.osgi.jxse.advertisement.JxseAdvertisementFactory;
 import net.osgi.jxse.builder.ICompositeBuilderListener.BuilderEvents;
-import net.osgi.jxse.context.ContextFactory;
-import net.osgi.jxse.context.JxseContextPropertySource;
-import net.osgi.jxse.context.Swarm;
-import net.osgi.jxse.discovery.DiscoveryPropertySource;
-import net.osgi.jxse.discovery.DiscoveryServiceFactory;
+import net.osgi.jxse.component.ModuleNode;
+import net.osgi.jxse.context.ContextModule;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
+import net.osgi.jxse.factory.FactoryNode;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.netpeergroup.NetPeerGroupPropertySource;
-import net.osgi.jxse.network.INetworkManagerProvider;
-import net.osgi.jxse.network.NetworkManagerFactory;
-import net.osgi.jxse.network.NetworkManagerPropertySource;
-import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
-import net.osgi.jxse.network.configurator.NetworkConfigurationFactory;
-import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
-import net.osgi.jxse.peergroup.PeerGroupFactory;
-import net.osgi.jxse.peergroup.PeerGroupPropertySource;
-import net.osgi.jxse.pipe.PipePropertySource;
-import net.osgi.jxse.properties.AbstractPeerGroupProviderPropertySource.PeerGroupDirectives;
-import net.osgi.jxse.properties.IJxseProperties;
-import net.osgi.jxse.properties.IJxsePropertySource;
-import net.osgi.jxse.registration.RegistrationPropertySource;
-import net.osgi.jxse.registration.RegistrationServiceFactory;
-import net.osgi.jxse.seeds.ISeedListFactory;
-import net.osgi.jxse.seeds.SeedListFactory;
-import net.osgi.jxse.seeds.SeedListPropertySource;
 import net.osgi.jxse.utils.Utils;
 
-public class CompositeBuilder<T extends Object, U extends Object> implements ICompositeBuilder<T,U> {
+public class CompositeBuilder implements ICompositeBuilder<ModuleNode<ContextModule>> {
 
 	private Collection<ICompositeBuilderListener<?>> builderlisteners;
-	private ComponentNode<T,U> root;
-	private ComponentNode<NetworkManager,NetworkManagerProperties> networkRoot;
-	private IJxsePropertySource<U> ps;
+	private ModuleNode<NetworkManager> networkRoot;
+	private ModuleNode<ContextModule> root;
 	
-	private BuilderContainer container;
-	
-	public CompositeBuilder( IJxsePropertySource<U> propertySource, BuilderContainer container, Swarm swarm) {
-		ps = propertySource;
-		this.container = container;
+	public CompositeBuilder( ModuleNode<ContextModule> root ) {
+		this.root = root;
 		this.builderlisteners = new ArrayList<ICompositeBuilderListener<?>>();
 	}
 
@@ -85,14 +55,23 @@ public class CompositeBuilder<T extends Object, U extends Object> implements ICo
 		for( ICompositeBuilderListener<?> listener: builderlisteners )
 			listener.notifyCreated(event);
 	}
- 
+
+	@Override
+	public ModuleNode<ContextModule> build() {
+		this.extendPropertySources(root);
+		this.parseModules(this.root, null );
+		return this.root;
+	}
+
 	/**
-	 * Parse the directives for this factory
+	 * Extend the property sources, if this is required.
 	 * @param node
 	 */
-	@SuppressWarnings({ "unchecked" })
-	private final void parsePropertySources(){
-		this.root = this.parsePropertySources(ps, null );
+	private final void extendPropertySources( ModuleNode<?> node){
+		node.getData().extendModules();	
+		for( ComponentNode<?> child: node.getChildren()) {
+			this.extendPropertySources((ModuleNode<?>) child );
+		}
 	}
 
 	/**
@@ -100,65 +79,14 @@ public class CompositeBuilder<T extends Object, U extends Object> implements ICo
 	 * @param node
 	 */
 	@SuppressWarnings({"rawtypes", "unchecked" })
-	private final ComponentNode parsePropertySources( IJxsePropertySource<?> source, ComponentNode<?, ?> parent ){
-		ComponentNode node = null;
-		IComponentFactory<?,?> factory = null;
-		//IModuleComponents component = Components.valueOf( source.getComponentName() );
-		if( source instanceof JxseContextPropertySource ){
-			factory = new ContextFactory( (JxseContextPropertySource) source );
-		}else if( source instanceof JxseStartupPropertySource ){
-			factory = new StartupServiceFactory((JxseStartupPropertySource) source );
-		}else if( source instanceof NetworkManagerPropertySource ){
-			factory = new NetworkManagerFactory( (IJxsePropertySource<IJxseProperties>) source );
-			this.networkRoot = node;
-		}else if( source instanceof NetworkConfigurationPropertySource ){
-			factory = new NetworkConfigurationFactory( (INetworkManagerProvider) parent.getFactory(), (NetworkConfigurationPropertySource) source );
-		}else if( source instanceof SeedListPropertySource ){
-			NetworkConfigurationFactory ncf = (NetworkConfigurationFactory) parent.getFactory();
-			ISeedListFactory slf = new SeedListFactory((SeedListPropertySource) source ); 
-			ncf.addSeedlist(slf);
-		}else if( source instanceof DiscoveryPropertySource ){
-			DiscoveryPropertySource discsource = ( DiscoveryPropertySource )source;
-			String peergroup = (String) discsource.getDirective( PeerGroupDirectives.PEERGROUP );
-			ComponentNode<IPeerGroupProvider,?> provider = this.getPeerGroupProviderNotNull( peergroup, parent);
-			factory = new DiscoveryServiceFactory( (IPeerGroupProvider) provider.getFactory(), (DiscoveryPropertySource)source );
-		}else if( source instanceof NetPeerGroupPropertySource ){
-			IJxseModule module = container.getModule( Components.NET_PEERGROUP_SERVICE.toString() );
-			factory = module.createFactory( null );
-		}else if( source instanceof PipePropertySource ){
-			IJxseModule module = container.getModule( Components.PIPE_SERVICE.toString() );
-			String peergroup = (String) module.getPropertySource().getDirective( PeerGroupDirectives.PEERGROUP );
-			ComponentNode<IPeerGroupProvider,?> nd = this.getPeerGroupProviderNotNull( peergroup, parent);
-			factory = module.createFactory( (IPeerGroupProvider) nd.getFactory());
-		}else if( source instanceof AdvertisementPropertySource ){
-			IJxsePropertySource<IJxseProperties> advsource = (IJxsePropertySource<IJxseProperties>) source;
-			String peergroup = (String) advsource.getDirective( AdvertisementDirectives.PEERGROUP );
-			ComponentNode<IPeerGroupProvider,?> provider = this.getPeerGroupProviderNotNull( peergroup, parent);
-			factory = new JxseAdvertisementFactory( (IPeerGroupProvider) provider.getFactory(), advsource );
-		}else if( source instanceof PeerGroupPropertySource ){
-			PeerGroupPropertySource peersource = ( PeerGroupPropertySource )source;
-			String peergroup = (String)peersource.getDirective( PeerGroupDirectives.PEERGROUP );
-			ComponentNode<IPeerGroupProvider,?>  provider = this.getPeerGroupProviderNotNull( peergroup, parent);
-			factory = new PeerGroupFactory( (IPeerGroupProvider) provider.getFactory(), (PeerGroupPropertySource)source );
-		}else if( source instanceof RegistrationPropertySource ){
-			RegistrationPropertySource rescsource = ( RegistrationPropertySource )source;
-			String peergroup = (String) rescsource.getDirective( PeerGroupDirectives.PEERGROUP );
-			ComponentNode<IPeerGroupProvider,?> provider = this.getPeerGroupProviderNotNull( peergroup, parent);
-			factory = new RegistrationServiceFactory( (IPeerGroupProvider) provider.getFactory(), rescsource );
+	private final void parseModules( ModuleNode<?> node, ModuleNode<?> parent ){
+		if( !node.getData().canCreate() )
+			return;
+		node.getData().createFactory();	
+		for( ComponentNode<?> child: node.getChildren()) {
+			this.parseModules( (ModuleNode<?>) child, node );
 		}
-
-		if( factory != null ){
-			node = this.createNode(parent, factory);
-			if( source instanceof JxseContextPropertySource ){			
-				this.root = node;
-			}
-		}
-		
-		for( IJxsePropertySource<?> child: source.getChildren()) {
-			this.parsePropertySources( child, node );
-		}
-		this.notifyListeners( new ComponentBuilderEvent( this, factory, BuilderEvents.FACTORY_CREATED ));
-		return this.root;
+		this.notifyListeners( new ComponentBuilderEvent( this, node.getData(), BuilderEvents.FACTORY_CREATED ));
 	}
 
 	/**
@@ -167,17 +95,18 @@ public class CompositeBuilder<T extends Object, U extends Object> implements ICo
 	 * @param parent
 	 * @return
 	 */
-	private final ComponentNode<IPeerGroupProvider,?> getPeerGroupProvider( String name, ComponentNode<?, ?> parent ){
+	@SuppressWarnings("unchecked")
+	private final ModuleNode<IPeerGroupProvider> getPeerGroupProvider( String name, ModuleNode<?> parent ){
 		String providerName = IPeerGroupProvider.S_NET_PEER_GROUP;
 		if( !Utils.isNull( name ))
 			providerName = name;
 		
-		ComponentNode<IPeerGroupProvider,?> returnNode= findFirstPeerGroupProviderParent(parent, providerName);
+		ModuleNode<IPeerGroupProvider> returnNode= (ModuleNode<IPeerGroupProvider>) findFirstPeerGroupProviderParent(parent, providerName);
 		if( returnNode != null )
 			return returnNode;
 		
-		for( ComponentNode<?,?> child: this.networkRoot.getChildren()) {
-			returnNode = this.getPeerGroupProvider( providerName, child );
+		for( ComponentNode<?> child: this.networkRoot.getChildren()) {
+			returnNode = this.getPeerGroupProvider( providerName, (ModuleNode<?>) child );
 			if( returnNode != null )
 				return returnNode;
 		}
@@ -185,14 +114,13 @@ public class CompositeBuilder<T extends Object, U extends Object> implements ICo
 		return returnNode;
 	}
 
-	@SuppressWarnings("unchecked")
-	private ComponentNode<IPeerGroupProvider, ?> findFirstPeerGroupProviderParent( ComponentNode<?, ?> parent, String name ){
+	private ModuleNode<?> findFirstPeerGroupProviderParent( ModuleNode<?> parent, String name ){
 		if( parent == null )
 			return null;
-		IComponentFactory<?,?> factory = parent.getFactory();
-		if( factory instanceof IPeerGroupProvider )
-			return (ComponentNode<IPeerGroupProvider, ?>) parent;
-		 return findFirstPeerGroupProviderParent( parent.getParent(), name );
+		IComponentFactory<IJxseModule<?>> module = (IComponentFactory<IJxseModule<?>>) parent.getData();
+		if( module instanceof IPeerGroupProvider )
+			return parent;
+		 return findFirstPeerGroupProviderParent( (ModuleNode<?>) parent.getParent(), name );
 	}
 	
 	/**
@@ -201,26 +129,19 @@ public class CompositeBuilder<T extends Object, U extends Object> implements ICo
 	 * @param parent
 	 * @return
 	 */
-	protected final ComponentNode<IPeerGroupProvider,?> getPeerGroupProviderNotNull( String name, ComponentNode<?, ?> parent ){
-		ComponentNode<IPeerGroupProvider,?> provider = getPeerGroupProvider( name, parent );
+	protected final ModuleNode<IPeerGroupProvider> getPeerGroupProviderNotNull( String name, ModuleNode<?> parent ){
+		ModuleNode<IPeerGroupProvider> provider = getPeerGroupProvider( name, parent );
 		if( provider == null )
 			provider = getPeerGroupProvider( IPeerGroupProvider.S_NET_PEER_GROUP, parent );
 		return provider;
 	}
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected ComponentNode<?,?> createNode( ComponentNode<?,?> node, IComponentFactory<?,?> factory ){
-		ComponentNode<?,?> childNode = null;
+	protected FactoryNode<?> createNode( ComponentNode<?> node, IComponentFactory<?> factory ){
+		FactoryNode<?> childNode = null;
 		if( node == null )
-			childNode = new ComponentNode( factory );
+			childNode = new FactoryNode( factory );
 		else
-			childNode = node.addChild( factory );
+			childNode = (FactoryNode )node.addChild( factory );
 		return childNode;
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public T build() {
-		this.parsePropertySources();
-		return (T) this.root;
 	}
 }

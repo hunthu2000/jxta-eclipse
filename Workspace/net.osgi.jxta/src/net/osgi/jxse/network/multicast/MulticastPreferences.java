@@ -40,7 +40,10 @@ public class MulticastPreferences implements INetworkPreferences{
 	}
 		
 	@Override
-	public boolean setPropertyFromString(NetworkConfiguratorProperties id, String value) {
+	public boolean setPropertyFromString( IJxseProperties property, String value) {
+		if(!(property instanceof NetworkConfiguratorProperties ))
+			return false;
+		NetworkConfiguratorProperties id = (NetworkConfiguratorProperties) property;
 		switch( id ){
 		case MULTICAST_8ENABLED:
 			source.setProperty( id, Boolean.parseBoolean( value ));

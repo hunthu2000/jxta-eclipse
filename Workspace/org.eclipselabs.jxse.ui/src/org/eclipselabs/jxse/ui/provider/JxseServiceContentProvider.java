@@ -59,7 +59,7 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 	public Object getParent(Object element) {
 		if(!( element instanceof IJxseComponentNode ))
 			return null;
-		IJxseComponentNode<?,?> decorator = (IJxseComponentNode<?,?>)element;
+		IJxseComponentNode<?> decorator = (IJxseComponentNode<?>)element;
 		if( decorator.getModule() instanceof NetworkConfigurator ){
 			ITreeContentProvider provider = new NetworkConfiguratorContentProvider( decorator.getParent() );
 			return provider.getParent(element);
@@ -77,7 +77,7 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 			return null;
 		Object parent = null;
 		if( component instanceof IJxseComponentNode ){
-			IJxseComponentNode<?,?> node = (IJxseComponentNode<?,?> )component;
+			IJxseComponentNode<?> node = (IJxseComponentNode<?> )component;
 			parent = node.getParent();	
 		}
 		return new NetworkConfiguratorContentProvider( parent );
@@ -95,7 +95,7 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 		}
 		if(!( component instanceof IJxseComponentNode ))
 			return null;
-		IJxseComponentNode<?,?> node = (IJxseComponentNode<?,?> )component;
+		IJxseComponentNode<?> node = (IJxseComponentNode<?> )component;
 		return node.getChildren().toArray();
 	}
 
@@ -108,7 +108,7 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 	 * @return
 	 */
 	public static Object decorateComponent( Object element ){
-		if( element instanceof IJxseService<?,?> )
+		if( element instanceof IJxseService<?> )
 			return element;
 		if( element instanceof IJxseComponentNode )
 			return element;

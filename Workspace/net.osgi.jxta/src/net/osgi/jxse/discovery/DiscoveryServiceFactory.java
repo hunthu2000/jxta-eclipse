@@ -17,7 +17,7 @@ import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class DiscoveryServiceFactory extends
-		AbstractComponentFactory<DiscoveryService, IJxseProperties> {
+		AbstractComponentFactory<DiscoveryService> {
 
 	public static final String S_DISCOVERY_SERVICE = "DiscoveryService";
 

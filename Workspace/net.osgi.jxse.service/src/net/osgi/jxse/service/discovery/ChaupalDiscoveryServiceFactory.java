@@ -18,7 +18,7 @@ import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class ChaupalDiscoveryServiceFactory extends
-		AbstractComponentFactory<JxseDiscoveryService, IJxseProperties> {
+		AbstractComponentFactory<JxseDiscoveryService> {
 
 	public static final String S_DISCOVERY_SERVICE = "JxseDiscoveryService";
 
@@ -36,7 +36,7 @@ public class ChaupalDiscoveryServiceFactory extends
 
 	@Override
 	protected JxseDiscoveryService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		DiscoveryService ds = factory.createModule();
+		DiscoveryService ds = factory.createComponent();
 		if( ds == null )
 			return null;
 		JxseDiscoveryService service = new JxseDiscoveryService( factory );

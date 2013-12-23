@@ -18,14 +18,14 @@ import java.util.Iterator;
 import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.properties.IJxseProperties;
 
-public class JxseComponentNode<T extends Object, U extends Object> implements IJxseComponentNode<T,U>{
+public class JxseComponentNode<T extends Object> implements IJxseComponentNode<T>{
 
-	private IJxseComponent<T,U> component;
-	private IJxseComponentNode<?,?> parent;	
+	private IJxseComponent<T,IJxseProperties> component;
+	private IJxseComponentNode<?> parent;	
 	private Collection<IJxseComponent<?,?>> children;
 	private ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 	
-	public JxseComponentNode( IJxseComponentNode<?,IJxseProperties> parent, IJxseComponent<T,U> component ) {
+	public JxseComponentNode( IJxseComponentNode<?> parent, IJxseComponent<T,IJxseProperties> component ) {
 		this.component = component;
 		this.parent = parent;
 		this.children = new ArrayList<IJxseComponent<?,?>>();
@@ -60,7 +60,7 @@ public class JxseComponentNode<T extends Object, U extends Object> implements IJ
 	 * @return
 	 */
 	@Override
-	public IJxseComponentNode<?,?> getParent(){
+	public IJxseComponentNode<?> getParent(){
 		return parent;
 	}
 
@@ -97,7 +97,7 @@ public class JxseComponentNode<T extends Object, U extends Object> implements IJ
 	}
 
 	@Override
-	public Iterator<U> iterator() {
+	public Iterator<IJxseProperties> iterator() {
 		return this.component.iterator();
 	}
 

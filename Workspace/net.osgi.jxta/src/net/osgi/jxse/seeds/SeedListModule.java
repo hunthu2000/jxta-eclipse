@@ -1,15 +1,14 @@
 package net.osgi.jxse.seeds;
 
-import net.osgi.jxse.component.AbstractJxseModule;
+import net.osgi.jxse.builder.AbstractJxseModule;
+import net.osgi.jxse.builder.IJxseModule;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
-import net.osgi.jxse.properties.IJxseProperties;
-import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class SeedListModule extends AbstractJxseModule<String, SeedListPropertySource> {
 
-	public SeedListModule(IJxsePropertySource<?> parent) {
+	public SeedListModule(IJxseModule<?> parent) {
 		super(parent);
 	}
 
@@ -21,11 +20,17 @@ public class SeedListModule extends AbstractJxseModule<String, SeedListPropertyS
 
 	@Override
 	protected SeedListPropertySource onCreatePropertySource() {
-		return new SeedListPropertySource( super.getParent() );
+		return new SeedListPropertySource( super.getParent().getPropertySource() );
 	}
 
 	@Override
-	public IComponentFactory<String, IJxseProperties> createFactory( IPeerGroupProvider provider ) {
+	public IComponentFactory<String> onCreateFactory() {
 		return new SeedListFactory( super.getPropertySource() );
+	}
+
+	@Override
+	public void notifyCreated(ComponentBuilderEvent<Object> event) {
+		// TODO Auto-generated method stub
+		
 	}
 }

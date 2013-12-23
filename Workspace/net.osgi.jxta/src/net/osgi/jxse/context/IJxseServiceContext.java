@@ -15,7 +15,7 @@ import net.osgi.jxse.component.IJxseComponentNode;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.utils.StringStyler;
 
-public interface IJxseServiceContext<T extends Object, U extends IJxseProperties> extends IJxseComponentNode<T,U>, IJxseService<T,U> {
+public interface IJxseServiceContext<T extends Object> extends IJxseComponentNode<T>, IJxseService<T> {
 
 	public enum ContextProperties implements IJxseProperties{
 		BUNDLE_ID,

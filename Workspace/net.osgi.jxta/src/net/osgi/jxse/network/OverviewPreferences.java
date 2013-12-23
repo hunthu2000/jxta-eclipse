@@ -22,14 +22,15 @@ import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.properties.AbstractPreferences;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 
-public class OverviewPreferences extends AbstractPreferences<NetworkConfiguratorProperties> implements INetworkPreferences{
+public class OverviewPreferences extends AbstractPreferences<IJxseProperties> implements INetworkPreferences{
 
 	public static final String S_OVERVIEW = "Overview";
 
-	public OverviewPreferences( IJxseWritePropertySource<NetworkConfiguratorProperties> source ) {
+	public OverviewPreferences( IJxseWritePropertySource<IJxseProperties> source ) {
 		super( source );
 	}
 
@@ -37,7 +38,10 @@ public class OverviewPreferences extends AbstractPreferences<NetworkConfigurator
 	 * @see net.osgi.jxse.network.INetworkPreferences#setPropertyFromString(net.osgi.jxse.network.NetworkConfigurationPropertySource.NetworkConfiguratorProperties, java.lang.String)
 	 */
 	@Override
-	public Object convertValue( NetworkConfiguratorProperties id, String value ){
+	public Object convertValue( IJxseProperties key, String value ){
+		if(!( key instanceof NetworkConfiguratorProperties ))
+			return null;
+		NetworkConfiguratorProperties id = (NetworkConfiguratorProperties) key;
 		switch( id ){
 		case MODE:
 			return ConfigMode.valueOf( value );
@@ -66,10 +70,13 @@ public class OverviewPreferences extends AbstractPreferences<NetworkConfigurator
 	 * @return
 	 */
 	@Override
-	public Object createDefaultValue( NetworkConfiguratorProperties id ){
-		if( !ManagedProperty.isCreated( super.getSource().getManagedProperty(id)))
+	public Object createDefaultValue( IJxseProperties key ){
+		if( !ManagedProperty.isCreated( super.getSource().getManagedProperty(key)))
 			return null;
 		
+		if(!( key instanceof NetworkConfiguratorProperties ))
+			return null;
+		NetworkConfiguratorProperties id = (NetworkConfiguratorProperties) key;
 		Object value = null;
 		switch( id ){
 		case PEER_ID:
@@ -92,10 +99,10 @@ public class OverviewPreferences extends AbstractPreferences<NetworkConfigurator
 	*/
 	@Override
 	public boolean fillConfigurator( NetworkConfigurator configurator ){
-		Iterator<NetworkConfiguratorProperties> iterator = super.getSource().propertyIterator();
+		Iterator<IJxseProperties> iterator = super.getSource().propertyIterator();
 		boolean retval = true;
 		while( iterator.hasNext() ){
-			NetworkConfiguratorProperties id = iterator.next();
+			IJxseProperties id = (IJxseProperties) iterator.next();
 			retval &= fillConfigurator(configurator, id, super.getSource().getManagedProperty(id));
 		}
 		return retval;
@@ -107,12 +114,14 @@ public class OverviewPreferences extends AbstractPreferences<NetworkConfigurator
 	 * @param property
 	 * @param value
 	 */
-	public static boolean fillConfigurator( NetworkConfigurator configurator, NetworkConfiguratorProperties id, ManagedProperty<NetworkConfiguratorProperties,Object> property ){
+	public static boolean fillConfigurator( NetworkConfigurator configurator, IJxseProperties key, ManagedProperty<IJxseProperties,Object> property ){
 		boolean retval = true;
 		Object value = property.getValue();
 		if( value == null )
 			return false;
-		
+		if(!( key instanceof NetworkConfiguratorProperties ))
+			return false;
+		NetworkConfiguratorProperties id = (NetworkConfiguratorProperties) key;		
 		switch( id ){
 		case MODE:
 			configurator.setMode((( ConfigMode )value).ordinal() );

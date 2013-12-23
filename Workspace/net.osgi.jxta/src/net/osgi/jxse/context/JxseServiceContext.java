@@ -16,7 +16,7 @@ import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
-public class JxseServiceContext extends AbstractServiceContext<IJxseProperties>{
+public class JxseServiceContext extends AbstractServiceContext{
 
 	public JxseServiceContext( IJxsePropertySource<IJxseProperties> iJxsePropertySource ) {
 		super( iJxsePropertySource );

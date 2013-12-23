@@ -18,7 +18,7 @@ import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.seeds.SeedInfo;
 
-public class SeedListFactory implements IComponentFactory<String, IJxseProperties>, ISeedListFactory{
+public class SeedListFactory implements IComponentFactory<String>, ISeedListFactory{
 
 	private SeedListPropertySource source;
 	private NetworkConfigurator configurator;
@@ -34,7 +34,7 @@ public class SeedListFactory implements IComponentFactory<String, IJxsePropertie
 	}
 	
 	@Override
-	public Components getComponent() {
+	public Components getComponentId() {
 		return Components.SEED_LIST;
 	}
 
@@ -54,7 +54,7 @@ public class SeedListFactory implements IComponentFactory<String, IJxsePropertie
 	}
 
 	@Override
-	public String createModule() {
+	public String createComponent() {
 		Iterator<IJxseProperties> iterator = source.propertyIterator();
 		while( iterator.hasNext() ){
 			IJxseProperties key = iterator.next();
@@ -87,7 +87,7 @@ public class SeedListFactory implements IComponentFactory<String, IJxsePropertie
 	}
 
 	@Override
-	public String getModule() {
+	public String getComponent() {
 		return null;
 	}
 

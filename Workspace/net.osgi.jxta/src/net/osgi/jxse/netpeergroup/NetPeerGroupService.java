@@ -16,19 +16,19 @@ import java.util.logging.Logger;
 
 import net.jxta.exception.PeerGroupException;
 import net.jxta.peergroup.PeerGroup;
+import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.component.AbstractJxseService;
-import net.osgi.jxse.network.NetworkManagerFactory;
 import net.osgi.jxse.peergroup.IPeerGroupProperties.PeerGroupProperties;
 
-public class NetPeerGroupService extends AbstractJxseService<PeerGroup, PeerGroupProperties>{
+public class NetPeerGroupService extends AbstractJxseService<PeerGroup>{
 
 	public static final String S_NETPEERGROUP_SERVICE = "Jxse Net Peergroup Service";
 
-	private NetworkManagerFactory factory;
+	private NetworkManager manager;
 
-	public NetPeerGroupService( NetworkManagerFactory factory ) {
+	public NetPeerGroupService( NetPeerGroupFactory factory, NetworkManager manager ) {
 		super( factory.getPropertySource().getBundleId(), factory.getPropertySource().getIdentifier(), S_NETPEERGROUP_SERVICE );
-		this.factory = factory;
+		this.manager = manager;
 	}
 
 	public Object getProperty( PeerGroupProperties key ){
@@ -38,7 +38,7 @@ public class NetPeerGroupService extends AbstractJxseService<PeerGroup, PeerGrou
 	@Override
 	protected void activate() {
 		try {
-			PeerGroup peergroup = factory.getModule().startNetwork();
+			PeerGroup peergroup = manager.startNetwork();
 			super.setModule( peergroup );
 		} catch (PeerGroupException | IOException e) {
 			Logger log = Logger.getLogger( this.getClass().getName() );
@@ -50,6 +50,8 @@ public class NetPeerGroupService extends AbstractJxseService<PeerGroup, PeerGrou
 
 	@Override
 	protected void deactivate() {
-		factory.getModule().stopNetwork();
+		manager.stopNetwork();
 	}
+	
+	
 }

@@ -18,7 +18,7 @@ import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class ChaupalAdvertisementFactory extends
-		AbstractComponentFactory<JxseAdvertisementService, IJxseProperties> implements IPeerGroupProvider{
+		AbstractComponentFactory<JxseAdvertisementService> implements IPeerGroupProvider{
 
 	public static final String S_DISCOVERY_SERVICE = "JxseDiscoveryService";
 
@@ -31,7 +31,7 @@ public class ChaupalAdvertisementFactory extends
 
 	@Override
 	protected JxseAdvertisementService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		factory.createModule();
+		factory.createComponent();
 		JxseAdvertisementService ds = new JxseAdvertisementService ( factory );
 		return ds;
 	}

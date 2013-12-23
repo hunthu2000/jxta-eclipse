@@ -17,7 +17,7 @@ import net.osgi.jxse.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
-public class PeerGroupFactory extends AbstractComponentFactory<PeerGroup, IJxseProperties> 
+public class PeerGroupFactory extends AbstractComponentFactory<PeerGroup> 
 	implements IPeerGroupProvider
 {
 
@@ -43,7 +43,7 @@ public class PeerGroupFactory extends AbstractComponentFactory<PeerGroup, IJxseP
 	
 	@Override
 	public PeerGroup getPeerGroup() {
-		return super.getModule();
+		return super.getComponent();
 	}
 
 	@Override

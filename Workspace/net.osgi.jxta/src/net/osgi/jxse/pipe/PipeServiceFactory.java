@@ -17,7 +17,7 @@ import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class PipeServiceFactory extends
-		AbstractComponentFactory<PipeService, IJxseProperties> {
+		AbstractComponentFactory<PipeService> {
 
 	public static final String S_DISCOVERY_SERVICE = "DiscoveryService";
 

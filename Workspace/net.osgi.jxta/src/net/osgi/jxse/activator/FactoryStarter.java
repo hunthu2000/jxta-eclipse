@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.concurrent.Callable;
 
 import net.osgi.jxse.builder.ComponentNode;
+import net.osgi.jxse.factory.FactoryNode;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
@@ -15,9 +16,9 @@ import net.osgi.jxse.utils.Utils;
 
 public class FactoryStarter<V extends Object> implements Callable<V> {
 
-	private ComponentNode<V,IJxseProperties> node;
+	private FactoryNode<V> node;
 	
-	public FactoryStarter( ComponentNode<V,IJxseProperties> node ) {
+	public FactoryStarter( FactoryNode<V> node ) {
 		this.node = node;
 	}
 
@@ -25,8 +26,8 @@ public class FactoryStarter<V extends Object> implements Callable<V> {
 	 * Parse the directives for this factory
 	 * @param node
 	 */
-	private final void parseDirectives( ComponentNode<?,?> node ){
-		IJxsePropertySource<?> propertySource = node.getFactory().getPropertySource();
+	private final void parseDirectives( FactoryNode<?> node ){
+		IJxsePropertySource<IJxseProperties> propertySource = node.getData().getPropertySource();
 		Iterator<IJxseDirectives> iterator = propertySource.directiveIterator();
 		IJxseDirectives directive;
 		while( iterator.hasNext()) {
@@ -35,10 +36,10 @@ public class FactoryStarter<V extends Object> implements Callable<V> {
 		}
 	}
 
-	protected void onParseDirectivePriorToCreation( ComponentNode<?,?> node, IJxseDirectives directive, String value) {
+	protected void onParseDirectivePriorToCreation( FactoryNode<?> node, IJxseDirectives directive, String value) {
 		if( node.getParent() == null )
 			return;
-		IComponentFactory<?,?> parentFactory = node.getParent().getFactory();
+		IComponentFactory<?> parentFactory = (IComponentFactory<?>) node.getParent().getData();
 		if(!(directive instanceof Directives ))
 			return;
 		Directives dir = ( Directives )directive;
@@ -47,7 +48,7 @@ public class FactoryStarter<V extends Object> implements Callable<V> {
 				boolean ap = Boolean.parseBoolean( value );
 				if( !ap || !parentFactory.isCompleted())
 					break;
-				Object pc = parentFactory.getModule();
+				Object pc = parentFactory.getComponent();
 				if(!( pc instanceof IActivator ))
 					return;
 				IActivator activator = ( IActivator )pc;
@@ -56,7 +57,7 @@ public class FactoryStarter<V extends Object> implements Callable<V> {
 			case CREATE_PARENT:
 				boolean cp = Boolean.parseBoolean( value );
 				if( cp && !parentFactory.isCompleted())
-					parentFactory.createModule();
+					parentFactory.createComponent();
 				break;
 			default:
 				break;
@@ -66,10 +67,10 @@ public class FactoryStarter<V extends Object> implements Callable<V> {
 	/**
 	 * Do nothing
 	 */
-	protected void onParseDirectiveAfterCreation( ComponentNode<?,?> node, IJxseDirectives directive, String value) {
+	protected void onParseDirectiveAfterCreation( ComponentNode<IComponentFactory<?>> node, IJxseDirectives directive, String value) {
 		if( node == null )
 			return;
-		IComponentFactory<?,?> factory = node.getFactory();
+		IComponentFactory<?> factory = node.getData();
 		if(( !factory.isCompleted() ) || !(directive instanceof Directives ))
 			return;
 		Directives dir = ( Directives )directive;
@@ -90,7 +91,7 @@ public class FactoryStarter<V extends Object> implements Callable<V> {
 				boolean ap = Boolean.parseBoolean( value );
 				if( !ap )
 					break;
-				Object pc = factory.getModule();
+				Object pc = factory.getComponent();
 				if(!( pc instanceof IActivator ))
 					return;
 				IActivator activator = ( IActivator )pc;
@@ -102,15 +103,15 @@ public class FactoryStarter<V extends Object> implements Callable<V> {
 	}
 	@Override
 	public V call() throws Exception {
-		IComponentFactory<V,?> factory = node.getFactory();
+		IComponentFactory<V> factory = node.getData();
 		V module = null;
 		if(factory.isCompleted() )
-			return factory.getModule();
+			return factory.getComponent();
 		
 		this.parseDirectives( node );
 		try{
 			do{ 
-				module = factory.createModule();
+				module = factory.createComponent();
 			}while( module == null );
 		}
 		catch( Exception ex ){

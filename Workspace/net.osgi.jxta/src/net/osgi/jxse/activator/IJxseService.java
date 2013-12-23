@@ -11,6 +11,7 @@
 package net.osgi.jxse.activator;
 
 import net.osgi.jxse.component.IJxseComponent;
+import net.osgi.jxse.properties.IJxseProperties;
 
-public interface IJxseService<T extends Object, U extends Object> extends IJxseComponent<T,U>, IActivator{
+public interface IJxseService<T extends Object> extends IJxseComponent<T,IJxseProperties>, IActivator{
 }

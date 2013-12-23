@@ -211,8 +211,7 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 		this.fillDefaultValues();
 	}
 
-	public AdvertisementPropertySource(String componentName,
-			IJxsePropertySource<?> parent) {
+	public AdvertisementPropertySource(String componentName,IJxsePropertySource<?> parent) {
 		super(componentName, parent);
 		this.fillDefaultValues();
 	}

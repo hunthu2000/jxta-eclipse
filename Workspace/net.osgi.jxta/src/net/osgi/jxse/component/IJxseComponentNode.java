@@ -12,7 +12,9 @@ package net.osgi.jxse.component;
 
 import java.util.Collection;
 
-public interface IJxseComponentNode<T extends Object, U extends Object> extends IJxseComponent<T,U>{
+import net.osgi.jxse.properties.IJxseProperties;
+
+public interface IJxseComponentNode<T extends Object> extends IJxseComponent<T,IJxseProperties>{
 	
 	/**
 	 * Return true if the component is a root

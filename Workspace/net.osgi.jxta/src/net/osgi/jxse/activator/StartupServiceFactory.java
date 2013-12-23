@@ -12,31 +12,34 @@ package net.osgi.jxse.activator;
 
 import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
+import net.osgi.jxse.builder.container.BuilderContainer;
 import net.osgi.jxse.context.IJxseServiceContext;
-import net.osgi.jxse.context.JxseServiceContext;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
-public class StartupServiceFactory extends AbstractComponentFactory<JxseStartupService, IJxseProperties> implements ICompositeBuilderListener<ComponentNode<?,IJxseProperties>>
+public class StartupServiceFactory extends AbstractComponentFactory<JxseStartupService> implements ICompositeBuilderListener<ComponentNode<?>>
 {
+	private BuilderContainer container;
 	
-	private ComponentNode<JxseServiceContext, IJxseProperties> root;
-	
-	public StartupServiceFactory( JxseStartupPropertySource source) {
+	public StartupServiceFactory( BuilderContainer container, JxseStartupPropertySource source) {
 		super(source );
-	}
-	
-	@Override
-	protected JxseStartupService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		return new JxseStartupService( root, (JxseStartupPropertySource) super.getPropertySource() );
+		this.container = container;
+		super.setCanCreate( this.container != null );
 	}
 
 	@Override
-	public void notifyCreated(
-			ComponentBuilderEvent<ComponentNode<?, IJxseProperties>> event) {
-		if(!( event.getComponent() instanceof IJxseServiceContext ))
+	protected JxseStartupService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
+		JxseStartupService service = new JxseStartupService( this.container, (JxseStartupPropertySource) super.getPropertySource() );
+		if( JxseStartupPropertySource.isAutoStart( super.getPropertySource()))
+			service.initialise();
+		return service;
+	}
+
+	@Override
+	public void notifyCreated( ComponentBuilderEvent<ComponentNode<?>> event) {
+		if(!( event.getModule() instanceof IJxseServiceContext ))
 			return;
 	}
 }

@@ -15,11 +15,11 @@ import net.osgi.jxse.component.AbstractJxseService;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.peergroup.IPeerGroupProperties.PeerGroupProperties;
 
-public class PeerGroupService extends AbstractJxseService<PeerGroup, PeerGroupProperties>{
+public class PeerGroupService extends AbstractJxseService<PeerGroup>{
 
 	public static final String S_PEERGROUP = "Jxta PeerGroup";
 
-	public PeerGroupService(IComponentFactory<PeerGroup, PeerGroupProperties> factory ) {
+	public PeerGroupService(IComponentFactory<PeerGroup> factory ) {
 		super( factory );
 	}
 

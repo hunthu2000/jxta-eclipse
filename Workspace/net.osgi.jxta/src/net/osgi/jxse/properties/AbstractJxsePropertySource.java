@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import net.osgi.jxse.utils.Utils;
 
 public abstract class AbstractJxsePropertySource< T extends Object> implements IJxsePropertySource<T> {
 	
@@ -199,6 +200,49 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 	 */
 	public static boolean isAutoStart( IJxsePropertySource<?> source ){
 		return Boolean.parseBoolean( (String) source.getDirective( IJxseDirectives.Directives.AUTO_START ));		
+	}
+
+	/**
+	 * Set the parent directive to match that of the child, if the child's direcvtive is set and the parent's is null
+	 * @param id
+	 * @param source
+	 */
+	protected static void setDirectiveFromParent( IJxseDirectives id, IJxseWritePropertySource<?> source ) {
+		Object directive = source.getParent().getDirective( id );
+		source.setDirective(id, directive);
+	}
+
+	/**
+	 * Set the parent directive to match that of the child, if the child's direcvtive is set and the parent's is null
+	 * @param id
+	 * @param source
+	 */
+	public static void setParentDirective( IJxseDirectives id, IJxsePropertySource<?> source ) {
+		Object directive = source.getDirective( id );
+		IJxseWritePropertySource<?> parent = (IJxseWritePropertySource<?>) source.getParent();
+		Object parent_autostart = parent.getDirective( id );
+		if(( directive != null ) && ( parent_autostart == null ))
+			parent.setDirective( id, true);
+	}
+	
+	/**
+	 * Find the property source with the given component name, starting from the given source
+	 * @param source
+	 * @param componentName
+	 * @return
+	 */
+	public static  IJxsePropertySource<?> findPropertySource( IJxsePropertySource<?> source, String componentName ){
+		if( Utils.isNull( componentName ))
+			return null;
+		if( componentName.equals( source.getComponentName()))
+			return source;
+		IJxsePropertySource<?> result;
+		for( IJxsePropertySource<?> child: source.getChildren() ){
+			result = findPropertySource(child, componentName);
+			if( result != null )
+				return result;
+		}
+		return null;			
 	}
 
 }

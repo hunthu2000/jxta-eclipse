@@ -30,9 +30,8 @@ import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.discovery.DiscoveryServiceFactory;
 import net.osgi.jxse.log.JxseLevel;
 import net.osgi.jxse.properties.AbstractJxsePropertySource;
-import net.osgi.jxse.properties.IJxseProperties;
 
-public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService, IJxseProperties>{
+public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService>{
 	
 	private ExecutorService executor;
 	private Runnable runnable;

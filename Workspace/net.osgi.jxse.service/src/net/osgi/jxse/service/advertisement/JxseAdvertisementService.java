@@ -22,14 +22,13 @@ import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.component.IJxseComponentNode;
 import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.service.discovery.JxseDiscoveryService;
 
-public class JxseAdvertisementService extends AbstractJxseServiceNode<Advertisement, IJxseProperties> implements IJxseComponentNode<Advertisement, IJxseProperties>{
+public class JxseAdvertisementService extends AbstractJxseServiceNode<Advertisement> implements IJxseComponentNode<Advertisement>{
 
 	private IComponentChangedListener listener;
 
-	public JxseAdvertisementService( IComponentFactory<Advertisement, IJxseProperties> factory ) {
+	public JxseAdvertisementService( IComponentFactory<Advertisement> factory ) {
 		super( null, factory );
 	}
 	

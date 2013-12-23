@@ -10,10 +10,11 @@
  *******************************************************************************/
 package net.osgi.jxse.factory;
 
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public interface IComponentFactory<T extends Object, U extends Object> {
+public interface IComponentFactory<T extends Object> {
 
 	public enum Components{
 		JXSE_CONTEXT,
@@ -57,7 +58,7 @@ public interface IComponentFactory<T extends Object, U extends Object> {
 	 * Get the component that is created
 	 * @return
 	 */
-	public Components getComponent();
+	public Components getComponentId();
 	
 	/**
 	 * Returns true if the factory can create its product
@@ -69,13 +70,13 @@ public interface IComponentFactory<T extends Object, U extends Object> {
 	 * Get the property source
 	 * @return
 	 */
-	public IJxsePropertySource<U> getPropertySource();
+	public IJxsePropertySource<IJxseProperties> getPropertySource();
 
 	/**
 	 * First time creation of the service component.
 	 * @return
 	 */
-	public T createModule();
+	public T createComponent();
 	
 	/**
 	 * The completion is not necessarily the same as creating the module. This method has to 
@@ -92,7 +93,7 @@ public interface IComponentFactory<T extends Object, U extends Object> {
 	 * Get the service component. Returns null if the factory was not completed
 	 * @return
 	 */
-	public T getModule();
+	public T getComponent();
 	
 	/**
 	 * Returns true if the module is activated

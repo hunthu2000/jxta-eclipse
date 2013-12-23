@@ -66,9 +66,9 @@ public class PeerGroupNavigator extends CommonNavigator{
 	void showSelection(IWorkbenchPart sourcepart, ISelection selection) {
 		IStructuredSelection ss = (IStructuredSelection) selection;
 		Object element = ss.getFirstElement();
-		if(!( element instanceof IJxseServiceContext<?,?>))
+		if(!( element instanceof IJxseServiceContext<?>))
 			return;
-		IJxseServiceContext<?,?> context = ( IJxseServiceContext<Object,?>)element;
+		IJxseServiceContext<?> context = ( IJxseServiceContext<Object>)element;
 		viewer.setInput( context.getSwarm());
 		setContentDescription( Utils.getLabel( context ));
 	}

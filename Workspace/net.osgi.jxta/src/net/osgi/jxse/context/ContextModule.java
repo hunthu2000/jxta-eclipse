@@ -1,10 +1,9 @@
 package net.osgi.jxse.context;
 
-import net.osgi.jxse.component.AbstractJxseModule;
+import net.osgi.jxse.builder.AbstractJxseModule;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
-import net.osgi.jxse.properties.IJxseProperties;
 
 public class ContextModule extends AbstractJxseModule<JxseServiceContext, JxseContextPropertySource> {
 
@@ -33,7 +32,13 @@ public class ContextModule extends AbstractJxseModule<JxseServiceContext, JxseCo
 	}
 
 	@Override
-	public IComponentFactory<JxseServiceContext, IJxseProperties> createFactory( IPeerGroupProvider provider ) {
+	public IComponentFactory<JxseServiceContext> onCreateFactory() {
 		return new ContextFactory( super.getPropertySource() );
+	}
+
+	@Override
+	public void notifyCreated(ComponentBuilderEvent<Object> event) {
+		// TODO Auto-generated method stub
+		
 	}
 }

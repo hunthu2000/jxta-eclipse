@@ -37,7 +37,7 @@ public class SecurityPreferences implements INetworkPreferences{
 	}
 
 	@Override
-	public boolean setPropertyFromString(NetworkConfiguratorProperties id, String value) {
+	public boolean setPropertyFromString( IJxseProperties id, String value) {
 		source.setProperty(id, convertStringToCorrectType(id, value));
 		return true;
 	}
@@ -102,8 +102,11 @@ public class SecurityPreferences implements INetworkPreferences{
 	 * @param property
 	 * @param value
 	 */
-	public static Object convertStringToCorrectType( NetworkConfiguratorProperties property, String value ){
-		switch( property ){
+	public static Object convertStringToCorrectType( IJxseProperties property, String value ){
+		if(!(property instanceof NetworkConfiguratorProperties ))
+			return null;
+		NetworkConfiguratorProperties id = (NetworkConfiguratorProperties) property;
+		switch( id ){
 		case SECURITY_8AUTHENTICATION_TYPE:
 		case SECURITY_8PASSWORD:
 		case SECURITY_8PRINCIPAL:

@@ -10,12 +10,10 @@
  *******************************************************************************/
 package net.osgi.jxse.service.activator;
 
-import net.osgi.jxse.activator.JxseStartupService;
-import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
+import net.osgi.jxse.component.ModuleNode;
+import net.osgi.jxse.context.ContextModule;
 import net.osgi.jxse.context.JxseServiceContext;
-import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.service.xml.XMLServiceBuilder;
 
 public class JxseBundleActivator extends AbstractJxseBundleActivator {
@@ -41,25 +39,9 @@ public class JxseBundleActivator extends AbstractJxseBundleActivator {
 		XMLServiceBuilder builder = new XMLServiceBuilder( bundle_id, this.getClass() );
 		if( observer != null )
 			builder.addListener(observer);
-		ComponentNode<JxseServiceContext, IJxseProperties> node = builder.build();
+		ModuleNode<ContextModule> node = builder.build();
 		if( observer != null )
 			builder.removeListener(observer);
-		JxseStartupService service = getStartupService( node);
-		service.activate();
-		return node.getFactory().getModule();
-	}
-	
-	/**
-	 * Get the startup service 
-	 * @param context
-	 * @return
-	 */
-	protected static JxseStartupService getStartupService( ComponentNode<JxseServiceContext, IJxseProperties> context ){
-		for( ComponentNode<?,?> node: context.getChildren() ){
-			if( node.getFactory().getComponent().equals( Components.STARTUP_SERVICE )){
-				return (JxseStartupService) node.getFactory().createModule();
-			}
-		}
-		return null;
+		return node.getData().getComponent().getComponent();
 	}
 }

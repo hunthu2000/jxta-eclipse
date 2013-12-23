@@ -12,9 +12,8 @@ package net.osgi.jxse.seeds;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.properties.IJxseProperties;
 
-public interface ISeedListFactory extends IComponentFactory<String, IJxseProperties>{
+public interface ISeedListFactory extends IComponentFactory<String>{
 
 	public abstract void setConfigurator( NetworkConfigurator configurator );
 }

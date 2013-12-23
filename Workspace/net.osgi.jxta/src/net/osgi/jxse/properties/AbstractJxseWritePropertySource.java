@@ -25,7 +25,7 @@ extends AbstractJxsePropertySource<T> implements IJxseWritePropertySource<T> {
 
 	protected AbstractJxseWritePropertySource( String componentName, IJxsePropertySource<?> parent ) {
 		super( componentName, parent );
-		super.setDirective( Directives.AUTO_START, parent.getDirective( Directives.AUTO_START ));
+		setDirectiveFromParent( Directives.AUTO_START, this );
 	}
 
 	@Override

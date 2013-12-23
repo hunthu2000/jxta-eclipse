@@ -13,12 +13,12 @@ package net.osgi.jxse.component;
 import java.util.Date;
 import java.util.Iterator;
 
-import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.utils.StringStyler;
 
 public interface IJxseComponent<T extends Object, U extends Object>{
 	
-	public enum ModuleProperties implements IJxseDirectives{
+	public enum ModuleProperties implements IJxseProperties{
 		CREATE_DATE;
 
 		@Override

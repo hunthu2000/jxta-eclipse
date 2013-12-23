@@ -24,7 +24,7 @@ public class JxseContainerNavigator extends CommonNavigator{
 	
 	private CommonViewer viewer;
 	
-	private JxseServiceContainerPetitioner<?> petitioner;
+	private JxseServiceContainerPetitioner petitioner;
 	private ServiceEventDispatcher dispatcher;
 	private JxseContainerNavigator navigator;
 

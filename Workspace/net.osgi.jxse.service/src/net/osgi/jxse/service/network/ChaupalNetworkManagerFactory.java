@@ -21,40 +21,39 @@ import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class ChaupalNetworkManagerFactory extends
-		AbstractComponentFactory<JxseNetworkManagerService, IJxseProperties> implements INetworkManagerProvider, IPeerGroupProvider{
+		AbstractComponentFactory<JxseNetworkManagerService> implements INetworkManagerProvider, IPeerGroupProvider{
 
 	public static final String S_DISCOVERY_SERVICE = "JxseDiscoveryService";
 
 	private NetworkManagerFactory factory;
-	private IComponentFactory<?, IJxseProperties> parent;
+	private IComponentFactory<?> parent;
 	
-	@SuppressWarnings("unchecked")
-	public ChaupalNetworkManagerFactory( IComponentFactory<?, IJxseProperties> parent, 
+	public ChaupalNetworkManagerFactory( IComponentFactory<?> parent, 
 			NetworkManagerFactory factory ) {
 		super( factory.getPropertySource() );
 		this.factory = factory;
-		this.parent = (IComponentFactory<?, IJxseProperties>) parent.getModule();
+		this.parent = (IComponentFactory<?>) parent.getComponent();
 	}
 
 	@Override
 	protected JxseNetworkManagerService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		factory.createModule();
+		factory.createComponent();
 		JxseNetworkManagerService ds = new JxseNetworkManagerService ( parent, factory );
 		return ds;
 	}
 
 	@Override
 	public String getPeerGroupName() {
-		return this.factory.getModule().getNetPeerGroup().getPeerGroupName();
+		return this.factory.getComponent().getNetPeerGroup().getPeerGroupName();
 	}
 
 	@Override
 	public PeerGroup getPeerGroup() {
-		return this.factory.getModule().getNetPeerGroup();
+		return this.factory.getComponent().getNetPeerGroup();
 	}
 
 	@Override
 	public NetworkManager getNetworkManager() {
-		return this.factory.getModule();
+		return this.factory.getComponent();
 	}
 }

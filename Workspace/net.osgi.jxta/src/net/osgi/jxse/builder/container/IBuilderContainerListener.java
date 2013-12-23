@@ -8,13 +8,11 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.builder;
+package net.osgi.jxse.builder.container;
 
-public interface ICompositeBuilder<T extends Object> {
+public interface IBuilderContainerListener<T extends Object> {
+	
+	public void notifyAdded( BuilderContainerEvent<T> event );
 
-	public abstract void addListener(ICompositeBuilderListener<?> listener);
-
-	public abstract void removeListener(ICompositeBuilderListener<?> listener);
-
-	public T build();
+	public void notifyRemoved( BuilderContainerEvent<T> event );
 }

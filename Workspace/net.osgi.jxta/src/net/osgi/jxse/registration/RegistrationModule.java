@@ -1,19 +1,21 @@
 package net.osgi.jxse.registration;
 
-import net.osgi.jxse.component.AbstractJxseModule;
+import net.osgi.jxse.builder.AbstractJxseModule;
+import net.osgi.jxse.builder.IJxseModule;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
-import net.osgi.jxse.properties.IJxseProperties;
-import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class RegistrationModule extends AbstractJxseModule<RegistrationService, RegistrationPropertySource> {
+
+	private  IPeerGroupProvider provider;
 
 	public RegistrationModule() {
 		super();
 	}
 
-	public RegistrationModule(IJxsePropertySource<?> parent) {
+	public RegistrationModule(IJxseModule<?> parent) {
 		super(parent);
 	}
 
@@ -25,11 +27,17 @@ public class RegistrationModule extends AbstractJxseModule<RegistrationService, 
 
 	@Override
 	protected RegistrationPropertySource onCreatePropertySource() {
-		return new RegistrationPropertySource( super.getParent() );
+		return new RegistrationPropertySource( super.getParent().getPropertySource() );
 	}
 
 	@Override
-	public IComponentFactory<RegistrationService, IJxseProperties> createFactory( IPeerGroupProvider provider ) {
+	public IComponentFactory<RegistrationService> onCreateFactory() {
 		return new RegistrationServiceFactory( provider, super.getPropertySource() );
+	}
+
+	@Override
+	public void notifyCreated(ComponentBuilderEvent<Object> event) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -13,24 +13,20 @@ package net.osgi.jxse.service.xml;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.osgi.jxse.builder.BuilderContainer;
-import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilder;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
-import net.osgi.jxse.context.JxseServiceContext;
-import net.osgi.jxse.context.Swarm;
-import net.osgi.jxse.properties.IJxseProperties;
-import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.builder.container.BuilderContainer;
+import net.osgi.jxse.component.ModuleNode;
+import net.osgi.jxse.context.ContextModule;
 import net.osgi.jxse.service.core.ChaupalCompositeBuilder;
 
-public class XMLServiceBuilder implements ICompositeBuilder<ComponentNode<JxseServiceContext, IJxseProperties>, IJxseProperties>{
+public class XMLServiceBuilder implements ICompositeBuilder<ModuleNode<ContextModule>>{
 
-	private ComponentNode<JxseServiceContext,IJxseProperties> root;
+	private ModuleNode<ContextModule> root;
 	
 	private String plugin_id;
 	private Class<?> clss;
 	private BuilderContainer container;
-	private Swarm swarm;
 	
 	private Collection<ICompositeBuilderListener<?>> listeners;
 	
@@ -42,24 +38,23 @@ public class XMLServiceBuilder implements ICompositeBuilder<ComponentNode<JxseSe
 
 	}
 	
-	public JxseServiceContext getModule() {
-		return root.getFactory().getModule();
-	}
-
 	@Override
-	public ComponentNode<JxseServiceContext, IJxseProperties> build() {
+	public ModuleNode<ContextModule> build() {
 		XMLPropertySourceBuilder builder = new XMLPropertySourceBuilder( plugin_id, clss, container );
 		
 		//First build the property sources
 		this.addListenerToBuilder(builder);
-		IJxsePropertySource<IJxseProperties> source = builder.build();
+		builder.addListener(container);
+		ModuleNode<ContextModule> node = builder.build();
+		builder.removeListener(container);
 		this.removeListenerFromBuilder(builder);
 		
 		//Then build the factories
-		ICompositeBuilder<ComponentNode<JxseServiceContext, IJxseProperties>, IJxseProperties> cf = 
-				new ChaupalCompositeBuilder<ComponentNode<JxseServiceContext, IJxseProperties>, IJxseProperties>( source, container, swarm );
+		ICompositeBuilder<ModuleNode<ContextModule>> cf = new ChaupalCompositeBuilder( node );
 		this.addListenerToBuilder( cf );
-		root = cf.build();
+		cf.addListener(container);
+		this.root = cf.build();
+		cf.removeListener(container);
 		this.removeListenerFromBuilder( cf );
 		return this.root;
 	}
@@ -74,12 +69,12 @@ public class XMLServiceBuilder implements ICompositeBuilder<ComponentNode<JxseSe
 		this.listeners.remove(listener);
 	}
 
-	private final void addListenerToBuilder(ICompositeBuilder<?,?> builder) {
+	private final void addListenerToBuilder(ICompositeBuilder<?> builder) {
 		for( ICompositeBuilderListener<?> listener: this.listeners )
 			builder.addListener(listener);
 	}
 
-	private void removeListenerFromBuilder(ICompositeBuilder<?,?> builder) {
+	private void removeListenerFromBuilder(ICompositeBuilder<?> builder) {
 		for( ICompositeBuilderListener<?> listener: this.listeners )
 			builder.removeListener(listener);
 	}

@@ -62,7 +62,7 @@ public class SocketPipeAdvertisementFactory extends PipeAdvertisementFactory {
 
 
 	@Override
-	public PipeAdvertisement createModule() {
+	public PipeAdvertisement createComponent() {
 		PipeID socketID = null;
 		IJxsePropertySource<Properties> source = null;//TODOsuper.getPropertySource();		
 		try {

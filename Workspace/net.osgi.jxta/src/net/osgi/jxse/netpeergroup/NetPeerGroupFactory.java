@@ -11,42 +11,40 @@
 package net.osgi.jxse.netpeergroup;
 
 import net.jxta.platform.NetworkManager;
-import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
-import net.osgi.jxse.network.NetworkManagerFactory;
+import net.osgi.jxse.factory.FactoryNode;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class NetPeerGroupFactory extends
-		AbstractComponentFactory<NetPeerGroupService, IJxseProperties> implements ICompositeBuilderListener<ComponentNode<NetworkManager,IJxseProperties>>{
+		AbstractComponentFactory<NetPeerGroupService> implements ICompositeBuilderListener<FactoryNode<NetworkManager>>{
 
 	public static final String S_DISCOVERY_SERVICE = "DiscoveryService";
 
-	private NetworkManagerFactory factory;
+	private NetworkManager manager;
 
-	public NetPeerGroupFactory( NetPeerGroupPropertySource source ) {
+	public NetPeerGroupFactory( NetPeerGroupPropertySource source, NetworkManager manager ) {
 		super( source, false );
-		this.factory = null;
+		this.manager = manager;
+		super.setCanCreate(this.manager != null );
 	}
 	
 	@Override
 	protected NetPeerGroupService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		if( factory.getPeerGroup() == null ){
-			super.setCompleted(false );
-			return null;
-		}			
-		return new NetPeerGroupService( factory );
+		NetPeerGroupService service = new NetPeerGroupService( this, manager );
+		super.setCompleted( true );
+		return service;
 	}
 
 	@Override
-	public void notifyCreated(ComponentBuilderEvent<ComponentNode<NetworkManager,IJxseProperties>> event) {
+	public void notifyCreated(ComponentBuilderEvent<FactoryNode<NetworkManager>> event) {
 		if( ! BuilderEvents.COMPONENT_CREATED.equals( event.getBuilderEvent()))
 			return;
-		if( event.getComponent().getFactory() instanceof NetworkManagerFactory ){
-			this.factory = (NetworkManagerFactory) event.getComponent().getFactory();
-			super.setCanCreate(true);
-		}
+		//if( event.getComponent().getData() instanceof NetworkManagerFactory ){
+		//	this.factory = (NetworkManagerFactory) event.getComponent().getData();
+		//	super.setCanCreate(true);
+		//}
 	}
 }

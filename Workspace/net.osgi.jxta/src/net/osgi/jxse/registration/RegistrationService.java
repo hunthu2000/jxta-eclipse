@@ -32,7 +32,7 @@ import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class RegistrationService extends AbstractActivator implements IJxseService<RegistrationService,RegistrationProperties>, Runnable, DiscoveryListener {
+public class RegistrationService extends AbstractActivator implements IJxseService<RegistrationService>, Runnable, DiscoveryListener {
 	
 	private IJxseWritePropertySource<IJxseProperties> source;
 	private ExecutorService executor;
@@ -150,7 +150,7 @@ public class RegistrationService extends AbstractActivator implements IJxseServi
 	}
 
 	@Override
-	public Iterator<RegistrationProperties> iterator() {
+	public Iterator<IJxseProperties> iterator() {
 		// TODO Auto-generated method stub
 		return null;
 	}

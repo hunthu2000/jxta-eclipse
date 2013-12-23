@@ -5,7 +5,9 @@ import org.xml.sax.Attributes;
 import net.jxta.document.Advertisement;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.osgi.jxse.component.AbstractJxseModule;
+import net.osgi.jxse.builder.AbstractJxseModule;
+import net.osgi.jxse.builder.IJxseModule;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.peergroup.IPeerGroupProvider;
@@ -17,12 +19,13 @@ import net.osgi.jxse.utils.Utils;
 public class AdvertisementModule extends AbstractJxseModule<Advertisement, AdvertisementPropertySource> {
 
 	private AdvertisementTypes type;
+	private  IPeerGroupProvider provider = null;
 	
 	public AdvertisementModule(  AdvertisementTypes type ) {
 		this.type = type;
 	}
 
-	public AdvertisementModule(  AdvertisementTypes type, IJxsePropertySource<?> parent) {
+	public AdvertisementModule(  AdvertisementTypes type, IJxseModule<?> parent) {
 		super(parent);
 		this.type = type;
 	}
@@ -34,12 +37,11 @@ public class AdvertisementModule extends AbstractJxseModule<Advertisement, Adver
 
 	@Override
 	protected AdvertisementPropertySource onCreatePropertySource() {
-		AdvertisementPropertySource source = new AdvertisementPropertySource( super.getParent() );
+		AdvertisementPropertySource source = new AdvertisementPropertySource( super.getParent().getPropertySource() );
 		return source;
 	}
 
-	@Override
-	public IComponentFactory<Advertisement, IJxseProperties> createFactory( IPeerGroupProvider provider ) {
+	public IComponentFactory<Advertisement> onCreateFactory( ) {
 		return new JxseAdvertisementFactory( provider, super.getPropertySource() );
 	}
 
@@ -75,5 +77,11 @@ public class AdvertisementModule extends AbstractJxseModule<Advertisement, Adver
 		//default:
 			return source;
 		//}
+	}
+
+	@Override
+	public void notifyCreated(ComponentBuilderEvent<Object> event) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -24,7 +24,7 @@ import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public class JxseAdvertisementFactory extends AbstractComponentFactory<Advertisement, IJxseProperties> {
+public class JxseAdvertisementFactory extends AbstractComponentFactory<Advertisement> {
 
 	public static final String S_DEFAULT_NAME = "Default JXTA Advertisement";
 

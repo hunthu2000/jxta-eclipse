@@ -8,7 +8,7 @@ import net.osgi.jxse.properties.IJxseProperties;
 
 public class JxseNetworkManagerService extends DefaultJxseComponent<NetworkManager, IJxseProperties>{
 
-	public JxseNetworkManagerService( IComponentFactory<?, ?> parent, NetworkManagerFactory factory) {
+	public JxseNetworkManagerService( IComponentFactory<?> parent, NetworkManagerFactory factory) {
 		super(factory );
 	}
 }

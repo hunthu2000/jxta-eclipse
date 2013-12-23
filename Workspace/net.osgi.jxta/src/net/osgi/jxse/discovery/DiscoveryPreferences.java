@@ -17,12 +17,13 @@ import net.jxta.peer.PeerID;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.properties.AbstractPreferences;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public class DiscoveryPreferences extends AbstractPreferences<DiscoveryProperties>
+public class DiscoveryPreferences extends AbstractPreferences<IJxseProperties>
 {
-	public DiscoveryPreferences( IJxseWritePropertySource<DiscoveryProperties> source )
+	public DiscoveryPreferences( IJxseWritePropertySource<IJxseProperties> source )
 	{
 		super( source );
 	}
@@ -35,7 +36,10 @@ public class DiscoveryPreferences extends AbstractPreferences<DiscoveryPropertie
 	 * @throws URISyntaxException
 	 */
 	@Override
-	public Object convertValue( DiscoveryProperties id, String value ){
+	public Object convertValue( IJxseProperties key, String value ){
+		if(!( key instanceof DiscoveryProperties ))
+			return null;
+		DiscoveryProperties id = (DiscoveryProperties) key;
 		switch( id ){
 		case ADVERTISEMENT_TYPE:
 			return AdvertisementTypes.valueOf( StringStyler.styleToEnum(value));

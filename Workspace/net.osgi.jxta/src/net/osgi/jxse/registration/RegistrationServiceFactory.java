@@ -18,7 +18,7 @@ import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
 public class RegistrationServiceFactory extends
-		AbstractComponentFactory<RegistrationService, IJxseProperties> {
+		AbstractComponentFactory<RegistrationService> {
 
 	public static final String S_DISCOVERY_SERVICE = "DiscoveryService";
 

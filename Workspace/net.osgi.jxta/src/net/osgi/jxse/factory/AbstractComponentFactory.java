@@ -20,24 +20,24 @@ import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public abstract class AbstractComponentFactory<T extends Object, U extends IJxseProperties> implements IComponentFactory<T,U>{
+public abstract class AbstractComponentFactory<T extends Object> implements IComponentFactory<T>{
 
 	public static final String S_FACTORY = "Factory:";
 	
-	private Collection<IComponentFactoryListener<T,U>> listeners;
-	private T module;
-	private IJxsePropertySource<U> properties;
+	private Collection<IComponentFactoryListener<T>> listeners;
+	private T component;
+	private IJxsePropertySource<IJxseProperties> properties;
 	
 	private boolean canCreate;
 	private boolean completed;
 	private boolean failed;
 
-	protected AbstractComponentFactory( IJxsePropertySource<U> properties ) {
+	protected AbstractComponentFactory( IJxsePropertySource<IJxseProperties> properties ) {
 		this( properties, true );
 	}
 
-	protected AbstractComponentFactory( IJxsePropertySource<U> properties, boolean canCreate ) {
-		listeners = new ArrayList<IComponentFactoryListener<T,U>>();
+	protected AbstractComponentFactory( IJxsePropertySource<IJxseProperties> properties, boolean canCreate ) {
+		listeners = new ArrayList<IComponentFactoryListener<T>>();
 		this.properties = properties;
 		this.canCreate = canCreate;
 		this.completed = false;
@@ -45,16 +45,16 @@ public abstract class AbstractComponentFactory<T extends Object, U extends IJxse
 	}
 
 	@Override
-	public Components getComponent() {
+	public Components getComponentId() {
 		return Components.valueOf( StringStyler.styleToEnum( this.properties.getComponentName()));
 	}
 	
-	protected void setPropertySource( IJxsePropertySource<U> properties ){
+	protected void setPropertySource( IJxsePropertySource<IJxseProperties> properties ){
 		this.properties = properties;
 	}
 	
 	@Override
-	public IJxsePropertySource<U> getPropertySource(){
+	public IJxsePropertySource<IJxseProperties> getPropertySource(){
 		return this.properties;
 	}
 
@@ -114,18 +114,18 @@ public abstract class AbstractComponentFactory<T extends Object, U extends IJxse
 		}
 	}
 
-	protected abstract T onCreateModule( IJxsePropertySource<U> properties);
+	protected abstract T onCreateModule( IJxsePropertySource<IJxseProperties> properties);
 	
 	@Override
-	public T createModule() {
+	public T createComponent() {
 		if( this.completed )
-			return module;
+			return component;
 		this.parseDirectivesPrior();
-		this.module = this.onCreateModule( this.properties);
-		if( this.module == null )
+		this.component = this.onCreateModule( this.properties);
+		if( this.component == null )
 			return null;
 		this.parseDirectivesAfter();
-		return module;
+		return component;
 	}
 
 	/**
@@ -157,8 +157,8 @@ public abstract class AbstractComponentFactory<T extends Object, U extends IJxse
 	}
 
 	@Override
-	public T getModule(){
-		return module;
+	public T getComponent(){
+		return component;
 	}
 
 	/**
@@ -166,19 +166,19 @@ public abstract class AbstractComponentFactory<T extends Object, U extends IJxse
 	 * @return
 	 */
 	public boolean moduleActive(){
-		if( this.module == null )
+		if( this.component == null )
 			return false;
-		if(!( this.module instanceof IActivator ))
+		if(!( this.component instanceof IActivator ))
 			return true;
-		IActivator activator = ( IActivator )this.module;
+		IActivator activator = ( IActivator )this.component;
 		return activator.isActive();
 	}
 
-	public void addComponentListener( IComponentFactoryListener<T,U> listener ){
+	public void addComponentListener( IComponentFactoryListener<T> listener ){
 		this.listeners.add(listener);
 	}
 
-	public void removeComponentListener( IComponentFactoryListener<T,U> listener ){
+	public void removeComponentListener( IComponentFactoryListener<T> listener ){
 		this.listeners.remove(listener);
 	}
 
@@ -187,8 +187,8 @@ public abstract class AbstractComponentFactory<T extends Object, U extends IJxse
 	 * @param component
 	 */
 	protected void notifyServiceComponentCompleted( T component ) {
-		JxseComponentEvent<T,U> event = new JxseComponentEvent<T,U>( this, component );
-		for( IComponentFactoryListener<T,U> listener: listeners)
+		JxseComponentEvent<T> event = new JxseComponentEvent<T>( this, component );
+		for( IComponentFactoryListener<T> listener: listeners)
 			listener.notifyComponentCompleted(event);
 	}
 
