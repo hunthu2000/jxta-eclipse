@@ -10,7 +10,6 @@ import net.osgi.jxse.builder.IJxseModule;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
@@ -19,7 +18,6 @@ import net.osgi.jxse.utils.Utils;
 public class AdvertisementModule extends AbstractJxseModule<Advertisement, AdvertisementPropertySource> {
 
 	private AdvertisementTypes type;
-	private  IPeerGroupProvider provider = null;
 	
 	public AdvertisementModule(  AdvertisementTypes type ) {
 		this.type = type;
@@ -42,7 +40,7 @@ public class AdvertisementModule extends AbstractJxseModule<Advertisement, Adver
 	}
 
 	public IComponentFactory<Advertisement> onCreateFactory( ) {
-		return new JxseAdvertisementFactory( provider, super.getPropertySource() );
+		return new JxseAdvertisementFactory( super.getPropertySource() );
 	}
 
 	/**
@@ -80,7 +78,7 @@ public class AdvertisementModule extends AbstractJxseModule<Advertisement, Adver
 	}
 
 	@Override
-	public void notifyCreated(ComponentBuilderEvent<Object> event) {
+	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		// TODO Auto-generated method stub
 		
 	}

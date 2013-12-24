@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.activator;
+package net.osgi.jxse.startup;
 
 import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
@@ -38,7 +38,7 @@ public class StartupServiceFactory extends AbstractComponentFactory<JxseStartupS
 	}
 
 	@Override
-	public void notifyCreated( ComponentBuilderEvent<ComponentNode<?>> event) {
+	public void notifyChange( ComponentBuilderEvent<ComponentNode<?>> event) {
 		if(!( event.getModule() instanceof IJxseServiceContext ))
 			return;
 	}

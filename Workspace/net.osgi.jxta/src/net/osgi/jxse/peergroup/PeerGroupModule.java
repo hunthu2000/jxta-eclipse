@@ -5,15 +5,14 @@ import net.osgi.jxse.builder.AbstractJxseModule;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
 
 public class PeerGroupModule extends AbstractJxseModule<PeerGroup, PeerGroupPropertySource> {
 
-	private  IPeerGroupProvider provider;
-
+	private PeerGroup parentPeergroup;
+	
 	@Override
 	public String getComponentName() {
-		return Components.PIPE_SERVICE.toString();
+		return Components.PEERGROUP_SERVICE.toString();
 	}
 	
 	@Override
@@ -23,11 +22,11 @@ public class PeerGroupModule extends AbstractJxseModule<PeerGroup, PeerGroupProp
 
 	@Override
 	public IComponentFactory<PeerGroup> onCreateFactory() {
-		return new PeerGroupFactory( provider, super.getPropertySource() );
+		return new PeerGroupFactory( super.getPropertySource(), parentPeergroup);
 	}
 
 	@Override
-	public void notifyCreated(ComponentBuilderEvent<Object> event) {
+	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -10,18 +10,16 @@
  *******************************************************************************/
 package net.osgi.jxse.service.network;
 
-import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.network.INetworkManagerProvider;
 import net.osgi.jxse.network.NetworkManagerFactory;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class ChaupalNetworkManagerFactory extends
-		AbstractComponentFactory<JxseNetworkManagerService> implements INetworkManagerProvider, IPeerGroupProvider{
+		AbstractComponentFactory<JxseNetworkManagerService> implements INetworkManagerProvider{
 
 	public static final String S_DISCOVERY_SERVICE = "JxseDiscoveryService";
 
@@ -40,16 +38,6 @@ public class ChaupalNetworkManagerFactory extends
 		factory.createComponent();
 		JxseNetworkManagerService ds = new JxseNetworkManagerService ( parent, factory );
 		return ds;
-	}
-
-	@Override
-	public String getPeerGroupName() {
-		return this.factory.getComponent().getNetPeerGroup().getPeerGroupName();
-	}
-
-	@Override
-	public PeerGroup getPeerGroup() {
-		return this.factory.getComponent().getNetPeerGroup();
 	}
 
 	@Override

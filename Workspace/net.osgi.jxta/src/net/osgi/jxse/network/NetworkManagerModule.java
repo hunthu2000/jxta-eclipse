@@ -7,7 +7,9 @@ import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
+import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
+import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class NetworkManagerModule extends AbstractJxseModule<NetworkManager, NetworkManagerPropertySource> {
 
@@ -27,13 +29,23 @@ public class NetworkManagerModule extends AbstractJxseModule<NetworkManager, Net
 		return source;
 	}
 
+	
+	@Override
+	public void extendModules() {
+		IJxsePropertySource<?> ncps = NetworkManagerPropertySource.findPropertySource(super.getPropertySource(), 
+				Components.NETWORK_CONFIGURATOR.toString());
+		if( ncps == null )
+			super.getPropertySource().addChild( new NetworkConfigurationPropertySource( super.getPropertySource() ));
+		super.extendModules();
+	}
+
 	@Override
 	public IComponentFactory<NetworkManager> onCreateFactory() {
 		return new NetworkManagerFactory( super.getPropertySource() );
 	}
 
 	@Override
-	public void notifyCreated(ComponentBuilderEvent<Object> event) {
+	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		// TODO Auto-generated method stub
 		
 	}

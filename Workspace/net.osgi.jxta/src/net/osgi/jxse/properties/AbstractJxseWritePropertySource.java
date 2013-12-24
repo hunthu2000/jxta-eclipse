@@ -12,8 +12,8 @@ package net.osgi.jxse.properties;
 
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
 
-public abstract class AbstractJxseWritePropertySource< T extends Object> 
-extends AbstractJxsePropertySource<T> implements IJxseWritePropertySource<T> {
+public abstract class AbstractJxseWritePropertySource 
+extends AbstractJxsePropertySource implements IJxseWritePropertySource<IJxseProperties> {
 
 	public AbstractJxseWritePropertySource( String bundleId, String identifier, String componentName) {
 		this( bundleId, identifier, componentName, 0);
@@ -23,32 +23,32 @@ extends AbstractJxsePropertySource<T> implements IJxseWritePropertySource<T> {
 		super( bundleId, identifier, componentName );
 	}
 
-	protected AbstractJxseWritePropertySource( String componentName, IJxsePropertySource<?> parent ) {
+	protected AbstractJxseWritePropertySource( String componentName, IJxsePropertySource<IJxseProperties> parent ) {
 		super( componentName, parent );
 		setDirectiveFromParent( Directives.AUTO_START, this );
 	}
 
 	@Override
-	public ManagedProperty<T,Object> getOrCreateManagedProperty(T id, Object value, boolean derived ) {
-		ManagedProperty<T,Object> select = super.getManagedProperty(id);
+	public ManagedProperty<IJxseProperties,Object> getOrCreateManagedProperty(IJxseProperties id, Object value, boolean derived ) {
+		ManagedProperty<IJxseProperties,Object> select = super.getManagedProperty(id);
 		if( select == null ){
-			select = new ManagedProperty<T, Object>( id, value, derived );
+			select = new ManagedProperty<IJxseProperties, Object>( id, value, derived );
 			super.setManagedProperty( select );
 		}
 		return select;
 	}
 	
 	@Override
-	public boolean setProperty(T id, Object value) {
+	public boolean setProperty(IJxseProperties id, Object value) {
 		return this.setProperty(id, value, null, false );
 	}
 
-	protected boolean setProperty(T id, Object value, boolean derived ) {
+	protected boolean setProperty(IJxseProperties id, Object value, boolean derived ) {
 		return this.setProperty(id, value, null, derived );
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected boolean setProperty(T id, Object value, IJxseValidator<T,Object> validator, boolean derived ) {
+	protected boolean setProperty(IJxseProperties id, Object value, IJxseValidator<IJxseProperties,Object> validator, boolean derived ) {
 		IJxseWritePropertySource source = this;
 		ManagedProperty select = source.getOrCreateManagedProperty(id, value, derived);
 		if( validator != null )
@@ -63,7 +63,7 @@ extends AbstractJxsePropertySource<T> implements IJxseWritePropertySource<T> {
 	 * @return
 	 */
 	@Override
-	public boolean setDirective(IJxseDirectives id, Object value) {
+	public boolean setDirective(IJxseDirectives id, String value) {
 		return super.setDirective(id, value);
 	}
 }

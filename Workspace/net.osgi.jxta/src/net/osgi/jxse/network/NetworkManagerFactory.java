@@ -21,11 +21,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jxta.exception.PeerGroupException;
-import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxseProperties;
@@ -33,7 +31,7 @@ import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
 public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager> 
-implements INetworkManagerProvider, IPeerGroupProvider{
+implements INetworkManagerProvider{
 		
 	public NetworkManagerFactory( IJxsePropertySource<IJxseProperties> propertySource ) {
 		super( propertySource );
@@ -96,18 +94,6 @@ implements INetworkManagerProvider, IPeerGroupProvider{
 			}
 		}
 		return false;
-	}
-
-	@Override
-	public PeerGroup getPeerGroup() {
-		if(!super.isCompleted() )
-			return null;
-		return super.getComponent().getNetPeerGroup();
-	}
-
-	@Override
-	public String getPeerGroupName() {
-		return IPeerGroupProvider.S_NET_PEER_GROUP;
 	}
 
 	@Override

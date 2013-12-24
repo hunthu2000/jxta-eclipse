@@ -6,11 +6,9 @@ import net.osgi.jxse.builder.IJxseModule;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
 
 public class DiscoveryModule extends AbstractJxseModule<DiscoveryService, DiscoveryPropertySource> {
 
-	private IPeerGroupProvider provider;
 	public DiscoveryModule() {
 		super();
 	}
@@ -32,11 +30,11 @@ public class DiscoveryModule extends AbstractJxseModule<DiscoveryService, Discov
 
 	@Override
 	public IComponentFactory<DiscoveryService> onCreateFactory() {
-		return new DiscoveryServiceFactory( provider, super.getPropertySource() );
+		return new DiscoveryServiceFactory( super.getPropertySource() );
 	}
 
 	@Override
-	public void notifyCreated(ComponentBuilderEvent<Object> event) {
+	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		// TODO Auto-generated method stub
 		
 	}

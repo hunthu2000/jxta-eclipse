@@ -6,18 +6,17 @@ import net.osgi.jxse.advertisement.AdvertisementPropertySource;
 import net.osgi.jxse.advertisement.JxseAdvertisementFactory;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.CompositeBuilder;
 import net.osgi.jxse.component.ModuleNode;
-import net.osgi.jxse.context.ContextModule;
+import net.osgi.jxse.context.JxseServiceContext;
 import net.osgi.jxse.discovery.DiscoveryPropertySource;
 import net.osgi.jxse.discovery.DiscoveryServiceFactory;
-import net.osgi.jxse.factory.FactoryNode;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.network.NetworkManagerFactory;
 import net.osgi.jxse.pipe.PipeServiceFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxseDirectives.Contexts;
@@ -30,29 +29,15 @@ import net.osgi.jxse.utils.Utils;
 
 public class ChaupalCompositeBuilder extends CompositeBuilder {
 
-	public ChaupalCompositeBuilder( ModuleNode<ContextModule> root ) {
+	public ChaupalCompositeBuilder( ModuleNode<JxseServiceContext> root ) {
 		super( root );
 	}
 	
 	/**
-	 * This builder overrides the default behaviour by allowing a jxse service instead of a default JXTA service .
-	 * The factory has just been created, so components have not been created and nothing has been started yet.
-	 */
-	@Override
-	protected FactoryNode<?> createNode(ComponentNode<?> node, IComponentFactory<?> factory) {
-		if( node == null )
-			return super.createNode(node, factory);
-		
-		IComponentFactory<?> jxseFactory = getFactoryFromType( (IComponentFactory<?>) node.getData(), (IComponentFactory<?>) factory );
-		this.extendPropertySource( factory.getPropertySource() );
-		return super.createNode(node, jxseFactory);
-	}
-
-	/**
 	 * extends the property source with additional property sources, if needed
 	 * @param source
 	 */
-	protected void extendPropertySource( IJxsePropertySource<?> source ){
+	protected void extendPropertySource( IJxsePropertySource<IJxseProperties> source ){
 		if( source.getComponentName().equals( Components.PIPE_SERVICE.toString() ))
 			this.extendPipeServicePropertySource(source);
 		if( source.getComponentName().equals( Components.ADVERTISEMENT_SERVICE.toString() ))
@@ -63,7 +48,7 @@ public class ChaupalCompositeBuilder extends CompositeBuilder {
 	 * Extend the pipe service
 	 * @param source
 	 */
-	protected void extendPipeServicePropertySource( IJxsePropertySource<?> source ){
+	protected void extendPipeServicePropertySource( IJxsePropertySource<IJxseProperties> source ){
 		IJxsePropertySource<?> child = source.getChild( Components.ADVERTISEMENT_SERVICE.toString());
 		if( child  != null )
 			return;
@@ -82,7 +67,7 @@ public class ChaupalCompositeBuilder extends CompositeBuilder {
 	 * Extend the discovery service
 	 * @param source
 	 */
-	protected void extendAdvertisementServicePropertySource( IJxsePropertySource<?> source ){
+	protected void extendAdvertisementServicePropertySource( IJxsePropertySource<IJxseProperties> source ){
 		IJxsePropertySource<?> child = source.getChild( Components.DISCOVERY_SERVICE.toString());
 		if( child  != null )
 			return;

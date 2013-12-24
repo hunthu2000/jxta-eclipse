@@ -10,7 +10,7 @@ import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public class NetworkConfigurationPropertySource extends AbstractJxseWritePropertySource<IJxseProperties>
+public class NetworkConfigurationPropertySource extends AbstractJxseWritePropertySource
 	implements IJxseWritePropertySource<IJxseProperties>
 
 {

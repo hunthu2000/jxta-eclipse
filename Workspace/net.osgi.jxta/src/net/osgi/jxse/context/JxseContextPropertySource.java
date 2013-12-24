@@ -27,7 +27,7 @@ import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.validator.ClassValidator;
 import net.osgi.jxse.validator.RangeValidator;
 
-public class JxseContextPropertySource extends AbstractJxseWritePropertySource<IJxseProperties>{
+public class JxseContextPropertySource extends AbstractJxseWritePropertySource{
 
 	public static final String DEF_HOME_FOLDER = "${user.home}/.jxse/${bundle-id}";
 	public static final int DEF_MIN_PORT = 1000;

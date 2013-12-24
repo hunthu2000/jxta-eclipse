@@ -3,8 +3,10 @@ package net.osgi.jxse.peergroup;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.peergroup.PeerGroupPropertySource;
 import net.osgi.jxse.properties.AbstractPeerGroupProviderPropertySource;
+import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.utils.StringStyler;
 
 public class PeerGroupPropertySource extends AbstractPeerGroupProviderPropertySource<IJxseProperties>
@@ -23,13 +25,15 @@ public class PeerGroupPropertySource extends AbstractPeerGroupProviderPropertySo
 		}
 	}
 	
-	public PeerGroupPropertySource( IJxsePropertySource<?> parent) {
+	public PeerGroupPropertySource( IJxsePropertySource<IJxseProperties> parent) {
 		this( Components.PEERGROUP_SERVICE.toString(), parent );
+		setDirectiveFromParent( Directives.AUTO_START, this );
 	}
 
 
-	public PeerGroupPropertySource( String componentName, IJxsePropertySource<?> parent) {
+	protected PeerGroupPropertySource( String componentName, IJxsePropertySource<IJxseProperties> parent) {
 		super( componentName,parent );
+		setDirectiveFromParent( Directives.AUTO_START, this );
 		this.fillDefaultValues();
 	}
 
@@ -43,14 +47,14 @@ public class PeerGroupPropertySource extends AbstractPeerGroupProviderPropertySo
 	}
 
 	@Override
-	public PeerGroupProperties getIdFromString(String key) {
-		return PeerGroupProperties.valueOf( key );
+	public boolean setDirective(IJxseDirectives id, String value) {
+		if( PeerGroupDirectives.isValidDirective( id.name()))
+			return super.setDirective(PeerGroupDirectives.valueOf( id.name()), value );
+		return super.setDirective(id, value);
 	}
 
-
 	@Override
-	public boolean validate(IJxseProperties id, Object value) {
-		// TODO Auto-generated method stub
-		return false;
+	public PeerGroupProperties getIdFromString(String key) {
+		return PeerGroupProperties.valueOf( key );
 	}
 }

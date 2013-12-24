@@ -5,7 +5,7 @@ import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public abstract class AbstractPeerGroupProviderPropertySource<E extends Object> extends AbstractJxseWritePropertySource<E>
+public abstract class AbstractPeerGroupProviderPropertySource<E extends Object> extends AbstractJxseWritePropertySource
 {
 
 	public enum PeerGroupDirectives implements IJxseDirectives{
@@ -26,14 +26,7 @@ public abstract class AbstractPeerGroupProviderPropertySource<E extends Object> 
 		}
 	}
 
-	public AbstractPeerGroupProviderPropertySource( String componentName, IJxsePropertySource<?> parent) {
+	public AbstractPeerGroupProviderPropertySource( String componentName, IJxsePropertySource<IJxseProperties> parent) {
 		super( componentName,parent );
-	}
-
-	@Override
-	public IJxseDirectives getDirectiveFromString(String id) {
-		if( PeerGroupDirectives.isValidDirective( id ))
-			return PeerGroupDirectives.valueOf( id );
-		return super.getDirectiveFromString(id);
 	}
 }

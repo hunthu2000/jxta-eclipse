@@ -15,7 +15,7 @@ import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
-public class AdvertisementPropertySource extends AbstractJxseWritePropertySource<IJxseProperties> {
+public class AdvertisementPropertySource extends AbstractJxseWritePropertySource {
 
 	public static String S_ADVERTISEMENTS = "AdvertisementService";
 	
@@ -206,12 +206,12 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 		}
 	}
 
-	public AdvertisementPropertySource(IJxsePropertySource<?> parent) {
+	public AdvertisementPropertySource(IJxsePropertySource<IJxseProperties> parent) {
 		super( S_ADVERTISEMENTS, parent);
 		this.fillDefaultValues();
 	}
 
-	public AdvertisementPropertySource(String componentName,IJxsePropertySource<?> parent) {
+	public AdvertisementPropertySource(String componentName,IJxsePropertySource<IJxseProperties> parent) {
 		super(componentName, parent);
 		this.fillDefaultValues();
 	}
@@ -222,12 +222,12 @@ public class AdvertisementPropertySource extends AbstractJxseWritePropertySource
 		super.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( AdvertisementProperties.EXPIRATION, PeerGroup.DEFAULT_EXPIRATION ));	
 		super.setManagedProperty( new ManagedProperty<IJxseProperties, Object>( AdvertisementProperties.MODE, AdvertisementMode.DISCOVERY, true ));
 	}
-
+	
 	@Override
-	public IJxseDirectives getDirectiveFromString(String id) {
-		if(!AdvertisementDirectives.isValidDirective(id))
-			return super.getDirectiveFromString(id);
-		return AdvertisementDirectives.valueOf( id );
+	public boolean setDirective(IJxseDirectives id, String value) {
+		if( AdvertisementDirectives.isValidDirective( id.name()))
+			return super.setDirective(AdvertisementDirectives.valueOf( id.name()), value );
+		return super.setDirective(id, value);
 	}
 
 	@Override

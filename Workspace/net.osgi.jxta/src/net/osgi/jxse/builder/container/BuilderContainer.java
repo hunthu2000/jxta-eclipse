@@ -9,8 +9,11 @@ import java.util.List;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.builder.IJxseModule;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
+import net.osgi.jxse.utils.Utils;
 
 public class BuilderContainer implements ICompositeBuilderListener<Object>{
+
+	public static final String S_WRN_NOT_COMPLETE = "\n\t!!! The Service Container did not complete: ";
 
 	private List<IJxseModule<Object>> modules;
 	private Collection<IBuilderContainerListener<Object>> listeners;
@@ -71,12 +74,26 @@ public class BuilderContainer implements ICompositeBuilderListener<Object>{
 		return true;
 	}
 	
+	/**
+	 * List the modules that did not complete
+	 * @return
+	 */
+	public String listModulesNotCompleted(){
+		StringBuffer buffer = new StringBuffer();
+		for( IJxseModule<?> module: modules ){
+			if( !module.isCompleted())
+				buffer.append( "\t\t\t"+ module.getComponentName() + "\n" );
+		}
+		if( Utils.isNull( buffer.toString() ))
+			return null;
+		return S_WRN_NOT_COMPLETE + buffer.toString();
+	}
+	
 	@Override
-	public void notifyCreated(ComponentBuilderEvent<Object> event) {
+	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		for( IJxseModule<Object> module: this.modules )
 			if( !module.equals( event.getModule()))
-				module.notifyCreated(event);
-		
+				module.notifyChange(event);	
 	}	
 }
 

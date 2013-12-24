@@ -13,23 +13,17 @@ package net.osgi.jxse.builder;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.builder.ICompositeBuilderListener.BuilderEvents;
 import net.osgi.jxse.component.ModuleNode;
-import net.osgi.jxse.context.ContextModule;
+import net.osgi.jxse.context.JxseServiceContext;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
-import net.osgi.jxse.factory.FactoryNode;
-import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
-import net.osgi.jxse.utils.Utils;
 
-public class CompositeBuilder implements ICompositeBuilder<ModuleNode<ContextModule>> {
+public class CompositeBuilder implements ICompositeBuilder<ModuleNode<JxseServiceContext>> {
 
 	private Collection<ICompositeBuilderListener<?>> builderlisteners;
-	private ModuleNode<NetworkManager> networkRoot;
-	private ModuleNode<ContextModule> root;
+	private ModuleNode<JxseServiceContext> root;
 	
-	public CompositeBuilder( ModuleNode<ContextModule> root ) {
+	public CompositeBuilder( ModuleNode<JxseServiceContext> root ) {
 		this.root = root;
 		this.builderlisteners = new ArrayList<ICompositeBuilderListener<?>>();
 	}
@@ -53,11 +47,11 @@ public class CompositeBuilder implements ICompositeBuilder<ModuleNode<ContextMod
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void notifyListeners( ComponentBuilderEvent event ){
 		for( ICompositeBuilderListener<?> listener: builderlisteners )
-			listener.notifyCreated(event);
+			listener.notifyChange(event);
 	}
 
 	@Override
-	public ModuleNode<ContextModule> build() {
+	public ModuleNode<JxseServiceContext> build() {
 		this.extendPropertySources(root);
 		this.parseModules(this.root, null );
 		return this.root;
@@ -75,7 +69,7 @@ public class CompositeBuilder implements ICompositeBuilder<ModuleNode<ContextMod
 	}
 
 	/**
-	 * Parse the directives for this factory
+	 * Parse the modules that can be started immediately
 	 * @param node
 	 */
 	@SuppressWarnings({"rawtypes", "unchecked" })
@@ -87,61 +81,5 @@ public class CompositeBuilder implements ICompositeBuilder<ModuleNode<ContextMod
 			this.parseModules( (ModuleNode<?>) child, node );
 		}
 		this.notifyListeners( new ComponentBuilderEvent( this, node.getData(), BuilderEvents.FACTORY_CREATED ));
-	}
-
-	/**
-	 * returns the node that contains a peergroup provider
-	 * @param name
-	 * @param parent
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private final ModuleNode<IPeerGroupProvider> getPeerGroupProvider( String name, ModuleNode<?> parent ){
-		String providerName = IPeerGroupProvider.S_NET_PEER_GROUP;
-		if( !Utils.isNull( name ))
-			providerName = name;
-		
-		ModuleNode<IPeerGroupProvider> returnNode= (ModuleNode<IPeerGroupProvider>) findFirstPeerGroupProviderParent(parent, providerName);
-		if( returnNode != null )
-			return returnNode;
-		
-		for( ComponentNode<?> child: this.networkRoot.getChildren()) {
-			returnNode = this.getPeerGroupProvider( providerName, (ModuleNode<?>) child );
-			if( returnNode != null )
-				return returnNode;
-		}
-		
-		return returnNode;
-	}
-
-	private ModuleNode<?> findFirstPeerGroupProviderParent( ModuleNode<?> parent, String name ){
-		if( parent == null )
-			return null;
-		IComponentFactory<IJxseModule<?>> module = (IComponentFactory<IJxseModule<?>>) parent.getData();
-		if( module instanceof IPeerGroupProvider )
-			return parent;
-		 return findFirstPeerGroupProviderParent( (ModuleNode<?>) parent.getParent(), name );
-	}
-	
-	/**
-	 * returns the node that contains a peergroup provider
-	 * @param name
-	 * @param parent
-	 * @return
-	 */
-	protected final ModuleNode<IPeerGroupProvider> getPeerGroupProviderNotNull( String name, ModuleNode<?> parent ){
-		ModuleNode<IPeerGroupProvider> provider = getPeerGroupProvider( name, parent );
-		if( provider == null )
-			provider = getPeerGroupProvider( IPeerGroupProvider.S_NET_PEER_GROUP, parent );
-		return provider;
-	}
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected FactoryNode<?> createNode( ComponentNode<?> node, IComponentFactory<?> factory ){
-		FactoryNode<?> childNode = null;
-		if( node == null )
-			childNode = new FactoryNode( factory );
-		else
-			childNode = (FactoryNode )node.addChild( factory );
-		return childNode;
 	}
 }

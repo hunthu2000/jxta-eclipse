@@ -10,15 +10,13 @@
  *******************************************************************************/
 package net.osgi.jxse.service.advertisement;
 
-import net.jxta.peergroup.PeerGroup;
 import net.osgi.jxse.advertisement.JxseAdvertisementFactory;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class ChaupalAdvertisementFactory extends
-		AbstractComponentFactory<JxseAdvertisementService> implements IPeerGroupProvider{
+		AbstractComponentFactory<JxseAdvertisementService>{
 
 	public static final String S_DISCOVERY_SERVICE = "JxseDiscoveryService";
 
@@ -34,15 +32,5 @@ public class ChaupalAdvertisementFactory extends
 		factory.createComponent();
 		JxseAdvertisementService ds = new JxseAdvertisementService ( factory );
 		return ds;
-	}
-
-	@Override
-	public String getPeerGroupName() {
-		return this.factory.getPeerGroupContainer().getPeerGroupName();
-	}
-
-	@Override
-	public PeerGroup getPeerGroup() {
-		return this.factory.getPeerGroupContainer().getPeerGroup();
 	}
 }

@@ -74,13 +74,8 @@ public class PropertySourceWrapper< T extends Object> implements IJxsePropertySo
 	}
 
 	@Override
-	public Object getDirective(IJxseDirectives id) {
+	public String getDirective(IJxseDirectives id) {
 		return this.source.getDirective(id);
-	}
-
-	@Override
-	public IJxseDirectives getDirectiveFromString(String id) {
-		return this.source.getDirectiveFromString(id);
 	}
 
 	@Override

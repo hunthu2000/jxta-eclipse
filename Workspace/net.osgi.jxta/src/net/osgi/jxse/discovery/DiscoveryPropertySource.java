@@ -41,12 +41,12 @@ public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySo
 		}
 	}
 
-	public DiscoveryPropertySource( IJxsePropertySource<?> parent) {
+	public DiscoveryPropertySource( IJxsePropertySource<IJxseProperties> parent) {
 		this( Components.DISCOVERY_SERVICE.toString(), parent );
 	}
 
 
-	public DiscoveryPropertySource( String componentName, IJxsePropertySource<?> parent) {
+	public DiscoveryPropertySource( String componentName, IJxsePropertySource<IJxseProperties> parent) {
 		super( componentName,parent );
 		this.fillDefaultValues();
 		this.fillDefaultValues(parent);

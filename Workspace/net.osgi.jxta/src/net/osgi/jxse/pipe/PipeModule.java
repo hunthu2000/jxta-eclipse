@@ -6,11 +6,8 @@ import net.osgi.jxse.builder.IJxseModule;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
 
 public class PipeModule extends AbstractJxseModule<PipeService, PipePropertySource> {
-
-	private  IPeerGroupProvider provider;
 
 	public PipeModule(IJxseModule<?> parent) {
 		super(parent);
@@ -29,11 +26,11 @@ public class PipeModule extends AbstractJxseModule<PipeService, PipePropertySour
 
 	@Override
 	public IComponentFactory<PipeService> onCreateFactory() {
-		return new PipeServiceFactory( provider, super.getPropertySource() );
+		return new PipeServiceFactory( super.getPropertySource() );
 	}
 
 	@Override
-	public void notifyCreated(ComponentBuilderEvent<Object> event) {
+	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		// TODO Auto-generated method stub
 		
 	}

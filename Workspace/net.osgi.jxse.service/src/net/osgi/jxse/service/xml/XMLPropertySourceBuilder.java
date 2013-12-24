@@ -23,12 +23,11 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import net.osgi.jxse.activator.JxseStartupPropertySource;
-import net.osgi.jxse.activator.StartupModule;
 import net.osgi.jxse.advertisement.AdvertisementModule;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementProperties;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
+import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.builder.ICompositeBuilder;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.builder.ICompositeBuilderListener.BuilderEvents;
@@ -39,12 +38,14 @@ import net.osgi.jxse.context.ContextModule;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.context.JxseContextPreferences;
 import net.osgi.jxse.context.JxseContextPropertySource;
+import net.osgi.jxse.context.JxseServiceContext;
 import net.osgi.jxse.discovery.DiscoveryModule;
 import net.osgi.jxse.discovery.DiscoveryPreferences;
 import net.osgi.jxse.discovery.DiscoveryPropertySource;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory.Components;
+import net.osgi.jxse.log.LoggerModule;
 import net.osgi.jxse.netpeergroup.NetPeerGroupModule;
 import net.osgi.jxse.network.INetworkPreferences;
 import net.osgi.jxse.network.NetworkManagerModule;
@@ -53,9 +54,9 @@ import net.osgi.jxse.network.NetworkManagerPropertySource;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jxse.network.configurator.NetworkConfigurationFactory;
 import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource;
+import net.osgi.jxse.network.configurator.OverviewPreferences;
 import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.network.configurator.NetworkConfiguratorModule;
-import net.osgi.jxse.network.OverviewPreferences;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
@@ -76,11 +77,14 @@ import net.osgi.jxse.seeds.SeedListPropertySource;
 import net.osgi.jxse.service.xml.PreferenceStore.Persistence;
 import net.osgi.jxse.service.xml.PreferenceStore.SupportedAttributes;
 import net.osgi.jxse.service.xml.XMLPropertySourceBuilder.Groups;
+import net.osgi.jxse.startup.JxseStartupPropertySource;
+import net.osgi.jxse.startup.StartupModule;
+import net.osgi.jxse.utils.StringDirective;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 import net.osgi.jxse.utils.io.IOUtils;
 
-public class XMLPropertySourceBuilder implements ICompositeBuilder<ModuleNode<ContextModule>> {
+public class XMLPropertySourceBuilder implements ICompositeBuilder<ModuleNode<JxseServiceContext>> {
 
 	protected static final String JAXP_SCHEMA_SOURCE =
 		    "http://java.sun.com/xml/jaxp/properties/schemaSource";
@@ -171,7 +175,7 @@ public class XMLPropertySourceBuilder implements ICompositeBuilder<ModuleNode<Co
 
 	void notifyListeners( ComponentBuilderEvent<Object> event ){
 		for( ICompositeBuilderListener<Object> listener: listeners )
-			listener.notifyCreated(event);
+			listener.notifyChange(event);
 	}
 
 	public boolean canCreate(){
@@ -182,7 +186,7 @@ public class XMLPropertySourceBuilder implements ICompositeBuilder<ModuleNode<Co
 
 	
 	@Override
-	public ModuleNode<ContextModule> build() {
+	public ModuleNode<JxseServiceContext> build() {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		URL schema_in = XMLPropertySourceBuilder.class.getResource( S_SCHEMA_LOCATION); 
 		if( schema_in == null )
@@ -197,13 +201,13 @@ public class XMLPropertySourceBuilder implements ICompositeBuilder<ModuleNode<Co
 		ICompositeBuilderListener<?> listener = new ICompositeBuilderListener<Object>(){
 
 			@Override
-			public void notifyCreated(ComponentBuilderEvent<Object> event) {
+			public void notifyChange(ComponentBuilderEvent<Object> event) {
 				notifyListeners(event);
 			}
 		};
 		
 		//First parse the XML file
-		ModuleNode<ContextModule> node = null;
+		ModuleNode<JxseServiceContext> node = null;
 		try {
 			logger.info("Parsing JXSE Bundle: " + this.properties.getProperty( ContextProperties.BUNDLE_ID ));
 			//Schema schema = schemaFactory.newSchema(schemaFile);
@@ -216,9 +220,7 @@ public class XMLPropertySourceBuilder implements ICompositeBuilder<ModuleNode<Co
 			//saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA); 
 			//saxParser.setProperty(JAXP_SCHEMA_SOURCE, new File(JXSE_XSD_SCHEMA)); 
 			JxtaHandler handler = new JxtaHandler( this, container );
-			handler.addListener(listener);
 			saxParser.parse( in, handler);
-			handler.removeListener(listener);
 			node = handler.getRoot();
 			logger.info("JXSE Bundle Parsed: " + this.properties.getProperty( ContextProperties.BUNDLE_ID ));
 		} catch( SAXNotRecognizedException e ){
@@ -237,8 +239,16 @@ public class XMLPropertySourceBuilder implements ICompositeBuilder<ModuleNode<Co
 		finally{
 			IOUtils.closeInputStream(in);
 		}
+		this.notifyPropertyCreated( node );
 		this.completed = true;
 		return node;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void notifyPropertyCreated( ModuleNode<?> node ){
+		this.notifyListeners( new ComponentBuilderEvent( this, node.getData(), BuilderEvents.PROPERTY_SOURCE_CREATED ));
+		for( ComponentNode<?> child: node.getChildren())
+			this.notifyPropertyCreated((ModuleNode<?>) child);
 	}
 
 	public boolean complete() {
@@ -273,12 +283,10 @@ class JxtaHandler extends DefaultHandler{
 	private ManagedProperty<IJxseProperties,Object> property;
 
 	private BuilderContainer container;
-	private ModuleNode<ContextModule> root;
+	private ModuleNode<JxseServiceContext> root;
 	private ModuleNode<?> node;
 
 	private boolean startupService;
-	
-	private Collection<ICompositeBuilderListener<Object>> listeners;
 	
 	private static Logger logger = Logger.getLogger( XMLPropertySourceBuilder.class.getName() );
 
@@ -286,30 +294,15 @@ class JxtaHandler extends DefaultHandler{
 		this.owner = owner;
 		this.startupService = false;
 		this.container = container;
-		listeners = new ArrayList<ICompositeBuilderListener<Object>>();
 	}
 
-	ModuleNode<ContextModule> getRoot() {
+	ModuleNode<JxseServiceContext> getRoot() {
 		return root;
 	}
 
 
 	public boolean hasStartupService() {
 		return startupService;
-	}
-
-	@SuppressWarnings("unchecked")
-	void addListener( ICompositeBuilderListener<?> listener ){
-		this.listeners.add( (ICompositeBuilderListener<Object>) listener);
-	}
-
-	void removeListener( ICompositeBuilderListener<?> listener ){
-		this.listeners.remove( listener);
-	}
-
-	private void notifyListeners( ComponentBuilderEvent<Object> event ){
-		for( ICompositeBuilderListener<Object> listener: this.listeners )
-			listener.notifyCreated( event);
 	}
 	
 	@Override
@@ -327,7 +320,7 @@ class JxtaHandler extends DefaultHandler{
 			switch( current ){
 			case JXSE_CONTEXT:
 				module = new ContextModule((JxseContextPropertySource) owner.getPropertySource() );
-				this.root = new ModuleNode<ContextModule>((IJxseModule<ContextModule>)module );
+				this.root = new ModuleNode<JxseServiceContext>((IJxseModule<JxseServiceContext>) module );
 				break;
 			case STARTUP_SERVICE:
 				module = new StartupModule( container, (ContextModule)node.getData()  );
@@ -337,7 +330,7 @@ class JxtaHandler extends DefaultHandler{
 				module = new NetworkManagerModule(node.getData()  );
 				break;
 			case NETWORK_CONFIGURATOR:
-				module = new NetworkConfiguratorModule(owner.clss, node.getData() );
+				module = new NetworkConfiguratorModule(owner.clss, node.getData(), container );
 				break;
 			case SEED_LIST:
 				module = new SeedListModule( node.getData() );
@@ -368,23 +361,28 @@ class JxtaHandler extends DefaultHandler{
 			case PEERGROUP_SERVICE:
 				module = new PeerGroupModule();
 				break;			
+			case LOGGER_SERVICE:
+				module = new LoggerModule( node.getData());
+				break;
 			default:
 				break;
 			}
 			container.addModule((IJxseModule<Object>) module);
 			if( node != null ){
-				module.createPropertySource();		
-				source.addChild( module.getPropertySource() );
+				source.addChild( module.createPropertySource() );
 				node = (ModuleNode<?>) node.addChild(module);
 			}else{
 				node = this.root;
 			}
 			
-			source = (IJxseWritePropertySource) module.getPropertySource();
-			for( int i=0; i<attributes.getLength(); i++  ){
-				if( !Utils.isNull( attributes.getLocalName(i))){
-					String attr = StringStyler.styleToEnum( attributes.getLocalName(i)); 
-					source.setDirective( source.getDirectiveFromString( attr ), attributes.getValue(i));
+			//Add the directives
+			if( source instanceof IJxseWritePropertySource ){
+				source = (IJxseWritePropertySource) module.getPropertySource();
+				for( int i=0; i<attributes.getLength(); i++  ){
+					if( !Utils.isNull( attributes.getLocalName(i))){
+						IJxseDirectives directive = new StringDirective( StringStyler.styleToEnum( attributes.getLocalName(i))); 
+						source.setDirective( directive, attributes.getValue(i));
+					}
 				}
 			}
 		}else if( !Groups.isGroup( qName )){
@@ -417,23 +415,10 @@ class JxtaHandler extends DefaultHandler{
 		return prop;
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-
-		IJxseWritePropertySource<IJxseProperties> source = (IJxseWritePropertySource<IJxseProperties>) node.getData().getPropertySource();
 		if( !Components.isComponent( qName ))
 			return;
-		Components comp = Components.valueOf( StringStyler.styleToEnum( qName ));
-		switch( comp ){
-		case JXSE_CONTEXT:
-				if( Boolean.valueOf(( String ) source.getDirective( Directives.AUTO_START )))
-					source.addChild( new JxseStartupPropertySource( (JxseContextPropertySource) source ));
-		default:
-			break;
-
-		}
-		this.notifyListeners( new ComponentBuilderEvent( this, node.getData(), BuilderEvents.PROPERTY_SOURCE_CREATED ));
 		node = (ModuleNode<?>) node.getParent();
 		this.property = null;
 	}

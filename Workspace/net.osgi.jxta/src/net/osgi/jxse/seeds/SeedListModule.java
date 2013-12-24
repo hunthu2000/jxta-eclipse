@@ -5,6 +5,7 @@ import net.osgi.jxse.builder.IJxseModule;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
 
 public class SeedListModule extends AbstractJxseModule<String, SeedListPropertySource> {
 
@@ -16,7 +17,23 @@ public class SeedListModule extends AbstractJxseModule<String, SeedListPropertyS
 	public String getComponentName() {
 		return Components.SEED_LIST.toString();
 	}
+	
+	@Override
+	public boolean canCreate() {
+		if( super.getPropertySource() == null )
+			return false;
+		SeedListPropertySource source = super.getPropertySource();
+		return !SeedListPropertySource.getBoolean(source, Directives.BLOCK_CREATION);
+	}
 
+	
+	@Override
+	public boolean isCompleted() {
+		if( super.getPropertySource() == null )
+			return false;
+		SeedListPropertySource source = super.getPropertySource();
+		return SeedListPropertySource.getBoolean(source, Directives.BLOCK_CREATION);
+	}
 
 	@Override
 	protected SeedListPropertySource onCreatePropertySource() {
@@ -25,12 +42,11 @@ public class SeedListModule extends AbstractJxseModule<String, SeedListPropertyS
 
 	@Override
 	public IComponentFactory<String> onCreateFactory() {
-		return new SeedListFactory( super.getPropertySource() );
+		SeedListFactory factory = new SeedListFactory( super.getPropertySource() );
+		return factory;
 	}
 
 	@Override
-	public void notifyCreated(ComponentBuilderEvent<Object> event) {
-		// TODO Auto-generated method stub
-		
+	public void notifyChange(ComponentBuilderEvent<Object> event) {
 	}
 }

@@ -12,7 +12,7 @@ import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.StringStyler;
 
-public class NetworkManagerPropertySource extends AbstractJxseWritePropertySource<IJxseProperties>
+public class NetworkManagerPropertySource extends AbstractJxseWritePropertySource
 	implements IJxseWritePropertySource<IJxseProperties>
 {
 

@@ -100,14 +100,7 @@ public interface IJxsePropertySource< T extends Object> {
 	 * @param id
 	 * @return
 	 */
-	public Object getDirective( IJxseDirectives id );
-
-	/**
-	 * Get the directive from a String
-	 * @param id
-	 * @return
-	 */
-	public IJxseDirectives getDirectiveFromString( String id);
+	public String getDirective( IJxseDirectives id );
 
 	/**
 	 * Get an iterator over the directives

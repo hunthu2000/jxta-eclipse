@@ -15,7 +15,6 @@ import java.net.URISyntaxException;
 
 import net.jxta.id.IDFactory;
 import net.jxta.pipe.PipeService;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.pipe.PipePropertySource.PipeProperties;
 import net.osgi.jxse.properties.AbstractPreferences;
 import net.osgi.jxse.properties.IJxseProperties;
@@ -25,8 +24,6 @@ import net.osgi.jxse.utils.StringStyler;
 
 public class AdvertisementPreferences extends AbstractPreferences<IJxseProperties>{
 
-	private IPeerGroupProvider provider;
-	
 	public enum PipeServiceTypes{
 		UNICAST,
 		SECURE_UNICAST,
@@ -54,9 +51,8 @@ public class AdvertisementPreferences extends AbstractPreferences<IJxsePropertie
 		}
 	}
 
-	public AdvertisementPreferences( IPeerGroupProvider provider, IJxseWritePropertySource<IJxseProperties> source ) {
+	public AdvertisementPreferences( IJxseWritePropertySource<IJxseProperties> source ) {
 		super( source );
-		this.provider = provider;
 	}
 
 	/* (non-Javadoc)
@@ -99,7 +95,7 @@ public class AdvertisementPreferences extends AbstractPreferences<IJxsePropertie
 		PipeProperties pid = ( PipeProperties )id;
 		switch( pid ){
 		case PIPE_ID:
-			value = IDFactory.newPipeID( provider.getPeerGroup().getPeerGroupID() );
+			value = null;//IDFactory.newPipeID( provider.getPeerGroup().getPeerGroupID() );
 			break;
 		default:
 			break;

@@ -8,7 +8,7 @@ import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
 import net.osgi.jxse.utils.StringStyler;
 
-public class RegistrationPropertySource extends AbstractJxseWritePropertySource<IJxseProperties>
+public class RegistrationPropertySource extends AbstractJxseWritePropertySource
 {
 	public enum RegistrationProperties implements IJxseProperties{
 		DISCOVERY_MODE,
@@ -41,12 +41,12 @@ public class RegistrationPropertySource extends AbstractJxseWritePropertySource<
 		}
 	}
 
-	public RegistrationPropertySource( IJxsePropertySource<?> parent) {
+	public RegistrationPropertySource( IJxsePropertySource<IJxseProperties> parent) {
 		this( Components.REGISTRATION_SERVICE.toString(), parent );
 	}
 
 
-	public RegistrationPropertySource( String componentName, IJxsePropertySource<?> parent) {
+	public RegistrationPropertySource( String componentName, IJxsePropertySource<IJxseProperties> parent) {
 		super( componentName,parent );
 		this.fillDefaultValues();
 	}
@@ -58,14 +58,6 @@ public class RegistrationPropertySource extends AbstractJxseWritePropertySource<
 		this.setManagedProperty( new ManagedProperty< IJxseProperties, Object>( RegistrationProperties.WILDCARD, null, true ));
 		this.setManagedProperty( new ManagedProperty< IJxseProperties, Object>( RegistrationProperties.THRESHOLD, 1, true ));
 	}
-
-	@Override
-	public IJxseDirectives getDirectiveFromString(String id) {
-		if( RegistrationDirectives.isValidDirective( id ))
-			return RegistrationDirectives.valueOf( id );
-		return super.getDirectiveFromString(id);
-	}
-
 
 	@Override
 	public RegistrationProperties getIdFromString(String key) {

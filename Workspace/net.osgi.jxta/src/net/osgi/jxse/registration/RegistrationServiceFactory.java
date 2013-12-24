@@ -11,7 +11,6 @@
 package net.osgi.jxse.registration;
 
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
@@ -22,11 +21,8 @@ public class RegistrationServiceFactory extends
 
 	public static final String S_DISCOVERY_SERVICE = "DiscoveryService";
 
-	private IPeerGroupProvider peerGroupContainer;
-
-	public RegistrationServiceFactory( IPeerGroupProvider peerGroupContainer, IJxsePropertySource<IJxseProperties> source ) {
+	public RegistrationServiceFactory( IJxsePropertySource<IJxseProperties> source ) {
 		super( source );
-		this.peerGroupContainer = peerGroupContainer;
 	}
 
 	@Override
@@ -35,7 +31,7 @@ public class RegistrationServiceFactory extends
 
 	@Override
 	protected RegistrationService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		RegistrationService service = new RegistrationService( peerGroupContainer, (IJxseWritePropertySource<IJxseProperties>) properties );
+		RegistrationService service = new RegistrationService( (IJxseWritePropertySource<IJxseProperties>) properties );
 		return service;
 	}
 }

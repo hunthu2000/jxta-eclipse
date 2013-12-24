@@ -137,7 +137,7 @@ public class ContextComposite extends Composite {
 		btnAutoStart.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				properties.setDirective( IJxseDirectives.Directives.AUTO_START, (( Button )e.item ).getSelection() );
+				properties.setDirective( IJxseDirectives.Directives.AUTO_START, Boolean.toString((( Button )e.item ).getSelection() ));
 			}
 		});
 		btnAutoStart.setText("Auto Start");
@@ -264,7 +264,7 @@ public class ContextComposite extends Composite {
 			return false;
 		if( !properties.setProperty( ContextProperties.PASS_2, this.text_pass2.getText() ))
 			return false;
-		if( !properties.setDirective( IJxseDirectives.Directives.AUTO_START, this.btnAutoStart.getSelection() ))
+		if( !properties.setDirective( IJxseDirectives.Directives.AUTO_START, Boolean.toString( this.btnAutoStart.getSelection() )))
 			return false;
 		return true;
 		//if( !properties.setDirective( IJxseDirectives.Directives.PEER_ID_CREATE, this.btnGenerate.getSelection() ))

@@ -17,12 +17,12 @@ import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.pipe.PipePropertySource.PipeProperties;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.StringStyler;
+import net.osgi.jxse.utils.Utils;
 
 public class JxseAdvertisementFactory extends AbstractComponentFactory<Advertisement> {
 
@@ -32,31 +32,16 @@ public class JxseAdvertisementFactory extends AbstractComponentFactory<Advertise
 
 	public static final String S_ADVERTISEMENT_SERVICE = "AdvertisementService";
 
-	private IPeerGroupProvider peerGroupContainer;
-
-	public JxseAdvertisementFactory( IPeerGroupProvider peerGroupContainer, IJxsePropertySource<IJxseProperties> source ) {
+	public JxseAdvertisementFactory( IJxsePropertySource<IJxseProperties> source ) {
 		super( source );
-		this.peerGroupContainer = peerGroupContainer;
 	}
 	
-	/**
-	 * Get the peergroup container
-	 * @return
-	 */
-	public IPeerGroupProvider getPeerGroupContainer() {
-		return peerGroupContainer;
-	}
-
-
 	@Override
 	protected Advertisement onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		if( peerGroupContainer.getPeerGroup() == null ){
-			super.setCompleted( false );
-			return null;
-		}
-			
 		IJxsePropertySource<IJxseProperties> source = super.getPropertySource();
 		String tp = StringStyler.styleToEnum((String) source.getDirective( AdvertisementDirectives.TYPE ));
+		if( Utils.isNull(tp))
+			return null;
 		AdvertisementTypes type = AdvertisementTypes.valueOf(tp);
 		switch( type ){
 		case PIPE:
@@ -78,7 +63,7 @@ public class JxseAdvertisementFactory extends AbstractComponentFactory<Advertise
 	protected PipeAdvertisement createPipeAdvertisement(){
 		IJxseWritePropertySource<IJxseProperties> source = (IJxseWritePropertySource<IJxseProperties>) super.getPropertySource();
 		AdvertisementTypes type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( (String) source.getDirective( AdvertisementDirectives.TYPE )));
-		AdvertisementPreferences preferences = new AdvertisementPreferences( this.peerGroupContainer, source );
+		AdvertisementPreferences preferences = new AdvertisementPreferences( source );
 		PipeAdvertisement pipead = ( PipeAdvertisement )AdvertisementFactory.newAdvertisement( AdvertisementTypes.convertTo(type));
 		preferences.createDefaultValue( PipeProperties.PIPE_ID);
 		pipead.setPipeID( (ID) source.getProperty( PipeProperties.PIPE_ID ));

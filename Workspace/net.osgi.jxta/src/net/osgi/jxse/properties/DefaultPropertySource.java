@@ -1,6 +1,6 @@
 package net.osgi.jxse.properties;
 
-public class DefaultPropertySource<T extends Object> extends AbstractJxseWritePropertySource<T> {
+public class DefaultPropertySource extends AbstractJxseWritePropertySource {
 
 	public DefaultPropertySource(String bundleId, String identifier,
 			String componentName) {
@@ -13,19 +13,7 @@ public class DefaultPropertySource<T extends Object> extends AbstractJxseWritePr
 	}
 
 	public DefaultPropertySource(String componentName,
-			IJxsePropertySource<?> parent) {
+			IJxsePropertySource<IJxseProperties> parent) {
 		super(componentName, parent);
 	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public T getIdFromString(String key) {
-		return (T) key;
-	}
-
-	@Override
-	public boolean validate(Object id, Object value) {
-		return true;
-	}
-
 }

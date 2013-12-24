@@ -127,7 +127,7 @@ implements	IJxseServiceContext<NetworkManager>{
 	protected void putProperty(Object key, Object value) {
 		if( value == null )
 			return;
-		((AbstractJxseWritePropertySource<IJxseProperties>) this.properties).setProperty( (IJxseProperties) key, value);
+		((AbstractJxseWritePropertySource) this.properties).setProperty( (IJxseProperties) key, value);
 	}
 
 	/**

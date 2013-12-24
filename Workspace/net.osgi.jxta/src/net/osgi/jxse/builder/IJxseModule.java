@@ -11,6 +11,12 @@ public interface IJxseModule<T extends Object> extends ICompositeBuilderListener
 	 * @return
 	 */
 	public String getComponentName();
+
+	/**
+	 * Get the parent of this module, or null if it ids a root
+	 * @return
+	 */
+	public IJxseModule<?> getParent();
 	
 	/**
 	 * Get the weight of the module. By definition, the context is 0, the startup service is 1,
@@ -38,13 +44,6 @@ public interface IJxseModule<T extends Object> extends ICompositeBuilderListener
 	public IJxsePropertySource<IJxseProperties> getPropertySource();
 
 	/**
-	 * Convenience method to set a property of the property source
-	 * @param id
-	 * @param value
-	 */
-	public void setProperty( IJxseProperties id, Object value );
-
-	/**
 	 * Returns true if the factory can be created
 	 * @return
 	 */
@@ -56,7 +55,14 @@ public interface IJxseModule<T extends Object> extends ICompositeBuilderListener
 	 * @return
 	 */
 	public IComponentFactory<T> createFactory();
-	
+
+	/**
+	 * Get the factory;
+	 * @param provider
+	 * @return
+	 */
+	public IComponentFactory<T> getFactory();
+
 	/**
 	 * Returns true if the module is complete. this means that the factoryb was created succesfully
 	 * @return

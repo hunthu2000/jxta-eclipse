@@ -42,6 +42,7 @@ Export-Package: net.osgi.jxse.activator,
  net.osgi.jxse.registration,
  net.osgi.jxse.seeds,
  net.osgi.jxse.socket,
+ net.osgi.jxse.startup,
  net.osgi.jxse.utils,
  net.osgi.jxse.utils.io,
  net.osgi.jxse.validator

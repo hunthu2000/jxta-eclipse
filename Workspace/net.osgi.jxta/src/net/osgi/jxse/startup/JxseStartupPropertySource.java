@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.activator;
+package net.osgi.jxse.startup;
 
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.context.JxseContextPropertySource;
@@ -18,7 +18,7 @@ import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.utils.StringStyler;
 
-public class JxseStartupPropertySource extends AbstractJxseWritePropertySource<IJxseProperties>{
+public class JxseStartupPropertySource extends AbstractJxseWritePropertySource{
 	
 	public enum StartupProperties implements IJxseProperties{
 		RETRIES;

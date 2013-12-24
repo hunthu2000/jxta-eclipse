@@ -21,7 +21,7 @@ import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.IOUtils;
 import net.osgi.jxse.utils.StringProperty;
 
-public class SeedListPropertySource extends AbstractJxseWritePropertySource<IJxseProperties> {
+public class SeedListPropertySource extends AbstractJxseWritePropertySource {
 
 	public static final String S_SEED_LIST = "Seed List";
 
@@ -29,11 +29,11 @@ public class SeedListPropertySource extends AbstractJxseWritePropertySource<IJxs
 
 	private boolean hasSeeds;
 	
-	public SeedListPropertySource( IJxsePropertySource<?> parent ) {
+	public SeedListPropertySource( IJxsePropertySource<IJxseProperties> parent ) {
 		super( S_SEED_LIST, parent );
 	}
 
-	public SeedListPropertySource( IJxsePropertySource<?> parent, Class<?> clss ) {
+	public SeedListPropertySource( IJxsePropertySource<IJxseProperties> parent, Class<?> clss ) {
 		this( parent );
 		this.hasSeeds = false;
 		this.fillProperties( clss );

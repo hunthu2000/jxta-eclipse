@@ -11,43 +11,26 @@
 package net.osgi.jxse.peergroup;
 
 import net.jxta.peergroup.PeerGroup;
-import net.osgi.jxse.advertisement.AdvertisementPropertySource;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class PeerGroupFactory extends AbstractComponentFactory<PeerGroup> 
-	implements IPeerGroupProvider
 {
-
-	public static final String S_PEERGROUP_SERVICE = "PeerGroupService";
-
-	private IPeerGroupProvider parentContainer;
-
-	public PeerGroupFactory( IPeerGroupProvider parentContainer, PeerGroupPropertySource source ) {
+	private PeerGroup parentPeerGroup;
+	
+	public PeerGroupFactory( PeerGroupPropertySource source, PeerGroup parentPeerGroup ) {
 		super( source );
-		this.parentContainer = parentContainer;
+		this.parentPeerGroup = parentPeerGroup;
+	}
+	
+	@Override
+	public boolean canCreate() {
+		return ( this.parentPeerGroup != null );
 	}
 
 	@Override
 	protected PeerGroup onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		PeerGroup parent = parentContainer.getPeerGroup();
-		return parent;//.newGroup( null);
-	}
-	
-	protected AdvertisementPropertySource getAdvertisementPropertySource(){
-		//for( IJxsePropertySource source: super. )
-		return null;
-	}
-	
-	@Override
-	public PeerGroup getPeerGroup() {
-		return super.getComponent();
-	}
-
-	@Override
-	public String getPeerGroupName() {
-		return (String) super.getPropertySource().getProperty( PeerGroupProperties.ATTRIBUTE );
+		return null;//parentPeerGroup.newGroup(null);
 	}
 }

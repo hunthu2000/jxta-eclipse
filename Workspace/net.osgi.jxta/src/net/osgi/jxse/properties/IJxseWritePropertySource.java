@@ -29,5 +29,5 @@ public interface IJxseWritePropertySource< T extends Object> extends IJxseProper
 	 */
 	public boolean addChild( IJxsePropertySource<?> child );
 	
-	boolean setDirective(IJxseDirectives id, Object value); 
+	boolean setDirective(IJxseDirectives id, String value); 
 }

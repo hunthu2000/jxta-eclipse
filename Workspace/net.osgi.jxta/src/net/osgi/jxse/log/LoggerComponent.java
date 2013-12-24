@@ -8,23 +8,14 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.peergroup;
+package net.osgi.jxse.log;
 
-import net.osgi.jxse.properties.IJxseProperties;
-import net.osgi.jxse.utils.StringStyler;
+import net.osgi.jxse.component.JxseComponent;
+import net.osgi.jxse.properties.IJxseDirectives;
 
-public interface IPeerGroupProperties {
+public class LoggerComponent extends JxseComponent<LoggerPropertySource, IJxseDirectives>{
 
-	public enum PeerGroupProperties implements IJxseProperties{
-		NAME,
-		IDENTIFIER,
-		PUBLISH,
-		PEER_GROUP_ID,
-		RENDEZ_VOUS;
-
-	@Override
-	public String toString() {
-		return StringStyler.prettyString( super.toString() );
-	}}
-
+	public LoggerComponent( LoggerFactory factory ) {
+		super( (LoggerPropertySource) factory.getPropertySource() );
+	}
 }

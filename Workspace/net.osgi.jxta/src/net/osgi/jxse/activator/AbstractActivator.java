@@ -75,7 +75,7 @@ public abstract class AbstractActivator implements IActivator
 	/**
 	 * Initialise the activator. If the method returns false, the status remains on initialising
 	 */
-	protected void initialise(){
+	public void initialise(){
 		if( this.status != Status.AVAILABLE )
 			return;
 		this.setStatus( Status.INITIALISING );

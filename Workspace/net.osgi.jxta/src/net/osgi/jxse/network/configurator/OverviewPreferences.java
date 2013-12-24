@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.network;
+package net.osgi.jxse.network.configurator;
 
 import java.io.File;
 import java.net.URI;
@@ -20,6 +20,7 @@ import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager.ConfigMode;
+import net.osgi.jxse.network.INetworkPreferences;
 import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.properties.AbstractPreferences;
 import net.osgi.jxse.properties.IJxseProperties;

@@ -10,10 +10,12 @@ import net.osgi.jxse.properties.IJxsePropertySource;
 public class PartialModule<T extends Object> extends AbstractJxseModule<T, PartialPropertySource> {
 
 	private String componentName;
+	private boolean completed;
 	
 	public PartialModule( String componentName, IJxseModule<?> parent) {
 		super(parent);
 		this.componentName = componentName;
+		this.completed = false;
 	}
 
 	@Override
@@ -28,11 +30,17 @@ public class PartialModule<T extends Object> extends AbstractJxseModule<T, Parti
 
 	@Override
 	public IComponentFactory<T> onCreateFactory() {
+		this.completed = true;
 		return null;
+	}
+	
+	@Override
+	public boolean isCompleted() {
+		return completed;
 	}
 
 	@Override
-	public void notifyCreated(ComponentBuilderEvent<Object> event) {
+	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		// TODO Auto-generated method stub
 		
 	}

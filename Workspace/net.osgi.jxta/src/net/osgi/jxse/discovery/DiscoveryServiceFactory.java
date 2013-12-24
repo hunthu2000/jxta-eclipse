@@ -12,7 +12,6 @@ package net.osgi.jxse.discovery;
 
 import net.jxta.discovery.DiscoveryService;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
@@ -21,21 +20,14 @@ public class DiscoveryServiceFactory extends
 
 	public static final String S_DISCOVERY_SERVICE = "DiscoveryService";
 
-	private IPeerGroupProvider peerGroupContainer;
-
-	public DiscoveryServiceFactory( IPeerGroupProvider peerGroupContainer, DiscoveryPropertySource source ) {
+	public DiscoveryServiceFactory( DiscoveryPropertySource source ) {
 		super( source );
-		this.peerGroupContainer = peerGroupContainer;
 	}
 
 	@Override
-	protected DiscoveryService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		if( peerGroupContainer.getPeerGroup() == null ){
-			super.setCompleted(false );
-			return null;
-		}
-			
-		DiscoveryService service = peerGroupContainer.getPeerGroup().getDiscoveryService();
-		return service;
+	protected DiscoveryService onCreateModule(
+			IJxsePropertySource<IJxseProperties> properties) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

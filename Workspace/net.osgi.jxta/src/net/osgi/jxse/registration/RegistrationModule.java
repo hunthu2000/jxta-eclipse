@@ -5,11 +5,8 @@ import net.osgi.jxse.builder.IJxseModule;
 import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
 
 public class RegistrationModule extends AbstractJxseModule<RegistrationService, RegistrationPropertySource> {
-
-	private  IPeerGroupProvider provider;
 
 	public RegistrationModule() {
 		super();
@@ -32,11 +29,11 @@ public class RegistrationModule extends AbstractJxseModule<RegistrationService, 
 
 	@Override
 	public IComponentFactory<RegistrationService> onCreateFactory() {
-		return new RegistrationServiceFactory( provider, super.getPropertySource() );
+		return new RegistrationServiceFactory( super.getPropertySource() );
 	}
 
 	@Override
-	public void notifyCreated(ComponentBuilderEvent<Object> event) {
+	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		// TODO Auto-generated method stub
 		
 	}

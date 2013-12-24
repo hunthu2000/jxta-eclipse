@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.network;
+package net.osgi.jxse.network.configurator;
 
 import java.io.File;
 import java.net.URI;
@@ -16,8 +16,6 @@ import java.net.URI;
 import net.jxta.peer.PeerID;
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.osgi.jxse.network.configurator.NetworkConfigurationFactory;
-import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource;
 import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
 public class OverviewConfiguration {

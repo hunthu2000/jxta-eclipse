@@ -17,8 +17,8 @@ public interface IJxseDirectives{
 		CONTEXT,
 		AUTO_START,
 		CLEAR_CONFIG,
-		CREATE_PARENT,
-		ACTIVATE_PARENT;
+		ACTIVATE_PARENT,
+		BLOCK_CREATION;
 
 		@Override
 		public String toString() {

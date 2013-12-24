@@ -38,7 +38,6 @@ implements IJxseService<T>{
 	
 	private ComponentEventDispatcher dispatcher;
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected AbstractJxseService( String bundleId, String identifier, String componentName) {
 		this( new DefaultPropertySource( bundleId, identifier, componentName),null);
 	}

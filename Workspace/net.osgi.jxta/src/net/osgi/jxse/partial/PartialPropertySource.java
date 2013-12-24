@@ -264,7 +264,7 @@ implements  IJxseWritePropertySource<IJxseProperties>{
 	}
 
 	@Override
-	public boolean setDirective(IJxseDirectives id, Object value) {
+	public boolean setDirective(IJxseDirectives id, String value) {
 		IJxseWritePropertySource<IJxseProperties> source = (IJxseWritePropertySource<IJxseProperties>) super.getSource();
 		return source.setDirective(id, value);
 	}

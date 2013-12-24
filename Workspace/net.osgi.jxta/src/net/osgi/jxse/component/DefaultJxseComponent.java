@@ -16,9 +16,10 @@ import java.util.Iterator;
 
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.DefaultPropertySource;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class DefaultJxseComponent<T extends Object, U extends Object> implements IJxseComponent<T,U>{
+public class DefaultJxseComponent<T extends Object> implements IJxseComponent<T, IJxseProperties>{
 
 	public static final String S_SERVICE = "Service";
 	
@@ -28,21 +29,19 @@ public class DefaultJxseComponent<T extends Object, U extends Object> implements
 			"The factory did not create the component. The flag setCompleted must be true, which is usually checked  with setAvailable.";
 	
 	private T module;
-	private IJxseWritePropertySource<U> properties;
+	private IJxseWritePropertySource<IJxseProperties> properties;
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected DefaultJxseComponent( String bundleId, String identifier, String componentName) {
-		this( new DefaultPropertySource( bundleId, identifier, componentName),null);
+		this( new DefaultPropertySource( bundleId, identifier, componentName), null);
 	}
 
-	protected DefaultJxseComponent( IJxseWritePropertySource<U> properties, T module ) {
+	protected DefaultJxseComponent( IJxseWritePropertySource<IJxseProperties> properties, T module ) {
 		this.properties = properties;
 		this.module = module;
 	}
 
-	@SuppressWarnings("unchecked")
 	protected DefaultJxseComponent( IComponentFactory<T> factory ) {
-		this( (IJxseWritePropertySource<U>) factory.getPropertySource(), factory.getComponent() );
+		this( (IJxseWritePropertySource<IJxseProperties>) factory.getPropertySource(), factory.getComponent() );
 	}
 
 	/**
@@ -55,9 +54,8 @@ public class DefaultJxseComponent<T extends Object, U extends Object> implements
 	/**
 	 * Get the create date
 	 */
-	@SuppressWarnings("unchecked")
 	public Date getCreateDate(){
-		Object value = this.properties.getProperty( (U) ModuleProperties.CREATE_DATE);
+		Object value = this.properties.getProperty( ModuleProperties.CREATE_DATE);
 		if( value == null )
 			return Calendar.getInstance().getTime();
 		return ( Date )value;
@@ -73,10 +71,9 @@ public class DefaultJxseComponent<T extends Object, U extends Object> implements
 		this.module = module;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public Object getProperty(Object key) {
-		return properties.getProperty((U) key);
+		return properties.getProperty( (IJxseProperties) key);
 	}
 
 	/**
@@ -84,18 +81,17 @@ public class DefaultJxseComponent<T extends Object, U extends Object> implements
 	 * @param key
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public String getCategory( Object key ){
-		return this.properties.getCategory( (U) key );
+		return this.properties.getCategory( (IJxseProperties) key );
 	}
 
-	protected void putProperty( U key, Object value ){
+	protected void putProperty( IJxseProperties key, Object value ){
 		properties.getOrCreateManagedProperty( key, value, false);
 	}
 
 	
 	@Override
-	public Iterator<U> iterator() {
+	public Iterator<IJxseProperties> iterator() {
 		return this.properties.propertyIterator();
 	}
 }

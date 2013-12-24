@@ -8,7 +8,7 @@ import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
-public class PipePropertySource extends AbstractJxseWritePropertySource<IJxseProperties> {
+public class PipePropertySource extends AbstractJxseWritePropertySource{
 
 	public enum PipeProperties implements IJxseProperties{
 		PIPE_ID,
@@ -49,20 +49,16 @@ public class PipePropertySource extends AbstractJxseWritePropertySource<IJxsePro
 		}
 	}
 
-	public PipePropertySource( IJxsePropertySource<?> parent) {
+	public PipePropertySource( IJxsePropertySource<IJxseProperties> parent) {
 		super( Components.PIPE_SERVICE.toString(), parent);
 	}
 
-	
 	@Override
-	public IJxseDirectives getDirectiveFromString( String str ) {
-		if( Utils.isNull(str))
-			return null;
-		if(!PipeDirectives.isValidDirective(str) )
-			return super.getDirectiveFromString( str );
-		return PipeDirectives.valueOf( str );
+	public boolean setDirective(IJxseDirectives id, String value) {
+		if( PipeDirectives.isValidDirective( id.name()))
+			return super.setDirective(PipeDirectives.valueOf( id.name()), value );
+		return super.setDirective(id, value);
 	}
-
 
 	@Override
 	public IJxseProperties getIdFromString(String key) {

@@ -8,12 +8,18 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.activator;
+package net.osgi.jxse.startup;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
+import net.osgi.jxse.activator.AbstractActivator;
+import net.osgi.jxse.activator.IActivator;
+import net.osgi.jxse.activator.IJxseService;
+import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.builder.ICompositeBuilderListener.BuilderEvents;
 import net.osgi.jxse.builder.IJxseModule;
 import net.osgi.jxse.builder.container.BuilderContainer;
@@ -24,33 +30,41 @@ import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
+import net.osgi.jxse.utils.Utils;
 
 public class JxseStartupService extends AbstractActivator implements IJxseService<BuilderContainer>{
 
 	public static final String S_ERR_NO_SERVICE_LOADED = "\n\t!!! No service is loaded. Not starting context:  ";
 	public static final String S_ERR_CONTEXT_NOT_BUILT = "\n\t!!! The context was not built! Not starting context:  ";
 	public static final String S_INFO_AUTOSTART = "\n\t!!! Autostarting container:  ";
-	
+
 	private JxseStartupPropertySource source;
 	
 	private BuilderContainer container;
+	
+	private Collection<ICompositeBuilderListener<Object>> listeners;
 	
 	private IBuilderContainerListener<Object> listener;
 	
 	public JxseStartupService( BuilderContainer container, JxseStartupPropertySource source ) {
 		this.source = source;
 		this.container = container;
+		listeners = new ArrayList<ICompositeBuilderListener<Object>>();
 		super.setStatus(Status.AVAILABLE);
 	}
 
 	/**
-	 * If true, the service is autostarted
+	 * If true, the service is auto started
 	 * @return
 	 */
 	protected boolean isAutoStart(){
 		return Boolean.parseBoolean( (String) this.source.getDirective( IJxseDirectives.Directives.AUTO_START ));		
 	}
-		
+
+	private final void notifyComponentChanged( ComponentBuilderEvent<Object> event ){
+		for( ICompositeBuilderListener<Object> listener: this.listeners )
+			listener.notifyChange(event);
+	}
 	/**
 	 * Start a module
 	 * @param module
@@ -58,17 +72,22 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 	protected void startModule( IJxseModule<Object> module ){
 		IComponentFactory<?> factory = null;
 		if(( module.canCreate()) && ( !module.isCompleted() )){
-				factory = module.createFactory();
-				container.notifyCreated( new ComponentBuilderEvent<Object>( this, module, BuilderEvents.FACTORY_CREATED ));
+			factory = module.createFactory();
+			this.notifyComponentChanged( new ComponentBuilderEvent<Object>( this, module, BuilderEvents.FACTORY_CREATED ));
 		}
+		if( factory == null )
+			return;
 		if( JxseStartupPropertySource.isAutoStart( module.getPropertySource()) ){
 			factory.createComponent();
-			container.notifyCreated( new ComponentBuilderEvent<Object>( this, module, BuilderEvents.COMPONENT_CREATED ));			
+			factory.complete();
+			notifyComponentChanged( new ComponentBuilderEvent<Object>( this, module, BuilderEvents.COMPONENT_CREATED ));			
 		}
 		if( module.canActivate() ){
 			IActivator service = (IActivator) module.getComponent();
-			if( !service.isActive())
+			if( !service.isActive()){
 				service.start();
+				notifyComponentChanged( new ComponentBuilderEvent<Object>( this, module, BuilderEvents.COMPONENT_STARTED ));			
+			}
 		}		
 	}
 
@@ -93,13 +112,18 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 		if(!this.isAutoStart() )
 			return;
 		
-		Logger logger = Logger.getLogger( this.getClass().getName() );
+		listeners.add(this.container);
 		
 		//First start the modules that are already present
 		for( IJxseModule<?> module: container.getChildren()){
 			if( Components.STARTUP_SERVICE.toString().equals( module.getComponentName() ))
 				continue;
-			this.startModule( (IJxseModule<Object>) module);
+			try{
+			  this.startModule( (IJxseModule<Object>) module);
+			}
+			catch( Exception ex ){
+				ex.printStackTrace();
+			}
 		}
 		
 		//Then listen to new additions
@@ -116,6 +140,11 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 			}
 			
 		};
+		Logger logger = Logger.getLogger( this.getClass().getName());
+		String list = container.listModulesNotCompleted();
+		if( !Utils.isNull( list )){
+			logger.warning( list );
+		}
 		container.addListener( listener);
 	}
 	
@@ -123,6 +152,7 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 	@SuppressWarnings("unchecked")
 	@Override
 	public void deactivate() {
+		this.listeners.remove(this.container);
 		if( this.listener != null )
 			container.removeListener(listener);
 		for( IJxseModule<?> module: container.getChildren()){

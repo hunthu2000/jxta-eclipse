@@ -12,7 +12,6 @@ package net.osgi.jxse.pipe;
 
 import net.jxta.pipe.PipeService;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
@@ -21,20 +20,12 @@ public class PipeServiceFactory extends
 
 	public static final String S_DISCOVERY_SERVICE = "DiscoveryService";
 
-	private IPeerGroupProvider peerGroupContainer;
-
-	public PipeServiceFactory( IPeerGroupProvider peerGroupContainer, PipePropertySource source ) {
+	public PipeServiceFactory( PipePropertySource source ) {
 		super( source );
-		this.peerGroupContainer = peerGroupContainer;
 	}
 
 	@Override
 	protected PipeService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		if( peerGroupContainer.getPeerGroup() == null ){
-			super.setCompleted(false );
-			return null;
-		}
-			
-		return peerGroupContainer.getPeerGroup().getPipeService();
+		return null;//peerGroupContainer.getPeerGroup().getPipeService();
 	}
 }

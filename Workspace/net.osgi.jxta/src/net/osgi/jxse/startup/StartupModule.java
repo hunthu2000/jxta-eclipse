@@ -1,25 +1,25 @@
-package net.osgi.jxse.activator;
+package net.osgi.jxse.startup;
 
 import net.osgi.jxse.builder.AbstractJxseModule;
 import net.osgi.jxse.builder.IJxseModule;
 import net.osgi.jxse.builder.container.BuilderContainer;
+import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.context.ContextModule;
 import net.osgi.jxse.context.JxseContextPropertySource;
-import net.osgi.jxse.factory.ComponentBuilderEvent;
+import net.osgi.jxse.context.JxseServiceContext;
 import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.netpeergroup.NetPeerGroupModule;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 
 public class StartupModule extends AbstractJxseModule<JxseStartupService, JxseStartupPropertySource> {
 
-	private ContextModule parent;
 	private BuilderContainer container;
 	
 	public StartupModule( BuilderContainer container, ContextModule parent ) {
 		super(parent, 1);
 		this.container = container;
-		this.parent = parent;
 	}
 
 	@Override
@@ -30,7 +30,6 @@ public class StartupModule extends AbstractJxseModule<JxseStartupService, JxseSt
 	@Override
 	protected JxseStartupPropertySource onCreatePropertySource() {
 		JxseStartupPropertySource source = new JxseStartupPropertySource( (JxseContextPropertySource) super.getParent().getPropertySource());
-		JxseStartupPropertySource.setParentDirective(Directives.AUTO_START, source);
 		return source;
 	}
 
@@ -41,11 +40,14 @@ public class StartupModule extends AbstractJxseModule<JxseStartupService, JxseSt
 	@Override
 	public void extendModules() {
 		super.extendModules();
+		JxseStartupPropertySource.setParentDirective(Directives.AUTO_START, super.getPropertySource());
 		IJxseModule<?> module = container.getModule( Components.NET_PEERGROUP_SERVICE.toString() );
+		IJxseWritePropertySource<?> nmm = (IJxseWritePropertySource<?>) JxseStartupPropertySource.findPropertySource(this.getParent().getPropertySource(), Components.NETWORK_MANAGER.toString());
+		nmm.setDirective( Directives.AUTO_START, this.getPropertySource().getDirective( Directives.AUTO_START));
 		if( module == null ){
-			module = new NetPeerGroupModule( parent );
+			module = new NetPeerGroupModule( super.getParent() );
 			container.addModule((IJxseModule<Object>) module);
-			parent.getPropertySource().addChild(module.createPropertySource());
+			super.getParent().getPropertySource().addChild(module.createPropertySource());
 		}
 	}
 
@@ -53,13 +55,9 @@ public class StartupModule extends AbstractJxseModule<JxseStartupService, JxseSt
 	public IComponentFactory<JxseStartupService> onCreateFactory() {
 		StartupServiceFactory factory = new StartupServiceFactory( container, super.getPropertySource() );
 		JxseStartupService service = factory.createComponent();
+		JxseServiceContext.addModule( (AbstractServiceContext) super.getParent().createFactory().createComponent(), service );
 		service.start();
+		factory.complete();
 		return factory;
-	}
-
-	@Override
-	public void notifyCreated(ComponentBuilderEvent<Object> event) {
-		// TODO Auto-generated method stub
-		
 	}
 }

@@ -28,7 +28,6 @@ import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementType
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.registration.RegistrationPropertySource.RegistrationProperties;
 import net.osgi.jxse.log.JxseLevel;
-import net.osgi.jxse.peergroup.IPeerGroupProvider;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
@@ -37,7 +36,7 @@ public class RegistrationService extends AbstractActivator implements IJxseServi
 	private IJxseWritePropertySource<IJxseProperties> source;
 	private ExecutorService executor;
 	
-	public RegistrationService( IPeerGroupProvider provider, IJxseWritePropertySource<IJxseProperties> source ) {
+	public RegistrationService( IJxseWritePropertySource<IJxseProperties> source ) {
 		super();
 		this.source = source;
 		executor = Executors.newSingleThreadExecutor();

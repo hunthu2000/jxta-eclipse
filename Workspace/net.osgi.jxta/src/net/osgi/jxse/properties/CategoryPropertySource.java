@@ -12,7 +12,7 @@ package net.osgi.jxse.properties;
 
 import net.osgi.jxse.utils.Utils;
 
-public class CategoryPropertySource extends AbstractJxseWritePropertySource<String> implements IJxseWritePropertySource<String> {
+public class CategoryPropertySource extends AbstractJxseWritePropertySource implements IJxseWritePropertySource<IJxseProperties> {
 
 	public static final String S_DOT_REGEX = "[.]";
 	
@@ -25,18 +25,12 @@ public class CategoryPropertySource extends AbstractJxseWritePropertySource<Stri
 		this.id = identifier + "." + category;
 	}
 
-	public CategoryPropertySource( String cat, IJxsePropertySource<?> parent ) {
+	public CategoryPropertySource( String cat, IJxsePropertySource<IJxseProperties> parent ) {
 		super( cat, parent );
 		String[] split = cat.split("[.]");
 		this.category = split[0];
 		this.id = parent.getId() + "." + category;
 	}
-
-	@Override
-	public String getIdFromString(String key) {
-		return key;
-	}
-
 
 	public String getId() {
 		return id;
@@ -53,7 +47,7 @@ public class CategoryPropertySource extends AbstractJxseWritePropertySource<Stri
 	}
 
 	@Override
-	public boolean setDirective(IJxseDirectives id, Object value) {
+	public boolean setDirective(IJxseDirectives id, String value) {
 		return super.setDirective(id, value);
 	}
 
@@ -73,7 +67,7 @@ public class CategoryPropertySource extends AbstractJxseWritePropertySource<Stri
 			return cat.trim();
 	}	
 	
-	public static IJxsePropertySource<?> createCategoryPropertySource( String category,  IJxseWritePropertySource<String> root ){
+	public static IJxsePropertySource<?> createCategoryPropertySource( String category,  IJxseWritePropertySource<IJxseProperties> root ){
 		String[] split = breakCategory(category);
 		if( split == null )
 			return null;
@@ -118,10 +112,5 @@ public class CategoryPropertySource extends AbstractJxseWritePropertySource<Stri
 		retval[2] = rest;
 		retval[3] = split[ split.length - 1];
 		return retval;
-	}
-
-	@Override
-	public boolean validate(String id, Object value) {
-		return true;
 	}
 }

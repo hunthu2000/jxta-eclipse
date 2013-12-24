@@ -22,7 +22,6 @@ import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.network.INetworkPreferences;
-import net.osgi.jxse.network.OverviewPreferences;
 import net.osgi.jxse.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jxse.network.http.Http2Preferences;
 import net.osgi.jxse.network.http.HttpPreferences;
@@ -94,7 +93,7 @@ public class NetworkConfigurationFactory extends
 	}
 
 	@SuppressWarnings({ "unchecked" })
-	private void fillPartialConfigurator( NetworkConfigurator configurator ,IJxsePropertySource<?> source ) throws IOException{
+	private void fillPartialConfigurator( NetworkConfigurator configurator, IJxsePropertySource<?> source ) throws IOException{
 		INetworkPreferences preferences;
 		if( source instanceof PartialPropertySource ){
 			preferences = getPreferences(( PartialPropertySource )source);
@@ -121,8 +120,15 @@ public class NetworkConfigurationFactory extends
 		{
 		default:
 			break;// TODO Auto-generated method stub
-		}
-		
+		}	
+	}
+	
+	@Override
+	public boolean complete() {
+		boolean retval = super.complete();
+		for( ISeedListFactory factory: this.seedLists )
+			retval &= factory.complete();
+		return retval;
 	}
 
 	/**

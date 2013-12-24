@@ -16,14 +16,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
+import net.osgi.jxse.utils.StringDirective;
+import net.osgi.jxse.utils.StringProperty;
 import net.osgi.jxse.utils.Utils;
 
-public abstract class AbstractJxsePropertySource< T extends Object> implements IJxsePropertySource<T> {
+public abstract class AbstractJxsePropertySource implements IJxsePropertySource<IJxseProperties> {
 	
 	public static final String S_RUNTIME = "Runtime"; //used for runtime properties
 			
-	private Map<T,ManagedProperty<T,Object>> properties;
-	private Map<IJxseDirectives,Object> directives;
+	private Map<IJxseProperties,ManagedProperty<IJxseProperties,Object>> properties;
+	private Map<IJxseDirectives,String> directives;
 	
 	private IJxsePropertySource<?> parent;
 
@@ -38,8 +41,8 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 	}
 
 	protected AbstractJxsePropertySource( String bundleId, String identifier, String componentName, int depth ) {
-		properties = new HashMap<T,ManagedProperty<T,Object>>();
-		directives = new HashMap<IJxseDirectives,Object>();
+		properties = new HashMap<IJxseProperties,ManagedProperty<IJxseProperties,Object>>();
+		directives = new HashMap<IJxseDirectives,String>();
 		this.bundleId = bundleId;
 		this.directives.put( IJxseDirectives.Directives.ID, this.bundleId + "." + componentName.toLowerCase() );
 		this.id_root = this.bundleId;
@@ -94,8 +97,8 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 	}
 
 	@Override
-	public Object getProperty(T id) {
-		ManagedProperty<T,Object> select = this.getManagedProperty(id);
+	public Object getProperty(IJxseProperties id) {
+		ManagedProperty<IJxseProperties,Object> select = this.getManagedProperty(id);
 		if( select == null )
 			return null;
 		return select.getValue();
@@ -106,42 +109,37 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 	 * @param key
 	 * @return
 	 */
-	public String getCategory( T id ){
-		ManagedProperty<T,Object> select = this.getManagedProperty(id);
+	public String getCategory( IJxseProperties id ){
+		ManagedProperty<IJxseProperties,Object> select = this.getManagedProperty(id);
 		return select.getCategory();
 		
 	}
 
-	protected boolean setManagedProperty( ManagedProperty<T,Object> property ) {
+	protected boolean setManagedProperty( ManagedProperty<IJxseProperties,Object> property ) {
 		this.properties.put( property.getKey(), property );
 		return true;
 	}
 		
 	@Override
-	public Object getDefault(T id) {
-		ManagedProperty<T,Object> select = this.getManagedProperty(id);
+	public Object getDefault(IJxseProperties id) {
+		ManagedProperty<IJxseProperties,Object> select = this.getManagedProperty(id);
 		if( select == null )
 			return null;
 		return select.getDefaultValue();
 	}
 
-	public ManagedProperty<T,Object> getManagedProperty( T id ){
+	public ManagedProperty<IJxseProperties,Object> getManagedProperty( IJxseProperties id ){
 		return properties.get( id );
 	}
 	
 	@Override
-	public Iterator<T> propertyIterator() {
+	public Iterator<IJxseProperties> propertyIterator() {
 		return this.properties.keySet().iterator();
 	}
 
 	@Override
-	public Object getDirective( IJxseDirectives id) {
+	public String getDirective( IJxseDirectives id) {
 		return directives.get( id );
-	}
-
-	@Override
-	public IJxseDirectives getDirectiveFromString( String id) {
-		return IJxseDirectives.Directives.valueOf( id );
 	}
 
 	/**
@@ -150,10 +148,13 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 	 * @param value
 	 * @return
 	 */
-	public boolean setDirective( IJxseDirectives id, Object value) {
+	public boolean setDirective( IJxseDirectives id, String value) {
 		if( value == null )
 			return false;
-		directives.put( id, value );
+		if( id instanceof StringDirective )
+			directives.put( Directives.valueOf(id.name() ), value );
+		else
+			directives.put( id, value );
 		return true;
 	}
 
@@ -190,6 +191,16 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 	}
 
 	@Override
+	public IJxseProperties getIdFromString(String key) {
+		return new StringProperty( key );
+	}
+
+	@Override
+	public boolean validate(IJxseProperties id, Object value) {
+		return false;
+	}
+
+	@Override
 	public String toString() {
 		return super.toString() + "[" + this.getComponentName() + "]";
 	}
@@ -208,7 +219,7 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 	 * @param source
 	 */
 	protected static void setDirectiveFromParent( IJxseDirectives id, IJxseWritePropertySource<?> source ) {
-		Object directive = source.getParent().getDirective( id );
+		String directive = source.getParent().getDirective( id );
 		source.setDirective(id, directive);
 	}
 
@@ -222,7 +233,7 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 		IJxseWritePropertySource<?> parent = (IJxseWritePropertySource<?>) source.getParent();
 		Object parent_autostart = parent.getDirective( id );
 		if(( directive != null ) && ( parent_autostart == null ))
-			parent.setDirective( id, true);
+			parent.setDirective( id, Boolean.TRUE.toString());
 	}
 	
 	/**
@@ -244,5 +255,17 @@ public abstract class AbstractJxsePropertySource< T extends Object> implements I
 		}
 		return null;			
 	}
-
+	
+	/**
+	 * Get a boolean value for the given directive
+	 * @param source
+	 * @param id
+	 * @return
+	 */
+	public static boolean getBoolean( IJxsePropertySource<?> source, IJxseDirectives id ){
+		String directive = source.getDirective(id);
+		if( Utils.isNull( directive ))
+			return false;
+		return Boolean.parseBoolean( directive);
+	}
 }

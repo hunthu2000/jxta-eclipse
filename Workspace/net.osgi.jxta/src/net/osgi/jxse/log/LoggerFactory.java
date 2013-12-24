@@ -8,33 +8,23 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jxse.netpeergroup;
+package net.osgi.jxse.log;
 
-import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
-public class NetPeerGroupFactory extends AbstractComponentFactory<NetPeerGroupService>{
+public class LoggerFactory extends
+		AbstractComponentFactory<LoggerComponent>{
 
-	private NetworkManager manager;
-
-	public NetPeerGroupFactory( NetPeerGroupPropertySource source, NetworkManager manager ) {
+	public LoggerFactory( LoggerPropertySource source ) {
 		super( source, false );
-		this.manager = manager;
-		super.setCanCreate(this.manager != null );
+		super.setCanCreate( true);
 	}
 	
-	
 	@Override
-	public boolean canCreate() {
-		return ( this.manager != null );
-	}
-
-
-	@Override
-	protected NetPeerGroupService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		NetPeerGroupService service = new NetPeerGroupService( this, manager );
+	protected LoggerComponent onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
+		LoggerComponent service = new LoggerComponent( this );
 		super.setCompleted( true );
 		return service;
 	}

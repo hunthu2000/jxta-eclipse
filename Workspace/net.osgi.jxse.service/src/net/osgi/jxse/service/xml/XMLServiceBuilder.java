@@ -17,12 +17,12 @@ import net.osgi.jxse.builder.ICompositeBuilder;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.builder.container.BuilderContainer;
 import net.osgi.jxse.component.ModuleNode;
-import net.osgi.jxse.context.ContextModule;
+import net.osgi.jxse.context.JxseServiceContext;
 import net.osgi.jxse.service.core.ChaupalCompositeBuilder;
 
-public class XMLServiceBuilder implements ICompositeBuilder<ModuleNode<ContextModule>>{
+public class XMLServiceBuilder implements ICompositeBuilder<ModuleNode<JxseServiceContext>>{
 
-	private ModuleNode<ContextModule> root;
+	private ModuleNode<JxseServiceContext> root;
 	
 	private String plugin_id;
 	private Class<?> clss;
@@ -35,22 +35,20 @@ public class XMLServiceBuilder implements ICompositeBuilder<ModuleNode<ContextMo
 		this.clss = clss;	
 		this.listeners = new ArrayList<ICompositeBuilderListener<?>>();
 		container = new BuilderContainer();
-
 	}
 	
 	@Override
-	public ModuleNode<ContextModule> build() {
-		XMLPropertySourceBuilder builder = new XMLPropertySourceBuilder( plugin_id, clss, container );
-		
+	public ModuleNode<JxseServiceContext> build() {
 		//First build the property sources
+		XMLPropertySourceBuilder builder = new XMLPropertySourceBuilder( plugin_id, clss, container );		
 		this.addListenerToBuilder(builder);
 		builder.addListener(container);
-		ModuleNode<ContextModule> node = builder.build();
+		ModuleNode<JxseServiceContext> node = builder.build();
 		builder.removeListener(container);
 		this.removeListenerFromBuilder(builder);
 		
 		//Then build the factories
-		ICompositeBuilder<ModuleNode<ContextModule>> cf = new ChaupalCompositeBuilder( node );
+		ICompositeBuilder<ModuleNode<JxseServiceContext>> cf = new ChaupalCompositeBuilder( node );
 		this.addListenerToBuilder( cf );
 		cf.addListener(container);
 		this.root = cf.build();

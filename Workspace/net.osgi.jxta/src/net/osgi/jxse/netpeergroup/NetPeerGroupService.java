@@ -18,7 +18,7 @@ import net.jxta.exception.PeerGroupException;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.component.AbstractJxseService;
-import net.osgi.jxse.peergroup.IPeerGroupProperties.PeerGroupProperties;
+import net.osgi.jxse.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 
 public class NetPeerGroupService extends AbstractJxseService<PeerGroup>{
 

@@ -25,6 +25,7 @@ import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jxse.context.IJxseServiceContext.ContextProperties;
 import net.osgi.jxse.properties.AbstractJxsePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.service.xml.PreferenceStore.Persistence;
 import net.osgi.jxse.service.xml.PreferenceStore.SupportedAttributes;
@@ -32,7 +33,7 @@ import net.osgi.jxse.utils.ProjectFolderUtils;
 import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
-public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProperties> implements IJxsePropertySource<ContextProperties> {
+public class JxseXMLPreferences extends AbstractJxsePropertySource implements IJxsePropertySource<IJxseProperties> {
 
 	public static final String S_XML_ROOT = "JXSE Component Root";
 	private PreferenceStore store;
@@ -153,18 +154,6 @@ public class JxseXMLPreferences extends AbstractJxsePropertySource<ContextProper
 	@Override
 	public String getComponentName() {
 		return store.getValue( Directives.NAME.toString() );
-	}
-
-	@Override
-	public Object getDefault(ContextProperties id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean validate(ContextProperties id, Object value) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override

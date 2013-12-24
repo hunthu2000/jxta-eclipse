@@ -13,7 +13,7 @@ package net.osgi.jxse.service.peergroup;
 import net.jxta.peergroup.PeerGroup;
 import net.osgi.jxse.component.AbstractJxseService;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.peergroup.IPeerGroupProperties.PeerGroupProperties;
+import net.osgi.jxse.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 
 public class PeerGroupService extends AbstractJxseService<PeerGroup>{
 
