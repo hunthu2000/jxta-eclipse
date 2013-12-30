@@ -14,27 +14,25 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.ManagedProperty;
 
-public class JxseComponent<T extends Object, U extends Object> implements IJxseComponent<T,U>, Comparable< IJxseComponent<?,?>>{
+public class JxseComponent<T extends Object> implements IJxseComponent<T>, Comparable< IJxseComponent<?>>{
 
 	private T module;
-	private Map<U,Object> properties;
-	private IJxseComponent<?,?> parent;
+	private Map<IJxseProperties, Object> properties;
+	private IJxseComponent<?> parent;
 
 	public JxseComponent( T component ) {
 		this( null, component );
 	}
 
-	@SuppressWarnings("unchecked")
-	public JxseComponent( IJxseComponent<?,?> parent, T component ) {
+	public JxseComponent( IJxseComponent<?> parent, T component ) {
 		this.module = component;
-		this.properties = new HashMap<U,Object>();
+		this.properties = new HashMap<IJxseProperties,Object>();
 		this.parent = parent;
-		this.properties = (Map<U, Object>) new Properties();
 		this.fillProperties(properties);
 	}
 
@@ -42,13 +40,12 @@ public class JxseComponent<T extends Object, U extends Object> implements IJxseC
 	 * Fill the internal properties 
 	 * @param properties
 	 */
-	@SuppressWarnings("unchecked")
-	protected void fillProperties( Map<U,Object> props){
-		Iterator<?> iterator = props.keySet().iterator();	
-		U key;
+	protected void fillProperties( Map<IJxseProperties,Object> props){
+		Iterator<IJxseProperties> iterator = props.keySet().iterator();	
+		IJxseProperties key;
 		Object value;
 		while( iterator.hasNext()){
-			key = (U) iterator.next();
+			key = iterator.next();
 			value = props.get(key);
 			if( value != null )
 				this.properties.put(key, value);
@@ -79,7 +76,7 @@ public class JxseComponent<T extends Object, U extends Object> implements IJxseC
 	 * Get the parent of the component
 	 * @return
 	 */
-	public IJxseComponent<?,?> getParent(){
+	public IJxseComponent<?> getParent(){
 		return parent;
 	}
 
@@ -102,17 +99,17 @@ public class JxseComponent<T extends Object, U extends Object> implements IJxseC
 		return ManagedProperty.S_DEFAULT_CATEGORY;
 	}
 
-	protected void putProperty(U key, Object value ) {
+	protected void putProperty(IJxseProperties key, Object value ) {
 		properties.put( key, value );
 	}
 
 	@Override
-	public int compareTo(IJxseComponent<?,?> o) {
+	public int compareTo(IJxseComponent<?> o) {
 		return Integer.MAX_VALUE;
 	}
 
 	@Override
-	public Iterator<U> iterator() {
+	public Iterator<IJxseProperties> iterator() {
 		return properties.keySet().iterator();
 	}
 }

@@ -38,8 +38,8 @@ public class JxseXMLPreferences extends AbstractJxsePropertySource implements IJ
 	public static final String S_XML_ROOT = "JXSE Component Root";
 	private PreferenceStore store;
 	
-	public JxseXMLPreferences( String pluginId, String identifier, PreferenceStore store ) {
-		super( pluginId, identifier, S_XML_ROOT );
+	public JxseXMLPreferences( String pluginId, PreferenceStore store ) {
+		super( pluginId, S_XML_ROOT );
 		this. store = store;
 	}
 

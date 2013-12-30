@@ -21,6 +21,10 @@ import net.jxta.pipe.PipeID;
 import net.jxta.pipe.PipeService;
 import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jxse.advertisement.PipeAdvertisementFactory;
+import net.osgi.jxse.builder.BuilderContainer;
+import net.osgi.jxse.component.IJxseComponent;
+import net.osgi.jxse.component.JxseComponent;
+import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.utils.StringStyler;
@@ -30,7 +34,7 @@ public class SocketPipeAdvertisementFactory extends PipeAdvertisementFactory {
 	public final static String SOCKETIDSTR = "urn:jxta:uuid-59616261646162614E5047205032503393B5C2F6CA7A41FBB0F890173088E79404";
 	public final static String DEFAULT_SOCKET_NAME = "Default Socket Server";
 
-	public enum Properties{
+	public enum Properties implements IJxseProperties{
 		SOCKET_ID,
 		NAME,
 		TYPE;
@@ -41,14 +45,14 @@ public class SocketPipeAdvertisementFactory extends PipeAdvertisementFactory {
 		}
 	}
 	
-	public SocketPipeAdvertisementFactory() {
-		super( );
+	public SocketPipeAdvertisementFactory( BuilderContainer container) {
+		super( container);
 		this.fillDefaultValues();
 	}
 
 	@Override
 	protected void fillDefaultValues() {
-		IJxseWritePropertySource<Properties> source = null;//TODOsuper.getPropertySource();		
+		IJxseWritePropertySource<IJxseProperties> source = (IJxseWritePropertySource<IJxseProperties>) super.getPropertySource();		
 		try {
 			source.setProperty( Properties.SOCKET_ID, new URI( SOCKETIDSTR ));
 		} catch (URISyntaxException e) {
@@ -62,7 +66,7 @@ public class SocketPipeAdvertisementFactory extends PipeAdvertisementFactory {
 
 
 	@Override
-	public PipeAdvertisement createComponent() {
+	public IJxseComponent<PipeAdvertisement> createComponent() {
 		PipeID socketID = null;
 		IJxsePropertySource<Properties> source = null;//TODOsuper.getPropertySource();		
 		try {
@@ -76,6 +80,6 @@ public class SocketPipeAdvertisementFactory extends PipeAdvertisementFactory {
 		advertisement.setType( (String) source.getProperty( Properties.TYPE ));
 		advertisement.setName( (String) source.getProperty( Properties.NAME ));
 		super.setCompleted(true);
-		return advertisement;
+		return new JxseComponent<PipeAdvertisement>( advertisement);
 	}
 }

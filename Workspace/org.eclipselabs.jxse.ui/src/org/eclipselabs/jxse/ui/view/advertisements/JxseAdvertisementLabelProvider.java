@@ -12,7 +12,7 @@ public class JxseAdvertisementLabelProvider extends LabelProvider implements ILa
 	@Override
 	public Image getImage(Object element) {
 		//Images images = Images.getInstance();
-		if( element instanceof IJxseComponent<?,?>){
+		if( element instanceof IJxseComponent<?>){
 			//IJxtaServiceComponent<?> component = ( IJxtaServiceComponent<?> )element;
 			return super.getImage(element);
 		}

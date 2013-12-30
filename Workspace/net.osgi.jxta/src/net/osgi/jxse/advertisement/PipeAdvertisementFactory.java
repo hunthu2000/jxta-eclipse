@@ -20,7 +20,11 @@ import net.jxta.id.IDFactory;
 import net.jxta.pipe.PipeID;
 import net.jxta.pipe.PipeService;
 import net.jxta.protocol.PipeAdvertisement;
+import net.osgi.jxse.builder.BuilderContainer;
+import net.osgi.jxse.component.IJxseComponent;
+import net.osgi.jxse.component.JxseComponent;
 import net.osgi.jxse.factory.AbstractComponentFactory;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
@@ -32,8 +36,8 @@ public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdver
 	public final static String SOCKETIDSTR = "urn:jxta:uuid-59616261646162614E5047205032503393B5C2F6CA7A41FBB0F890173088E79404";
 	public final static String DEFAULT_SOCKET_NAME = "Default Socket Server";
 
-	public PipeAdvertisementFactory() {
-		super( null );
+	public PipeAdvertisementFactory( BuilderContainer container) {
+		super( container );
 		this.fillDefaultValues();
 	}
 
@@ -49,9 +53,20 @@ public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdver
 		source.setProperty( Properties.NAME, DEFAULT_SOCKET_NAME );
 		source.setProperty( Properties.TYPE, PipeService.UnicastType );		
 	}
+	
+	@Override
+	public String getComponentName() {
+		return S_PIPE_ADVERTISEMENT_SERVICE;
+	}
 
 	@Override
-	protected PipeAdvertisement onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
+	protected IJxsePropertySource<IJxseProperties> onCreatePropertySource() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected IJxseComponent<PipeAdvertisement> onCreateComponent( IJxsePropertySource<IJxseProperties> properties) {
 		PipeID socketID = null;
 		IJxsePropertySource<IJxseProperties> source = super.getPropertySource();
 		try {
@@ -64,6 +79,12 @@ public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdver
 		advertisement.setPipeID(socketID);
 		advertisement.setType( (String) source.getProperty( Properties.TYPE ));
 		advertisement.setName( (String) source.getProperty( Properties.NAME ));
-		return advertisement;
+		return new JxseComponent<PipeAdvertisement>( advertisement );
+	}
+
+	@Override
+	public void notifyChange(ComponentBuilderEvent<Object> event) {
+		// TODO Auto-generated method stub
+		
 	}
 }

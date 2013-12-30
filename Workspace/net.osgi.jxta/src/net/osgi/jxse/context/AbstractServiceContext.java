@@ -20,16 +20,13 @@ import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jxse.activator.AbstractActivator;
 import net.osgi.jxse.activator.IActivator;
-import net.osgi.jxse.builder.ComponentNode;
 import net.osgi.jxse.component.ComponentChangedEvent;
 import net.osgi.jxse.component.ComponentEventDispatcher;
 import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.component.IJxseComponentNode;
 import net.osgi.jxse.component.JxseComponent;
 import net.osgi.jxse.component.JxseComponentNode;
-import net.osgi.jxse.factory.FactoryNode;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.properties.IJxseProperties;
@@ -56,7 +53,7 @@ implements	IJxseServiceContext<NetworkManager>{
 
 	public static final String S_SERVICE_CONTAINER = "JXSE Container";
 	
-	private Collection<IJxseComponent<?,?>> children;
+	private Collection<IJxseComponent<?>> children;
 	private IJxsePropertySource<IJxseProperties> properties;
 	
 	private NetworkManager networkManager; 
@@ -66,12 +63,12 @@ implements	IJxseServiceContext<NetworkManager>{
 	private Swarm swarm;
 
 	protected AbstractServiceContext( String bundleId, String identifier) {
-		this( (IJxsePropertySource<IJxseProperties>) new JxseContextPropertySource( bundleId, identifier));
+		this( (IJxsePropertySource<IJxseProperties>) new JxseContextPropertySource( bundleId ));
 	}
 
 	protected AbstractServiceContext( IJxsePropertySource<IJxseProperties> source ) {
 		super();
-		this.children = new ArrayList<IJxseComponent<?,?>>();
+		this.children = new ArrayList<IJxseComponent<?>>();
 		this.properties = source;
 		swarm = new Swarm();
 	}
@@ -150,14 +147,14 @@ implements	IJxseServiceContext<NetworkManager>{
 	}
 	
 	@Override
-	public IJxseComponent<?,?> getParent() {
+	public IJxseComponent<?> getParent() {
 		return null;
 	}
 	
 	@Override
 	protected void deactivate() {
 		NetworkManager manager = null;
-		for( IJxseComponent<?,?> component: this.children ){
+		for( IJxseComponent<?> component: this.children ){
 			if( component instanceof IActivator ){
 				IActivator service = (IActivator )component;
 				service.stop();
@@ -171,12 +168,12 @@ implements	IJxseServiceContext<NetworkManager>{
 	}	
 
 	@Override
-	public Collection<IJxseComponent<?,?>> getChildren(){
+	public Collection<IJxseComponent<?>> getChildren(){
 		return this.children;
 	}
 
 	@Override
-	public void addChild( IJxseComponent<?,?> child ){
+	public void addChild( IJxseComponent<?> child ){
 		this.children.add( child );
 		if( child.getModule() instanceof NetworkManager )
 			this.networkManager = (NetworkManager) child.getModule();
@@ -187,7 +184,7 @@ implements	IJxseServiceContext<NetworkManager>{
 	}
 
 	@Override
-	public void removeChild( IJxseComponent<?,?> child ){
+	public void removeChild( IJxseComponent<?> child ){
 		this.children.remove( child );
 		dispatcher.serviceChanged( new ComponentChangedEvent( this, AbstractServiceContext.ServiceChange.CHILD_REMOVED ));
 	}
@@ -203,7 +200,7 @@ implements	IJxseServiceContext<NetworkManager>{
 	 * @param component
 	 * @return
 	 */
-	protected boolean validateComponent( IComponentFactory<?> factory, IJxseComponent<?,?> component ){
+	protected boolean validateComponent( IComponentFactory<?> factory, IJxseComponent<?> component ){
 		if( !factory.isCompleted() ){
 			super.setStatus( Status.AVAILABLE );
 			return false;
@@ -217,10 +214,10 @@ implements	IJxseServiceContext<NetworkManager>{
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static IJxseComponent<?,?> addModule( AbstractServiceContext context, Object module ){
-		IJxseComponent<Object,?> component = null;
+	public static IJxseComponent<?> addModule( AbstractServiceContext context, Object module ){
+		IJxseComponent<Object> component = null;
 		if( module instanceof IJxseComponent )
-			component = (IJxseComponent<Object,?>) module;
+			component = (IJxseComponent<Object>) module;
 		else
 			component = new JxseComponent( context, module );
 
@@ -236,15 +233,14 @@ implements	IJxseServiceContext<NetworkManager>{
 			context.addChild(node);
 			return node;
 		}else{
-		
 			context.addChild( component );
 			return component;
 		}
 	}
 
 	protected static void removeModule( AbstractServiceContext context, Object module ){
-		Collection<IJxseComponent<?,?>> temp = new ArrayList<IJxseComponent<?,?>>( context.getChildren() );
-		for( IJxseComponent<?,?> component: temp ){
+		Collection<IJxseComponent<?>> temp = new ArrayList<IJxseComponent<?>>( context.getChildren() );
+		for( IJxseComponent<?> component: temp ){
 			if( component.getModule().equals( module ))
 				context.getChildren().remove(component);
 		}
@@ -259,19 +255,4 @@ implements	IJxseServiceContext<NetworkManager>{
 	public NetworkManager getModule() {
 		return this.networkManager;
 	}
-
-	/**
-	 * Get the startup service 
-	 * @param context
-	 * @return
-	 */
-	public static FactoryNode<?> getChild( Components component, FactoryNode<JxseServiceContext> context ){
-		for( ComponentNode<?> node: context.getChildren() ){
-			if( ((IComponentFactory<?>) node.getData()).getComponentId().equals( component )){
-				return (FactoryNode<?>) node;
-			}
-		}
-		return null;
-	}
-
 }

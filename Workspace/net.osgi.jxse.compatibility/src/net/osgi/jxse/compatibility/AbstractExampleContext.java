@@ -19,8 +19,8 @@ import net.osgi.jxse.context.JxseContextPropertySource;
 public abstract class AbstractExampleContext extends AbstractServiceContext{
 
 	
-	protected AbstractExampleContext( String bundle_id, String identifier) {
-		super(new JxseContextPropertySource( bundle_id, identifier ));
+	protected AbstractExampleContext( String bundle_id) {
+		super(new JxseContextPropertySource( bundle_id ));
 	}
 
 	@Override

@@ -16,7 +16,7 @@ import java.util.Iterator;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.utils.StringStyler;
 
-public interface IJxseComponent<T extends Object, U extends Object>{
+public interface IJxseComponent<T extends Object>{
 	
 	public enum ModuleProperties implements IJxseProperties{
 		CREATE_DATE;
@@ -59,5 +59,5 @@ public interface IJxseComponent<T extends Object, U extends Object>{
 	 * Get an iterator for the supported properties
 	 * @return
 	 */
-	public Iterator<U> iterator(); 
+	public Iterator<IJxseProperties> iterator(); 
 }

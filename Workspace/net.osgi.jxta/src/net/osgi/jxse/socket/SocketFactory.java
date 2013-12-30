@@ -15,6 +15,9 @@ import net.jxta.protocol.PipeAdvertisement;
 import net.jxta.socket.JxtaSocket;
 import net.osgi.jxse.advertisement.IPipeAdvertisementFactory;
 import net.osgi.jxse.advertisement.PipeAdvertisementFactory;
+import net.osgi.jxse.builder.BuilderContainer;
+import net.osgi.jxse.component.IJxseComponent;
+import net.osgi.jxse.component.JxseComponent;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
@@ -28,13 +31,18 @@ public class SocketFactory extends AbstractComponentFactory<JxtaSocket> implemen
 	private NetworkManager manager;
 	private PipeAdvertisementFactory pipeFactory;
 
-	public SocketFactory( NetworkManager manager ) {
-		super( null );
+	public SocketFactory( BuilderContainer container, NetworkManager manager ) {
+		super( container );
 		this.manager = manager;
 		this.fillDefaultValues();
 	}
-
 	
+	@Override
+	public String getComponentName() {
+		return S_JXSE_SOCKET_SERVICE;
+	}
+
+
 	public NetworkManager getManager() {
 		return manager;
 	}
@@ -60,11 +68,11 @@ public class SocketFactory extends AbstractComponentFactory<JxtaSocket> implemen
 	}
 
 	@Override
-	protected JxtaSocket onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		this.pipeFactory = new SocketPipeAdvertisementFactory();
+	protected IJxseComponent<JxtaSocket> onCreateComponent( IJxsePropertySource<IJxseProperties> properties) {
+		this.pipeFactory = new SocketPipeAdvertisementFactory( super.getContainer());
 		JxtaSocket socket = this.createSocket();
 		//super.setCompleted(true);
-		return socket;
+		return new JxseComponent( socket );
 	}
 		
 	/**
@@ -73,7 +81,14 @@ public class SocketFactory extends AbstractComponentFactory<JxtaSocket> implemen
 	 * @return
 	 */
 	private JxtaSocket createSocket() {
-		PipeAdvertisement pipeAd = this.pipeFactory.getComponent();
+		PipeAdvertisement pipeAd = this.pipeFactory.getComponent().getModule();
 		return null;//TODO Change to include parent factory: new JxtaSocketComponent( manager, pipeAd, super.getProperties() );
+	}
+
+
+	@Override
+	protected IJxsePropertySource<IJxseProperties> onCreatePropertySource() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

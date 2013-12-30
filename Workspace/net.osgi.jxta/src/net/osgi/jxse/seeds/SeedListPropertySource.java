@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.AbstractJxseWritePropertySource;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
@@ -23,19 +24,19 @@ import net.osgi.jxse.utils.StringProperty;
 
 public class SeedListPropertySource extends AbstractJxseWritePropertySource {
 
-	public static final String S_SEED_LIST = "Seed List";
-
 	protected static final String S_SEEDS = "/JXSE-INF/seeds.txt";
 
 	private boolean hasSeeds;
+	private Class<?> clss;
 	
 	public SeedListPropertySource( IJxsePropertySource<IJxseProperties> parent ) {
-		super( S_SEED_LIST, parent );
+		super( Components.SEED_LIST.toString(), parent );
 	}
 
 	public SeedListPropertySource( IJxsePropertySource<IJxseProperties> parent, Class<?> clss ) {
 		this( parent );
 		this.hasSeeds = false;
+		this.clss = clss;
 		this.fillProperties( clss );
 	}
 	
@@ -66,6 +67,13 @@ public class SeedListPropertySource extends AbstractJxseWritePropertySource {
 		}
 	}
 
+	/**
+	 * Get the class file of the parent
+	 * @return
+	 */
+	public Class<?> getParentClass(){
+		return clss;
+	}
 	
 	public boolean setProperty(IJxseProperties id, SeedInfo value ) {
 		boolean retval = super.setProperty(id, value);

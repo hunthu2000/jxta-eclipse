@@ -19,7 +19,7 @@ import net.osgi.jxse.properties.DefaultPropertySource;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class DefaultJxseComponent<T extends Object> implements IJxseComponent<T, IJxseProperties>{
+public class DefaultJxseComponent<T extends Object> implements IJxseComponent<T>{
 
 	public static final String S_SERVICE = "Service";
 	
@@ -31,8 +31,8 @@ public class DefaultJxseComponent<T extends Object> implements IJxseComponent<T,
 	private T module;
 	private IJxseWritePropertySource<IJxseProperties> properties;
 	
-	protected DefaultJxseComponent( String bundleId, String identifier, String componentName) {
-		this( new DefaultPropertySource( bundleId, identifier, componentName), null);
+	protected DefaultJxseComponent( String bundleId, String componentName) {
+		this( new DefaultPropertySource( bundleId, componentName), null);
 	}
 
 	protected DefaultJxseComponent( IJxseWritePropertySource<IJxseProperties> properties, T module ) {

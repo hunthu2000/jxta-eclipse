@@ -13,7 +13,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipselabs.jxse.ui.property.descriptors.AbstractControlPropertyDescriptor;
 import org.eclipselabs.jxse.ui.property.descriptors.TextBoxPropertyDescriptor;
 
-public abstract class AbstractJxsePropertySource<T extends Object,U extends Enum<U>> implements IPropertySource {
+public abstract class AbstractJxsePropertySource<T extends Object> implements IPropertySource {
 
 	public static final String S_PROPERTY_JXTA_TEXT = "JXTA";
 
@@ -24,7 +24,7 @@ public abstract class AbstractJxsePropertySource<T extends Object,U extends Enum
 		this( module, new Properties());
 	}
 
-	protected AbstractJxsePropertySource( IJxseComponent<T,U> component ) {
+	protected AbstractJxsePropertySource( IJxseComponent<T> component ) {
 		this( component.getModule(), new Properties());
 		Iterator<?> iterator = component.iterator();
 		Object key, value;

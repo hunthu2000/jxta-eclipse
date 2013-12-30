@@ -24,8 +24,8 @@ public class JxsePeerGroupLabelProvider extends LabelProvider{
 
 	@Override
 	public String getText(Object element) {
-		if( element instanceof IJxseComponent<?,?>){
-			IJxseComponent<?,?> component = (IJxseComponent<?,?> )element;
+		if( element instanceof IJxseComponent<?>){
+			IJxseComponent<?> component = (IJxseComponent<?> )element;
 			return Utils.getLabel(component); 
 		}
 		if( element instanceof PeerGroup ){

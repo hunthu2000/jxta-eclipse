@@ -18,7 +18,6 @@ import java.util.Set;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jxse.component.IJxseComponent;
-import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 
 public class RelayConfiguration {
 
@@ -28,7 +27,7 @@ public class RelayConfiguration {
 		this.configurator = configurator;
 	}
 
-	public RelayConfiguration( IJxseComponent<NetworkConfigurator, NetworkManagerProperties> component ) {
+	public RelayConfiguration( IJxseComponent<NetworkConfigurator> component ) {
 		this( component.getModule() );
 	}
 

@@ -10,22 +10,46 @@
  *******************************************************************************/
 package net.osgi.jxse.log;
 
+import java.util.logging.Logger;
+
+import net.osgi.jxse.builder.BuilderContainer;
 import net.osgi.jxse.factory.AbstractComponentFactory;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 
 public class LoggerFactory extends
-		AbstractComponentFactory<LoggerComponent>{
+		AbstractComponentFactory<LoggerPropertySource>{
 
-	public LoggerFactory( LoggerPropertySource source ) {
-		super( source, false );
-		super.setCanCreate( true);
-	}
+	private Logger logger = Logger.getLogger(LoggerFactory.class.getName());
+
 	
+	public LoggerFactory( BuilderContainer container, IJxsePropertySource<IJxseProperties> parent ) {
+		super( container, parent, true );
+	}
+
 	@Override
-	protected LoggerComponent onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
+	public String getComponentName() {
+		return Components.LOGGER_SERVICE.toString();
+	}
+
+	@Override
+	public LoggerPropertySource onCreatePropertySource() {
+		LoggerPropertySource source = new LoggerPropertySource( super.getParentSource());
+		return source;
+	}
+
+	@Override
+	protected LoggerComponent onCreateComponent( IJxsePropertySource<IJxseProperties> properties) {
 		LoggerComponent service = new LoggerComponent( this );
 		super.setCompleted( true );
 		return service;
+	}
+	
+	@Override
+	public void notifyChange(ComponentBuilderEvent<Object> event) {
+		String msg = event.getBuilderEvent().toString() + ": " + event.getFactory().getComponentName();
+		logger.log( JxseLevel.JXSELEVEL, msg );
+		System.out.println(msg);
 	}
 }

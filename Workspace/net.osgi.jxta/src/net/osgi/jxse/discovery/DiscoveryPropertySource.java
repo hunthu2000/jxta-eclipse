@@ -4,6 +4,7 @@ import net.osgi.jxse.advertisement.AdvertisementPropertySource;
 import net.osgi.jxse.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.AbstractPeerGroupProviderPropertySource;
+import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.ManagedProperty;
@@ -47,7 +48,7 @@ public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySo
 
 
 	public DiscoveryPropertySource( String componentName, IJxsePropertySource<IJxseProperties> parent) {
-		super( componentName,parent );
+		super( componentName, parent );
 		this.fillDefaultValues();
 		this.fillDefaultValues(parent);
 	}
@@ -74,13 +75,9 @@ public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySo
 	}
 
 	@Override
-	public DiscoveryProperties getIdFromString(String key) {
-		return DiscoveryProperties.valueOf( key );
-	}
-
-	@Override
-	public boolean validate(IJxseProperties id, Object value) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean setDirective(IJxseDirectives id, String value) {
+		if( AdvertisementPropertySource.AdvertisementDirectives.isValidDirective( id.name()))
+			return super.setDirective(PeerGroupDirectives.valueOf( id.name()), value );
+		return super.setDirective(id, value);
 	}
 }

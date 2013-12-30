@@ -19,15 +19,9 @@ import java.util.logging.Logger;
 import net.osgi.jxse.activator.AbstractActivator;
 import net.osgi.jxse.activator.IActivator;
 import net.osgi.jxse.activator.IJxseService;
+import net.osgi.jxse.builder.BuilderContainer;
 import net.osgi.jxse.builder.ICompositeBuilderListener;
-import net.osgi.jxse.builder.ICompositeBuilderListener.BuilderEvents;
-import net.osgi.jxse.builder.IJxseModule;
-import net.osgi.jxse.builder.container.BuilderContainer;
-import net.osgi.jxse.builder.container.BuilderContainerEvent;
-import net.osgi.jxse.builder.container.IBuilderContainerListener;
-import net.osgi.jxse.factory.ComponentBuilderEvent;
 import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.factory.IComponentFactory.Components;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.utils.Utils;
@@ -44,8 +38,6 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 	
 	private Collection<ICompositeBuilderListener<Object>> listeners;
 	
-	private IBuilderContainerListener<Object> listener;
-	
 	public JxseStartupService( BuilderContainer container, JxseStartupPropertySource source ) {
 		this.source = source;
 		this.container = container;
@@ -61,91 +53,45 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 		return Boolean.parseBoolean( (String) this.source.getDirective( IJxseDirectives.Directives.AUTO_START ));		
 	}
 
-	private final void notifyComponentChanged( ComponentBuilderEvent<Object> event ){
-		for( ICompositeBuilderListener<Object> listener: this.listeners )
-			listener.notifyChange(event);
-	}
 	/**
 	 * Start a module
 	 * @param module
 	 */
-	protected void startModule( IJxseModule<Object> module ){
-		IComponentFactory<?> factory = null;
-		if(( module.canCreate()) && ( !module.isCompleted() )){
-			factory = module.createFactory();
-			this.notifyComponentChanged( new ComponentBuilderEvent<Object>( this, module, BuilderEvents.FACTORY_CREATED ));
-		}
-		if( factory == null )
-			return;
-		if( JxseStartupPropertySource.isAutoStart( module.getPropertySource()) ){
-			factory.createComponent();
-			factory.complete();
-			notifyComponentChanged( new ComponentBuilderEvent<Object>( this, module, BuilderEvents.COMPONENT_CREATED ));			
-		}
-		if( module.canActivate() ){
-			IActivator service = (IActivator) module.getComponent();
-			if( !service.isActive()){
-				service.start();
-				notifyComponentChanged( new ComponentBuilderEvent<Object>( this, module, BuilderEvents.COMPONENT_STARTED ));			
-			}
-		}		
-	}
-
-	/**
-	 * Start a module
-	 * @param module
-	 */
-	protected void stopModule( IJxseModule<Object> module ){
-		if( module.canActivate() ){
-			IActivator service = (IActivator) module.getComponent();
+	protected void stopModule( IComponentFactory<Object> factory ){
+		if( factory.getComponent() instanceof IActivator ){
+			IActivator service = (IActivator) factory.getComponent();
 			if( service.isActive())
 				service.stop();
 		}		
 	}
 	
-
 	/**
 	 * Perform the activation
 	 */
-	@SuppressWarnings("unchecked")
 	public synchronized void activate() {
 		if(!this.isAutoStart() )
 			return;
 		
-		listeners.add(this.container);
+		//listeners.add(this.container);
 		
 		//First start the modules that are already present
-		for( IJxseModule<?> module: container.getChildren()){
-			if( Components.STARTUP_SERVICE.toString().equals( module.getComponentName() ))
-				continue;
-			try{
-			  this.startModule( (IJxseModule<Object>) module);
-			}
-			catch( Exception ex ){
-				ex.printStackTrace();
-			}
-		}
+		//for( IJxseModule<?> module: container.getChildren()){
+		//	if( Components.STARTUP_SERVICE.toString().equals( module.getComponentName() ))
+		//		continue;
+		//	try{
+		//	  this.startModule( (IJxseModule<Object>) module);
+		//	}
+		//	catch( Exception ex ){
+		//		ex.printStackTrace();
+		//	}
+		//}
 		
 		//Then listen to new additions
-		listener = new IBuilderContainerListener<Object>(){
-
-			@Override
-			public void notifyAdded(BuilderContainerEvent<Object> event) {
-				startModule( event.getModule() );
-			}
-
-			@Override
-			public void notifyRemoved(BuilderContainerEvent<Object> event) {
-				stopModule( event.getModule() );
-			}
-			
-		};
 		Logger logger = Logger.getLogger( this.getClass().getName());
 		String list = container.listModulesNotCompleted();
 		if( !Utils.isNull( list )){
 			logger.warning( list );
 		}
-		container.addListener( listener);
 	}
 	
 	//Make public
@@ -153,10 +99,8 @@ public class JxseStartupService extends AbstractActivator implements IJxseServic
 	@Override
 	public void deactivate() {
 		this.listeners.remove(this.container);
-		if( this.listener != null )
-			container.removeListener(listener);
-		for( IJxseModule<?> module: container.getChildren()){
-			this.stopModule((IJxseModule<Object>) module);
+		for( IComponentFactory<?> factory: container.getChildren()){
+			this.stopModule( (IComponentFactory<Object>) factory );
 		}
 	}
 

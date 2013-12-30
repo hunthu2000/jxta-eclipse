@@ -291,9 +291,9 @@ public class ConnectivityPart implements Runnable {
 		Object element = ss.getFirstElement();
 		
 		//We check for service decorators coming from the service navigator
-		if(!( element instanceof IJxseComponent<?,?>))
+		if(!( element instanceof IJxseComponent<?>))
 			return;
-		IJxseComponent<?,?> component = (IJxseComponent<?,?> )element;
+		IJxseComponent<?> component = (IJxseComponent<?> )element;
 		if(!( component.getModule() instanceof PeerGroup ))
 			this.setPeerGroup(null );
 		else

@@ -21,15 +21,16 @@ import net.osgi.jxse.component.IComponentChangedListener;
 import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.component.IJxseComponentNode;
 import net.osgi.jxse.context.AbstractServiceContext;
-import net.osgi.jxse.factory.IComponentFactory;
-import net.osgi.jxse.service.discovery.JxseDiscoveryService;
+import net.osgi.jxse.properties.IJxseProperties;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
+import net.osgi.jxse.service.discovery.ChaupalDiscoveryService;
 
 public class JxseAdvertisementService extends AbstractJxseServiceNode<Advertisement> implements IJxseComponentNode<Advertisement>{
 
 	private IComponentChangedListener listener;
 
-	public JxseAdvertisementService( IComponentFactory<Advertisement> factory ) {
-		super( null, factory );
+	public JxseAdvertisementService( IJxseWritePropertySource<IJxseProperties> source, Advertisement advertisement ) {
+		super( source, advertisement );
 	}
 	
 	protected void publishAdvertisements(){
@@ -55,14 +56,14 @@ public class JxseAdvertisementService extends AbstractJxseServiceNode<Advertisem
 	
 	@Override
 	public boolean start() {
-		JxseDiscoveryService service = getDiscoveryService( this );
+		ChaupalDiscoveryService service = getDiscoveryService( this );
 		if( service != null ){
 			ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 			this.listener = new IComponentChangedListener(){
 
 				@Override
 				public void notifyServiceChanged(ComponentChangedEvent event) {
-					JxseDiscoveryService service = (JxseDiscoveryService) event.getSource();
+					ChaupalDiscoveryService service = (ChaupalDiscoveryService) event.getSource();
 					if( event.getSource().equals( service )){
 						if( event.getChange().equals( AbstractServiceContext.ServiceChange.STATUS_CHANGE )){
 							if( !service.isActive())
@@ -91,10 +92,10 @@ public class JxseAdvertisementService extends AbstractJxseServiceNode<Advertisem
 	 * @param adService
 	 * @return
 	 */
-	public static JxseDiscoveryService getDiscoveryService( JxseAdvertisementService adService ){
-		for( IJxseComponent<?,?> component: adService.getChildren() ){
-			if( component.getModule() instanceof JxseDiscoveryService )
-				return (JxseDiscoveryService) component.getModule();
+	public static ChaupalDiscoveryService getDiscoveryService( JxseAdvertisementService adService ){
+		for( IJxseComponent<?> component: adService.getChildren() ){
+			if( component.getModule() instanceof ChaupalDiscoveryService )
+				return (ChaupalDiscoveryService) component.getModule();
 		}
 		return null;
 	}

@@ -44,7 +44,7 @@ public class JxseAdapterFactory implements IAdapterFactory {
 	 * @param adaptableObject
 	 * @return
 	 */
-	protected IPropertySource getPropertySource( IJxseComponent<?,?> component ){
+	protected IPropertySource getPropertySource( IJxseComponent<?> component ){
 		Object module = component.getModule();  
 		return this.getPropertySource( module );			
 	}

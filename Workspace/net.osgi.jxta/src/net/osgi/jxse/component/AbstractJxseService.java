@@ -33,19 +33,19 @@ implements IJxseService<T>{
 	public static final String S_ERR_NOT_COMPLETED = 
 			"The factory did not create the component. The flag setCompleted must be true, which is usually checked  with setAvailable.";
 	
-	private T module;
+	private T component;
 	private IJxseWritePropertySource<IJxseProperties> properties;
 	
 	private ComponentEventDispatcher dispatcher;
 
-	protected AbstractJxseService( String bundleId, String identifier, String componentName) {
-		this( new DefaultPropertySource( bundleId, identifier, componentName),null);
+	protected AbstractJxseService( String bundleId, String componentName) {
+		this( new DefaultPropertySource( bundleId, componentName),null);
 	}
 
 	protected AbstractJxseService( IJxseWritePropertySource<IJxseProperties> properties, T module ) {
 		dispatcher = ComponentEventDispatcher.getInstance();
 		this.properties = properties;
-		this.module = module;
+		this.component = module;
 		super.setStatus( Status.AVAILABLE );
 		super.initialise();
 	}
@@ -95,16 +95,16 @@ implements IJxseService<T>{
 
 	@Override
 	protected void onFinalising(){
-		this.module = null;
+		this.component = null;
 	}
 
 	@Override
 	public T getModule(){
-		return module;
+		return component;
 	}
 	
-	protected void setModule( T module ){
-		this.module = module;
+	protected void setComponent( T module ){
+		this.component = module;
 	}
 	
 	

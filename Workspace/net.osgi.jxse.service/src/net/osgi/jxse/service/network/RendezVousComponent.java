@@ -16,6 +16,8 @@ import net.jxta.rendezvous.RendezVousService;
 import net.jxta.rendezvous.RendezvousEvent;
 import net.jxta.rendezvous.RendezvousListener;
 import net.osgi.jxse.component.AbstractJxseService;
+import net.osgi.jxse.component.IJxseComponent;
+import net.osgi.jxse.component.JxseComponent;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.log.JxseLevel;
 import net.osgi.jxse.netpeergroup.NetPeerGroupService;
@@ -108,12 +110,24 @@ class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousServic
 	}
 
 	@Override
-	public RendezVousService createComponent() {
-		return null;//parent.getModule().getRendezVousService();
+	public IJxseComponent<RendezVousService> createComponent() {
+		return new JxseComponent<RendezVousService>( null );//parent.getModule().getRendezVousService();
 	}
 
 	@Override
-	protected RendezVousService onCreateModule(	IJxsePropertySource<IJxseProperties> properties) {
+	protected IJxseComponent<RendezVousService> onCreateComponent(	IJxsePropertySource<IJxseProperties> properties) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected IJxsePropertySource<IJxseProperties> onCreatePropertySource() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getComponentName() {
 		// TODO Auto-generated method stub
 		return null;
 	}	

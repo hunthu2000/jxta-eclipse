@@ -16,18 +16,18 @@ import net.osgi.jxse.component.ComponentChangedEvent;
 import net.osgi.jxse.component.ComponentEventDispatcher;
 import net.osgi.jxse.component.IComponentChangedListener;
 import net.osgi.jxse.component.IJxseComponent;
-import net.osgi.jxse.component.IJxseComponentNode;
 import net.osgi.jxse.context.AbstractServiceContext;
-import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.properties.IJxseProperties;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 import net.osgi.jxse.service.advertisement.JxseAdvertisementService;
-import net.osgi.jxse.service.discovery.JxseDiscoveryService;
+import net.osgi.jxse.service.discovery.ChaupalDiscoveryService;
 
-public class ChaupalPipeService extends AbstractJxseServiceNode<PipeService> implements IJxseComponentNode<PipeService>{
+public class ChaupalPipeService extends AbstractJxseServiceNode<PipeService>{
 
 	private IComponentChangedListener listener;
 
-	public ChaupalPipeService( IComponentFactory<PipeService> factory ) {
-		super( null, factory );
+	public ChaupalPipeService( IJxseWritePropertySource<IJxseProperties> source, PipeService pipeService ) {
+		super( source, pipeService );
 	}
 		
 	@Override
@@ -39,7 +39,7 @@ public class ChaupalPipeService extends AbstractJxseServiceNode<PipeService> imp
 
 				@Override
 				public void notifyServiceChanged(ComponentChangedEvent event) {
-					JxseDiscoveryService service = (JxseDiscoveryService) event.getSource();
+					ChaupalDiscoveryService service = (ChaupalDiscoveryService) event.getSource();
 					if( event.getSource().equals( service )){
 						if( event.getChange().equals( AbstractServiceContext.ServiceChange.COMPONENT_EVENT )){
 							if( !service.isActive())
@@ -69,7 +69,7 @@ public class ChaupalPipeService extends AbstractJxseServiceNode<PipeService> imp
 	 * @return
 	 */
 	public static JxseAdvertisementService getAdvertisementService( ChaupalPipeService adService ){
-		for( IJxseComponent<?,?> component: adService.getChildren() ){
+		for( IJxseComponent<?> component: adService.getChildren() ){
 			if( component.getModule() instanceof JxseAdvertisementService )
 				return (JxseAdvertisementService) component.getModule();
 		}

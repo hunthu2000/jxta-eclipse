@@ -20,9 +20,15 @@ import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.jxta.exception.PeerGroupException;
 import net.jxta.platform.NetworkManager;
+import net.osgi.jxse.builder.BuilderContainer;
+import net.osgi.jxse.component.IJxseComponent;
+import net.osgi.jxse.component.JxseComponentNode;
+import net.osgi.jxse.context.ContextFactory;
+import net.osgi.jxse.context.JxseContextPropertySource;
 import net.osgi.jxse.factory.AbstractComponentFactory;
+import net.osgi.jxse.factory.ComponentBuilderEvent;
+import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
@@ -30,13 +36,36 @@ import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager> 
-implements INetworkManagerProvider{
+public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager>{
 		
-	public NetworkManagerFactory( IJxsePropertySource<IJxseProperties> propertySource ) {
-		super( propertySource );
+	public static final String S_WRN_NO_CONFIGURATOR = "Could not add network configurator";
+	
+	public NetworkManagerFactory( BuilderContainer container, IJxsePropertySource<IJxseProperties> parentSource ) {
+		super( container, parentSource );
+	}
+
+	@Override
+	public String getComponentName() {
+		return Components.NETWORK_MANAGER.toString();
 	}
 	
+	@Override
+	protected NetworkManagerPropertySource onCreatePropertySource() {
+		NetworkManagerPropertySource source = new NetworkManagerPropertySource( (JxseContextPropertySource) super.getParentSource());
+		NetworkManagerPropertySource.setParentDirective(Directives.AUTO_START, source);
+		return source;
+	}
+
+	
+	@Override
+	public void extendContainer() {
+		BuilderContainer container = super.getContainer();
+		IComponentFactory<?> ncf = container.getFactory( Components.NETWORK_CONFIGURATOR.toString() );
+		if( ncf == null )
+			ncf = container.addFactoryToContainer( Components.NETWORK_CONFIGURATOR.toString(), this, true, true );
+		super.extendContainer();
+	}
+
 	@Override
 	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value) {
 		switch(( IJxseDirectives.Directives )directive ){
@@ -53,7 +82,7 @@ implements INetworkManagerProvider{
 	}
 
 	@Override
-	protected NetworkManager onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
+	protected IJxseComponent<NetworkManager> onCreateComponent( IJxsePropertySource<IJxseProperties> properties) {
 		// Removing any existing configuration?
 		NetworkManagerPreferences preferences = new NetworkManagerPreferences( (IJxseWritePropertySource<IJxseProperties>) properties );
 		String name = preferences.getInstanceName();
@@ -68,7 +97,8 @@ implements INetworkManagerProvider{
 				}
 			}
 			File file = path.toFile();
-			return new NetworkManager( preferences.getConfigMode(), name, file.toURI());
+			NetworkManager manager = new NetworkManager( preferences.getConfigMode(), name, file.toURI());
+			return new JxseComponentNode<NetworkManager>( manager );
 		} catch (Exception e) {
 			Logger log = Logger.getLogger( this.getClass().getName() );
 			log.log( Level.SEVERE, e.getMessage() );
@@ -78,26 +108,19 @@ implements INetworkManagerProvider{
 	}
 	
 	@Override
-	public boolean complete() {
-		IJxsePropertySource<IJxseProperties> properties = super.getPropertySource();
-		Object value = properties.getDirective( Directives.AUTO_START );
-		if( value == null )
-			value = Boolean.FALSE.toString();
-		if( Boolean.parseBoolean( (String) value )){
-			try {
-				super.getComponent().startNetwork();
-				return super.complete();
-			} catch (PeerGroupException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	public void notifyChange(ComponentBuilderEvent<Object> event) {
+		switch( event.getBuilderEvent()){
+		case COMPONENT_CREATED:
+			if( !isComponentFactory( Components.JXSE_CONTEXT, event.getFactory() ))
+				break;
+			IComponentFactory<?> factory = event.getFactory();
+			ContextFactory cf = (ContextFactory) factory;
+			if( cf.isAutoStart() )
+				this.createComponent();
+			break;
+		default:
+			break;
 		}
-		return false;
-	}
-
-	@Override
-	public NetworkManager getNetworkManager() {
-		return this.getComponent();
-	}
+		super.notifyChange(event);
+	}	
 }

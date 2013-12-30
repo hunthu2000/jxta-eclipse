@@ -15,12 +15,12 @@ import net.osgi.jxse.properties.IJxseDirectives.Directives;
 public abstract class AbstractJxseWritePropertySource 
 extends AbstractJxsePropertySource implements IJxseWritePropertySource<IJxseProperties> {
 
-	public AbstractJxseWritePropertySource( String bundleId, String identifier, String componentName) {
-		this( bundleId, identifier, componentName, 0);
+	public AbstractJxseWritePropertySource( String bundleId, String componentName) {
+		this( bundleId, componentName, 0);
 	}
 
-	protected AbstractJxseWritePropertySource( String bundleId, String identifier, String componentName, int depth ) {
-		super( bundleId, identifier, componentName );
+	protected AbstractJxseWritePropertySource( String bundleId, String componentName, int depth ) {
+		super( bundleId, componentName );
 	}
 
 	protected AbstractJxseWritePropertySource( String componentName, IJxsePropertySource<IJxseProperties> parent ) {

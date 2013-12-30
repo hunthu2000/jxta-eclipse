@@ -12,82 +12,38 @@ package net.osgi.jxse.component;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
 
 import net.osgi.jxse.context.AbstractServiceContext;
-import net.osgi.jxse.properties.IJxseProperties;
 
-public class JxseComponentNode<T extends Object> implements IJxseComponentNode<T>{
+public class JxseComponentNode<T extends Object> extends JxseComponent<T> implements IJxseComponentNode<T>{
 
-	private IJxseComponent<T,IJxseProperties> component;
-	private IJxseComponentNode<?> parent;	
-	private Collection<IJxseComponent<?,?>> children;
 	private ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
-	
-	public JxseComponentNode( IJxseComponentNode<?> parent, IJxseComponent<T,IJxseProperties> component ) {
-		this.component = component;
-		this.parent = parent;
-		this.children = new ArrayList<IJxseComponent<?,?>>();
+	private Collection<IJxseComponent<?>> children;
+
+	public JxseComponentNode( T component ) {
+		super( component);
+		this.children = new ArrayList<IJxseComponent<?>>();
 	}
 
-	/**
-	 * Get the id
-	 */
-	@Override
-	public String getId(){
-		return component.getId();
-	}
-
-	/**
-	 * Get the create date
-	 */
-	@Override
-	public Date getCreateDate(){
-		return component.getCreateDate();
-	}
-
-	/**
-	 * Return true if the component is a root
-	 * @return
-	 */
-	@Override
-	public boolean isRoot(){
-		return ( this.parent == null );
-	}
-	/**
-	 * Get the parent of the component
-	 * @return
-	 */
-	@Override
-	public IJxseComponentNode<?> getParent(){
-		return parent;
+	public JxseComponentNode( IJxseComponentNode<?> parent, T component ) {
+		super( parent, component);
+		this.children = new ArrayList<IJxseComponent<?>>();
 	}
 
 	@Override
-	public T getModule() {
-		return this.component.getModule();
-	}
-
-	@Override
-	public Object getProperty(Object key) {
-		return component.getProperty(key);
-	}
-
-	@Override
-	public void addChild( IJxseComponent<?,?> child ){
+	public void addChild( IJxseComponent<?> child ){
 		this.children.add( child );
 		dispatcher.serviceChanged( new ComponentChangedEvent( this, AbstractServiceContext.ServiceChange.CHILD_ADDED ));
 	}
 
 	@Override
-	public void removeChild( IJxseComponent<?,?> child ){
+	public void removeChild( IJxseComponent<?> child ){
 		this.children.remove( child );
 		dispatcher.serviceChanged( new ComponentChangedEvent( this, AbstractServiceContext.ServiceChange.CHILD_REMOVED ));
 	}
 
 	@Override
-	public Collection<IJxseComponent<?,?>> getChildren(){
+	public Collection<IJxseComponent<?>> getChildren(){
 		return this.children;
 	}
 
@@ -96,14 +52,33 @@ public class JxseComponentNode<T extends Object> implements IJxseComponentNode<T
 		return !this.children.isEmpty();
 	}
 
-	@Override
-	public Iterator<IJxseProperties> iterator() {
-		return this.component.iterator();
+	/**
+	 * add a module to the container. returns the JxseComponent, or null if something went wrong
+	 * @param module
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static IJxseComponent<?> addModule( IJxseComponentNode node, Object module ){
+		IJxseComponent<Object> component = null;
+		if( module instanceof IJxseComponent )
+			component = (IJxseComponent<Object>) module;
+		else
+			component = new JxseComponent( node, module );
+
+		node.addChild( component );
+		return component;
 	}
 
-	@Override
-	public String getCategory(Object key) {
-		return this.component.getCategory(key);
+	/**
+	 * Remove a child from the context
+	 * @param node
+	 * @param module
+	 */
+	public static void removeModule( IJxseComponentNode<?> node, Object module ){
+		Collection<IJxseComponent<?>> temp = new ArrayList<IJxseComponent<?>>( node.getChildren() );
+		for( IJxseComponent<?> component: temp ){
+			if( component.getModule().equals( module ))
+				node.getChildren().remove(component);
+		}
 	}
-
 }

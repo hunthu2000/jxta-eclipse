@@ -24,7 +24,7 @@ public class PeerGroupPropertySource extends AbstractPeerGroupProviderPropertySo
 			return StringStyler.prettyString( super.toString() );
 		}
 	}
-	
+
 	public PeerGroupPropertySource( IJxsePropertySource<IJxseProperties> parent) {
 		this( Components.PEERGROUP_SERVICE.toString(), parent );
 		setDirectiveFromParent( Directives.AUTO_START, this );

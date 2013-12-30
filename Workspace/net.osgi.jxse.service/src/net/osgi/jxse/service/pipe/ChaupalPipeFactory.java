@@ -10,27 +10,26 @@
  *******************************************************************************/
 package net.osgi.jxse.service.pipe;
 
-import net.osgi.jxse.factory.AbstractComponentFactory;
+import net.jxta.pipe.PipeService;
+import net.osgi.jxse.builder.BuilderContainer;
+import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.pipe.PipeServiceFactory;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class ChaupalPipeFactory extends
-		AbstractComponentFactory<ChaupalPipeService>{
+public class ChaupalPipeFactory extends PipeServiceFactory{
 
-	public static final String S_PIPE_SERVICE = "JxsePipeService";
-
-	private PipeServiceFactory factory;
-	
-	public ChaupalPipeFactory( PipeServiceFactory factory ) {
-		super( factory.getPropertySource() );
-		this.factory = factory;
+	@SuppressWarnings("unchecked")
+	public ChaupalPipeFactory( BuilderContainer container, PipeServiceFactory factory ) {
+		super( container,  (IJxsePropertySource<IJxseProperties>) factory.getPropertySource().getParent() );
+		super.setSource(factory.createPropertySource());
 	}
 
 	@Override
-	protected ChaupalPipeService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		factory.createComponent();
-		ChaupalPipeService ds = new ChaupalPipeService ( factory );
-		return ds;
+	protected ChaupalPipeService onCreateComponent( IJxsePropertySource<IJxseProperties> source) {
+		IJxseComponent<PipeService> ds = super.onCreateComponent( source );
+		ChaupalPipeService service = new ChaupalPipeService( (IJxseWritePropertySource<IJxseProperties>) source, ds.getModule() );
+		return service;
 	}
 }

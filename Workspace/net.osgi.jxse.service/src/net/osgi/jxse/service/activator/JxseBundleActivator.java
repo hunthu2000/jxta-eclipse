@@ -11,7 +11,7 @@
 package net.osgi.jxse.service.activator;
 
 import net.osgi.jxse.builder.ICompositeBuilderListener;
-import net.osgi.jxse.component.ModuleNode;
+import net.osgi.jxse.context.ContextFactory;
 import net.osgi.jxse.context.JxseServiceContext;
 import net.osgi.jxse.service.xml.XMLServiceBuilder;
 
@@ -38,9 +38,9 @@ public class JxseBundleActivator extends AbstractJxseBundleActivator {
 		XMLServiceBuilder builder = new XMLServiceBuilder( bundle_id, this.getClass() );
 		if( observer != null )
 			builder.addListener(observer);
-		ModuleNode<JxseServiceContext> node = builder.build();
+		ContextFactory factory = builder.build();
 		if( observer != null )
 			builder.removeListener(observer);
-		return node.getData().getComponent();
+		return (JxseServiceContext) factory.getComponent();
 	}
 }

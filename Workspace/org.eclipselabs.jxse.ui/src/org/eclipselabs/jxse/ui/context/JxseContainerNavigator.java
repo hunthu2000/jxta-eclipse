@@ -94,9 +94,9 @@ public class JxseContainerNavigator extends CommonNavigator{
 	void showSelection(IWorkbenchPart sourcepart, ISelection selection) {
 		IStructuredSelection ss = (IStructuredSelection) selection;
 		Object element = ss.getFirstElement();
-		if(!( element instanceof IJxseComponent<?,?>))
+		if(!( element instanceof IJxseComponent<?>))
 			return;
-		IJxseComponent<?,?> component = (net.osgi.jxse.component.IJxseComponent<Object,?>)element;
+		IJxseComponent<?> component = (net.osgi.jxse.component.IJxseComponent<Object>)element;
 		setContentDescription( Utils.getLabel(component));
 	}
 	

@@ -87,7 +87,7 @@ implements  IJxseWritePropertySource<IJxseProperties>{
 
 	@Override
 	public IJxseProperties getIdFromString(String key) {
-		String cat = this.getCategory();
+		String cat = this.getCategory().toLowerCase();
 		String id = StringStyler.styleToEnum( cat + "." + key.toLowerCase() );
 		return (IJxseProperties) super.getSource().getIdFromString( id );
 	}

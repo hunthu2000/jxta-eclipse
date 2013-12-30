@@ -14,7 +14,7 @@ public class JxseComponentAdapterFactory implements IAdapterFactory {
 			  return null;
 		  if(!( adaptableObject instanceof IJxseComponent ))
 			  return null;
-		  IJxseComponent<?,?> component = (IJxseComponent<?,?>) adaptableObject;
+		  IJxseComponent<?> component = (IJxseComponent<?>) adaptableObject;
 		  JxseAdapterFactory factory = new JxseAdapterFactory();
 		  Object retval = factory.getAdapter(component, adapterType);
 		  if( retval != null )

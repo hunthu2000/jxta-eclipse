@@ -11,35 +11,25 @@
 package net.osgi.jxse.service.discovery;
 
 import net.jxta.discovery.DiscoveryService;
+import net.osgi.jxse.builder.BuilderContainer;
+import net.osgi.jxse.component.IJxseComponent;
 import net.osgi.jxse.discovery.DiscoveryServiceFactory;
-import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class ChaupalDiscoveryServiceFactory extends
-		AbstractComponentFactory<JxseDiscoveryService> {
+public class ChaupalDiscoveryServiceFactory extends DiscoveryServiceFactory {
 
-	public static final String S_DISCOVERY_SERVICE = "JxseDiscoveryService";
-
-	private DiscoveryServiceFactory factory;
-
-	public ChaupalDiscoveryServiceFactory( DiscoveryServiceFactory factory ) {
-		super( factory.getPropertySource() );
-		this.factory = factory;
+	@SuppressWarnings("unchecked")
+	public ChaupalDiscoveryServiceFactory( BuilderContainer container, DiscoveryServiceFactory factory ) {
+		super( container, (IJxsePropertySource<IJxseProperties>) factory.getPropertySource().getParent() );
+		super.setSource(factory.createPropertySource());
 	}
 
 	@Override
-	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value) {
-		
-	}
-
-	@Override
-	protected JxseDiscoveryService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		DiscoveryService ds = factory.createComponent();
-		if( ds == null )
-			return null;
-		JxseDiscoveryService service = new JxseDiscoveryService( factory );
+	protected ChaupalDiscoveryService onCreateComponent( IJxsePropertySource<IJxseProperties> source) {
+		IJxseComponent<DiscoveryService> ds = super.onCreateComponent( source );
+		ChaupalDiscoveryService service = new ChaupalDiscoveryService( (IJxseWritePropertySource<IJxseProperties>) source, ds.getModule() );
 		return service;
 	}
 }

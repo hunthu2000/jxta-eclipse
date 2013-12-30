@@ -13,23 +13,20 @@ package net.osgi.jxse.factory;
 import java.util.EventObject;
 
 import net.osgi.jxse.builder.ICompositeBuilderListener.BuilderEvents;
-import net.osgi.jxse.builder.IJxseModule;
 
 public class ComponentBuilderEvent<T extends Object> extends EventObject {
 	private static final long serialVersionUID = 1L;
 
 	private BuilderEvents builderEvent;
 	
-	private IJxseModule<T> module;
-	
-	public ComponentBuilderEvent(Object arg0, IJxseModule<T> module, BuilderEvents factoryEvent ){
-		super(arg0);
-		this.module = module;
+	public ComponentBuilderEvent(IComponentFactory<T> factory, BuilderEvents factoryEvent ){
+		super(factory);
 		this.builderEvent = factoryEvent;
 	}
 	
-	public IJxseModule<T> getModule() {
-		return module;
+	@SuppressWarnings("unchecked")
+	public IComponentFactory<T> getFactory() {
+		return (IComponentFactory<T>) super.source;
 	}
 
 	public BuilderEvents getBuilderEvent() {

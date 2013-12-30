@@ -126,7 +126,7 @@ public abstract class AbstractJxseBundleSection extends OptionTemplateSection {
 		initializeOption(KEY_PACKAGE_PATH, packagePath);
 		initializeOption(KEY_DOLLAR_MARK, this.dollarMark);
 		initializeOption(KEY_SOURCE_PATH, this.sourcePath);
-		this.properties = new JxseContextPropertySource( data.getId(), data.getName());
+		this.properties = new JxseContextPropertySource( data.getId());
 		this.onFillProperties(properties);
 	}
 

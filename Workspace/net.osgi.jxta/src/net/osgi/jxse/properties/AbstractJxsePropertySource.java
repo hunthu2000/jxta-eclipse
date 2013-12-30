@@ -16,9 +16,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import net.osgi.jxse.properties.IJxseDirectives.Contexts;
 import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.utils.StringDirective;
 import net.osgi.jxse.utils.StringProperty;
+import net.osgi.jxse.utils.StringStyler;
 import net.osgi.jxse.utils.Utils;
 
 public abstract class AbstractJxsePropertySource implements IJxsePropertySource<IJxseProperties> {
@@ -36,17 +38,16 @@ public abstract class AbstractJxsePropertySource implements IJxsePropertySource<
 	private String id_root;
 	private String bundleId, componentName;
 	
-	public AbstractJxsePropertySource( String bundleId, String identifier, String componentName) {
-		this( bundleId, identifier, componentName, 0);
+	public AbstractJxsePropertySource( String bundleId, String componentName) {
+		this( bundleId, componentName, 0);
 	}
 
-	protected AbstractJxsePropertySource( String bundleId, String identifier, String componentName, int depth ) {
+	protected AbstractJxsePropertySource( String bundleId, String componentName, int depth ) {
 		properties = new HashMap<IJxseProperties,ManagedProperty<IJxseProperties,Object>>();
 		directives = new HashMap<IJxseDirectives,String>();
 		this.bundleId = bundleId;
 		this.directives.put( IJxseDirectives.Directives.ID, this.bundleId + "." + componentName.toLowerCase() );
 		this.id_root = this.bundleId;
-		this.directives.put( IJxseDirectives.Directives.NAME, identifier );
 		this.componentName = componentName;
 		children = new ArrayList<IJxsePropertySource<?>>();
 		this.depth = depth;
@@ -54,7 +55,7 @@ public abstract class AbstractJxsePropertySource implements IJxsePropertySource<
 	}
 
 	protected AbstractJxsePropertySource( IJxsePropertySource<?> parent ) {
-		this( parent.getBundleId(), parent.getIdentifier(), parent.getComponentName(), parent.getDepth() + 1 );
+		this( parent.getBundleId(), parent.getComponentName(), parent.getDepth() + 1 );
 		this.parent = parent;
 	}
 
@@ -255,7 +256,37 @@ public abstract class AbstractJxsePropertySource implements IJxsePropertySource<
 		}
 		return null;			
 	}
-	
+
+	/**
+	 * Find the first ancestor the given directive, starting from the given source
+	 * @param source
+	 * @param componentName
+	 * @return
+	 */
+	public static IJxsePropertySource<?> findPropertySource( IJxsePropertySource<?> source, IJxseDirectives id, String value ){
+		if(( source == null ) || ( id == null ) || ( Utils.isNull( value )))
+			return null;
+		String directive = source.getDirective(id);
+		if( value.equals(directive))
+			return source;
+		return findPropertySource(source.getParent(), id, value);
+	}
+
+	/**
+	 * Find the first ancestor the given directive, starting from the given source
+	 * @param source
+	 * @param componentName
+	 * @return
+	 */
+	public static IJxsePropertySource<?> findPropertySource( IJxsePropertySource<?> source, IJxseDirectives id ){
+		if(( source == null ) || ( id == null ))
+			return null;
+		String directive = source.getDirective(id);
+		if( !Utils.isNull( directive))
+			return source;
+		return findPropertySource( source.getParent(), id );
+	}
+
 	/**
 	 * Get a boolean value for the given directive
 	 * @param source
@@ -267,5 +298,17 @@ public abstract class AbstractJxsePropertySource implements IJxsePropertySource<
 		if( Utils.isNull( directive ))
 			return false;
 		return Boolean.parseBoolean( directive);
+	}
+	
+	/**
+	 * Get the context of the given property source
+	 * @param source
+	 * @return
+	 */
+	public static Contexts getContext( IJxsePropertySource<?> source ){
+		String value = source.getDirective( Directives.CONTEXT );
+		if( Utils.isNull( value ))
+			return Contexts.JXTA;
+		return Contexts.valueOf( StringStyler.styleToEnum( value ));
 	}
 }

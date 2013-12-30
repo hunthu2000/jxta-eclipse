@@ -13,48 +13,52 @@ package net.osgi.jxse.seeds;
 import java.util.Iterator;
 
 import net.jxta.platform.NetworkConfigurator;
-import net.osgi.jxse.factory.IComponentFactory;
+import net.osgi.jxse.builder.BuilderContainer;
+import net.osgi.jxse.component.IJxseComponent;
+import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
+import net.osgi.jxse.properties.IJxseDirectives.Directives;
 import net.osgi.jxse.seeds.SeedInfo;
 
-public class SeedListFactory implements IComponentFactory<String>, ISeedListFactory{
+public class SeedListFactory extends AbstractComponentFactory<String> implements ISeedListFactory{
 
-	private SeedListPropertySource source;
 	private NetworkConfigurator configurator;
-	private boolean completed = false;
 	
-	public SeedListFactory( SeedListPropertySource source ) {
-		super();
-		this.source = source;
+	public SeedListFactory( BuilderContainer container,  IJxsePropertySource<IJxseProperties> parent ) {
+		super( container, parent);
+	}
+
+	@Override
+	public String getComponentName() {
+		return Components.SEED_LIST.toString();
+	}
+	
+	@Override
+	protected SeedListPropertySource onCreatePropertySource() {
+		return new SeedListPropertySource( super.getParentSource() );
 	}
 
 	public void addSeed( IJxseProperties name, String value ){
+		IJxseWritePropertySource<IJxseProperties> source = (IJxseWritePropertySource<IJxseProperties>) super.getPropertySource();
 		source.setProperty( name, value);
 	}
 	
 	@Override
-	public Components getComponentId() {
-		return Components.SEED_LIST;
-	}
-
-	@Override
-	public boolean canCreate() {
-		return true;
-	}
-
-	@Override
-	public IJxsePropertySource<IJxseProperties> getPropertySource() {
-		return source;
-	}
-	
-	@Override
 	public void setConfigurator(NetworkConfigurator configurator) {
-		this.configurator = configurator;		
+		this.configurator = configurator;
+		super.setCanCreate(this.configurator != null );
 	}
 
 	@Override
-	public String createComponent() {
+	public IJxseComponent<String> createComponent() {
+		return super.createComponent();
+	}
+
+	@Override
+	protected IJxseComponent<String> onCreateComponent( IJxsePropertySource<IJxseProperties> properties) {
+		IJxseWritePropertySource<IJxseProperties> source = (IJxseWritePropertySource<IJxseProperties>) super.getPropertySource();
 		Iterator<IJxseProperties> iterator = source.propertyIterator();
 		while( iterator.hasNext() ){
 			IJxseProperties key = iterator.next();
@@ -69,30 +73,12 @@ public class SeedListFactory implements IComponentFactory<String>, ISeedListFact
 		}
 		return null;
 	}
-	
-	@Override
-	public boolean complete() {
-		this.completed = true;
-		return this.completed;
-	}
 
 	@Override
 	public boolean isCompleted() {
-		return completed;
+		if( super.getPropertySource() == null )
+			return false;
+		SeedListPropertySource source = (SeedListPropertySource) super.getPropertySource();
+		return SeedListPropertySource.getBoolean(source, Directives.BLOCK_CREATION);
 	}
-
-	@Override
-	public boolean hasFailed() {
-		return !this.completed;
-	}
-
-	@Override
-	public String getComponent() {
-		return null;
-	}
-
-	@Override
-	public boolean moduleActive() {
-		return true;
-	}		
 }

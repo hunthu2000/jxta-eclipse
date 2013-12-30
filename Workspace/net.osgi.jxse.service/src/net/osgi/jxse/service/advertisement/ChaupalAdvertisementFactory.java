@@ -10,27 +10,34 @@
  *******************************************************************************/
 package net.osgi.jxse.service.advertisement;
 
+import net.jxta.document.Advertisement;
 import net.osgi.jxse.advertisement.JxseAdvertisementFactory;
-import net.osgi.jxse.factory.AbstractComponentFactory;
+import net.osgi.jxse.builder.BuilderContainer;
+import net.osgi.jxse.component.IJxseComponent;
+import net.osgi.jxse.factory.IComponentFactory;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class ChaupalAdvertisementFactory extends
-		AbstractComponentFactory<JxseAdvertisementService>{
+public class ChaupalAdvertisementFactory extends JxseAdvertisementFactory{
 
 	public static final String S_DISCOVERY_SERVICE = "JxseDiscoveryService";
 
-	private JxseAdvertisementFactory factory;
-	
-	public ChaupalAdvertisementFactory( JxseAdvertisementFactory factory ) {
-		super( factory.getPropertySource() );
-		this.factory = factory;
+	@SuppressWarnings("unchecked")
+	public ChaupalAdvertisementFactory( BuilderContainer container, IComponentFactory<Advertisement> factory ) {
+		super( container, (IJxsePropertySource<IJxseProperties>) factory.getPropertySource().getParent() );
+		super.setSource(factory.createPropertySource());
 	}
 
 	@Override
-	protected JxseAdvertisementService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
-		factory.createComponent();
-		JxseAdvertisementService ds = new JxseAdvertisementService ( factory );
-		return ds;
+	public String getComponentName() {
+		return S_DISCOVERY_SERVICE;
+	}
+
+	@Override
+	protected JxseAdvertisementService onCreateComponent( IJxsePropertySource<IJxseProperties> source) {
+		IJxseComponent<Advertisement> ds = super.onCreateComponent( source );
+		JxseAdvertisementService service = new JxseAdvertisementService( (IJxseWritePropertySource<IJxseProperties>) source, ds.getModule() );
+		return service;
 	}
 }

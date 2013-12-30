@@ -11,9 +11,8 @@
 package net.osgi.jxse.log;
 
 import net.osgi.jxse.component.JxseComponent;
-import net.osgi.jxse.properties.IJxseDirectives;
 
-public class LoggerComponent extends JxseComponent<LoggerPropertySource, IJxseDirectives>{
+public class LoggerComponent extends JxseComponent<LoggerPropertySource>{
 
 	public LoggerComponent( LoggerFactory factory ) {
 		super( (LoggerPropertySource) factory.getPropertySource() );

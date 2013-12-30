@@ -29,7 +29,7 @@ public class JxseServiceContext extends AbstractServiceContext{
 
 	@Override
 	public NetworkManager getModule() {
-		for( IJxseComponent<?,?> component: super.getChildren() ){
+		for( IJxseComponent<?> component: super.getChildren() ){
 			if( component.getModule() instanceof NetworkManager ){
 				return ( NetworkManager )component.getModule();
 			}
@@ -65,7 +65,7 @@ public class JxseServiceContext extends AbstractServiceContext{
 	//Make public
 	@Override
 	public void deactivate() {
-		for( IJxseComponent<?,?> component: super.getChildren() ){
+		for( IJxseComponent<?> component: super.getChildren() ){
 			if( component.getModule() instanceof NetworkManager ){
 				NetworkManager manager = ( NetworkManager )component.getModule();
 				manager.stopNetwork();

@@ -33,7 +33,7 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
 
 	private static JxseServiceContainerPetitioner attendee = new JxseServiceContainerPetitioner();
 	
-	private List<IJxseComponent<?,?>> children;
+	private List<IJxseComponent<?>> children;
 
 	private ServiceEventDispatcher dispatcher = ServiceEventDispatcher.getInstance();
 	
@@ -41,7 +41,7 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
 	
 	private JxseServiceContainerPetitioner() {
 		super( new ResourcePalaver());
-		children = new ArrayList<IJxseComponent<?,?>>();
+		children = new ArrayList<IJxseComponent<?>>();
 		this.date = Calendar.getInstance().getTime();
 	}
 	
@@ -103,7 +103,7 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
 	}
 
 	@Override
-	public Collection<IJxseComponent<?,?>> getChildren() {
+	public Collection<IJxseComponent<?>> getChildren() {
 		return children;
 	}
 
@@ -114,7 +114,7 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
 	}
 
 	@Override
-	public void addChild(IJxseComponent<?,?> child) {
+	public void addChild(IJxseComponent<?> child) {
 		if( children.contains( child ))
 			return;
 		children.add( child );
@@ -123,7 +123,7 @@ public class JxseServiceContainerPetitioner extends AbstractPetitioner<String, S
 	}
 
 	@Override
-	public void removeChild(IJxseComponent<?,?> child) {
+	public void removeChild(IJxseComponent<?> child) {
 		  children.remove( child );
 		  dispatcher.serviceChanged( new ServiceChangedEvent( this, ServiceChange.CHILD_REMOVED ));
 	}

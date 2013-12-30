@@ -10,11 +10,12 @@
  *******************************************************************************/
 package net.osgi.jxse.factory;
 
+import net.osgi.jxse.builder.ICompositeBuilderListener;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.utils.StringStyler;
 
-public interface IComponentFactory<T extends Object> {
+public interface IComponentFactory<T extends Object> extends ICompositeBuilderListener<Object>{
 
 	public enum Components{
 		JXSE_CONTEXT,
@@ -56,10 +57,16 @@ public interface IComponentFactory<T extends Object> {
 	}
 
 	/**
-	 * Get the component that is created
+	 * Get the component name that will be created
 	 * @return
 	 */
-	public Components getComponentId();
+	public String getComponentName();
+	
+	/**
+	 * Get the weight of the factory. By default, the context factory is zero, startup service is one
+	 * @return
+	 */
+	public int getWeight();
 	
 	/**
 	 * Returns true if the factory can create its product
@@ -74,11 +81,17 @@ public interface IComponentFactory<T extends Object> {
 	public IJxsePropertySource<IJxseProperties> getPropertySource();
 
 	/**
-	 * First time creation of the service component.
+	 * Get the property source that is used for the factor
 	 * @return
 	 */
-	public T createComponent();
+	public IJxsePropertySource<IJxseProperties> createPropertySource();
 	
+	/**
+	 * This method is called after the property sources have been created,
+	 * to allow other factories to be added as well.
+	 */
+	public void extendContainer();
+		
 	/**
 	 * The completion is not necessarily the same as creating the module. This method has to 
 	 * be called separately;
@@ -100,5 +113,5 @@ public interface IComponentFactory<T extends Object> {
 	 * Returns true if the module is activated
 	 * @return
 	 */
-	public boolean moduleActive();
+	public boolean componentActive();
 }

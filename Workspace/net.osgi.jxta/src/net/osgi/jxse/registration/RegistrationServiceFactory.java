@@ -10,8 +10,8 @@
  *******************************************************************************/
 package net.osgi.jxse.registration;
 
+import net.osgi.jxse.builder.BuilderContainer;
 import net.osgi.jxse.factory.AbstractComponentFactory;
-import net.osgi.jxse.properties.IJxseDirectives;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
 import net.osgi.jxse.properties.IJxseWritePropertySource;
@@ -19,18 +19,22 @@ import net.osgi.jxse.properties.IJxseWritePropertySource;
 public class RegistrationServiceFactory extends
 		AbstractComponentFactory<RegistrationService> {
 
-	public static final String S_DISCOVERY_SERVICE = "DiscoveryService";
-
-	public RegistrationServiceFactory( IJxsePropertySource<IJxseProperties> source ) {
-		super( source );
+	public RegistrationServiceFactory( BuilderContainer container, IJxsePropertySource<IJxseProperties> parent ) {
+		super( container, parent );
 	}
 
 	@Override
-	protected void onParseDirectivePriorToCreation( IJxseDirectives directive, Object value) {
+	public String getComponentName() {
+		return Components.REGISTRATION_SERVICE.toString();
 	}
 
 	@Override
-	protected RegistrationService onCreateModule( IJxsePropertySource<IJxseProperties> properties) {
+	protected RegistrationPropertySource onCreatePropertySource() {
+		return new RegistrationPropertySource( super.getParentSource() );
+	}
+
+	@Override
+	protected RegistrationService onCreateComponent( IJxsePropertySource<IJxseProperties> properties) {
 		RegistrationService service = new RegistrationService( (IJxseWritePropertySource<IJxseProperties>) properties );
 		return service;
 	}

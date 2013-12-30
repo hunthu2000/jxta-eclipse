@@ -22,9 +22,9 @@ public class JxseComponentPropertySource implements IPropertySource {
 	public static final String S_PROPERTY_TEXT = "Properties";
 
 	private String defaultText;
-	private IJxseComponent<?,?> source;
+	private IJxseComponent<?> source;
 
-	public JxseComponentPropertySource( IJxseComponent<?,?> source, String defaultText ) {
+	public JxseComponentPropertySource( IJxseComponent<?> source, String defaultText ) {
 		super();
 		this.defaultText = defaultText;
 		this.source = source;

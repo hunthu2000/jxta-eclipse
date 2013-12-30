@@ -35,8 +35,8 @@ public class JxseContextPropertySource extends AbstractJxseWritePropertySource{
 	public static final int DEF_PORT = 9715;
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public JxseContextPropertySource( String bundleId, String identifier) {
-		super( bundleId, identifier, Components.JXSE_CONTEXT.toString() );
+	public JxseContextPropertySource( String bundleId) {
+		super( bundleId, Components.JXSE_CONTEXT.toString() );
 		this.setProperty( ContextProperties.BUNDLE_ID, bundleId, 
 				new ClassValidator( ContextProperties.CONFIG_MODE, String.class ), false );
 		this.setProperty( ContextProperties.CONFIG_MODE, ConfigMode.EDGE, 

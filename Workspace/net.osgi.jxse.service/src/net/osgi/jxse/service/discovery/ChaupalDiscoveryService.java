@@ -27,21 +27,22 @@ import net.osgi.jxse.component.ComponentEventDispatcher;
 import net.osgi.jxse.context.AbstractServiceContext;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jxse.discovery.DiscoveryPropertySource.DiscoveryProperties;
-import net.osgi.jxse.discovery.DiscoveryServiceFactory;
 import net.osgi.jxse.log.JxseLevel;
 import net.osgi.jxse.properties.AbstractJxsePropertySource;
+import net.osgi.jxse.properties.IJxseProperties;
+import net.osgi.jxse.properties.IJxseWritePropertySource;
 
-public class JxseDiscoveryService extends AbstractJxseService<DiscoveryService>{
+public class ChaupalDiscoveryService extends AbstractJxseService<DiscoveryService>{
 	
 	private ExecutorService executor;
 	private Runnable runnable;
 	
 	private DiscoveryListener listener;
 	private int size;
-	private JxseDiscoveryService service;
+	private ChaupalDiscoveryService service;
 
-	public JxseDiscoveryService( DiscoveryServiceFactory factory ) {
-		super( factory );
+	public ChaupalDiscoveryService( IJxseWritePropertySource<IJxseProperties> source, DiscoveryService discoveryService ) {
+		super( source, discoveryService );
 		this.size = 0;
 		this.service = this;
 		executor = Executors.newSingleThreadExecutor();

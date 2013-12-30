@@ -22,13 +22,13 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.eclipselabs.jxse.ui.property.descriptors.CheckBoxPropertyDescriptor;
 import org.eclipselabs.jxse.ui.property.descriptors.TextBoxPropertyDescriptor;
 
-public class NetworkManagerPropertySource extends AbstractJxsePropertySource<NetworkManager, NetworkManagerProperties> {
+public class NetworkManagerPropertySource extends AbstractJxsePropertySource<NetworkManager> {
 
 	public NetworkManagerPropertySource( NetworkManager manager ) {
 		this( manager, new Properties() );
 	}
 
-	public NetworkManagerPropertySource( IJxseComponent<NetworkManager, NetworkManagerProperties> component ) {
+	public NetworkManagerPropertySource( IJxseComponent<NetworkManager> component ) {
 		super( component );
 	}
 

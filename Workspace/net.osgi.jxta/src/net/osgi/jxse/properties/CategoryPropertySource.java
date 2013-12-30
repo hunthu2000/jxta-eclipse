@@ -19,7 +19,7 @@ public class CategoryPropertySource extends AbstractJxseWritePropertySource impl
 	String category, id;
 
 	protected CategoryPropertySource( String bundleId, String identifier, String cat ) {
-		super( bundleId, identifier, cat );
+		super( bundleId, cat ); 
 		String[] split = cat.split("[.]");
 		this.category = split[0];
 		this.id = identifier + "." + category;

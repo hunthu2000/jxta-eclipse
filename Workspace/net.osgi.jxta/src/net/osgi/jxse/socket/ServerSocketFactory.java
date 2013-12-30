@@ -18,6 +18,9 @@ import net.jxta.platform.NetworkManager;
 import net.jxta.protocol.PipeAdvertisement;
 import net.jxta.socket.JxtaServerSocket;
 import net.osgi.jxse.advertisement.PipeAdvertisementFactory;
+import net.osgi.jxse.builder.BuilderContainer;
+import net.osgi.jxse.component.IJxseComponent;
+import net.osgi.jxse.component.JxseComponent;
 import net.osgi.jxse.factory.AbstractComponentFactory;
 import net.osgi.jxse.properties.IJxseProperties;
 import net.osgi.jxse.properties.IJxsePropertySource;
@@ -30,8 +33,8 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 	private NetworkManager manager;
 	private PipeAdvertisementFactory pipeFactory;
 
-	public ServerSocketFactory(NetworkManager manager ) {
-		super( null );
+	public ServerSocketFactory( BuilderContainer container, NetworkManager manager ) {
+		super( container );
 		this.manager = manager;
 		this.fillDefaultValues();
 	}
@@ -40,13 +43,18 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 		//super.getPropertySource().setProperty( Properties.TIME_OUT, 10 );
 		//super.getPropertySource().setProperty( Properties.SO_TIME_OUT, 0 );
 	}
-	
+
 	@Override
-	protected JxtaServerSocket onCreateModule(IJxsePropertySource<IJxseProperties> properties) {
-		this.pipeFactory = new SocketPipeAdvertisementFactory();
+	public String getComponentName() {
+		return S_JXSE_SERVER_SOCKET_SERVICE;
+	}	
+
+	@Override
+	protected IJxseComponent<JxtaServerSocket> onCreateComponent(IJxsePropertySource<IJxseProperties> properties) {
+		this.pipeFactory = new SocketPipeAdvertisementFactory(super.getContainer());
 		JxtaServerSocket socket = this.createSocket();
 		super.setCompleted(true);
-		return socket;
+		return new JxseComponent( socket );
 	}
 		
 	/**
@@ -55,7 +63,7 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 	 * @return
 	 */
 	private JxtaServerSocket createSocket() {
-		PipeAdvertisement pipeAd = this.pipeFactory.getComponent();
+		PipeAdvertisement pipeAd = this.pipeFactory.getComponent().getModule();
 		JxtaServerSocket serverSocket = null;
 		try {
 			IJxsePropertySource<IJxseProperties> source = super.getPropertySource();
@@ -69,5 +77,11 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 			IOUtils.closeSocket( serverSocket );
 		}
 		return null;
-	}	
+	}
+
+	@Override
+	protected IJxsePropertySource<IJxseProperties> onCreatePropertySource() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
