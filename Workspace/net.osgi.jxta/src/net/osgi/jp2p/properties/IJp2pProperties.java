@@ -1,0 +1,39 @@
+package net.osgi.jp2p.properties;
+
+import net.osgi.jp2p.utils.StringStyler;
+
+public interface IJp2pProperties{
+
+	/**
+	 * Directives give additional clues on how to create the component
+	 * @author Kees
+	 *
+	 */
+	public enum JxseProperties implements IJp2pProperties{
+		STATUS,
+		CREATE_DATE;
+
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString() );
+		}
+
+		/**
+		 * Returns true if the given property belonf]gs to this enum
+		 * @param str
+		 * @return
+		 */
+		public static boolean isProperty( String str ){
+			str = StringStyler.styleToEnum(str);
+			if(( str == null ) || ( str.length() == 0 ))
+				return false;
+			for( JxseProperties comp: values()){
+				if( comp.name().equals( str.toUpperCase() ))
+					return true;
+			}
+			return false;
+		}
+	}
+
+	public String name();	
+}

@@ -5,35 +5,35 @@
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="net.jxta.platform.Module"
-            class="org.eclipselabs.jxse.ui.property.JxseAdapterFactory">
+            class="org.chaupal.jp2p.ui.property.Jp2pAdapterFactory">
          <adapter
                type="org.eclipse.ui.views.properties.IPropertySource">
          </adapter>
       </factory>
       <factory
             adaptableType="net.jxta.platform.NetworkManager"
-            class="org.eclipselabs.jxse.ui.property.JxseAdapterFactory">
+            class="org.chaupal.jp2p.ui.property.Jp2pAdapterFactory">
          <adapter
                type="org.eclipse.ui.views.properties.IPropertySource">
          </adapter>
       </factory>
       <factory
             adaptableType="net.jxta.document.Advertisement"
-            class="org.eclipselabs.jxse.ui.property.JxseAdapterFactory">
+            class="org.chaupal.jp2p.ui.property.Jp2pAdapterFactory">
          <adapter
                type="org.eclipse.ui.views.properties.IPropertySource">
          </adapter>
       </factory>
       <factory
             adaptableType="net.jxta.platform.NetworkConfigurator"
-            class="org.eclipselabs.jxse.ui.property.JxseAdapterFactory">
+            class="org.chaupal.jp2p.ui.property.Jp2pAdapterFactory">
          <adapter
                type="org.eclipse.ui.views.properties.IPropertySource">
          </adapter>
       </factory>
       <factory
-            adaptableType="net.osgi.jxse.component.IJxseComponent"
-            class="org.eclipselabs.jxse.ui.property.JxseComponentAdapterFactory">
+            adaptableType="net.osgi.jp2p.component.IJp2pComponent"
+            class="org.chaupal.jp2p.ui.property.Jp2pComponentAdapterFactory">
          <adapter
                type="org.eclipse.ui.views.properties.IPropertySource">
          </adapter>
@@ -43,49 +43,49 @@
          point="org.eclipse.ui.views">
       <category
             id="org.eclipse.jxse.ui.connectivity"
-            name="JXSE Connectivity Monitor"
+            name="JP2P Connectivity Monitor"
             parentCategory="org.eclipse.ui">
       </category>
       <view
             allowMultiple="false"
             category="org.eclipse.jxse.ui.connectivity"
-            class="org.eclipselabs.jxse.ui.context.JxseContainerNavigator"
+            class="org.chaupal.jp2p.ui.context.JxseContainerNavigator"
             id="org.eclipse.jxse.ui.context.view"
-            name="JXSE Service Context View"
+            name="JP2P Service Context View"
             restorable="true">
       </view>
       <view
             allowMultiple="false"
             category="org.eclipse.jxse.ui.connectivity"
-            class="org.eclipselabs.jxse.ui.peergroup.PeerGroupNavigator"
+            class="org.chaupal.jp2p.ui.peergroup.PeerGroupNavigator"
             id="org.eclipselabs.jxse.ui.context.peergroups"
-            name="JXSE PeerGroup Viewer"
+            name="JP2P PeerGroup Viewer"
             restorable="true">
       </view>
       <view
             category="org.eclipse.jxse.ui.connectivity"
-            class="org.eclipselabs.jxse.ui.monitor.ConnectivityViewPart"
+            class="org.chaupal.jp2p.ui.monitor.ConnectivityViewPart"
             id="org.eclipse.jxse.ui.monitor.ConnectivityViewPart"
-            name="JXSE Connectivity Monitor">
+            name="JP2P Connectivity Monitor">
       </view>
       <view
             allowMultiple="true"
             category="org.eclipse.jxse.ui.connectivity"
-            class="org.eclipselabs.jxse.ui.view.ModuleTableViewer"
+            class="org.chaupal.jp2p.ui.view.ModuleTableViewer"
             id="org.eclipse.jxse.ui.view.ModuleTableViewer"
-            name="JXSE Module Viewer ">
+            name="JP2P Module Viewer ">
       </view>
       <view
-            class="org.eclipselabs.jxse.ui.view.AdvertisementTableViewer"
+            class="org.chaupal.jp2p.ui.advertisement.AdvertisementTableViewer"
             id="org.eclipse.jxse.ui.view.AdvertisementTableViewer"
             name="Advertisement Viewer"
             restorable="true">
       </view>
       <view
             allowMultiple="true"
-            class="org.eclipselabs.jxse.ui.view.advertisements.AdvertisementNavigator"
+            class="org.chaupal.jp2p.ui.view.advertisements.AdvertisementNavigator"
             id="org.condast.jxta.ide.view.jxta.advertisements"
-            name="JXSE Advertisement Viewer"
+            name="JP2P Advertisement Viewer"
             restorable="true">
       </view>
    </extension>
@@ -95,15 +95,15 @@
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
             activeByDefault="true"
-            contentProvider="org.eclipselabs.jxse.ui.provider.JxseServiceContentProvider"
+            contentProvider="org.chaupal.jp2p.ui.provider.JxseServiceContentProvider"
             id="org.eclipse.jxse.content"
-            labelProvider="org.eclipselabs.jxse.ui.provider.JxseLabelProvider"
-            name="JXSE Context"
+            labelProvider="org.chaupal.jp2p.ui.provider.JxseLabelProvider"
+            name="JP2P Context"
             priority="normal">
          <triggerPoints>
             <or>
                <instanceof
-                     value="net.osgi.jxse.component.IJxseComponent">
+                     value="net.osgi.jp2p.component.IJp2pComponent">
                </instanceof>
             </or>
          </triggerPoints>
@@ -115,10 +115,10 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
-            contentProvider="org.eclipselabs.jxse.ui.provider.NetworkConfiguratorContentProvider"
+            contentProvider="org.chaupal.jp2p.ui.provider.NetworkConfiguratorContentProvider"
             id="org.eclipse.jxse.content.network.configurator"
-            labelProvider="org.eclipselabs.jxse.ui.provider.JxseLabelProvider"
-            name="JXSE Network Configurator Content"
+            labelProvider="org.chaupal.jp2p.ui.provider.JxseLabelProvider"
+            name="JP2P Network Configurator Content"
             priority="normal">
          <triggerPoints>
             <or>
@@ -139,15 +139,15 @@
          </possibleChildren>
       </navigatorContent>
       <navigatorContent
-            contentProvider="org.eclipselabs.jxse.ui.view.advertisements.JxseAdvertisementContentProvider"
-            id="org.condast.jxta.advertisement"
-            labelProvider="org.eclipselabs.jxse.ui.view.advertisements.JxseAdvertisementLabelProvider"
-            name="JXSE Advertisement Content"
+            contentProvider="org.chaupal.jp2p.ui.view.advertisements.JxseAdvertisementContentProvider"
+            id="org.chaupal.jp2p.ui.view.advertisements"
+            labelProvider="org.chaupal.jp2p.ui.view.advertisements.JxseAdvertisementLabelProvider"
+            name="JP2P Advertisement Content"
             priority="normal">
          <triggerPoints>
             <or>
                <instanceof
-                     value="net.osgi.jxse.component.IJxseComponent">
+                     value="net.osgi.jp2p.component.IJp2pComponent">
                </instanceof>
             </or>
          </triggerPoints>
@@ -159,15 +159,15 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
-            contentProvider="org.eclipselabs.jxse.ui.peergroup.PeerGroupContentProvider"
+            contentProvider="org.chaupal.jp2p.ui.peergroup.PeerGroupContentProvider"
             id="org.eclipse.jxse.content.peergroup"
-            labelProvider="org.eclipselabs.jxse.ui.peergroup.JxsePeerGroupLabelProvider"
-            name="JXSE PeerGroup Context"
+            labelProvider="org.chaupal.jp2p.ui.peergroup.JxsePeerGroupLabelProvider"
+            name="JP2P PeerGroup Context"
             priority="normal">
          <triggerPoints>
             <or>
                <instanceof
-                     value="net.osgi.jxse.context.Swarm">
+                     value="net.osgi.jp2p.context.Swarm">
                </instanceof>
             </or>
          </triggerPoints>
@@ -211,7 +211,7 @@
     <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.eclipselabs.jxse.ui.perspective.Perspective"
+            class="org.chaupal.jp2p.ui.perspective.Perspective"
             fixed="false"
             id="org.eclipse.jxse.perspective"
             name="JXSE IDE Perspective">

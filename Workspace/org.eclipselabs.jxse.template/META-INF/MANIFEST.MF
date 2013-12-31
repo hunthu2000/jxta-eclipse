@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JXSE Tooling
-Bundle-SymbolicName: org.eclipselabs.jxse.template;singleton:=true
+Bundle-SymbolicName: org.chaupal.jp2p.template;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.eclipselabs.jxse.template.Activator
+Bundle-Activator: org.chaupal.jp2p.template.Activator
 Bundle-Vendor: Condast
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
@@ -17,13 +17,13 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Import-Package: net.jxta.platform,
- net.osgi.jxse.component,
- net.osgi.jxse.context,
- net.osgi.jxse.network,
- net.osgi.jxse.network.configurator,
- net.osgi.jxse.properties,
- net.osgi.jxse.service.xml,
- net.osgi.jxse.utils,
- net.osgi.jxse.utils.io,
- org.eclipselabs.jxse.ui.context,
- org.eclipselabs.jxse.ui.network
+ net.osgi.jp2p.component,
+ net.osgi.jp2p.context,
+ net.osgi.jp2p.network,
+ net.osgi.jp2p.network.configurator,
+ net.osgi.jp2p.properties,
+ net.osgi.jp2p.service.xml,
+ net.osgi.jp2p.utils,
+ net.osgi.jp2p.utils.io,
+ org.chaupal.jp2p.ui.context,
+ org.chaupal.jp2p.ui.network

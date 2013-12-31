@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JXSE GUI Tools
-Bundle-SymbolicName: org.eclipselabs.jxse.ui;singleton:=true
+Bundle-SymbolicName: org.chaupal.jp2p.ui;singleton:=true
 Bundle-Version: 1.0.0.v20130819
-Bundle-Activator: org.eclipselabs.jxse.ui.Activator
+Bundle-Activator: org.chaupal.jp2p.ui.Activator
 Bundle-Vendor: Condast
 Require-Bundle: org.eclipse.ui;bundle-version="3.103.0",
  org.eclipse.e4.ui.di,
@@ -20,22 +20,22 @@ Import-Package: net.jxta.configuration,
  net.jxta.protocol,
  net.jxta.rendezvous,
  net.jxta.service,
- net.osgi.jxse.activator,
- net.osgi.jxse.advertisement,
- net.osgi.jxse.component,
- net.osgi.jxse.context,
- net.osgi.jxse.log,
- net.osgi.jxse.network,
- net.osgi.jxse.network.configurator,
- net.osgi.jxse.properties,
- net.osgi.jxse.service,
- net.osgi.jxse.service.comparator,
- net.osgi.jxse.service.core,
- net.osgi.jxse.service.discovery,
- net.osgi.jxse.service.network,
- net.osgi.jxse.service.utils,
- net.osgi.jxse.utils,
- net.osgi.jxse.validator,
+ net.osgi.jp2p.activator,
+ net.osgi.jp2p.advertisement,
+ net.osgi.jp2p.component,
+ net.osgi.jp2p.context,
+ net.osgi.jp2p.log,
+ net.osgi.jp2p.network,
+ net.osgi.jp2p.network.configurator,
+ net.osgi.jp2p.properties,
+ net.osgi.jp2p.service,
+ net.osgi.jp2p.service.comparator,
+ net.osgi.jp2p.service.core,
+ net.osgi.jp2p.service.discovery,
+ net.osgi.jp2p.service.network,
+ net.osgi.jp2p.service.utils,
+ net.osgi.jp2p.utils,
+ net.osgi.jp2p.validator,
  org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.e4.ui.model.application.ui.basic,
  org.eclipse.e4.ui.workbench.modeling,
@@ -51,5 +51,5 @@ Import-Package: net.jxta.configuration,
  org.osgi.util.tracker;version="1.5.1"
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/attendees.xml
-Export-Package: org.eclipselabs.jxse.ui.context,
- org.eclipselabs.jxse.ui.network
+Export-Package: org.chaupal.jp2p.ui.context,
+ org.chaupal.jp2p.ui.network

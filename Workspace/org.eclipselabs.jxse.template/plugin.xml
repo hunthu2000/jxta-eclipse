@@ -5,7 +5,7 @@
          point="org.eclipse.pde.ui.pluginContent">
       <wizard
             category="JXSE 2.7x"
-            class="org.eclipselabs.jxse.template.wizards.JxsePluginWizard"
+            class="org.chaupal.jp2p.template.wizards.JxsePluginWizard"
             icon="images/saight_16.png"
             id="org.eclipselabs.template.pluginwizard"
             java="true"
@@ -19,7 +19,7 @@
      </wizard>
       <wizard
             category="JXSE 2.7x"
-            class="org.eclipselabs.jxse.template.config.JxseBundleWizard"
+            class="org.chaupal.jp2p.template.config.JxseBundleWizard"
             icon="images/saight_16.png"
             id="org.eclipselabs.template.pluginwizard"
             java="true"
@@ -34,7 +34,7 @@
      </wizard>
       <wizard
             category="JXSE 2.7x"
-            class="org.eclipselabs.jxse.template.fragment.JxseFragmentWizard"
+            class="org.chaupal.jp2p.template.fragment.JxseFragmentWizard"
             icon="images/saight_16.png"
             id="org.eclipselabs.template.fragment.wizard"
             java="true"
@@ -49,7 +49,7 @@
       </wizard>
       <wizard
             category="JXSE 2.7x"
-            class="org.eclipselabs.jxse.template.rdv.JxseRdvBundleWizard"
+            class="org.chaupal.jp2p.template.rdv.JxseRdvBundleWizard"
             icon="images/saight_16.png"
             id="org.eclipselabs.jxse.rdv.template"
             java="true"
@@ -66,19 +66,19 @@
    <extension
          point="org.eclipse.pde.ui.templates">
       <template
-            class="org.eclipselabs.jxse.template.config.JxseConfigurationBundleSection"
+            class="org.chaupal.jp2p.template.config.JxseConfigurationBundleSection"
             contributingId="org.eclipselabs.jxse.bundle.template"
             id="org.eclipselabs.jxse.template.config.template"
             name="JXSE 2.7x Config Bundle Project Wizard">
       </template>
       <template
-            class="org.eclipselabs.jxse.template.project.AbstractJxseBundleSection"
+            class="org.chaupal.jp2p.template.project.AbstractJxseBundleSection"
             contributingId="org.eclipselabs.jxse.bundle.template"
             id="org.eclipselabs.jxse.template.bundle.template"
             name="JXSE 2.7x Bundle Project Wizard">
       </template>
       <template
-            class="org.eclipselabs.jxse.template.rdv.RdvTemplateSection"
+            class="org.chaupal.jp2p.template.rdv.RdvTemplateSection"
             contributingId="org.eclipselabs.jxse.bundle.template"
             id="org.eclipselabs.jxse.rdv.template"
             name="JXSE Rendezvous Template">

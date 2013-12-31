@@ -15,7 +15,7 @@ import org.eclipselabs.osgi.ds.broker.service.AbstractPetitioner;
 import org.eclipselabs.osgi.ds.broker.service.IParlezListener.Notifications;
 import org.eclipselabs.osgi.ds.broker.service.ParlezEvent;
 
-import net.osgi.jxse.utils.StringStyler;
+import net.osgi.jp2p.utils.StringStyler;
 
 public class MessageBoxPetitioner extends AbstractPetitioner<String, String[], String> {
 
