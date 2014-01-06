@@ -11,6 +11,7 @@ import net.osgi.jp2p.chaupal.comparator.Jp2pServiceComparator;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.IJp2pComponentNode;
 import net.osgi.jp2p.component.Jp2pComponent;
+import net.osgi.jp2p.properties.DefaultPropertySource;
 
 import org.chaupal.jp2p.ui.component.PeerGroupComponent;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -18,6 +19,7 @@ import org.eclipse.jface.viewers.Viewer;
 
 public class JxseServiceContentProvider implements ITreeContentProvider {
 
+	public static final String S_BUNDLE_ID = "org.chaupal.jp2p.ui";
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 	}
@@ -129,7 +131,7 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 			return (IJp2pComponent<?>) module;
 		if( module instanceof PeerGroup )
 			return new PeerGroupComponent( (PeerGroup) module );
-		return new Jp2pComponent( module );
+		return new Jp2pComponent( new DefaultPropertySource( S_BUNDLE_ID, module.toString() ), module );
 	}
 
 	public static Object[] getDecoratedChildren( IJp2pComponent<?> component ) {

@@ -315,7 +315,18 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 			return Contexts.JXTA;
 		return Contexts.valueOf( StringStyler.styleToEnum( value ));
 	}
-	
+
+	/**
+	 * Returns true if the property source is a child of the parent
+	 * @param source
+	 * @return
+	 */
+	public static boolean isChild( IJp2pPropertySource<?> parent, IJp2pPropertySource<?> source ){
+		if( source.getParent() == null )
+			return false;
+		return source.getParent().equals( parent );
+	}
+
 	/**
 	 * Get the extended property iterator. This iterator adds the category before the key:
 	 *   category.key

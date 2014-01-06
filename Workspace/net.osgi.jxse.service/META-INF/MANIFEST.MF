@@ -8,6 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/attendees.xml
 Export-Package: net.osgi.jp2p.chaupal,
  net.osgi.jp2p.chaupal.activator,
+ net.osgi.jp2p.chaupal.advertisement,
  net.osgi.jp2p.chaupal.comparator,
  net.osgi.jp2p.chaupal.core,
  net.osgi.jp2p.chaupal.discovery,

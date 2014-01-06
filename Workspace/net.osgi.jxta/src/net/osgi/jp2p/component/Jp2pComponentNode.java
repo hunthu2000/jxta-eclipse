@@ -14,19 +14,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import net.osgi.jp2p.container.AbstractServiceContainer;
+import net.osgi.jp2p.properties.IJp2pProperties;
+import net.osgi.jp2p.properties.IJp2pPropertySource;
 
 public class Jp2pComponentNode<T extends Object> extends Jp2pComponent<T> implements IJp2pComponentNode<T>{
 
 	private ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 	private Collection<IJp2pComponent<?>> children;
 
-	public Jp2pComponentNode( T component ) {
-		super( component);
-		this.children = new ArrayList<IJp2pComponent<?>>();
-	}
-
-	public Jp2pComponentNode( IJp2pComponentNode<?> parent, T component ) {
-		super( parent, component);
+	public Jp2pComponentNode( IJp2pPropertySource<IJp2pProperties> source, T component ) {
+		super( source, component);
 		this.children = new ArrayList<IJp2pComponent<?>>();
 	}
 

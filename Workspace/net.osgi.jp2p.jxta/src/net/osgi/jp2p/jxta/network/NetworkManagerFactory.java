@@ -101,7 +101,7 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 			}
 			File file = path.toFile();
 			NetworkManager manager = new NetworkManager( preferences.getConfigMode(), name, file.toURI());
-			return new Jp2pComponentNode<NetworkManager>( manager );
+			return new Jp2pComponentNode<NetworkManager>( super.getPropertySource(), manager );
 		} catch (Exception e) {
 			Logger log = Logger.getLogger( this.getClass().getName() );
 			log.log( Level.SEVERE, e.getMessage() );

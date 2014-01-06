@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import net.jxta.id.IDFactory;
+import net.jxta.peergroup.PeerGroup;
 import net.jxta.pipe.PipeService;
 import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeProperties;
 import net.osgi.jp2p.utils.StringStyler;
@@ -51,8 +52,11 @@ public class AdvertisementPreferences extends AbstractPreferences<IJp2pPropertie
 		}
 	}
 
-	public AdvertisementPreferences( IJp2pWritePropertySource<IJp2pProperties> source ) {
+	private PeerGroup peergroup;
+	
+	public AdvertisementPreferences( IJp2pWritePropertySource<IJp2pProperties> source, PeerGroup peergroup ) {
 		super( source );
+		this.peergroup = peergroup;
 	}
 
 	/* (non-Javadoc)
@@ -89,19 +93,15 @@ public class AdvertisementPreferences extends AbstractPreferences<IJp2pPropertie
 		if( !ManagedProperty.isCreated( super.getSource().getManagedProperty(id)))
 			return null;
 		
-		Object value = null;
 		if( !( id instanceof PipeProperties ))
 			return null;
 		PipeProperties pid = ( PipeProperties )id;
 		switch( pid ){
 		case PIPE_ID:
-			value = null;//IDFactory.newPipeID( provider.getPeerGroup().getPeerGroupID() );
-			break;
+			return IDFactory.newPipeID( peergroup.getPeerGroupID() );
 		default:
 			break;
 		}
-		if( value != null )
-			super.getSource().getOrCreateManagedProperty(id, value, false );
 		return null;
 	}
 }

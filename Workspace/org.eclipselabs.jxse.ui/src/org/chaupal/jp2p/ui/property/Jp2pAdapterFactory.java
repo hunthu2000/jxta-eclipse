@@ -18,8 +18,8 @@ public class Jp2pAdapterFactory implements IAdapterFactory {
 		  if(adapterType != IPropertySource.class )
 			  return null;
 		  if( adaptableObject instanceof IJp2pComponent )
-			  return this.getPropertySource(((IJp2pComponent) adaptableObject).getModule() );
-		  return this.getPropertySource(adaptableObject);
+			  return this.getPropertySource(((IJp2pComponent) adaptableObject) );
+		  return null;
 	}
 
 	/**
@@ -27,26 +27,17 @@ public class Jp2pAdapterFactory implements IAdapterFactory {
 	 * @param adaptableObject
 	 * @return
 	 */
-	protected IPropertySource getPropertySource( Object adaptableObject ){
+	@SuppressWarnings("unchecked")
+	protected IPropertySource getPropertySource( IJp2pComponent<?> adaptableObject ){
 		  if( adaptableObject instanceof NetworkManager )
-			  return new NetworkManagerPropertySource(( NetworkManager )adaptableObject );
+			  return new NetworkManagerPropertySource( (IJp2pComponent<NetworkManager>) adaptableObject );
 		  if( adaptableObject instanceof NetworkConfigurator )
-			  return new NetworkConfiguratorPropertySource(( NetworkConfigurator )adaptableObject);
+			  return new NetworkConfiguratorPropertySource((IJp2pComponent<NetworkConfigurator>) adaptableObject);
 		  if( adaptableObject instanceof Advertisement )
-			  return new AdvertisementPropertySource(( Advertisement )adaptableObject);
+			  return new AdvertisementPropertySource( (IJp2pComponent<Advertisement>)adaptableObject);
 		  if( adaptableObject instanceof PeerGroup )
-			  return new PeerGroupPropertySource(( PeerGroup )adaptableObject);
+			  return new PeerGroupPropertySource( (IJp2pComponent<PeerGroup> )adaptableObject);
 		  return null;			
-	}
-
-	/**
-	 * Get the correct property source
-	 * @param adaptableObject
-	 * @return
-	 */
-	protected IPropertySource getPropertySource( IJp2pComponent<?> component ){
-		Object module = component.getModule();  
-		return this.getPropertySource( module );			
 	}
 
 	@SuppressWarnings("rawtypes")

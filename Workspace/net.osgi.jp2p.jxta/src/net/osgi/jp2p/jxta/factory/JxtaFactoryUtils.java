@@ -3,6 +3,7 @@ package net.osgi.jp2p.jxta.factory;
 import net.osgi.jp2p.builder.ContainerBuilder;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.jxta.advertisement.Jp2pAdvertisementFactory;
+import net.osgi.jp2p.jxta.advertisement.JxtaAdvertisementFactory;
 import net.osgi.jp2p.jxta.discovery.DiscoveryServiceFactory;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
 import net.osgi.jp2p.jxta.netpeergroup.NetPeerGroupFactory;
@@ -66,6 +67,9 @@ public class JxtaFactoryUtils {
 		case PEERGROUP_SERVICE:
 			factory = new PeerGroupFactory( builder, parentSource );
 			break;			
+		case ADVERTISEMENT:
+			factory = new JxtaAdvertisementFactory( builder, parentSource );
+			break;
 		case ADVERTISEMENT_SERVICE:
 			factory = new Jp2pAdvertisementFactory( builder, parentSource );
 			break;

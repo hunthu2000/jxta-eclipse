@@ -29,6 +29,7 @@ import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jp2p.jxta.registration.RegistrationPropertySource.RegistrationProperties;
 import net.osgi.jp2p.log.JxseLevel;
 import net.osgi.jp2p.properties.IJp2pProperties;
+import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.jxta.registration.RegistrationService;
 
@@ -42,6 +43,14 @@ public class RegistrationService extends AbstractActivator implements IJp2pServi
 		this.source = source;
 		executor = Executors.newSingleThreadExecutor();
 	}
+
+	
+	@Override
+	public IJp2pPropertySource<IJp2pProperties> getPropertySource() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	/**
 	 * Implement pure discovery

@@ -55,6 +55,20 @@ public class ContainerBuilder{
 	}
 
 	/**
+	 * Returns the factory who'se source matched the given one
+	 * @param source
+	 * @return
+	 */
+	public IComponentFactory<?> getFactory( IJp2pPropertySource<?> source ){
+		for( ICompositeBuilderListener<?> listener: factories ){
+			IComponentFactory<?> factory = (IComponentFactory<?>) listener;
+			if( factory.getPropertySource().equals( source ))
+					return factory;
+		}
+		return null;	
+	}
+
+	/**
 	 * Returns true if all the factorys have been completed
 	 * @return
 	 */

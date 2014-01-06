@@ -92,7 +92,7 @@ public class NetworkConfigurationFactory extends
 			e.printStackTrace();
 			return null;
 		}
-		return new Jp2pComponent<NetworkConfigurator>( configurator );
+		return new Jp2pComponent<NetworkConfigurator>( super.getPropertySource(), configurator );
 	}
 	
 	protected void fillConfigurator( NetworkConfigurator configurator ) throws IOException{

@@ -17,6 +17,7 @@ import java.util.Iterator;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.properties.DefaultPropertySource;
 import net.osgi.jp2p.properties.IJp2pProperties;
+import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 
 public class DefaultJxseComponent<T extends Object> implements IJp2pComponent<T>{
@@ -29,14 +30,14 @@ public class DefaultJxseComponent<T extends Object> implements IJp2pComponent<T>
 			"The factory did not create the component. The flag setCompleted must be true, which is usually checked  with setAvailable.";
 	
 	private T module;
-	private IJp2pWritePropertySource<IJp2pProperties> properties;
+	private IJp2pWritePropertySource<IJp2pProperties> source;
 	
 	protected DefaultJxseComponent( String bundleId, String componentName) {
 		this( new DefaultPropertySource( bundleId, componentName), null);
 	}
 
-	protected DefaultJxseComponent( IJp2pWritePropertySource<IJp2pProperties> properties, T module ) {
-		this.properties = properties;
+	protected DefaultJxseComponent( IJp2pWritePropertySource<IJp2pProperties> source, T module ) {
+		this.source = source;
 		this.module = module;
 	}
 
@@ -48,19 +49,24 @@ public class DefaultJxseComponent<T extends Object> implements IJp2pComponent<T>
 	 * Get the id
 	 */
 	public String getId(){
-		return (String) this.properties.getId();
+		return (String) this.source.getId();
 	}
 
 	/**
 	 * Get the create date
 	 */
 	public Date getCreateDate(){
-		Object value = this.properties.getProperty( ModuleProperties.CREATE_DATE);
+		Object value = this.source.getProperty( ModuleProperties.CREATE_DATE);
 		if( value == null )
 			return Calendar.getInstance().getTime();
 		return ( Date )value;
 	}
 
+
+	@Override
+	public IJp2pPropertySource<IJp2pProperties> getPropertySource() {
+		return source;
+	}
 
 	@Override
 	public T getModule(){
@@ -73,7 +79,7 @@ public class DefaultJxseComponent<T extends Object> implements IJp2pComponent<T>
 	
 	@Override
 	public Object getProperty(Object key) {
-		return properties.getProperty( (IJp2pProperties) key);
+		return source.getProperty( (IJp2pProperties) key);
 	}
 
 	/**
@@ -82,16 +88,16 @@ public class DefaultJxseComponent<T extends Object> implements IJp2pComponent<T>
 	 * @return
 	 */
 	public String getCategory( Object key ){
-		return this.properties.getCategory( (IJp2pProperties) key );
+		return this.source.getCategory( (IJp2pProperties) key );
 	}
 
 	protected void putProperty( IJp2pProperties key, Object value ){
-		properties.getOrCreateManagedProperty( key, value, false);
+		source.getOrCreateManagedProperty( key, value, false);
 	}
 
 	
 	@Override
 	public Iterator<IJp2pProperties> iterator() {
-		return this.properties.propertyIterator();
+		return this.source.propertyIterator();
 	}
 }

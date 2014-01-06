@@ -24,6 +24,7 @@ import net.osgi.jp2p.builder.ICompositeBuilderListener;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.properties.IJp2pDirectives;
 import net.osgi.jp2p.properties.IJp2pProperties;
+import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.utils.Utils;
 
 public class Jp2pStartupService extends AbstractActivator implements IJp2pService<ContainerBuilder>{
@@ -44,6 +45,12 @@ public class Jp2pStartupService extends AbstractActivator implements IJp2pServic
 		listeners = new ArrayList<ICompositeBuilderListener<Object>>();
 		super.setStatus(Status.AVAILABLE);
 	}
+
+	@Override
+	public IJp2pPropertySource<IJp2pProperties> getPropertySource() {
+		return this.source;
+	}
+
 
 	/**
 	 * If true, the service is auto started

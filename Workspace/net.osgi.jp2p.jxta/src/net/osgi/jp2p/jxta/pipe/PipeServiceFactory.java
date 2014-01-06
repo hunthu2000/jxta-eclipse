@@ -39,6 +39,6 @@ public class PipeServiceFactory extends
 
 	@Override
 	protected IJp2pComponent<PipeService> onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties) {
-		return new Jp2pComponentNode<PipeService>( super.getPeerGroup().getPipeService());
+		return new Jp2pComponentNode<PipeService>( super.getPropertySource(), super.getPeerGroup().getPipeService());
 	}
 }

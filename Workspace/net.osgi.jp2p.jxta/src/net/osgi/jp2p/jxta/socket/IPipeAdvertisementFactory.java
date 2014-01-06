@@ -1,4 +1,4 @@
-package net.osgi.jp2p.jxta.advertisement;
+package net.osgi.jp2p.jxta.socket;
 
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.properties.IJp2pProperties;

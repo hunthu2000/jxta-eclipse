@@ -13,6 +13,7 @@ public class PipePropertySource extends AbstractJp2pWritePropertySource{
 
 	public enum PipeProperties implements IJp2pProperties{
 		PIPE_ID,
+		NAME,
 		TYPE;
 	
 		public static boolean isValidProperty( String str ){

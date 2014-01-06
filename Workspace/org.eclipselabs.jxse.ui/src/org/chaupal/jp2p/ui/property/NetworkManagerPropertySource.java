@@ -5,7 +5,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Properties;
 
 import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
@@ -24,16 +23,8 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 public class NetworkManagerPropertySource extends AbstractJp2pPropertySource<NetworkManager> {
 
-	public NetworkManagerPropertySource( NetworkManager manager ) {
-		this( manager, new Properties() );
-	}
-
 	public NetworkManagerPropertySource( IJp2pComponent<NetworkManager> component ) {
 		super( component );
-	}
-
-	public NetworkManagerPropertySource( NetworkManager manager, Properties defaults ) {
-		super( manager, defaults );
 	}
 
 	@Override

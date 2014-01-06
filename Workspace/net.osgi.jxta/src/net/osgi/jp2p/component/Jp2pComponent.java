@@ -16,6 +16,7 @@ import java.util.Iterator;
 import net.osgi.jp2p.properties.AbstractJp2pPropertySource;
 import net.osgi.jp2p.properties.DefaultPropertySource;
 import net.osgi.jp2p.properties.IJp2pProperties;
+import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.ManagedProperty;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
@@ -25,11 +26,11 @@ public class Jp2pComponent<T extends Object> implements IJp2pComponent<T>, Compa
 
 	public static final String S_DEFAULT_PROPERTY = "Default";
 	private T module;
-	private IJp2pWritePropertySource<IJp2pProperties> source;
+	private IJp2pPropertySource<IJp2pProperties> source;
 	private IJp2pComponent<?> parent;
 
-	public Jp2pComponent( T component ) {
-		this( null, component );
+	protected Jp2pComponent( T component ) {
+		this( null, null, component );
 	}
 
 	public Jp2pComponent( IJp2pComponent<?> parent, T component ) {
@@ -37,8 +38,18 @@ public class Jp2pComponent<T extends Object> implements IJp2pComponent<T>, Compa
 		this.parent = parent;
 		String id = this.getClass().getName();
 		if( parent != null )
-			id = parent.getId();
+			id = parent.getId() + "." + component.toString();
 		this.source = new DefaultPropertySource( id, S_DEFAULT_PROPERTY );
+	}
+
+	public Jp2pComponent( IJp2pPropertySource<IJp2pProperties> source, Jp2pComponent<?> parent, T component ) {
+		this( source, component );
+		this.parent = parent;
+	}
+
+	public Jp2pComponent( IJp2pPropertySource<IJp2pProperties> source, T component ) {
+		this.module = component;
+		this.source = source;
 	}
 
 	@Override
@@ -52,6 +63,14 @@ public class Jp2pComponent<T extends Object> implements IJp2pComponent<T>, Compa
 	@Override
 	public Date getCreateDate(){
 		return (Date) this.source.getProperty(ModuleProperties.CREATE_DATE);
+	}
+
+	/**
+	 * Get the property source of this component
+	 * @return
+	 */
+	public IJp2pPropertySource<IJp2pProperties> getPropertySource(){
+		return source;
 	}
 
 	/**
@@ -89,9 +108,12 @@ public class Jp2pComponent<T extends Object> implements IJp2pComponent<T>, Compa
 	}
 
 	protected void putProperty(IJp2pProperties key, Object value ) {
+		if( !( source instanceof IJp2pWritePropertySource ))
+			return;
 		String[] split = key.toString().split("[.]");
 		StringProperty id = new StringProperty( split[ split.length - 1]);
-		ManagedProperty<IJp2pProperties, Object> mp = source.getOrCreateManagedProperty(id, value, false);
+		IJp2pWritePropertySource<IJp2pProperties> jwps = (IJp2pWritePropertySource<IJp2pProperties>) source;
+		ManagedProperty<IJp2pProperties, Object> mp = jwps.getOrCreateManagedProperty(id, value, false);
 		mp.setValue(value);
 	}
 

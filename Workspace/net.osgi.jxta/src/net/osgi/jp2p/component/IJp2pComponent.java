@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import net.osgi.jp2p.properties.IJp2pProperties;
+import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.utils.StringStyler;
 
 public interface IJp2pComponent<T extends Object>{
@@ -34,6 +35,12 @@ public interface IJp2pComponent<T extends Object>{
 	public String getId();
 	
 	public Date getCreateDate();
+	
+	/**
+	 * Get the property source of this component
+	 * @return
+	 */
+	public IJp2pPropertySource<IJp2pProperties> getPropertySource();
 	
 	/**
 	 * Get a property for the service component

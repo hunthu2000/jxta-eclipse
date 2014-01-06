@@ -13,6 +13,7 @@ import net.osgi.jp2p.properties.ManagedProperty;
 public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySource<IJp2pProperties>
 {
 	public static final String S_NAME = "Name";
+	public static final String S_WILDCARD = "*";
 	
 	public enum DiscoveryMode{
 		ONE_SHOT,
@@ -50,17 +51,7 @@ public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySo
 	public DiscoveryPropertySource( String componentName, IJp2pPropertySource<IJp2pProperties> parent) {
 		super( componentName, parent );
 		this.fillDefaultValues();
-		this.fillDefaultValues(parent);
-	}
-
-	protected void fillDefaultValues( IJp2pPropertySource<?> parent) {
 		setDirectiveFromParent( PeerGroupDirectives.PEERGROUP, this );
-
-		if(!( parent instanceof AdvertisementPropertySource ))
-			return;
-		AdvertisementPropertySource aps = (AdvertisementPropertySource) parent;
-		//this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.ATTRIBUTE, S_NAME, false ));
-		//this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.WILDCARD, aps.getIdentifier() ));
 	}
 
 	protected void fillDefaultValues( ) {
@@ -68,7 +59,7 @@ public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySo
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.COUNT, 20, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.WAIT_TIME, 20000, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.PEER_ID, null, false ));
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.ATTRIBUTE, null, false ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.ATTRIBUTE, S_NAME, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.WILDCARD, null, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.ADVERTISEMENT_TYPE, AdvertisementTypes.ADV, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.THRESHOLD, 1, false ));

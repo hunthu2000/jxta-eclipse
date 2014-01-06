@@ -23,7 +23,6 @@ import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jp2p.builder.ContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponent;
-import net.osgi.jp2p.jxta.advertisement.PipeAdvertisementFactory;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
@@ -80,6 +79,6 @@ public class SocketPipeAdvertisementFactory extends PipeAdvertisementFactory {
 		advertisement.setType( (String) source.getProperty( Properties.TYPE ));
 		advertisement.setName( (String) source.getProperty( Properties.NAME ));
 		super.setCompleted(true);
-		return new Jp2pComponent<PipeAdvertisement>( advertisement);
+		return new Jp2pComponent<PipeAdvertisement>(  super.getPropertySource(), advertisement);
 	}
 }

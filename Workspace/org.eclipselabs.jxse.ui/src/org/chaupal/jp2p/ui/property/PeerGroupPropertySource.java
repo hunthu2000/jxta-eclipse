@@ -3,7 +3,6 @@ package org.chaupal.jp2p.ui.property;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Properties;
 
 import net.jxta.peergroup.PeerGroup;
 import net.osgi.jp2p.component.IJp2pComponent;
@@ -28,16 +27,8 @@ public class PeerGroupPropertySource extends AbstractJp2pPropertySource<PeerGrou
 		}	
 	}
 
-	public PeerGroupPropertySource( PeerGroup peergroup ) {
-		this( peergroup, new Properties() );
-	}
-
 	public PeerGroupPropertySource( IJp2pComponent<PeerGroup> component ) {
 		super( component );
-	}
-
-	public PeerGroupPropertySource( PeerGroup manager, Properties defaults ) {
-		super( manager, defaults );
 	}
 
 	@Override

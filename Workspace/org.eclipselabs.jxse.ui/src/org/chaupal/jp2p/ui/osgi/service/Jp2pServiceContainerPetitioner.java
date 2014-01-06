@@ -21,6 +21,7 @@ import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.IJp2pComponentNode;
 import net.osgi.jp2p.container.Jp2pServiceContainer;
 import net.osgi.jp2p.properties.IJp2pProperties;
+import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.utils.Utils;
 
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
@@ -57,6 +58,13 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 	
 	public static Jp2pServiceContainerPetitioner getInstance(){
 		return attendee;
+	}
+
+	
+	@Override
+	public IJp2pPropertySource<IJp2pProperties> getPropertySource() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public Jp2pServiceContainer getJxtaContainer( String identifier ) {

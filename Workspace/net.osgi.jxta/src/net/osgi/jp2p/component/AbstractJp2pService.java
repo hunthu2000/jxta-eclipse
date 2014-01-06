@@ -22,6 +22,7 @@ import net.osgi.jp2p.container.AbstractServiceContainer;
 import net.osgi.jp2p.properties.AbstractJp2pPropertySource;
 import net.osgi.jp2p.properties.DefaultPropertySource;
 import net.osgi.jp2p.properties.IJp2pProperties;
+import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.ManagedProperty;
 import net.osgi.jp2p.utils.StringProperty;
@@ -72,6 +73,11 @@ implements IJp2pService<T>{
 		if( value == null )
 			return Calendar.getInstance().getTime();
 		return ( Date )value;
+	}
+
+	@Override
+	public IJp2pPropertySource<IJp2pProperties> getPropertySource() {
+		return source;
 	}
 
 	/**

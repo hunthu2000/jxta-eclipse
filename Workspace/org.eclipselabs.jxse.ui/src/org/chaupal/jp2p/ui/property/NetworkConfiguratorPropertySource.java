@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 
 import org.chaupal.jp2p.ui.property.descriptors.CheckBoxPropertyDescriptor;
@@ -31,11 +30,7 @@ public class NetworkConfiguratorPropertySource extends AbstractJp2pPropertySourc
 	public static final String S_NO_READ_VALUE = "<Not a readable property>";
 	
 	public NetworkConfiguratorPropertySource(NetworkConfigurator configurator) {
-		super( configurator, new Properties() );
-	}
-
-	public NetworkConfiguratorPropertySource(NetworkConfigurator configurator,	Properties defaults) {
-		super( configurator, defaults );
+		super( configurator );
 	}
 
 	public NetworkConfiguratorPropertySource( IJp2pComponent<NetworkConfigurator> component ) {

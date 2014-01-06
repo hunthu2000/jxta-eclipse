@@ -2,11 +2,13 @@ package org.chaupal.jp2p.ui.property;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.Properties;
 
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.IJp2pComponent.ModuleProperties;
+import net.osgi.jp2p.properties.DefaultPropertySource;
+import net.osgi.jp2p.properties.IJp2pProperties;
+import net.osgi.jp2p.properties.IJp2pPropertySource;
+import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 
 import org.chaupal.jp2p.ui.property.descriptors.AbstractControlPropertyDescriptor;
 import org.chaupal.jp2p.ui.property.descriptors.TextBoxPropertyDescriptor;
@@ -15,28 +17,20 @@ import org.eclipse.ui.views.properties.IPropertySource;
 
 public abstract class AbstractJp2pPropertySource<T extends Object> implements IPropertySource {
 
-	public static final String S_PROPERTY_JXTA_TEXT = "JXTA";
+	public static final String S_PROPERTY_JP2P_TEXT = "JP2P";
 
 	private T module;
-	private Properties defaults ;
+	private IJp2pPropertySource<IJp2pProperties> defaults ;
 
 	protected AbstractJp2pPropertySource( T module ) {
-		this( module, new Properties());
+		this( module, new DefaultPropertySource( S_PROPERTY_JP2P_TEXT, module.getClass().getName() ));
 	}
 
 	protected AbstractJp2pPropertySource( IJp2pComponent<T> component ) {
-		this( component.getModule(), new Properties());
-		Iterator<?> iterator = component.iterator();
-		Object key, value;
-		while( iterator.hasNext()){
-			key = iterator.next();
-			value = component.getProperty(key);
-			if( value != null )
-			    this.defaults.put(key, value);
-		}
+		this( component.getModule(), component.getPropertySource() );
 	}
 
-	protected AbstractJp2pPropertySource( T module, Properties defaults ) {
+	protected AbstractJp2pPropertySource( T module, IJp2pPropertySource<IJp2pProperties> defaults ) {
 		this.module = module;
 		this.defaults = defaults;
 	}
@@ -61,7 +55,7 @@ public abstract class AbstractJp2pPropertySource<T extends Object> implements IP
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		Collection<ModuleProperties> properties = new ArrayList<ModuleProperties>();
 		for( ModuleProperties property: ModuleProperties.values()){
-			if( defaults.get( property ) != null )
+			if( defaults.getProperty( property ) != null )
 				properties.add(property);
 		}
 		return getPropertyDescriptors( properties.toArray( new ModuleProperties[ properties.size()]));
@@ -72,7 +66,7 @@ public abstract class AbstractJp2pPropertySource<T extends Object> implements IP
 		if(!( id instanceof ModuleProperties ))
 			return null;
 		ModuleProperties property = ( ModuleProperties )id;
-		return defaults.get( property );
+		return defaults.getProperty( property );
 	}
 
 	@Override
@@ -80,12 +74,15 @@ public abstract class AbstractJp2pPropertySource<T extends Object> implements IP
 		if(!( id instanceof ModuleProperties ))
 			return;
 		ModuleProperties property = ( ModuleProperties )id;
-		defaults.put( property, value);
+		if(!( defaults instanceof IJp2pWritePropertySource ))
+			return;
+		IJp2pWritePropertySource<IJp2pProperties> wps = (IJp2pWritePropertySource<IJp2pProperties>) defaults;
+		wps.setProperty( property, value);
 	}
 
 	@Override
 	public boolean isPropertySet(Object id) {
-		Object defaultValue = this.defaults.get( id );
+		Object defaultValue = this.defaults.getProperty( (IJp2pProperties) id );
 		if( defaultValue == null )
 			return false;
 		return ( !this.getPropertyValue(id).equals( defaultValue ));
@@ -93,7 +90,7 @@ public abstract class AbstractJp2pPropertySource<T extends Object> implements IP
 
 	@Override
 	public void resetPropertyValue(Object id) {
-		Object defaultValue = this.defaults.get( id );
+		Object defaultValue = this.defaults.getProperty( (IJp2pProperties) id );
 		if( defaultValue == null )
 			return;
 		this.setPropertyValue(id, defaultValue );
@@ -111,7 +108,7 @@ public abstract class AbstractJp2pPropertySource<T extends Object> implements IP
 		String[] retval = new String[3];
 		retval[0] = property.toString();
 		retval[1] = property.toString();
-		retval[2] = S_PROPERTY_JXTA_TEXT;
+		retval[2] = S_PROPERTY_JP2P_TEXT;
 		String[] split = property.toString().split("[.]");
 		if( split.length > 1 ){
 			retval[2] = split[0];

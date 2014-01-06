@@ -111,7 +111,7 @@ class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousServic
 
 	@Override
 	public IJp2pComponent<RendezVousService> createComponent() {
-		return new Jp2pComponent<RendezVousService>( null );//parent.getModule().getRendezVousService();
+		return new Jp2pComponent<RendezVousService>( null, null,null );//parent.getModule().getRendezVousService();
 	}
 
 	@Override

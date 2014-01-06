@@ -20,7 +20,6 @@ import net.jxta.socket.JxtaServerSocket;
 import net.osgi.jp2p.builder.ContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponent;
-import net.osgi.jp2p.jxta.advertisement.PipeAdvertisementFactory;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.utils.IOUtils;
 import net.osgi.jp2p.properties.IJp2pProperties;
@@ -51,12 +50,13 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 		return S_JXSE_SERVER_SOCKET_SERVICE;
 	}	
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	protected IJp2pComponent<JxtaServerSocket> onCreateComponent(IJp2pPropertySource<IJp2pProperties> properties) {
 		this.pipeFactory = new SocketPipeAdvertisementFactory(super.getBuilder());
 		JxtaServerSocket socket = this.createSocket();
 		super.setCompleted(true);
-		return new Jp2pComponent( socket );
+		return new Jp2pComponent(  super.getPropertySource(),socket );
 	}
 		
 	/**

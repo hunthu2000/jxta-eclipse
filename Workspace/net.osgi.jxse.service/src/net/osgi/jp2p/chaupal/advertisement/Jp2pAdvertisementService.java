@@ -19,36 +19,42 @@ import net.osgi.jp2p.component.AbstractJp2pServiceNode;
 import net.osgi.jp2p.component.ComponentChangedEvent;
 import net.osgi.jp2p.component.ComponentEventDispatcher;
 import net.osgi.jp2p.component.IComponentChangedListener;
-import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.IJp2pComponentNode;
 import net.osgi.jp2p.container.AbstractServiceContainer;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementProperties;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jp2p.jxta.advertisement.IAdvertisementProvider;
+import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
+import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
+import net.osgi.jp2p.utils.StringStyler;
+import net.osgi.jp2p.utils.Utils;
 
 public class Jp2pAdvertisementService extends AbstractJp2pServiceNode<Advertisement> implements IJp2pComponentNode<Advertisement>{
 
 	private IComponentChangedListener listener;
-
-	public Jp2pAdvertisementService( IJp2pWritePropertySource<IJp2pProperties> source, Advertisement advertisement ) {
+	private ChaupalDiscoveryService discovery;
+	
+	public Jp2pAdvertisementService( IJp2pWritePropertySource<IJp2pProperties> source, Advertisement advertisement, ChaupalDiscoveryService discovery ) {
 		super( source, advertisement );
+		this.discovery = discovery;
 	}
 	
-	
 	protected void publishAdvertisements( IAdvertisementProvider provider ){
-		//if( this.adfactories.isEmpty() )
-		//	return;
-		//DiscoveryService discovery = super.getModule();
-		int lifetime = 100;//( Integer )this.getProperty( PublishProperties.LIFE_TIME );
-		int expiration = 100;//= ( Integer )this.getProperty( PublishProperties.EXPIRATION );
+		long lifetime = (long) super.getPropertySource().getProperty( AdvertisementProperties.LIFE_TIME );
+		long expiration = (long) super.getPropertySource().getProperty( AdvertisementProperties.EXPIRATION );
 		try {
-			//for( Advertisement ad: super.getAdvertisements() ){
-				System.out.println("Publishing the following advertisement with lifetime :"
-						+ lifetime + " expiration :" + expiration);
-				//System.out.println(ad.toString());
-				//discovery.publish(ad, lifetime, expiration);
-				//discovery.remotePublish(ad, expiration);
-			//}
+			Advertisement[] advertisements = discovery.getAdvertisements();
+			if(( advertisements == null ) || ( advertisements.length == 0 ))
+				return;
+			System.out.println("Publishing the following advertisement with lifetime :"
+					+ lifetime + " expiration :" + expiration);
+			Advertisement ad = advertisements[0];
+			System.out.println(ad.toString());
+			discovery.getModule().publish(ad, lifetime, expiration);
+			discovery.getModule().remotePublish(ad, expiration);
 		} catch (Exception e) {
 			Logger log = Logger.getLogger( this.getClass().getName() );
 			log.log( Level.SEVERE, e.getMessage() );
@@ -56,26 +62,38 @@ public class Jp2pAdvertisementService extends AbstractJp2pServiceNode<Advertisem
 		}		
 	}
 	
+	/**
+	 * Check for advertisements of the designated type
+	 */
+	protected void checkAdvertisements(){
+		DiscoveryPropertySource source = (DiscoveryPropertySource) discovery.getPropertySource();
+		String adv_type = super.getPropertySource().getDirective(AdvertisementDirectives.TYPE);
+		if( Utils.isNull( adv_type ))
+			adv_type = AdvertisementTypes.ADV.toString();
+		source.setProperty( DiscoveryProperties.ADVERTISEMENT_TYPE , AdvertisementTypes.valueOf( StringStyler.styleToEnum( adv_type )));
+		Advertisement[] advertisements = discovery.getAdvertisements();
+		if(( advertisements != null ) && ( advertisements.length > 0 ))
+			return;
+		ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
+		if( this.listener == null ){
+			this.listener = new IComponentChangedListener(){
+
+				@Override
+				public void notifyServiceChanged(ComponentChangedEvent event) {
+					if( event.getSource().equals( discovery )){
+						if( event.getChange().equals( AbstractServiceContainer.ServiceChange.COMPONENT_EVENT )){
+							publishAdvertisements( (IAdvertisementProvider) discovery );
+						}
+					}
+				}	
+			};
+			dispatcher.addServiceChangeListener(listener);
+		}
+	}
+	
 	@Override
 	public boolean start() {
-		final ChaupalDiscoveryService service = getDiscoveryService( this );
-		if( service != null ){
-			ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
-			if( this.listener == null ){
-				this.listener = new IComponentChangedListener(){
-
-					@Override
-					public void notifyServiceChanged(ComponentChangedEvent event) {
-						if( event.getSource().equals( service )){
-							if( event.getChange().equals( AbstractServiceContainer.ServiceChange.COMPONENT_EVENT )){
-								publishAdvertisements( (IAdvertisementProvider) service );
-							}
-						}
-					}	
-				};
-				dispatcher.addServiceChangeListener(listener);
-			}
-		}
+		this.checkAdvertisements();
 		return super.start();
 	}
 
@@ -84,18 +102,5 @@ public class Jp2pAdvertisementService extends AbstractJp2pServiceNode<Advertisem
 		ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 		dispatcher.removeServiceChangeListener(listener);
 		listener = null;
-	}
-
-	/**
-	 * Get the discovery service
-	 * @param adService
-	 * @return
-	 */
-	public static ChaupalDiscoveryService getDiscoveryService( Jp2pAdvertisementService adService ){
-		for( IJp2pComponent<?> component: adService.getChildren() ){
-			if( component.getModule() instanceof ChaupalDiscoveryService )
-				return (ChaupalDiscoveryService) component.getModule();
-		}
-		return null;
 	}
 }

@@ -12,13 +12,19 @@ package net.osgi.jp2p.chaupal.advertisement;
 
 import net.jxta.document.Advertisement;
 import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.chaupal.discovery.ChaupalDiscoveryService;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.factory.IComponentFactory;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementProperties;
 import net.osgi.jp2p.jxta.advertisement.Jp2pAdvertisementFactory;
+import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
+import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
+import net.osgi.jp2p.utils.Utils;
 
 public class ChaupalAdvertisementFactory extends Jp2pAdvertisementFactory{
 
@@ -36,9 +42,24 @@ public class ChaupalAdvertisementFactory extends Jp2pAdvertisementFactory{
 	@Override
 	public void extendContainer() {
 		ContainerBuilder builder = super.getBuilder();
-		IComponentFactory<?> df = builder.getFactory( JxtaComponents.DISCOVERY_SERVICE.toString());
-		if( df == null){
-			builder.addFactoryToContainer( JxtaComponents.DISCOVERY_SERVICE.toString(), this, false, false); 
+		IComponentFactory<?> df = builder.getFactory(JxtaComponents.DISCOVERY_SERVICE.toString());
+		if( df == null )
+			df = builder.addFactoryToContainer( JxtaComponents.DISCOVERY_SERVICE.toString(), this, false, false); 
+		DiscoveryPropertySource ds = (DiscoveryPropertySource) df.getPropertySource();
+
+		AdvertisementPropertySource source = (AdvertisementPropertySource) super.getPropertySource().getChild( JxtaComponents.ADVERTISEMENT.toString() );
+		if( source == null )
+			return;
+		Object value = ds.getProperty( DiscoveryProperties.ATTRIBUTE );
+		if( value == null ){
+			ds.setProperty(DiscoveryProperties.ATTRIBUTE, DiscoveryPropertySource.S_NAME );
+		}
+		String name = (String) source.getProperty( AdvertisementProperties.NAME );
+		if( Utils.isNull( name ))
+			name = DiscoveryPropertySource.S_WILDCARD;
+		value = ds.getProperty( DiscoveryProperties.WILDCARD );
+		if( value == null ){
+			ds.setProperty(DiscoveryProperties.WILDCARD, name );
 		}
 		super.extendContainer();
 	}
@@ -46,7 +67,7 @@ public class ChaupalAdvertisementFactory extends Jp2pAdvertisementFactory{
 	@Override
 	protected Jp2pAdvertisementService onCreateComponent( IJp2pPropertySource<IJp2pProperties> source) {
 		IJp2pComponent<Advertisement> ds = super.onCreateComponent( source );
-		Jp2pAdvertisementService service = new Jp2pAdvertisementService( (IJp2pWritePropertySource<IJp2pProperties>) source, ds.getModule() );
+		Jp2pAdvertisementService service = new Jp2pAdvertisementService( (IJp2pWritePropertySource<IJp2pProperties>) source, ds.getModule(), (ChaupalDiscoveryService) super.getDependency() );
 		return service;
 	}
 }

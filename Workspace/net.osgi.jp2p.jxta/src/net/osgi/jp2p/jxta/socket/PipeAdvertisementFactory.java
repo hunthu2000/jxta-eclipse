@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jp2p.jxta.advertisement;
+package net.osgi.jp2p.jxta.socket;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -20,7 +20,6 @@ import net.jxta.id.IDFactory;
 import net.jxta.pipe.PipeID;
 import net.jxta.pipe.PipeService;
 import net.jxta.protocol.PipeAdvertisement;
-import net.osgi.jp2p.jxta.advertisement.IPipeAdvertisementFactory;
 import net.osgi.jp2p.builder.ContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponent;
@@ -80,7 +79,7 @@ public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdver
 		advertisement.setPipeID(socketID);
 		advertisement.setType( (String) source.getProperty( Properties.TYPE ));
 		advertisement.setName( (String) source.getProperty( Properties.NAME ));
-		return new Jp2pComponent<PipeAdvertisement>( advertisement );
+		return new Jp2pComponent<PipeAdvertisement>( super.getPropertySource(), advertisement );
 	}
 
 	@Override

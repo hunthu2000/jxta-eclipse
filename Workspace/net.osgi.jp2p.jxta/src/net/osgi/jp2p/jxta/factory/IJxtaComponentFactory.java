@@ -35,6 +35,7 @@ public interface IJxtaComponentFactory<T extends Object> extends ICompositeBuild
 		PIPE_SERVICE,
 		JXSE_SOCKET,
 		JXSE_SERVER_SOCKET,
+		ADVERTISEMENT,
 		ADVERTISEMENT_SERVICE;
 
 		@Override

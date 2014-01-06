@@ -50,7 +50,7 @@ implements	IJxseServiceContainer<T>{
 	public static final String S_SERVICE_CONTAINER = "JXSE Container";
 	
 	private Collection<IJp2pComponent<?>> children;
-	private IJp2pPropertySource<IJp2pProperties> properties;
+	private IJp2pPropertySource<IJp2pProperties> source;
 	
 	//Takes care of all the messaging through the container
 	private ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
@@ -64,17 +64,18 @@ implements	IJxseServiceContainer<T>{
 	protected AbstractServiceContainer( IJp2pPropertySource<IJp2pProperties> source ) {
 		super();
 		this.children = new ArrayList<IJp2pComponent<?>>();
-		this.properties = source;
+		this.source = source;
 		swarm = new Swarm();
 	}
 
-	public IJp2pPropertySource<IJp2pProperties> getProperties() {
-		return properties;
+	@Override
+	public IJp2pPropertySource<IJp2pProperties> getPropertySource() {
+		return source;
 	}
 
 	@Override
 	public String getId() {
-		return (String) this.properties.getDirective( Directives.ID );
+		return (String) this.source.getDirective( Directives.ID );
 	}
 
 	/**
@@ -103,7 +104,7 @@ implements	IJxseServiceContainer<T>{
 	 */
 	@Override
 	public Date getCreateDate(){
-		return (Date) this.properties.getProperty( ModuleProperties.CREATE_DATE);
+		return (Date) this.source.getProperty( ModuleProperties.CREATE_DATE);
 	}
 
 	public void clearModules(){
@@ -111,18 +112,18 @@ implements	IJxseServiceContainer<T>{
 	}
 
 	protected void setProperties(IJp2pWritePropertySource<IJp2pProperties> properties) {
-		this.properties = properties;
+		this.source = properties;
 	}
 
 	@Override
 	public Object getProperty(Object key) {
-		return this.properties.getProperty( (IJp2pProperties) key );
+		return this.source.getProperty( (IJp2pProperties) key );
 	}
 
 	protected void putProperty(Object key, Object value) {
 		if( value == null )
 			return;
-		((AbstractJp2pWritePropertySource) this.properties).setProperty( (IJp2pProperties) key, value);
+		((AbstractJp2pWritePropertySource) this.source).setProperty( (IJp2pProperties) key, value);
 	}
 
 	/**
@@ -131,12 +132,12 @@ implements	IJxseServiceContainer<T>{
 	 * @return
 	 */
 	public String getCategory( Object key ){
-		return this.properties.getCategory( (IJp2pProperties) key );
+		return this.source.getCategory( (IJp2pProperties) key );
 	}
 
 	@Override
 	public String getIdentifier() {
-		return this.properties.getIdentifier();
+		return this.source.getIdentifier();
 	}
 	
 	@Override
@@ -205,7 +206,7 @@ implements	IJxseServiceContainer<T>{
 
 	@Override
 	public Iterator<IJp2pProperties> iterator(){
-		return this.properties.propertyIterator();
+		return this.source.propertyIterator();
 	}
 
 	@Override

@@ -62,6 +62,6 @@ public class DiscoveryServiceFactory extends
 	@Override
 	protected IJp2pComponent<DiscoveryService> onCreateComponent(
 			IJp2pPropertySource<IJp2pProperties> properties) {
-		return new Jp2pComponent<DiscoveryService>( super.getPeerGroup().getDiscoveryService());
+		return new Jp2pComponent<DiscoveryService>( super.getPropertySource(), super.getPeerGroup().getDiscoveryService());
 	}
 }

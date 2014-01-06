@@ -7,8 +7,10 @@ import net.jxta.protocol.ModuleClassAdvertisement;
 import net.jxta.protocol.ModuleSpecAdvertisement;
 import net.jxta.protocol.PeerGroupAdvertisement;
 import net.jxta.protocol.PipeAdvertisement;
+import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
 import net.osgi.jp2p.properties.AbstractJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives;
+import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.ManagedProperty;
@@ -17,8 +19,6 @@ import net.osgi.jp2p.utils.Utils;
 
 public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource {
 
-	public static String S_ADVERTISEMENTS = "AdvertisementService";
-	
 	/**
 	 * The scope of an advertisement determines whether it will be published or not
 	 * @author keesp
@@ -53,6 +53,7 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 
 
 	public enum AdvertisementProperties implements IJp2pProperties{
+		NAME,
 		MODE,
 		LIFE_TIME,
 		EXPIRATION,
@@ -188,6 +189,7 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 	 */
 	public enum AdvertisementCategories{
 		BODY,
+		ADVERTISEMENT,
 		DISCOVERY_SERVICE;
 
 		public static boolean isValidCategory( String category ){
@@ -206,18 +208,20 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 		}
 	}
 
-	public AdvertisementPropertySource(IJp2pPropertySource<IJp2pProperties> parent) {
-		super( S_ADVERTISEMENTS, parent);
-		this.fillDefaultValues();
+	public AdvertisementPropertySource( IJp2pPropertySource<IJp2pProperties> parent) {
+		super( JxtaComponents.ADVERTISEMENT.toString(), parent);
+		this.fillDefaultValues( parent );
 	}
 
-	public AdvertisementPropertySource(String componentName,IJp2pPropertySource<IJp2pProperties> parent) {
+	public AdvertisementPropertySource(String componentName, IJp2pPropertySource<IJp2pProperties> parent) {
 		super(componentName, parent);
-		this.fillDefaultValues();
+		this.fillDefaultValues( parent);
 	}
 
-	protected void fillDefaultValues(){
+	protected void fillDefaultValues( IJp2pPropertySource<IJp2pProperties> parent ){
 		super.setDirective(AdvertisementDirectives.SCOPE, Scope.REMOTE.toString());
+		super.setDirective(Directives.BLOCK_CREATION, Boolean.TRUE.toString());
+		super.setDirective(AdvertisementDirectives.TYPE, parent.getDirective( AdvertisementDirectives.TYPE ));
 		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementProperties.LIFE_TIME, PeerGroup.DEFAULT_LIFETIME ));
 		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementProperties.EXPIRATION, PeerGroup.DEFAULT_EXPIRATION ));	
 		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementProperties.MODE, AdvertisementMode.DISCOVERY, true ));
