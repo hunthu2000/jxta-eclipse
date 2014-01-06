@@ -11,10 +11,10 @@
 package net.osgi.jp2p.startup;
 
 import net.osgi.jp2p.builder.ContainerBuilder;
-import net.osgi.jp2p.context.ContainerFactory;
-import net.osgi.jp2p.context.Jp2pContainerPropertySource;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.IComponentFactory;
+import net.osgi.jp2p.container.ContainerFactory;
+import net.osgi.jp2p.container.Jp2pContainerPropertySource;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
@@ -33,30 +33,27 @@ public class StartupServiceFactory extends AbstractComponentFactory<ContainerBui
 	}
 
 	@Override
-	protected JxseStartupPropertySource onCreatePropertySource() {
-		JxseStartupPropertySource source = new JxseStartupPropertySource( (Jp2pContainerPropertySource) super.getParentSource());
+	protected Jp2pStartupPropertySource onCreatePropertySource() {
+		Jp2pStartupPropertySource source = new Jp2pStartupPropertySource( (Jp2pContainerPropertySource) super.getParentSource());
 		return source;
 	}
 
 	@Override
 	public void extendContainer() {
 		ContainerBuilder container = super.getBuilder();
-		IComponentFactory<?> factory = container.getFactory( Components.JXSE_CONTEXT.toString() );
+		IComponentFactory<?> factory = container.getFactory( Components.JP2P_CONTAINER.toString() );
 		ContainerFactory cf = (ContainerFactory) factory;
 		if( !cf.isAutoStart() )
 			return;
-		factory = container.getFactory( Components.NET_PEERGROUP_SERVICE.toString() );
-		if( factory == null )
-			factory = container.addFactoryToContainer( Components.NET_PEERGROUP_SERVICE.name(), cf, true, false );
 		IJp2pWritePropertySource<IJp2pProperties> props = (IJp2pWritePropertySource<IJp2pProperties>) factory.getPropertySource();
 		props.setDirective( Directives.AUTO_START, Boolean.TRUE.toString());
-		JxseStartupPropertySource.setParentDirective(Directives.AUTO_START, super.getPropertySource());
+		Jp2pStartupPropertySource.setParentDirective(Directives.AUTO_START, super.getPropertySource());
 	}
 
 	@Override
-	protected JxseStartupService onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties) {
-		JxseStartupService service = new JxseStartupService( super.getBuilder(), (JxseStartupPropertySource) super.getPropertySource() );
-		if( JxseStartupPropertySource.isAutoStart( super.getPropertySource()))
+	protected Jp2pStartupService onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties) {
+		Jp2pStartupService service = new Jp2pStartupService( super.getBuilder(), (Jp2pStartupPropertySource) super.getPropertySource() );
+		if( Jp2pStartupPropertySource.isAutoStart( super.getPropertySource()))
 			service.initialise();
 		return service;
 	}

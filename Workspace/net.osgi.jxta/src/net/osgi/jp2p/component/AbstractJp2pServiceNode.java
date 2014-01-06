@@ -3,8 +3,8 @@ package net.osgi.jp2p.component;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.osgi.jp2p.context.AbstractServiceContainer;
 import net.osgi.jp2p.factory.IComponentFactory;
+import net.osgi.jp2p.container.AbstractServiceContainer;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 

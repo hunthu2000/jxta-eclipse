@@ -13,7 +13,7 @@ package net.osgi.jp2p.component;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.osgi.jp2p.context.AbstractServiceContainer;
+import net.osgi.jp2p.container.AbstractServiceContainer;
 
 public class Jp2pComponentNode<T extends Object> extends Jp2pComponent<T> implements IJp2pComponentNode<T>{
 

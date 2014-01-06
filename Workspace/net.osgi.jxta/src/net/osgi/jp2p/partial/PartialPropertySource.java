@@ -18,7 +18,7 @@ import net.osgi.jp2p.utils.Utils;
  * TODO: This approach is not very nice yet. Reconsider this idea
  * @author Kees
  *
- * @param <IJp2pProperties>
+ * @param <IJp2pComponents>
  * @param <U>
  */
 public class PartialPropertySource extends PropertySourceWrapper<IJp2pProperties>

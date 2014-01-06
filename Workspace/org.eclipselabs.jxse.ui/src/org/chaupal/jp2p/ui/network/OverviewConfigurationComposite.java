@@ -4,9 +4,9 @@ import java.net.URI;
 
 import net.jxta.peer.PeerID;
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.osgi.jp2p.context.JxseContainerPreferences;
-import net.osgi.jp2p.network.configurator.NetworkConfigurationPropertySource;
-import net.osgi.jp2p.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jp2p.jxta.context.JxseContainerPreferences;
+import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
+import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.validator.StringValidator;
 

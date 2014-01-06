@@ -1,10 +1,10 @@
 package org.chaupal.jp2p.ui.context;
 
+import net.osgi.jp2p.chaupal.IServiceChangedListener;
+import net.osgi.jp2p.chaupal.ServiceChangedEvent;
+import net.osgi.jp2p.chaupal.ServiceEventDispatcher;
+import net.osgi.jp2p.chaupal.utils.Utils;
 import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.service.IServiceChangedListener;
-import net.osgi.jp2p.service.ServiceChangedEvent;
-import net.osgi.jp2p.service.ServiceEventDispatcher;
-import net.osgi.jp2p.service.utils.Utils;
 
 import org.chaupal.jp2p.ui.osgi.service.Jp2pServiceContainerPetitioner;
 import org.eclipselabs.osgi.ds.broker.service.IParlezListener;

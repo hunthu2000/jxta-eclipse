@@ -7,7 +7,7 @@ import java.util.Collection;
 import net.jxta.document.Advertisement;
 import net.jxta.protocol.ModuleImplAdvertisement;
 import net.jxta.protocol.ModuleSpecAdvertisement;
-import net.osgi.jp2p.advertisement.AdvertisementPropertySource.AdvertisementProperties;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementProperties;
 import net.osgi.jp2p.component.IJp2pComponent;
 
 import org.chaupal.jp2p.ui.property.AbstractJp2pPropertySource;

@@ -10,17 +10,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
+import net.osgi.jp2p.chaupal.IServiceChangedListener;
+import net.osgi.jp2p.chaupal.ServiceChangedEvent;
+import net.osgi.jp2p.chaupal.ServiceEventDispatcher;
+import net.osgi.jp2p.chaupal.comparator.Jp2pServiceComparator;
+import net.osgi.jp2p.chaupal.core.Jp2pDSComponent;
 import net.osgi.jp2p.component.ComponentChangedEvent;
 import net.osgi.jp2p.component.IComponentChangedListener;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.IJp2pComponentNode;
-import net.osgi.jp2p.context.Jp2pServiceContainer;
+import net.osgi.jp2p.container.Jp2pServiceContainer;
 import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.service.IServiceChangedListener;
-import net.osgi.jp2p.service.ServiceChangedEvent;
-import net.osgi.jp2p.service.ServiceEventDispatcher;
-import net.osgi.jp2p.service.comparator.Jp2pServiceComparator;
-import net.osgi.jp2p.service.core.Jp2pDSComponent;
 import net.osgi.jp2p.utils.Utils;
 
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;

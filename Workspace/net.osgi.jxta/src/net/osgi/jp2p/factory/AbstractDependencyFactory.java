@@ -16,7 +16,6 @@ import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
-import net.osgi.jp2p.utils.StringStyler;
 
 public abstract class AbstractDependencyFactory<T extends Object, U extends Object> extends
 		AbstractComponentFactory<T> {
@@ -44,10 +43,6 @@ public abstract class AbstractDependencyFactory<T extends Object, U extends Obje
 	@SuppressWarnings("unchecked")
 	@Override
 	public void notifyChange(ComponentBuilderEvent<Object> event) {
-		String name = StringStyler.styleToEnum(event.getFactory().getComponentName());
-		if( !Components.isComponent(name))
-			return;
-
 		switch( event.getBuilderEvent()){
 		case COMPONENT_CREATED:
 			IComponentFactory<?> factory = event.getFactory();

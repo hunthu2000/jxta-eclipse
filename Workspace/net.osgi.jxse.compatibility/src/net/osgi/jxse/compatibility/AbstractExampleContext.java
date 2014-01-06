@@ -13,19 +13,14 @@ package net.osgi.jxse.compatibility;
 import org.eclipse.core.runtime.Platform;
 
 import net.jxta.platform.NetworkManager;
-import net.osgi.jp2p.context.AbstractServiceContainer;
-import net.osgi.jp2p.context.Jp2pContainerPropertySource;
+import net.osgi.jp2p.container.AbstractServiceContainer;
+import net.osgi.jp2p.container.Jp2pContainerPropertySource;
 
-public abstract class AbstractExampleContext extends AbstractServiceContainer{
+public abstract class AbstractExampleContext extends AbstractServiceContainer<NetworkManager>{
 
 	
 	protected AbstractExampleContext( String bundle_id) {
 		super(new Jp2pContainerPropertySource( bundle_id ));
-	}
-
-	@Override
-	public NetworkManager getModule(){
-		return super.getNetworkManager();
 	}
 
 	@Override

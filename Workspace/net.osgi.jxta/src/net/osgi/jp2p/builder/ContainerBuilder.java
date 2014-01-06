@@ -5,24 +5,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import net.osgi.jp2p.advertisement.Jp2pAdvertisementFactory;
-import net.osgi.jp2p.discovery.DiscoveryServiceFactory;
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.factory.IComponentFactory.Components;
 import net.osgi.jp2p.log.LoggerFactory;
-import net.osgi.jp2p.netpeergroup.NetPeerGroupFactory;
-import net.osgi.jp2p.network.NetworkManagerFactory;
-import net.osgi.jp2p.network.configurator.NetworkConfigurationFactory;
 import net.osgi.jp2p.partial.PartialFactory;
-import net.osgi.jp2p.peergroup.PeerGroupFactory;
-import net.osgi.jp2p.pipe.PipeServiceFactory;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
-import net.osgi.jp2p.registration.RegistrationServiceFactory;
-import net.osgi.jp2p.seeds.SeedListFactory;
 import net.osgi.jp2p.startup.StartupServiceFactory;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
@@ -124,39 +115,12 @@ public class ContainerBuilder{
 		case STARTUP_SERVICE:
 			factory = new StartupServiceFactory( this, parentSource );
 			break;
-		case NETWORK_MANAGER:
-			factory = new NetworkManagerFactory( this, parentSource  );
-			break;
-		case NETWORK_CONFIGURATOR:
-			factory = new NetworkConfigurationFactory( this, parentSource );
-			break;
-		case SEED_LIST:
-			factory = new SeedListFactory( this, parentSource );
-			break;
 		case TCP:
 		case HTTP:
 		case HTTP2:
 		case MULTICAST:
 		case SECURITY:
 			factory = new PartialFactory<Object>( this, componentName, parentSource );
-			break;
-		case NET_PEERGROUP_SERVICE:
-			factory = new NetPeerGroupFactory( this, parentSource );
-			break;			
-		case PIPE_SERVICE:
-			factory = new PipeServiceFactory( this, parentSource );
-			break;			
-		case REGISTRATION_SERVICE:
-			factory = new RegistrationServiceFactory( this, parentSource );
-			break;
-		case DISCOVERY_SERVICE:
-			factory = new DiscoveryServiceFactory( this, parentSource );
-			break;			
-		case PEERGROUP_SERVICE:
-			factory = new PeerGroupFactory( this, parentSource );
-			break;			
-		case ADVERTISEMENT_SERVICE:
-			factory = new Jp2pAdvertisementFactory( this, parentSource );
 			break;
 		case LOGGER_SERVICE:
 			factory = new LoggerFactory( this, parentSource );

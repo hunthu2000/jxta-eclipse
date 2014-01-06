@@ -28,7 +28,7 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	public static final String S_ERR_CREATION_EXCEPTION = "The factory cannot be created, because it is not ready yet";
 	
 	private IJp2pComponent<T> component;
-	private IJp2pPropertySource<IJp2pProperties> parentSource;
+	private IJp2pPropertySource<IJp2pProperties> parentSource;//Needed for it triggers the child source
 	private IJp2pPropertySource<IJp2pProperties> source;
 	
 	private boolean canCreate;
@@ -295,7 +295,7 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	 * @param factory
 	 * @return
 	 */
-	public static boolean isComponentFactory( Components component, IComponentFactory<?> factory ){
+	public static boolean isComponentFactory( IJp2pComponents component, IComponentFactory<?> factory ){
 		if( component == null )
 			return false;
 		return component.toString().equals(factory.getComponentName() );

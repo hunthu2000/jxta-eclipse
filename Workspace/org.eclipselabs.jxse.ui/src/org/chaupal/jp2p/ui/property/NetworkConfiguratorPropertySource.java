@@ -23,7 +23,7 @@ import net.jxta.peer.PeerID;
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jp2p.utils.EnumUtils;
 
 public class NetworkConfiguratorPropertySource extends AbstractJp2pPropertySource<NetworkConfigurator> {

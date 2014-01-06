@@ -1,9 +1,9 @@
 package org.chaupal.jp2p.ui.provider;
 
+import net.osgi.jp2p.chaupal.discovery.ChaupalDiscoveryService;
+import net.osgi.jp2p.chaupal.utils.Utils;
 import net.osgi.jp2p.component.AbstractJp2pService;
 import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.service.discovery.ChaupalDiscoveryService;
-import net.osgi.jp2p.service.utils.Utils;
 
 import org.chaupal.jp2p.ui.image.StatusImages;
 import org.chaupal.jp2p.ui.image.StatusImages.Images;

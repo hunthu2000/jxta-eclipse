@@ -1,8 +1,9 @@
 package org.chaupal.jp2p.ui.peergroup;
 
-import net.osgi.jp2p.context.IJxseServiceContainer;
-import net.osgi.jp2p.context.Swarm;
-import net.osgi.jp2p.service.utils.Utils;
+import net.jxta.peergroup.PeerGroup;
+import net.osgi.jp2p.chaupal.utils.Utils;
+import net.osgi.jp2p.container.IJxseServiceContainer;
+import net.osgi.jp2p.container.Swarm;
 
 import org.chaupal.jp2p.ui.context.JxseContainerNavigator;
 import org.eclipse.jface.viewers.ISelection;
@@ -19,7 +20,7 @@ public class PeerGroupNavigator extends CommonNavigator{
 	public static final String PATH_ID = "org.eclipselabs.jxse.ui.context.peergroups";
 	
 	private CommonViewer viewer;
-	private Swarm swarm;
+	private Swarm<PeerGroup> swarm;
 	
 	private ISelectionListener listener = new ISelectionListener() {
 		@Override
@@ -43,7 +44,7 @@ public class PeerGroupNavigator extends CommonNavigator{
 	protected Object getInitialInput() {
         if( swarm == null )
         	return null;
-		return swarm.getPeerGroups();
+		return null;//swarm.getPeerGroups();
 	}
 
 	@Override

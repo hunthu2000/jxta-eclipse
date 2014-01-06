@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import net.osgi.jp2p.chaupal.utils.Utils;
 import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.service.utils.Utils;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;

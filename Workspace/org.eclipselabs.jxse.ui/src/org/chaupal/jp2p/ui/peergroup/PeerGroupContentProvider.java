@@ -1,7 +1,7 @@
 package org.chaupal.jp2p.ui.peergroup;
 
 import net.jxta.peergroup.PeerGroup;
-import net.osgi.jp2p.context.Swarm;
+import net.osgi.jp2p.container.Swarm;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -19,7 +19,7 @@ public class PeerGroupContentProvider implements ITreeContentProvider {
 		if(( parentElement == null ) || !( parentElement instanceof Swarm ))
 			return null;
 		this.swarm = (Swarm)parentElement;
-		return swarm.getPeerGroups();
+		return null;//swarm.getPeerGroups();
 	}
 
 	@Override

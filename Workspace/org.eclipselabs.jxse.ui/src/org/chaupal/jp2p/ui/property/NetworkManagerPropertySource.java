@@ -12,7 +12,7 @@ import net.jxta.peergroup.PeerGroupID;
 import net.jxta.platform.NetworkManager;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.network.NetworkManagerPropertySource.NetworkManagerProperties;
+import net.osgi.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jp2p.utils.EnumUtils;
 
 import org.chaupal.jp2p.ui.property.descriptors.CheckBoxPropertyDescriptor;

@@ -1,8 +1,7 @@
 package org.chaupal.jp2p.ui.advertisement;
 
 import net.jxta.document.Advertisement;
-import net.osgi.jp2p.advertisement.IAdvertisementProvider;
-import net.osgi.jp2p.utils.StringStyler;
+import net.osgi.jp2p.jxta.advertisement.IAdvertisementProvider;
 
 import org.chaupal.jp2p.ui.monitor.ConnectivityViewPart;
 import org.eclipse.jface.action.IMenuManager;
@@ -23,6 +22,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipselabs.osgi.ds.broker.util.StringStyler;
 
 public class AdvertisementTableViewer extends ViewPart {
 

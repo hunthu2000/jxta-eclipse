@@ -13,9 +13,9 @@ package org.chaupal.jp2p.ui.context;
 import java.net.URI;
 
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.osgi.jp2p.context.JxseContainerPreferences;
-import net.osgi.jp2p.context.Jp2pContainerPropertySource;
-import net.osgi.jp2p.context.IJxseServiceContainer.ContextProperties;
+import net.osgi.jp2p.container.Jp2pContainerPropertySource;
+import net.osgi.jp2p.container.IJxseServiceContainer.ContextProperties;
+import net.osgi.jp2p.jxta.context.JxseContainerPreferences;
 import net.osgi.jp2p.properties.IJp2pDirectives;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 import net.osgi.jp2p.utils.Utils;

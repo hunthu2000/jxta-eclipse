@@ -6,11 +6,11 @@ import java.util.List;
 
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkConfigurator;
-import net.osgi.jp2p.activator.IJxseService;
+import net.osgi.jp2p.activator.IJp2pService;
+import net.osgi.jp2p.chaupal.comparator.Jp2pServiceComparator;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.IJp2pComponentNode;
 import net.osgi.jp2p.component.Jp2pComponent;
-import net.osgi.jp2p.service.comparator.Jp2pServiceComparator;
 
 import org.chaupal.jp2p.ui.component.PeerGroupComponent;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -108,7 +108,7 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 	 * @return
 	 */
 	public static Object decorateComponent( Object element ){
-		if( element instanceof IJxseService<?> )
+		if( element instanceof IJp2pService<?> )
 			return element;
 		if( element instanceof IJp2pComponentNode )
 			return element;

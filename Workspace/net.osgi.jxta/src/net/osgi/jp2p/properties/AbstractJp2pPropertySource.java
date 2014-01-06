@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import net.osgi.jp2p.container.Jp2pContainerPropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives.Contexts;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 import net.osgi.jp2p.utils.SimpleComparator;
@@ -374,4 +375,16 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 			return null;
 		return findFirstAncestorDirective(current.getParent(), directive );
 	}
+
+	/**
+	 * Find the root property source 
+	 * @param current
+	 * @return
+	 */
+	public static Jp2pContainerPropertySource findRootPropertySource( IJp2pPropertySource<?> current ){
+		if( current instanceof Jp2pContainerPropertySource )
+			return (Jp2pContainerPropertySource) current;
+		return findRootPropertySource( current.getParent() );
+	}
+
 }

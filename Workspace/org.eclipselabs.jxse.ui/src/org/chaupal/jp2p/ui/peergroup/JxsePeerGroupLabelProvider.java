@@ -1,9 +1,9 @@
 package org.chaupal.jp2p.ui.peergroup;
 
 import net.jxta.peergroup.PeerGroup;
+import net.osgi.jp2p.chaupal.utils.Utils;
 import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.context.Swarm;
-import net.osgi.jp2p.service.utils.Utils;
+import net.osgi.jp2p.container.Swarm;
 
 import org.chaupal.jp2p.ui.image.StatusImages;
 import org.chaupal.jp2p.ui.image.StatusImages.Images;

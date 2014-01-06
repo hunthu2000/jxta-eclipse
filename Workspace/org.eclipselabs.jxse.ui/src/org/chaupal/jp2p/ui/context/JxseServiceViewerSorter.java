@@ -2,7 +2,7 @@ package org.chaupal.jp2p.ui.context;
 
 import java.text.Collator;
 
-import net.osgi.jp2p.service.comparator.Jp2pServiceComparator;
+import net.osgi.jp2p.chaupal.comparator.Jp2pServiceComparator;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;

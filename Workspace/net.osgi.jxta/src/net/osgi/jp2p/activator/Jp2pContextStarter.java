@@ -13,7 +13,7 @@ package net.osgi.jp2p.activator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import net.osgi.jp2p.context.Jp2pServiceContainer;
+import net.osgi.jp2p.container.Jp2pServiceContainer;
 import net.osgi.jp2p.properties.IJp2pDirectives;
 import net.osgi.jp2p.properties.IJp2pProperties;
 

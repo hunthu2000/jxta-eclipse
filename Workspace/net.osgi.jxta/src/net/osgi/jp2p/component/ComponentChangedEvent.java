@@ -12,7 +12,7 @@ package net.osgi.jp2p.component;
 
 import java.util.EventObject;
 
-import net.osgi.jp2p.context.AbstractServiceContainer.ServiceChange;
+import net.osgi.jp2p.container.AbstractServiceContainer.ServiceChange;
 
 public class ComponentChangedEvent extends EventObject {
 	private static final long serialVersionUID = 1L;

@@ -17,26 +17,14 @@ import net.osgi.jp2p.utils.StringStyler;
 
 public interface IComponentFactory<T extends Object> extends ICompositeBuilderListener<Object>{
 
-	public enum Components{
-		JXSE_CONTEXT,
+	public enum Components implements IJp2pComponents{
+		JP2P_CONTAINER,
 		STARTUP_SERVICE,
-		NETWORK_MANAGER,
-		NETWORK_CONFIGURATOR,
-		SEED_LIST,
 		SECURITY,
 		TCP,
 		HTTP,
 		HTTP2,
 		MULTICAST,
-		NET_PEERGROUP_SERVICE,
-		PEERGROUP_SERVICE,
-		DISCOVERY_SERVICE,
-		REGISTRATION_SERVICE,
-		RENDEZVOUS_SERVICE,
-		PIPE_SERVICE,
-		JXSE_SOCKET,
-		JXSE_SERVER_SOCKET,
-		ADVERTISEMENT_SERVICE,
 		LOGGER_SERVICE;
 
 		@Override

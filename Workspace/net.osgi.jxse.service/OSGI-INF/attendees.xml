@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.condast.rdv.service">
-	<implementation class="org.condast.rdv.service.OsgiComponent"/>
+	<implementation class="net.osgi.jp2p.chaupal.osgi.OsgiComponent"/>
 	<reference bind="setAttendeeService" cardinality="1..1" interface="org.eclipselabs.osgi.ds.broker.IAttendeeService" name="IAttendeeService" policy="static" unbind="unsetAttendeeService"/>
 </scr:component>

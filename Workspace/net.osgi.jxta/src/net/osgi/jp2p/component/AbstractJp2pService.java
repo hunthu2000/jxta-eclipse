@@ -16,9 +16,9 @@ import java.util.Iterator;
 
 import net.osgi.jp2p.activator.AbstractActivator;
 import net.osgi.jp2p.activator.IActivator;
-import net.osgi.jp2p.activator.IJxseService;
-import net.osgi.jp2p.context.AbstractServiceContainer;
+import net.osgi.jp2p.activator.IJp2pService;
 import net.osgi.jp2p.factory.IComponentFactory;
+import net.osgi.jp2p.container.AbstractServiceContainer;
 import net.osgi.jp2p.properties.AbstractJp2pPropertySource;
 import net.osgi.jp2p.properties.DefaultPropertySource;
 import net.osgi.jp2p.properties.IJp2pProperties;
@@ -27,7 +27,7 @@ import net.osgi.jp2p.properties.ManagedProperty;
 import net.osgi.jp2p.utils.StringProperty;
 
 public abstract class AbstractJp2pService<T extends Object> extends AbstractActivator
-implements IJxseService<T>{
+implements IJp2pService<T>{
 
 	public static final String S_SERVICE = "Service";
 	
