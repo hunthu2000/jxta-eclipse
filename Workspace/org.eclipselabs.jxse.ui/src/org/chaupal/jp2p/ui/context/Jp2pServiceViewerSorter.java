@@ -7,12 +7,12 @@ import net.osgi.jp2p.chaupal.comparator.Jp2pServiceComparator;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
-public class JxseServiceViewerSorter extends ViewerSorter {
+public class Jp2pServiceViewerSorter extends ViewerSorter {
 
-	public JxseServiceViewerSorter() {
+	public Jp2pServiceViewerSorter() {
 	}
 
-	public JxseServiceViewerSorter(Collator collator) {
+	public Jp2pServiceViewerSorter(Collator collator) {
 		super(collator);
 	}
 

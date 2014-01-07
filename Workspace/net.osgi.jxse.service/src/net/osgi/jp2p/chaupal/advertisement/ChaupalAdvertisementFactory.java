@@ -26,17 +26,18 @@ import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.utils.Utils;
 
-public class ChaupalAdvertisementFactory extends Jp2pAdvertisementFactory{
+public class ChaupalAdvertisementFactory<T extends Advertisement> extends Jp2pAdvertisementFactory<T>{
 
 	@SuppressWarnings("unchecked")
-	public ChaupalAdvertisementFactory( ContainerBuilder container, IComponentFactory<Advertisement> factory ) {
-		super( container, (IJp2pPropertySource<IJp2pProperties>) factory.getPropertySource().getParent() );
-		super.setSource(factory.createPropertySource());
+	public ChaupalAdvertisementFactory( ContainerBuilder builder, IJp2pPropertySource<IJp2pProperties> source ) {
+		super( builder, (IJp2pPropertySource<IJp2pProperties>) source.getParent() );
+		super.setSource( source);
 	}
 
-	@Override
-	public String getComponentName() {
-		return JxtaComponents.ADVERTISEMENT_SERVICE.toString();
+	@SuppressWarnings("unchecked")
+	public ChaupalAdvertisementFactory( ContainerBuilder builder, IComponentFactory<Advertisement> factory ) {
+		super( builder, (IJp2pPropertySource<IJp2pProperties>) factory.getPropertySource().getParent() );
+		super.setSource(factory.createPropertySource());
 	}
 
 	@Override
@@ -64,10 +65,11 @@ public class ChaupalAdvertisementFactory extends Jp2pAdvertisementFactory{
 		super.extendContainer();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected Jp2pAdvertisementService onCreateComponent( IJp2pPropertySource<IJp2pProperties> source) {
-		IJp2pComponent<Advertisement> ds = super.onCreateComponent( source );
-		Jp2pAdvertisementService service = new Jp2pAdvertisementService( (IJp2pWritePropertySource<IJp2pProperties>) source, ds.getModule(), (ChaupalDiscoveryService) super.getDependency() );
+		IJp2pComponent<T> adservice = super.onCreateComponent( source );
+		Jp2pAdvertisementService service = new Jp2pAdvertisementService( (IJp2pWritePropertySource<IJp2pProperties>) source, adservice.getModule(), (ChaupalDiscoveryService) super.getDependency() );
 		return service;
 	}
 }

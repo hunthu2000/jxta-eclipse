@@ -17,7 +17,7 @@ import org.chaupal.jp2p.ui.component.PeerGroupComponent;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-public class JxseServiceContentProvider implements ITreeContentProvider {
+public class Jp2pServiceContentProvider implements ITreeContentProvider {
 
 	public static final String S_BUNDLE_ID = "org.chaupal.jp2p.ui";
 	@Override
@@ -63,10 +63,12 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 			return null;
 		IJp2pComponentNode<?> decorator = (IJp2pComponentNode<?>)element;
 		if( decorator.getModule() instanceof NetworkConfigurator ){
-			ITreeContentProvider provider = new NetworkConfiguratorContentProvider( decorator.getParent() );
+			ITreeContentProvider provider = new NetworkConfiguratorContentProvider( decorator.getPropertySource().getParent() );
 			return provider.getParent(element);
 		}
-		return decorator.getParent();
+		if( decorator.getPropertySource() == null )
+			return null;
+		return decorator.getPropertySource().getParent();
 	}
 	
 	/**
@@ -80,7 +82,7 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 		Object parent = null;
 		if( component instanceof IJp2pComponentNode ){
 			IJp2pComponentNode<?> node = (IJp2pComponentNode<?> )component;
-			parent = node.getParent();	
+			parent = node.getPropertySource().getParent();	
 		}
 		return new NetworkConfiguratorContentProvider( parent );
 	}

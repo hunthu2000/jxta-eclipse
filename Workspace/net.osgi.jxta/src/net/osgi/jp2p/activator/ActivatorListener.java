@@ -10,6 +10,6 @@
  *******************************************************************************/
 package net.osgi.jp2p.activator;
 
-public interface IActivatorListener {
+public interface ActivatorListener {
 	public void notifyStatusChanged( ActivatorEvent event );
 }

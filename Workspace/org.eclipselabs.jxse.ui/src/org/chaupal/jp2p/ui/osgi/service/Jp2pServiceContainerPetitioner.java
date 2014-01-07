@@ -99,11 +99,6 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 	}
 
 	@Override
-	public IJp2pComponentNode<?> getParent() {
-		return null;
-	}
-
-	@Override
 	public Object getProperty(Object key) {
 		return null;
 	}

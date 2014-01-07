@@ -1,19 +1,26 @@
 package net.osgi.jp2p.jxta.pipe;
 
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
-import net.osgi.jp2p.properties.AbstractJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 
-public class PipePropertySource extends AbstractJp2pWritePropertySource{
+public class PipePropertySource extends AdvertisementPropertySource{
 
+	public static final long DEFAULT_OUTPUT_PIPE_TIME_OUT = 5000;
+	
+	/**
+	 * Properties specific for pipe services
+	 * @author Kees
+	 *
+	 */
 	public enum PipeProperties implements IJp2pProperties{
 		PIPE_ID,
-		NAME,
+		TIME_OUT,
 		TYPE;
 	
 		public static boolean isValidProperty( String str ){
@@ -34,6 +41,7 @@ public class PipePropertySource extends AbstractJp2pWritePropertySource{
 
 	public PipePropertySource( IJp2pPropertySource<IJp2pProperties> parent) {
 		super( JxtaComponents.PIPE_SERVICE.toString(), parent);
+		super.setProperty( PipeProperties.TIME_OUT, DEFAULT_OUTPUT_PIPE_TIME_OUT);
 	}
 
 	@Override
@@ -47,7 +55,7 @@ public class PipePropertySource extends AbstractJp2pWritePropertySource{
 	public IJp2pProperties getIdFromString(String key) {
 		if( PipeProperties.isValidProperty(key))
 			return PipeProperties.valueOf(key);
-		return null;
+		return super.getIdFromString(key);
 	}
 
 	@Override

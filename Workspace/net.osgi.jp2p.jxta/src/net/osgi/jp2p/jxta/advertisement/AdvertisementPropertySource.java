@@ -55,6 +55,7 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 	public enum AdvertisementProperties implements IJp2pProperties{
 		NAME,
 		MODE,
+		SCOPE,
 		LIFE_TIME,
 		EXPIRATION,
 		DESCRIPTION;
@@ -77,8 +78,7 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 
 	public enum AdvertisementDirectives implements IJp2pDirectives{
 		PEERGROUP,
-		TYPE,
-		SCOPE;
+		TYPE;
 	
 		public static boolean isValidDirective( String directive ){
 			if( Utils.isNull( directive ))
@@ -219,12 +219,13 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 	}
 
 	protected void fillDefaultValues( IJp2pPropertySource<IJp2pProperties> parent ){
-		super.setDirective(AdvertisementDirectives.SCOPE, Scope.REMOTE.toString());
 		super.setDirective(Directives.BLOCK_CREATION, Boolean.TRUE.toString());
 		super.setDirective(AdvertisementDirectives.TYPE, parent.getDirective( AdvertisementDirectives.TYPE ));
+		super.setDirective(AdvertisementDirectives.PEERGROUP, parent.getDirective( AdvertisementDirectives.PEERGROUP ));
 		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementProperties.LIFE_TIME, PeerGroup.DEFAULT_LIFETIME ));
 		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementProperties.EXPIRATION, PeerGroup.DEFAULT_EXPIRATION ));	
-		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementProperties.MODE, AdvertisementMode.DISCOVERY, true ));
+		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementProperties.MODE, AdvertisementMode.DISCOVERY_AND_PUBLISH, true ));
+		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementProperties.SCOPE, Scope.REMOTE.toString() ));
 	}
 	
 	@Override

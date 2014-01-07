@@ -20,12 +20,6 @@ public interface IJp2pComponentNode<T extends Object> extends IJp2pComponent<T>{
 	 */
 	public boolean isRoot();
 	
-	/**
-	 * Get the parent of the component
-	 * @return
-	 */
-	public IJp2pComponent<?> getParent();
-
 	public void addChild( IJp2pComponent<?> child );
 	public void removeChild( IJp2pComponent<?> child );
 

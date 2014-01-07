@@ -14,9 +14,9 @@ import java.util.Iterator;
 
 public interface IJp2pPropertySource< T extends Object> {
 
-	public static final String JXTA_SETTINGS = "jxta.settings";
+	public static final String JP2P_SETTINGS = "jp2p.settings";
 	public static final String S_USER_HOME = "user.home";
-	public static final String S_JXSE = ".jxse";
+	public static final String S_JP2P = ".jp2p";
 
 	/**
 	 * Returns the parent, or null of the property source is a root

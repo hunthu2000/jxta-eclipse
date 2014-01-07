@@ -30,7 +30,7 @@ import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
 import net.osgi.jp2p.jxta.advertisement.IAdvertisementProvider;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryProperties;
-import net.osgi.jp2p.log.JxseLevel;
+import net.osgi.jp2p.log.Jp2pLevel;
 import net.osgi.jp2p.properties.AbstractJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
@@ -157,7 +157,7 @@ public class ChaupalDiscoveryService extends AbstractJp2pServiceNode<DiscoverySe
 						Thread.sleep(wait_time);
 					} catch (Exception e) {
 						Logger log = Logger.getLogger( this.getClass().getName() );
-						log.log( JxseLevel.JXSELEVEL, this.getClass().getSimpleName() + "Interrupted" );
+						log.log( Jp2pLevel.JP2PLEVEL, this.getClass().getSimpleName() + "Interrupted" );
 					}
 					if( count > 0 )
 						count--;

@@ -14,10 +14,16 @@ import java.util.Iterator;
 
 public class PropertySourceWrapper< T extends Object> implements IJp2pPropertySource<T> {
 
+	boolean parentIsSource;
 	private IJp2pPropertySource<T> source;
 	
-	public PropertySourceWrapper( IJp2pPropertySource<T> source ) {
+	public PropertySourceWrapper( IJp2pPropertySource<T> source, boolean parentIsSource ) {
 		this.source = source;
+		this.parentIsSource = parentIsSource;
+	}
+
+	public PropertySourceWrapper( IJp2pPropertySource<T> source ) {
+		this( source, false );
 	}
 
 	/**
@@ -95,6 +101,8 @@ public class PropertySourceWrapper< T extends Object> implements IJp2pPropertySo
 
 	@Override
 	public IJp2pPropertySource<?> getParent() {
+		if( this.parentIsSource )
+			return source;
 		return source.getParent();
 	}
 

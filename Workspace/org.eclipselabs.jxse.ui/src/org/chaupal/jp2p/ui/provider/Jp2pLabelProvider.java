@@ -10,7 +10,7 @@ import org.chaupal.jp2p.ui.image.StatusImages.Images;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-public class JxseLabelProvider extends LabelProvider{
+public class Jp2pLabelProvider extends LabelProvider{
 
 	@SuppressWarnings("unchecked")
 	@Override

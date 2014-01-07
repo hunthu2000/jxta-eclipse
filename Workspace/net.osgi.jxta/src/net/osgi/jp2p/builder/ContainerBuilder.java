@@ -170,6 +170,20 @@ public class ContainerBuilder{
 		return ncf; 
 	}
 
+	/**
+	 * Get or create a corresponding factory for a child component of the given source, with the given component name.
+	 * @param source: the source who should have a child source
+	 * @param componentName: the required component name of the child
+	 * @param createSource: create the property source immediately
+	 * @param blockCreation: do not allow the builder to create the component
+	 * @return
+	 */
+	public IComponentFactory<?> getOrCreateChildFactory( IJp2pPropertySource<IJp2pProperties> source, String componentName, boolean createSource, boolean blockCreation ){
+		IJp2pPropertySource<?> child = source.getChild( componentName ); 
+		if( child != null )
+			return this.getFactory(child );
+		return addFactoryToContainer(componentName, (IComponentFactory<?>) source, createSource, blockCreation);
+	}
 }
 
 /**

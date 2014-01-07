@@ -10,7 +10,7 @@ import org.chaupal.jp2p.ui.image.StatusImages.Images;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-public class JxsePeerGroupLabelProvider extends LabelProvider{
+public class Jp2pPeerGroupLabelProvider extends LabelProvider{
 
 	@Override
 	public Image getImage(Object element) {

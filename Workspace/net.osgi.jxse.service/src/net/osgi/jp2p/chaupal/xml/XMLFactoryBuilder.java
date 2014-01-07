@@ -128,14 +128,14 @@ public class XMLFactoryBuilder implements ICompositeBuilder<Jp2pServiceContainer
 		
 	private Logger logger = Logger.getLogger( XMLFactoryBuilder.class.getName() );
 	
-	public XMLFactoryBuilder( String bundleId, Class<?> clss, ContainerBuilder container ) {
-		this( bundleId, clss, S_DEFAULT_LOCATION, container );
+	public XMLFactoryBuilder( String bundleId, Class<?> clss ) {
+		this( bundleId, clss, S_DEFAULT_LOCATION );
 	}
 
-	protected XMLFactoryBuilder( String bundleId, Class<?> clss, String location, ContainerBuilder builder ) {
+	protected XMLFactoryBuilder( String bundleId, Class<?> clss, String location ) {
 		this.clss = clss;
 		this.bundleId = bundleId;
-		this.builder = builder;
+		this.builder = new ContainerBuilder();
 		this.location = location;
 		this.completed = false;
 		this.failed = false;
@@ -195,7 +195,7 @@ public class XMLFactoryBuilder implements ICompositeBuilder<Jp2pServiceContainer
 		//First parse the XML file
 		ContainerFactory root = null;
 		try {
-			logger.info("Parsing JXSE Bundle: " + this.bundleId );
+			logger.info("Parsing JP2P Bundle: " + this.bundleId );
 			//Schema schema = schemaFactory.newSchema(schemaFile);
 			//factory.setSchema(schema);//saxParser.
 			
@@ -208,7 +208,7 @@ public class XMLFactoryBuilder implements ICompositeBuilder<Jp2pServiceContainer
 			JxtaHandler handler = new JxtaHandler( builder, bundleId );
 			saxParser.parse( in, handler);
 			root = handler.getRoot();
-			logger.info("JXSE Bundle Parsed: " + this.bundleId );
+			logger.info("JP2P Bundle Parsed: " + this.bundleId );
 		} catch( SAXNotRecognizedException e ){
 			failed = true;
 			e.printStackTrace();			

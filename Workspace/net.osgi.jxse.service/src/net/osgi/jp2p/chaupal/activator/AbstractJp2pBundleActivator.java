@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.osgi.jp2p.container.Jp2pServiceContainer;
-import net.osgi.jp2p.log.JxseLevel;
+import net.osgi.jp2p.log.Jp2pLevel;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -52,7 +52,7 @@ public abstract class AbstractJp2pBundleActivator implements BundleActivator {
 		if(this.getClass().getResource( S_JP2P_INF ) == null )
 			Logger.getLogger( this.getClass().getName() ).warning( S_MSG_NOT_A_JP2P_BUNDLE);
 		
-		Level level = JxseLevel.getJxtaLevel();
+		Level level = Jp2pLevel.getJxtaLevel();
 		Logger log = Logger.getLogger( this.getClass().getName() );
 		log.log( level, S_MSG_LOG );
 		// create a tracker and track the log service

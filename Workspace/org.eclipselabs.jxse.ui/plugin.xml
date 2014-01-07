@@ -49,7 +49,7 @@
       <view
             allowMultiple="false"
             category="org.eclipse.jxse.ui.connectivity"
-            class="org.chaupal.jp2p.ui.context.JxseContainerNavigator"
+            class="org.chaupal.jp2p.ui.context.Jp2pContainerNavigator"
             id="org.eclipse.jxse.ui.context.view"
             name="JP2P Service Context View"
             restorable="true">
@@ -95,9 +95,9 @@
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
             activeByDefault="true"
-            contentProvider="org.chaupal.jp2p.ui.provider.JxseServiceContentProvider"
+            contentProvider="org.chaupal.jp2p.ui.provider.Jp2pServiceContentProvider"
             id="org.eclipse.jxse.content"
-            labelProvider="org.chaupal.jp2p.ui.provider.JxseLabelProvider"
+            labelProvider="org.chaupal.jp2p.ui.provider.Jp2pLabelProvider"
             name="JP2P Context"
             priority="normal">
          <triggerPoints>
@@ -117,7 +117,7 @@
             activeByDefault="true"
             contentProvider="org.chaupal.jp2p.ui.provider.NetworkConfiguratorContentProvider"
             id="org.eclipse.jxse.content.network.configurator"
-            labelProvider="org.chaupal.jp2p.ui.provider.JxseLabelProvider"
+            labelProvider="org.chaupal.jp2p.ui.provider.Jp2pLabelProvider"
             name="JP2P Network Configurator Content"
             priority="normal">
          <triggerPoints>
@@ -161,13 +161,13 @@
             activeByDefault="true"
             contentProvider="org.chaupal.jp2p.ui.peergroup.PeerGroupContentProvider"
             id="org.eclipse.jxse.content.peergroup"
-            labelProvider="org.chaupal.jp2p.ui.peergroup.JxsePeerGroupLabelProvider"
+            labelProvider="org.chaupal.jp2p.ui.peergroup.Jp2pPeerGroupLabelProvider"
             name="JP2P PeerGroup Context"
             priority="normal">
          <triggerPoints>
             <or>
                <instanceof
-                     value="net.osgi.jp2p.context.Swarm">
+                     value="net.osgi.jp2p.container.Swarm">
                </instanceof>
             </or>
          </triggerPoints>

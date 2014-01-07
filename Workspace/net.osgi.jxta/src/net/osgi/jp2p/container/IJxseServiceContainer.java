@@ -39,5 +39,5 @@ public interface IJxseServiceContainer<T extends Object> extends IJp2pComponentN
 	 * Get the swarm of this context
 	 * @return
 	 */
-	public Swarm getSwarm();
+	public Swarm<?> getSwarm();
 }

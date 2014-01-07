@@ -1,6 +1,6 @@
 package org.chaupal.jp2p.ui.perspective;
 
-import org.chaupal.jp2p.ui.console.JxseConsole;
+import org.chaupal.jp2p.ui.console.Jp2pConsole;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.console.ConsolePlugin;
@@ -13,7 +13,7 @@ public class Perspective implements IPerspectiveFactory {
 	public void createInitialLayout(IPageLayout layout) {
 		layout.setEditorAreaVisible(false);
 
-		MessageConsole console = new JxseConsole();
+		MessageConsole console = new Jp2pConsole();
 		ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[] { console });
 		ConsolePlugin.getDefault().getConsoleManager().showConsoleView(console);
 

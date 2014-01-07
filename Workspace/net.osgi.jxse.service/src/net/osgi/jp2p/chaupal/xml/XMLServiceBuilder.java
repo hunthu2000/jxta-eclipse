@@ -13,7 +13,6 @@ package net.osgi.jp2p.chaupal.xml;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.osgi.jp2p.builder.ContainerBuilder;
 import net.osgi.jp2p.builder.ICompositeBuilder;
 import net.osgi.jp2p.builder.ICompositeBuilderListener;
 import net.osgi.jp2p.container.Jp2pServiceContainer;
@@ -24,7 +23,6 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer
 	
 	private String plugin_id;
 	private Class<?> clss;
-	private ContainerBuilder builder;
 	
 	private Collection<ICompositeBuilderListener<?>> listeners;
 	
@@ -32,13 +30,12 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer
 		this.plugin_id = plugin_id;
 		this.clss = clss;	
 		this.listeners = new ArrayList<ICompositeBuilderListener<?>>();
-		builder = new ContainerBuilder();
 	}
 	
 	@Override
 	public Jp2pServiceContainer build() {
 		//First build the property sources
-		XMLFactoryBuilder xmlbuilder = new XMLFactoryBuilder( plugin_id, clss, builder );		
+		XMLFactoryBuilder xmlbuilder = new XMLFactoryBuilder( plugin_id, clss );		
 		this.addListenerToBuilder(xmlbuilder);
 		this.container = xmlbuilder.build();
 

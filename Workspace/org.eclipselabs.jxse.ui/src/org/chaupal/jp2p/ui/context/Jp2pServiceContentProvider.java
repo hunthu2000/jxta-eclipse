@@ -5,7 +5,7 @@ import net.osgi.jp2p.component.IJp2pComponentNode;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-public class JxseServiceContentProvider implements ITreeContentProvider {
+public class Jp2pServiceContentProvider implements ITreeContentProvider {
 
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -47,6 +47,6 @@ public class JxseServiceContentProvider implements ITreeContentProvider {
 		IJp2pComponentNode<?> component = (IJp2pComponentNode<?>)element;
 		if( component.isRoot() )
 			return null;
-		return component.getParent();
+		return component.getPropertySource().getParent();
 	}
 }

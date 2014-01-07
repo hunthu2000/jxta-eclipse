@@ -8,7 +8,7 @@ import net.osgi.jp2p.properties.IManagedPropertyListener;
 import net.osgi.jp2p.properties.ManagedProperty;
 
 public abstract class AbstractManagedPropertySourceDatabinding<T,U> implements
-		IManagedPropertyListener<T, U>, SelectionListener, IJxseDatabinding<T, U> {
+		IManagedPropertyListener<T, U>, SelectionListener, IJp2pDatabinding<T, U> {
 
 	private ManagedProperty<T,U> source;
 	

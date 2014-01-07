@@ -46,9 +46,9 @@ implements IJp2pService<T>{
 		this( new DefaultPropertySource( bundleId, componentName),null);
 	}
 
-	protected AbstractJp2pService( IJp2pWritePropertySource<IJp2pProperties> properties, T module ) {
+	protected AbstractJp2pService( IJp2pWritePropertySource<IJp2pProperties> source, T module ) {
 		dispatcher = ComponentEventDispatcher.getInstance();
-		this.source = properties;
+		this.source = source;
 		this.component = module;
 		super.setStatus( Status.AVAILABLE );
 		super.initialise();

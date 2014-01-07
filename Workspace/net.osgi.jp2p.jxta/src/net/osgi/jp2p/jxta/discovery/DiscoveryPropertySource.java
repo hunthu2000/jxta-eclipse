@@ -15,6 +15,10 @@ public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySo
 	public static final String S_NAME = "Name";
 	public static final String S_WILDCARD = "*";
 	
+	public static final int DEFAULT_COUNT = 20;
+	public static final int DEFAULT_WAIT_TIME = 10000;
+	public static final int DEFAULT_THRESHOLD = 1;
+	
 	public enum DiscoveryMode{
 		ONE_SHOT,
 		CONTINUOUS,
@@ -56,14 +60,14 @@ public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySo
 
 	protected void fillDefaultValues( ) {
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.MODE, DiscoveryMode.COUNT, false ));
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.COUNT, 20, false ));
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.WAIT_TIME, 20000, false ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.COUNT, DEFAULT_COUNT, false ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.WAIT_TIME, DEFAULT_WAIT_TIME, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.PEER_ID, null, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.ATTRIBUTE, S_NAME, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.WILDCARD, null, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.ADVERTISEMENT_TYPE, AdvertisementTypes.ADV, false ));
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.THRESHOLD, 1, false ));
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.COUNTER, 20, S_RUNTIME, false ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.THRESHOLD, DEFAULT_THRESHOLD, false ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.COUNTER, DEFAULT_COUNT, S_RUNTIME, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.FOUND, 0, S_RUNTIME, false ));
 	}
 

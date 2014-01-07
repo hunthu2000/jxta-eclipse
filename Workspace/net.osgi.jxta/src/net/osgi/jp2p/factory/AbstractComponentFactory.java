@@ -75,6 +75,11 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 		this.source = source;
 	}
 
+	@Override
+	public String getComponentName() {
+		return source.getComponentName();
+	}
+
 	/**
 	 * This method is called after the property sources have been created,
 	 * to allow other factories to be added as well.

@@ -14,49 +14,49 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
-public class JxseConsole extends MessageConsole {
+public class Jp2pConsole extends MessageConsole {
 
 	public static final String S_CONSOLE_NAME = "Jxta Console";
 
 	private PrintStream ps;
 	private StreamData current;
 
-	private static JxseConsole console;
+	private static Jp2pConsole console;
 	
 	private String source;
 	
 	private Map<String, StreamData> coding;
 	
-	public JxseConsole() {
+	public Jp2pConsole() {
 		this( S_CONSOLE_NAME );
 		coding = new HashMap<String, StreamData>();
 	}
 
-	public JxseConsole(String name ) {
+	public Jp2pConsole(String name ) {
 		super(name, null );
 		console = this;
 	}
 
-	public static JxseConsole getInstance(){
+	public static Jp2pConsole getInstance(){
 		if( console == null ){
-			console = new JxseConsole();
+			console = new Jp2pConsole();
 			console.init();
 			console.activate();
 		}
 		return console;
 	}
 	
-	public JxseConsole(String name, ImageDescriptor imageDescriptor,
+	public Jp2pConsole(String name, ImageDescriptor imageDescriptor,
 			boolean autoLifecycle) {
 		super(name, imageDescriptor, autoLifecycle);
 	}
 
-	public JxseConsole(String name, String consoleType,
+	public Jp2pConsole(String name, String consoleType,
 			ImageDescriptor imageDescriptor, boolean autoLifecycle) {
 		super(name, consoleType, imageDescriptor, autoLifecycle);
 	}
 
-	public JxseConsole(String name, String consoleType,
+	public Jp2pConsole(String name, String consoleType,
 			ImageDescriptor imageDescriptor, String encoding,
 			boolean autoLifecycle) {
 		super(name, consoleType, imageDescriptor, encoding, autoLifecycle);

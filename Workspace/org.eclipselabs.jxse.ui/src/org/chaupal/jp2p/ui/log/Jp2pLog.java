@@ -5,7 +5,7 @@ import java.util.logging.LogRecord;
 import org.chaupal.jp2p.ui.Activator;
 import org.eclipse.core.runtime.IStatus;
 
-public class JxseLog {
+public class Jp2pLog {
 
 	/**
 	 * Log an info message

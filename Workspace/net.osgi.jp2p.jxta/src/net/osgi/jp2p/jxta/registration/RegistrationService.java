@@ -27,7 +27,7 @@ import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.Advertisemen
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jp2p.jxta.registration.RegistrationPropertySource.RegistrationProperties;
-import net.osgi.jp2p.log.JxseLevel;
+import net.osgi.jp2p.log.Jp2pLevel;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
@@ -97,7 +97,7 @@ public class RegistrationService extends AbstractActivator implements IJp2pServi
 				Thread.sleep(wait_time);
 			} catch (Exception e) {
 				Logger log = Logger.getLogger( this.getClass().getName() );
-				log.log( JxseLevel.JXSELEVEL, this.getClass().getSimpleName() + "Interrupted" );
+				log.log( Jp2pLevel.JP2PLEVEL, this.getClass().getSimpleName() + "Interrupted" );
 			}
 		}
 	}

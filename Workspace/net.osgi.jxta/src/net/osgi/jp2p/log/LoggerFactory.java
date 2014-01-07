@@ -49,7 +49,7 @@ public class LoggerFactory extends
 	@Override
 	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		String msg = event.getBuilderEvent().toString() + ": " + event.getFactory().getComponentName();
-		logger.log( JxseLevel.JXSELEVEL, msg );
+		logger.log( Jp2pLevel.JP2PLEVEL, msg );
 		System.out.println(msg);
 	}
 }

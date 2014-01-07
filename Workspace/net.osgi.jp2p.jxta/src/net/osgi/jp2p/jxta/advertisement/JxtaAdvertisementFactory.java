@@ -20,6 +20,7 @@ import net.osgi.jp2p.builder.ContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponent;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementProperties;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jp2p.jxta.factory.AbstractPeerGroupDependencyFactory;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
@@ -85,7 +86,7 @@ public class JxtaAdvertisementFactory extends AbstractPeerGroupDependencyFactory
 		preferences.createDefaultValue( PipeProperties.PIPE_ID);
 		pipead.setPipeID( (ID) source.getProperty( PipeProperties.PIPE_ID ));
 		pipead.setType((String) source.getProperty(PipeProperties.TYPE ));
-		String name = (String) source.getProperty( PipeProperties.NAME );
+		String name = (String) source.getProperty( AdvertisementProperties.NAME );
 		pipead.setName(name);
 		return pipead;
 	}

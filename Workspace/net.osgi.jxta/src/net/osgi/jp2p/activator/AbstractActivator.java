@@ -25,7 +25,7 @@ public abstract class AbstractActivator implements IActivator
 
 	private Status status;
 	
-	private Collection<IActivatorListener> listeners;
+	private Collection<ActivatorListener> listeners;
 
 	/**
 	 * 
@@ -33,19 +33,19 @@ public abstract class AbstractActivator implements IActivator
 	protected AbstractActivator()
 	{
 		this.status = Status.IDLE;
-		listeners = new ArrayList<IActivatorListener>();
+		listeners = new ArrayList<ActivatorListener>();
 	}
 
-	public void addActivatorListener( IActivatorListener listener ){
+	public void addActivatorListener( ActivatorListener listener ){
 		this.listeners.add( listener );
 	}
 
-	public void removeActivatorListener( IActivatorListener listener ){
+	public void removeActivatorListener( ActivatorListener listener ){
 		this.listeners.remove( listener );
 	}
 
 	protected void notifyListeners( Status previous, Status status ){
-		for( IActivatorListener listener: this.listeners )
+		for( ActivatorListener listener: this.listeners )
 			listener.notifyStatusChanged( new ActivatorEvent( this, previous ));
 	}
 	

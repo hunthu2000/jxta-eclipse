@@ -6,12 +6,12 @@ import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
-import net.osgi.jp2p.log.JxseLevel;
+import net.osgi.jp2p.log.Jp2pLevel;
 
-public class JxseLogHandler extends Handler {
+public class Jp2pLogHandler extends Handler {
 
-	public JxseLogHandler() {
-		this.setLevel( JxseLevel.getJxtaLevel() );
+	public Jp2pLogHandler() {
+		this.setLevel( Jp2pLevel.getJxtaLevel() );
 		super.setFormatter( new Formatter() {
 
 		    private final SimpleDateFormat dateFormat =
@@ -43,10 +43,10 @@ public class JxseLogHandler extends Handler {
 	public void publish(LogRecord record) {
 		if (!isLoggable(record))
 			return;
-		if( record.getLevel().intValue() > JxseLevel.getJxtaLevel().intValue() )
+		if( record.getLevel().intValue() > Jp2pLevel.getJxtaLevel().intValue() )
 			return;
 		// Output the formatted data to the file
-		JxseConsole console = JxseConsole.getInstance();
+		Jp2pConsole console = Jp2pConsole.getInstance();
 		if( console == null )
 			return;
      	console.println(getFormatter().format(record));

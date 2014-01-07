@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.layout.FillLayout;
 
-public class JxseNetworkConfiguratorComposite extends Composite {
+public class Jp2pNetworkConfiguratorComposite extends Composite {
 
 	private OverviewConfigurationComposite overviewComposite;
 	private TcpConfigurationComposite tcpComposite;
@@ -25,7 +25,7 @@ public class JxseNetworkConfiguratorComposite extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	public JxseNetworkConfiguratorComposite(Composite parent, int style) {
+	public Jp2pNetworkConfiguratorComposite(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		

@@ -8,9 +8,9 @@ import net.jxta.rendezvous.RendezVousService;
 import net.jxta.rendezvous.RendezvousEvent;
 import net.jxta.rendezvous.RendezvousListener;
 import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.log.JxseLevel;
+import net.osgi.jp2p.log.Jp2pLevel;
 
-import org.chaupal.jp2p.ui.log.JxseLog;
+import org.chaupal.jp2p.ui.log.Jp2pLog;
 import org.chaupal.jp2p.ui.util.ColorUtils;
 import org.chaupal.jp2p.ui.util.ColorUtils.SupportedColors;
 import org.eclipse.jface.action.IMenuManager;
@@ -505,14 +505,14 @@ public class ConnectivityViewPart extends ViewPart implements Runnable{
     	Display.getDefault().asyncExec(new Runnable() {
     		@Override
     		public void run() {
-    			LogRecord record = new LogRecord( JxseLevel.getJxtaLevel(), message );
+    			LogRecord record = new LogRecord( Jp2pLevel.getJxtaLevel(), message );
     			record.setSourceClassName( this.getClass().getName() );
     			Object[] parameters = new Object[2];
     			parameters[0] = peerGroup.getPeerName();
     			Color color = ColorUtils.getSWTColor( Display.getDefault(), SupportedColors.COLOR_CYAN );//coding.get( peerGroup ));
     			parameters[1] = color;
     			record.setParameters(parameters);
-    			JxseLog.logJxta( record );
+    			Jp2pLog.logJxta( record );
     		}
     	});
     }

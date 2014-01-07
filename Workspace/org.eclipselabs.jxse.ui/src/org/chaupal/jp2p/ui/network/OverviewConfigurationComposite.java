@@ -11,7 +11,7 @@ import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.validator.StringValidator;
 
 import org.chaupal.jp2p.ui.property.databinding.ComboDataBinding;
-import org.chaupal.jp2p.ui.property.databinding.IJxseDatabinding;
+import org.chaupal.jp2p.ui.property.databinding.IJp2pDatabinding;
 import org.chaupal.jp2p.ui.property.databinding.StringDataBinding;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.GridLayout;
@@ -122,7 +122,7 @@ public class OverviewConfigurationComposite extends Composite {
 		if( value != null)
 			this.storeText.setText((( URI )value ).getPath() );
 		
-		IJxseDatabinding<NetworkConfiguratorProperties, String> db = new StringDataBinding<NetworkConfiguratorProperties>( NetworkConfiguratorProperties.NAME, source, nameText);
+		IJp2pDatabinding<NetworkConfiguratorProperties, String> db = new StringDataBinding<NetworkConfiguratorProperties>( NetworkConfiguratorProperties.NAME, source, nameText);
 		db.setValidator( new StringValidator<NetworkConfiguratorProperties>( NetworkConfiguratorProperties.NAME, StringValidator.S_NAME_REGEX ));
 
 		value = source.getDefault( NetworkConfiguratorProperties.DESCRIPTION );

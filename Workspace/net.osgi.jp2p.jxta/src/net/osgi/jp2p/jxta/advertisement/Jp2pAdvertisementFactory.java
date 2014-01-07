@@ -22,15 +22,10 @@ import net.osgi.jp2p.jxta.peergroup.PeerGroupFactory;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 
-public class Jp2pAdvertisementFactory extends AbstractDependencyFactory<Advertisement, IJp2pComponent<DiscoveryService>> {
+public class Jp2pAdvertisementFactory<T extends Advertisement> extends AbstractDependencyFactory<T, IJp2pComponent<DiscoveryService>> {
 
 	public Jp2pAdvertisementFactory( ContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource) {
 		super( container, parentSource );
-	}
-
-	@Override
-	public String getComponentName() {
-		return JxtaComponents.ADVERTISEMENT_SERVICE.toString();
 	}
 
 	@Override
@@ -48,10 +43,19 @@ public class Jp2pAdvertisementFactory extends AbstractDependencyFactory<Advertis
 		return peergroup.equals(fpg);
 	}
 
+	/**
+	 * Make public in order to activate this externally by other factories
+	 */
 	@Override
-	protected IJp2pComponent<Advertisement> onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties) {
-		AdvertisementPropertySource source = (AdvertisementPropertySource) super.getPropertySource().getChild( JxtaComponents.ADVERTISEMENT.toString() );
-		JxtaAdvertisementFactory factory = (JxtaAdvertisementFactory) super.getBuilder().getFactory( source );
-		return factory.createComponent();
+	public IJp2pComponent<T> createComponent() {
+		return super.createComponent();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected IJp2pComponent<T> onCreateComponent( IJp2pPropertySource<IJp2pProperties> source) {
+		AdvertisementPropertySource adsource = (AdvertisementPropertySource) source.getChild( JxtaComponents.ADVERTISEMENT.toString() );
+		JxtaAdvertisementFactory factory = (JxtaAdvertisementFactory) super.getBuilder().getFactory( adsource );
+		return (IJp2pComponent<T>) factory.createComponent();
 	}
 }

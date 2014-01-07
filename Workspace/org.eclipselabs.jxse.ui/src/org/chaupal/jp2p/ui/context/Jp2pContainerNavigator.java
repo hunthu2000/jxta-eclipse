@@ -20,7 +20,7 @@ import org.eclipse.ui.navigator.CommonViewer;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 
-public class JxseContainerNavigator extends CommonNavigator{
+public class Jp2pContainerNavigator extends CommonNavigator{
 
 	public static final String PATH_ID = "org.eclipselabs.jxse.ui.context.view";
 	
@@ -28,7 +28,7 @@ public class JxseContainerNavigator extends CommonNavigator{
 	
 	private Jp2pServiceContainerPetitioner petitioner;
 	private ServiceEventDispatcher dispatcher;
-	private JxseContainerNavigator navigator;
+	private Jp2pContainerNavigator navigator;
 	
 	//IPropertySheetPage doesn't implement refresh()
 	private PropertySheetPage propertyPage;
@@ -37,13 +37,13 @@ public class JxseContainerNavigator extends CommonNavigator{
 		@Override
 		public void selectionChanged(IWorkbenchPart sourcepart, ISelection selection) {
 			// we deal with only our own selections
-			if (!( sourcepart instanceof JxseContainerNavigator ))
+			if (!( sourcepart instanceof Jp2pContainerNavigator ))
 				return;
 			showSelection( sourcepart, selection);
 		}
 	};
 
-	public JxseContainerNavigator() {
+	public Jp2pContainerNavigator() {
 		super();
 		navigator = this;
 		dispatcher = ServiceEventDispatcher.getInstance();
@@ -100,7 +100,7 @@ public class JxseContainerNavigator extends CommonNavigator{
 	@Override
 	protected CommonViewer createCommonViewer(Composite aParent) {
 		this.viewer = super.createCommonViewer(aParent);
-		this.viewer.setSorter( new JxseServiceViewerSorter() );
+		this.viewer.setSorter( new Jp2pServiceViewerSorter() );
 		return viewer;
 	}
 
@@ -117,7 +117,13 @@ public class JxseContainerNavigator extends CommonNavigator{
 		setContentDescription( Utils.getLabel(component));
 	}
 	
+	/**
+	 * Refresh the property page
+	 */
 	protected void refresh(){
+		if( Display.getDefault().isDisposed() )
+			return;
+		
 		Display.getDefault().asyncExec(new Runnable() {
             @Override
 			public void run() {

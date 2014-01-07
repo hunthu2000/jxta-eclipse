@@ -55,7 +55,7 @@ implements	IJxseServiceContainer<T>{
 	//Takes care of all the messaging through the container
 	private ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 	
-	private Swarm swarm;
+	private Swarm<?> swarm;
 
 	protected AbstractServiceContainer( String bundleId, String identifier) {
 		this( (IJp2pPropertySource<IJp2pProperties>) new Jp2pContainerPropertySource( bundleId ));
@@ -65,7 +65,7 @@ implements	IJxseServiceContainer<T>{
 		super();
 		this.children = new ArrayList<IJp2pComponent<?>>();
 		this.source = source;
-		swarm = new Swarm();
+		swarm = new Swarm<Object>();
 	}
 
 	@Override
@@ -95,7 +95,7 @@ implements	IJxseServiceContainer<T>{
 	protected void onFinalising() {
 	}
 
-	public Swarm getSwarm() {
+	public Swarm<?> getSwarm() {
 		return swarm;
 	}
 
@@ -143,11 +143,6 @@ implements	IJxseServiceContainer<T>{
 	@Override
 	public boolean isRoot() {
 		return true;
-	}
-	
-	@Override
-	public IJp2pComponent<?> getParent() {
-		return null;
 	}
 	
 	@Override

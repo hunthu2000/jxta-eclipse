@@ -5,7 +5,7 @@ import net.osgi.jp2p.chaupal.utils.Utils;
 import net.osgi.jp2p.container.IJxseServiceContainer;
 import net.osgi.jp2p.container.Swarm;
 
-import org.chaupal.jp2p.ui.context.JxseContainerNavigator;
+import org.chaupal.jp2p.ui.context.Jp2pContainerNavigator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
@@ -26,7 +26,7 @@ public class PeerGroupNavigator extends CommonNavigator{
 		@Override
 		public void selectionChanged(IWorkbenchPart sourcepart, ISelection selection) {
 			// we deal with only our own selections
-			if (!( sourcepart instanceof JxseContainerNavigator ))
+			if (!( sourcepart instanceof Jp2pContainerNavigator ))
 				return;
 			showSelection( sourcepart, selection);
 		}

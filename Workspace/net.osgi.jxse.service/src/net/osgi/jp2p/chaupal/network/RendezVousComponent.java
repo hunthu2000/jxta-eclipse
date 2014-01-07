@@ -21,7 +21,7 @@ import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponent;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.jxta.netpeergroup.NetPeerGroupService;
-import net.osgi.jp2p.log.JxseLevel;
+import net.osgi.jp2p.log.Jp2pLevel;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 
@@ -95,7 +95,7 @@ public class RendezVousComponent extends AbstractJp2pService<RendezVousService> 
 	public void rendezvousEvent(RendezvousEvent event) {
 		if( dispatcher == null ){
 			Logger log = Logger.getLogger( this.getClass().getName() );
-			log.log( JxseLevel.JXSELEVEL, S_ERR_SERVICE_NOT_STARTED );
+			log.log( Jp2pLevel.JP2PLEVEL, S_ERR_SERVICE_NOT_STARTED );
 		}
 	}
 }

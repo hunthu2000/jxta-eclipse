@@ -2,7 +2,7 @@ package org.chaupal.jp2p.ui.osgi.service;
 
 import net.osgi.jp2p.utils.StringStyler;
 
-import org.chaupal.jp2p.ui.log.JxseLog;
+import org.chaupal.jp2p.ui.log.Jp2pLog;
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
 import org.eclipselabs.osgi.ds.broker.service.AbstractProvider;
 import org.eclipse.jface.window.Window;
@@ -114,7 +114,7 @@ public class MessageBoxProvider extends AbstractProvider<String, String[], Strin
 				index++;
 			}
 			catch( InterruptedException ex ){
-				JxseLog.logInfo(S_WARNING_INTERRUPTED );
+				Jp2pLog.logInfo(S_WARNING_INTERRUPTED );
 			}
 		}
 	}
@@ -128,7 +128,7 @@ public class MessageBoxProvider extends AbstractProvider<String, String[], Strin
 				Thread.sleep( TIME_OUT );
 			}
 			catch( InterruptedException ex ){
-				JxseLog.logInfo(S_WARNING_INTERRUPTED );
+				Jp2pLog.logInfo(S_WARNING_INTERRUPTED );
 			}
 		}
 	}

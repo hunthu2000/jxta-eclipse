@@ -11,20 +11,19 @@ import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 public abstract class AbstractJp2pServiceNode<T extends Object>
 		extends AbstractJp2pService<T> implements IJp2pComponentNode<T> {
 
-	private IJp2pComponentNode<?> parent;
 	private Collection<IJp2pComponent<?>> children;
 
 	private ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 
-	protected AbstractJp2pServiceNode( IJp2pComponentNode<?> parent, IComponentFactory<T> factory  ) {
+	protected AbstractJp2pServiceNode( IJp2pComponentNode<?> source, IComponentFactory<T> factory  ) {
 		super( factory );
 		this.children = new ArrayList<IJp2pComponent<?>>();
 	}
 
 	
 	protected AbstractJp2pServiceNode(
-			IJp2pWritePropertySource<IJp2pProperties> properties, T module) {
-		super(properties, module);
+			IJp2pWritePropertySource<IJp2pProperties> source, T module) {
+		super(source, module);
 		this.children = new ArrayList<IJp2pComponent<?>>();
 	}
 
@@ -36,11 +35,7 @@ public abstract class AbstractJp2pServiceNode<T extends Object>
 
 	@Override
 	public boolean isRoot() {
-		return (parent == null );
-	}
-	@Override
-	public IJp2pComponent<?> getParent() {
-		return parent;
+		return (super.getPropertySource().getParent() == null );
 	}
 
 	@Override
