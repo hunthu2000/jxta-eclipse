@@ -23,6 +23,7 @@ import net.osgi.jp2p.component.ComponentEventDispatcher;
 import net.osgi.jp2p.component.IComponentChangedListener;
 import net.osgi.jp2p.component.IJp2pComponentNode;
 import net.osgi.jp2p.container.AbstractServiceContainer;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementMode;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementProperties;
@@ -56,7 +57,7 @@ public class Jp2pAdvertisementService<T extends Advertisement> extends AbstractJ
 	protected synchronized void publishAdvertisements( Advertisement ad ){
 		long lifetime = (long) super.getPropertySource().getProperty( AdvertisementProperties.LIFE_TIME );
 		long expiration = (long) super.getPropertySource().getProperty( AdvertisementProperties.EXPIRATION );
-		Scope scope = (Scope) getPropertySource().getProperty( AdvertisementProperties.SCOPE );;
+		Scope scope = AdvertisementPropertySource.getScope( super.getPropertySource());
 		Logger log = Logger.getLogger( this.getClass().getName() );
 		log.log( Jp2pLevel.JP2PLEVEL, "Publishing the following advertisement with lifetime :"
 				+ lifetime + " expiration :" + expiration);

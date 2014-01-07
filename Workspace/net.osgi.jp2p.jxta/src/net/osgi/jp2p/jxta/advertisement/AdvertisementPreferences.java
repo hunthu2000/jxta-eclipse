@@ -90,7 +90,7 @@ public class AdvertisementPreferences extends AbstractPreferences<IJp2pPropertie
 	 */
 	@Override
 	public Object createDefaultValue( IJp2pProperties id ){
-		if( !ManagedProperty.isCreated( super.getSource().getManagedProperty(id)))
+		if( ManagedProperty.isCreated( super.getSource().getManagedProperty(id)))
 			return null;
 		
 		if( !( id instanceof PipeProperties ))

@@ -15,6 +15,7 @@ import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jp2p.builder.ContainerBuilder;
 import net.osgi.jp2p.chaupal.advertisement.ChaupalAdvertisementFactory;
 import net.osgi.jp2p.chaupal.advertisement.Jp2pAdvertisementService;
+import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
@@ -24,6 +25,7 @@ import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.WritePropertySourceWrapper;
+import net.osgi.jp2p.utils.StringStyler;
 
 public class ChaupalPipeFactory extends AbstractPeerGroupDependencyFactory<PipeService>{
 
@@ -33,6 +35,7 @@ public class ChaupalPipeFactory extends AbstractPeerGroupDependencyFactory<PipeS
 	public ChaupalPipeFactory( ContainerBuilder container, IComponentFactory<?> factory ) {
 		super( container,  (IJp2pPropertySource<IJp2pProperties>) factory.getPropertySource().getParent() );
 		super.setSource( factory.getPropertySource() );
+		super.setCanCreate(false);
 		this.onCreatePropertySource();
 	}
 
@@ -47,6 +50,7 @@ public class ChaupalPipeFactory extends AbstractPeerGroupDependencyFactory<PipeS
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getPropertySource();
 		source.setDirective( AdvertisementDirectives.TYPE, AdvertisementTypes.PIPE.toString());
 		adFactory = new ChaupalAdvertisementFactory<PipeAdvertisement>( super.getBuilder(), new WritePropertySourceWrapper<IJp2pProperties>( source, true ));
+		super.getBuilder().addFactory( adFactory );
 		return source;
 	}
 	
@@ -59,10 +63,30 @@ public class ChaupalPipeFactory extends AbstractPeerGroupDependencyFactory<PipeS
 
 	@Override
 	protected ChaupalPipeService onCreateComponent( IJp2pPropertySource<IJp2pProperties> source) {
-		Jp2pAdvertisementService<PipeAdvertisement> adService = (Jp2pAdvertisementService<PipeAdvertisement>) adFactory.createComponent();
 		PipeService pipes = super.getPeerGroup().getPipeService();
-		ChaupalPipeService service = new ChaupalPipeService( (IJp2pWritePropertySource<IJp2pProperties>) source, pipes, adService );
-		service.addChild( adService );
+		ChaupalPipeService service = new ChaupalPipeService( (IJp2pWritePropertySource<IJp2pProperties>) source, pipes, (Jp2pAdvertisementService<PipeAdvertisement>) adFactory.getComponent() );
+		service.addChild( adFactory.getComponent() );
 		return service;
 	}
+
+	@Override
+	public void notifyChange(ComponentBuilderEvent<Object> event) {
+ 		String name = StringStyler.styleToEnum(event.getFactory().getComponentName());
+		if( !JxtaComponents.isComponent(name))
+			return;
+
+		switch( event.getBuilderEvent()){
+		case COMPONENT_STARTED:
+			if( !isComponentFactory( JxtaComponents.PIPE_SERVICE, event.getFactory() ) || ( !event.getSource().equals( adFactory )) )
+				break;
+			boolean hasPeerGroup = (super.getPeerGroup() != null ) && ( adFactory.getComponent() != null );
+			super.setCanCreate( hasPeerGroup );
+			super.startComponent();
+			break;
+		default:
+			break;
+		}
+		super.notifyChange(event);
+	}
+
 }

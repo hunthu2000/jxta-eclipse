@@ -61,5 +61,4 @@ public abstract class AbstractPeerGroupDependencyFactory<T extends Object> exten
 		}
 		super.notifyChange(event);
 	}
-
 }

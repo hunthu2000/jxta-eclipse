@@ -15,7 +15,6 @@ import net.osgi.jp2p.builder.ContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponentNode;
 import net.osgi.jp2p.jxta.factory.AbstractPeerGroupDependencyFactory;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
 import net.osgi.jp2p.jxta.pipe.PipePropertySource;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
@@ -25,11 +24,6 @@ public class PipeServiceFactory extends
 
 	public PipeServiceFactory( ContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
 		super( container, parent );
-	}
-
-	@Override
-	public String getComponentName() {
-		return JxtaComponents.PIPE_SERVICE.toString();
 	}
 
 	@Override

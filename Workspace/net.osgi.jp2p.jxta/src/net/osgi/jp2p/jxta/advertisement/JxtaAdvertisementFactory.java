@@ -83,8 +83,9 @@ public class JxtaAdvertisementFactory extends AbstractPeerGroupDependencyFactory
 		AdvertisementTypes type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( (String) source.getDirective( AdvertisementDirectives.TYPE )));
 		AdvertisementPreferences preferences = new AdvertisementPreferences( source, super.getPeerGroup());
 		PipeAdvertisement pipead = ( PipeAdvertisement )AdvertisementFactory.newAdvertisement( AdvertisementTypes.convertTo(type));
-		preferences.createDefaultValue( PipeProperties.PIPE_ID);
-		pipead.setPipeID( (ID) source.getProperty( PipeProperties.PIPE_ID ));
+		Object pipeId = preferences.createDefaultValue( PipeProperties.PIPE_ID);
+		if( pipeId != null )
+			pipead.setPipeID( (ID) pipeId );
 		pipead.setType((String) source.getProperty(PipeProperties.TYPE ));
 		String name = (String) source.getProperty( AdvertisementProperties.NAME );
 		pipead.setName(name);

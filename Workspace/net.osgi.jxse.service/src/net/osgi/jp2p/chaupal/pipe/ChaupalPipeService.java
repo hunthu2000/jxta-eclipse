@@ -33,12 +33,10 @@ public class ChaupalPipeService extends AbstractJp2pServiceNode<PipeService>{
 	private IComponentChangedListener listener;
 	
 	private PipeAdvertisement pipead;
-	//private ChaupalPipeService service;
 	private Jp2pAdvertisementService<PipeAdvertisement> adService;
 	
 	public ChaupalPipeService( IJp2pWritePropertySource<IJp2pProperties> source, PipeService pipeService, Jp2pAdvertisementService<PipeAdvertisement> adService ) {
 		super( source, pipeService );
-		//this.service = this;
 		this.adService = adService;
 	}
 		

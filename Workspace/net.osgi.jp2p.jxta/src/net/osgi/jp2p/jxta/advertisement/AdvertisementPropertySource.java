@@ -253,4 +253,18 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 			return false;
 		return super.addChild(child);
 	}
+	
+	/**
+	 * Get the scope of the given source and present a default value when it is null;
+	 * @param source
+	 * @return
+	 */
+	public static Scope getScope( IJp2pPropertySource<IJp2pProperties> source ){
+		Scope scope = (Scope) source.getProperty( AdvertisementProperties.SCOPE );
+		if( scope == null )
+			return Scope.REMOTE;
+		else
+			return scope;
+		
+	}
 }
