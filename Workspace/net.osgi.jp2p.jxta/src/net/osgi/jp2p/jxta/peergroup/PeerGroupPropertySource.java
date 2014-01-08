@@ -17,7 +17,11 @@ public class PeerGroupPropertySource extends AbstractPeerGroupProviderPropertySo
 		PEER_ID,
 		ATTRIBUTE,
 		WILDCARD,
-		THRESHOLD;
+		THRESHOLD,
+		STORE_HOME,
+		PEER_NAME,
+		PEERGROUP_NAME,
+		PEERGROUP_ID;
 	
 		@Override
 		public String toString() {

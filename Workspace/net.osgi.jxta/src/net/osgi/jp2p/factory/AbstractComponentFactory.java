@@ -291,7 +291,7 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 
 	@Override
 	public String toString() {
-		return S_FACTORY + this.getPropertySource().getComponentName() + super.toString();
+		return S_FACTORY + this.getPropertySource().getComponentName() + " {" + super.toString() + "}";
 	}	
 	
 	/**

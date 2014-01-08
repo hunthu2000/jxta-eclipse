@@ -13,6 +13,8 @@ package net.osgi.jp2p.chaupal.advertisement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.osgi.service.log.LogService;
+
 import net.jxta.document.Advertisement;
 import net.osgi.jp2p.activator.ActivatorEvent;
 import net.osgi.jp2p.activator.ActivatorListener;
@@ -85,10 +87,12 @@ public class Jp2pAdvertisementService<T extends Advertisement> extends AbstractJ
 	/**
 	 * Activate discovery mode by adding listeners for discovery services
 	 */
-	protected void discovery(){
+	protected synchronized void discovery(){
 		Advertisement[] advertisements = discovery.getAdvertisements();
-		if(( advertisements != null ) && ( advertisements.length > 0 ))
+		if(( advertisements != null ) && ( advertisements.length > 0 )){
+			discovery.pause();
 			return;
+		}
 		DiscoveryPropertySource source = (DiscoveryPropertySource) discovery.getPropertySource();
 		String adv_type = super.getPropertySource().getDirective(AdvertisementDirectives.TYPE);
 		if( Utils.isNull( adv_type ))
@@ -104,7 +108,6 @@ public class Jp2pAdvertisementService<T extends Advertisement> extends AbstractJ
 						if( Status.FINALISING.equals( event.getStatus() )){
 							Advertisement adv = getModule();
 							publishAdvertisements(adv);
-							pauseService();
 						}
 					}
 				}

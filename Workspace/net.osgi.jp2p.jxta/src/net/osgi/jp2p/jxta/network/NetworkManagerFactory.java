@@ -30,6 +30,7 @@ import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerDirectives;
 import net.osgi.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jp2p.jxta.network.NetworkManagerPreferences;
 import net.osgi.jp2p.jxta.network.NetworkManagerPropertySource;
@@ -71,16 +72,12 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 
 	@Override
 	protected void onParseDirectivePriorToCreation( IJp2pDirectives directive, Object value) {
-		switch(( IJp2pDirectives.Directives )directive ){
-		case CLEAR_CONFIG:
-			Path path = Paths.get(( URI )super.getPropertySource().getProperty( NetworkManagerProperties.INSTANCE_HOME ));
-			if(Files.exists(path, LinkOption.NOFOLLOW_LINKS )){
-				File file = path.toFile();
-				NetworkManager.RecursiveDelete( file );
-			}
-			break;
-		default:
-			break;
+		if(( directive != null ) && !directive.equals( Directives.CLEAR  ) && !directive.equals( NetworkManagerDirectives.CLEAR_CONFIG))
+			return;
+		Path path = Paths.get(( URI )super.getPropertySource().getProperty( NetworkManagerProperties.INSTANCE_HOME ));
+		if(Files.exists(path, LinkOption.NOFOLLOW_LINKS )){
+			File file = path.toFile();
+			NetworkManager.RecursiveDelete( file );
 		}
 	}
 

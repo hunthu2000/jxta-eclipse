@@ -28,16 +28,29 @@ import net.osgi.jp2p.utils.Utils;
 
 public class ChaupalAdvertisementFactory<T extends Advertisement> extends Jp2pAdvertisementFactory<T>{
 
-	@SuppressWarnings("unchecked")
-	public ChaupalAdvertisementFactory( ContainerBuilder builder, IJp2pPropertySource<IJp2pProperties> source ) {
-		super( builder, (IJp2pPropertySource<IJp2pProperties>) source.getParent() );
-		super.setSource( source);
+	public ChaupalAdvertisementFactory( ContainerBuilder builder, IJp2pPropertySource<IJp2pProperties> parent ) {
+		super( builder, (IJp2pPropertySource<IJp2pProperties>) parent );
 	}
 
 	@SuppressWarnings("unchecked")
 	public ChaupalAdvertisementFactory( ContainerBuilder builder, IComponentFactory<Advertisement> factory ) {
 		super( builder, (IJp2pPropertySource<IJp2pProperties>) factory.getPropertySource().getParent() );
-		super.setSource(factory.createPropertySource());
+	}
+
+	/**
+	 * Get the used discovery service
+	 * @return
+	 */
+	public ChaupalDiscoveryService getDiscoveryService(){
+		return (ChaupalDiscoveryService) super.getDependency();
+	}
+	
+	/**
+	 * We allow others to override the source
+	 */
+	@Override
+	public void setSource(IJp2pPropertySource<IJp2pProperties> source) {
+		super.setSource(source);
 	}
 
 	@Override

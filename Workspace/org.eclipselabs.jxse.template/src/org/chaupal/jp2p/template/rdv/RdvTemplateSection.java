@@ -23,7 +23,7 @@ public class RdvTemplateSection extends JxseConfigurationBundleSection implement
 	protected void onFillProperties(Jp2pContainerPropertySource properties) {
 		properties.setProperty(ContextProperties.CONFIG_MODE, ConfigMode.RENDEZVOUS);
 		NetworkManagerPropertySource nmps = new NetworkManagerPropertySource( properties );
-		nmps.setDirective( Directives.CLEAR_CONFIG, "true");
+		nmps.setDirective( Directives.CLEAR, "true");
 		nmps.setDirective( Directives.AUTO_START, "true");
 		properties.addChild(nmps);
 		NetworkConfigurationPropertySource ncps = new NetworkConfigurationPropertySource( nmps );

@@ -1,4 +1,4 @@
-package net.osgi.jp2p;
+package net.osgi.jp2p.chaupal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -11,7 +11,7 @@ public class Activator implements BundleActivator {
 	
 	private static Activator plugin;
 	private ServiceTracker<BundleContext,LogService> logServiceTracker;
-	private LogService logService;
+	private static LogService logService;
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
@@ -39,8 +39,8 @@ public class Activator implements BundleActivator {
 		plugin = null;
 	}	
 	
-	public LogService getLog(){
-		return this.logService;
+	public static LogService getLog(){
+		return logService;
 	}
 	
 	public static Activator getDefault(){

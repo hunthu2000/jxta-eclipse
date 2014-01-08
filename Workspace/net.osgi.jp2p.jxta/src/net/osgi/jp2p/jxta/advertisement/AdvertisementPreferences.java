@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 
 import net.jxta.id.IDFactory;
 import net.jxta.peergroup.PeerGroup;
+import net.jxta.pipe.PipeID;
 import net.jxta.pipe.PipeService;
 import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeProperties;
 import net.osgi.jp2p.utils.StringStyler;
@@ -104,4 +105,28 @@ public class AdvertisementPreferences extends AbstractPreferences<IJp2pPropertie
 		}
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see net.osgi.jxta.preferences.IJxtaPreferences#getPeerID()
+	 */
+	/* (non-Javadoc)
+	 * @see net.osgi.jxse.network.INetworkManagerPropertySource#getPeerID()
+	 */
+	public PipeID getPipeID() throws URISyntaxException{
+		IJp2pWritePropertySource<IJp2pProperties> source = super.getSource();
+		PipeID pgId = (PipeID) createDefaultValue( PipeProperties.PIPE_ID );
+		ManagedProperty<IJp2pProperties, Object> property = source.getOrCreateManagedProperty( PipeProperties.PIPE_ID, pgId.toString(), false );
+		String str = (String) property.getValue();
+		URI uri = new URI( str );
+		return (PipeID) IDFactory.fromURI( uri );
+	}
+
+	/* (non-Javadoc)
+	 * @see net.osgi.jxse.network.INetworkManagerPropertySource#setPeerID(net.jxta.peer.PeerID)
+	 */
+	public void setPipeID( PipeID pipeID ){
+		IJp2pWritePropertySource<IJp2pProperties> source = super.getSource();
+		source.setProperty( PipeProperties.PIPE_ID, pipeID.toString() );
+	}
+	
 }

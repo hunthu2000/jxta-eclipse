@@ -29,15 +29,15 @@ public class Jp2pAdapterFactory implements IAdapterFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	protected IPropertySource getPropertySource( IJp2pComponent<?> adaptableObject ){
-		  if( adaptableObject instanceof NetworkManager )
+		  if( adaptableObject.getModule() instanceof NetworkManager )
 			  return new NetworkManagerPropertySource( (IJp2pComponent<NetworkManager>) adaptableObject );
-		  if( adaptableObject instanceof NetworkConfigurator )
+		  if( adaptableObject.getModule() instanceof NetworkConfigurator )
 			  return new NetworkConfiguratorPropertySource((IJp2pComponent<NetworkConfigurator>) adaptableObject);
-		  if( adaptableObject instanceof Advertisement )
+		  if( adaptableObject.getModule() instanceof Advertisement )
 			  return new AdvertisementPropertySource( (IJp2pComponent<Advertisement>)adaptableObject);
-		  if( adaptableObject instanceof PeerGroup )
+		  if( adaptableObject.getModule() instanceof PeerGroup )
 			  return new PeerGroupPropertySource( (IJp2pComponent<PeerGroup> )adaptableObject);
-		  return null;			
+		  return new Jp2pComponentPropertySource( adaptableObject, Jp2pComponentPropertySource.S_PROPERTY_JP2P_TEXT );			
 	}
 
 	@SuppressWarnings("rawtypes")

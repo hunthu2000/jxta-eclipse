@@ -58,5 +58,5 @@ Import-Package: net.osgi.jp2p.activator,
  org.osgi.service.prefs;version="1.1.1",
  org.osgi.util.tracker;version="1.5.1"
 Require-Bundle: net.jxse;bundle-version="2.7.0"
-Bundle-Activator: net.osgi.jp2p.Activator
+Bundle-Activator: net.osgi.jp2p.chaupal.Activator
 Bundle-ActivationPolicy: lazy

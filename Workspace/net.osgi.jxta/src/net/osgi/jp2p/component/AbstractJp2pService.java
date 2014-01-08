@@ -116,10 +116,6 @@ implements IJp2pService<T>{
 		this.component = module;
 	}
 	
-	protected IJp2pWritePropertySource<IJp2pProperties> getProperties() {
-		return source;
-	}
-
 	@Override
 	public Object getProperty(Object key) {
 		if( key.toString().equals( IActivator.S_STATUS ))

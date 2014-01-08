@@ -16,7 +16,7 @@ public interface IJp2pDirectives{
 		NAME,
 		CONTEXT,
 		AUTO_START,
-		CLEAR_CONFIG,
+		CLEAR,
 		VERSION,
 		BLOCK_CREATION;
 

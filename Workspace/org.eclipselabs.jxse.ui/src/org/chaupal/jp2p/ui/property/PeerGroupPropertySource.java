@@ -6,7 +6,7 @@ import java.util.Collection;
 
 import net.jxta.peergroup.PeerGroup;
 import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.utils.StringStyler;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 
 import org.chaupal.jp2p.ui.provider.DecoratorLabelProvider;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -14,21 +14,8 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 public class PeerGroupPropertySource extends AbstractJp2pPropertySource<PeerGroup> {
 
-	public enum PeerGroupProperties{
-		NAME,
-		ID,
-		PEER_ID,
-		PEER_NAME,
-		STORE_HOME;
-
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString() );
-		}	
-	}
-
-	public PeerGroupPropertySource( IJp2pComponent<PeerGroup> component ) {
-		super( component );
+	public PeerGroupPropertySource( IJp2pComponent<PeerGroup> component) {
+		super( component.getModule(), component.getPropertySource() );
 	}
 
 	@Override
@@ -51,9 +38,9 @@ public class PeerGroupPropertySource extends AbstractJp2pPropertySource<PeerGrou
 			return super.getPropertyValue(id);
 		PeerGroupProperties property  = ( PeerGroupProperties )id;
 		switch( property ){
-		case ID:
+		case PEERGROUP_ID:
 			return peergroup.getPeerGroupID();
-		case NAME:
+		case PEERGROUP_NAME:
 			return peergroup.getPeerGroupName();
 		case PEER_ID:
 			return peergroup.getPeerID();
@@ -61,8 +48,9 @@ public class PeerGroupPropertySource extends AbstractJp2pPropertySource<PeerGrou
 			return peergroup.getPeerName();
 		case STORE_HOME:
 			return peergroup.getStoreHome();
+		default:
+			return super.getPropertyValue(id);
 		}
-		return super.getPropertyValue(id);
 	}
 
 	/**

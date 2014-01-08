@@ -7,7 +7,9 @@ import net.osgi.jp2p.container.IJxseServiceContainer.ContextProperties;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
 import net.osgi.jp2p.utils.ProjectFolderUtils;
 import net.osgi.jp2p.utils.StringStyler;
+import net.osgi.jp2p.utils.Utils;
 import net.osgi.jp2p.properties.AbstractJp2pWritePropertySource;
+import net.osgi.jp2p.properties.IJp2pDirectives;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
@@ -15,7 +17,11 @@ import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySource
 	implements IJp2pWritePropertySource<IJp2pProperties>
 {
-
+	/**
+	 * Supported properties
+	 * @author Kees
+	 *
+	 */
 	public enum NetworkManagerProperties implements IJp2pProperties{
 		CONFIG_PERSISTENT,
 		INFRASTRUCTURE_ID,
@@ -29,10 +35,34 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 			return StringStyler.prettyString( super.toString() );
 		}
 	}
-	
-	public NetworkManagerPropertySource( Jp2pContainerPropertySource source) {
-		super( source.getComponentName(), source );
-		this.fill( source );
+
+	/**
+	 * supported directives
+	 * @author Kees
+	 *
+	 */
+	public enum NetworkManagerDirectives implements IJp2pDirectives{
+		CLEAR_CONFIG;
+
+		public static boolean isValidDirective( String str ){
+			if( Utils.isNull( str ))
+				return false;
+			for( NetworkManagerDirectives dir: values() ){
+				if( dir.name().equals( str ))
+					return true;
+			}
+			return false;
+		}
+
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString() );
+		}
+	}
+
+	public NetworkManagerPropertySource( Jp2pContainerPropertySource parent) {
+		super( parent.getComponentName(), parent );
+		this.fill( parent );
 	}
 
 	@Override
@@ -40,20 +70,30 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 		return JxtaComponents.NETWORK_MANAGER.toString();
 	}
 
-	private void fill( Jp2pContainerPropertySource source ){
-		Iterator<IJp2pProperties> iterator = source.propertyIterator();
-		this.setDirective( Directives.AUTO_START, source.getDirective( Directives.AUTO_START ));
-		this.setDirective( Directives.CLEAR_CONFIG, source.getDirective( Directives.CLEAR_CONFIG ));
+	private void fill( Jp2pContainerPropertySource parent ){
+		Iterator<IJp2pProperties> iterator = parent.propertyIterator();
+		this.setDirective( Directives.AUTO_START, parent.getDirective( Directives.AUTO_START ));
+		this.setDirective( Directives.CLEAR, parent.getDirective( Directives.CLEAR ));
 		while( iterator.hasNext() ){
 			ContextProperties cp = (ContextProperties) iterator.next();
 			IJp2pProperties nmp = convertFrom( cp );
 			if( nmp == null )
 				continue;
-			Object retval = source.getProperty( cp );
+			Object retval = parent.getProperty( cp );
 			if( NetworkManagerProperties.INSTANCE_HOME.equals(nmp ) && ( retval instanceof String ))
 				retval = ProjectFolderUtils.getParsedUserDir((String) retval, super.getBundleId());
 			super.setProperty(nmp, retval, true);
-		}	
+		}
+		String name=  parent.getDirective( Directives.NAME );
+		super.setProperty(NetworkManagerProperties.INSTANCE_NAME, name);
+	}
+
+	
+	@Override
+	public boolean setDirective(IJp2pDirectives id, String value) {
+		if( NetworkManagerDirectives.isValidDirective( id.name() ))
+			return super.setDirective( NetworkManagerDirectives.valueOf( id.name() ), value );
+		return super.setDirective(id, value);
 	}
 
 	@Override

@@ -43,6 +43,8 @@ public class DiscoveryServiceFactory extends
 
 	@Override
 	public void extendContainer() {
+		
+		//ALWAYS expect a peergroup, as the discovery service is not tied to a specific parent service
 		Object peergroup = super.getPropertySource().getDirective( PeerGroupDirectives.PEERGROUP );
 		if( peergroup == null )
 			return;

@@ -63,10 +63,9 @@ public abstract class AbstractJp2pPropertySource<T extends Object> implements IP
 
 	@Override
 	public Object getPropertyValue(Object id) {
-		if(!( id instanceof ModuleProperties ))
+		if(!( id instanceof IJp2pProperties ))
 			return null;
-		ModuleProperties property = ( ModuleProperties )id;
-		return defaults.getProperty( property );
+		return defaults.getProperty(( IJp2pProperties)id );
 	}
 
 	@Override

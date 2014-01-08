@@ -23,7 +23,8 @@ public class ChaupalDiscoveryServiceFactory extends DiscoveryServiceFactory {
 	@SuppressWarnings("unchecked")
 	public ChaupalDiscoveryServiceFactory( ContainerBuilder container, DiscoveryServiceFactory factory ) {
 		super( container, (IJp2pPropertySource<IJp2pProperties>) factory.getPropertySource().getParent() );
-		super.setSource(factory.createPropertySource());
+		super.setCanCreate(false);
+		super.setSource(factory.getPropertySource());
 	}
 
 	@Override
@@ -32,4 +33,5 @@ public class ChaupalDiscoveryServiceFactory extends DiscoveryServiceFactory {
 		ChaupalDiscoveryService service = new ChaupalDiscoveryService( (IJp2pWritePropertySource<IJp2pProperties>) source, ds.getModule() );
 		return service;
 	}
+
 }

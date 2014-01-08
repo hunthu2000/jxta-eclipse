@@ -32,4 +32,9 @@ public class ComponentBuilderEvent<T extends Object> extends EventObject {
 	public BuilderEvents getBuilderEvent() {
 		return builderEvent;
 	}
+
+	@Override
+	public String toString() {
+		return builderEvent.toString() + ": "+ super.getSource().toString();
+	}
 }

@@ -153,10 +153,7 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 	public boolean setDirective( IJp2pDirectives id, String value) {
 		if( value == null )
 			return false;
-		if( id instanceof StringDirective )
-			directives.put( Directives.valueOf(id.name() ), value );
-		else
-			directives.put( id, value );
+		directives.put( id, value );
 		return true;
 	}
 
@@ -254,6 +251,8 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 			return source;
 		IJp2pPropertySource<?> result;
 		for( IJp2pPropertySource<?> child: source.getChildren() ){
+			if( child.equals(source))
+				continue;
 			result = findPropertySource(child, componentName);
 			if( result != null )
 				return result;

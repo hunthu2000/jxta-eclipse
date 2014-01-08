@@ -24,7 +24,7 @@ public class AdvertisementPropertySource extends AbstractJp2pPropertySource<Adve
 	}
 
 	public AdvertisementPropertySource( IJp2pComponent<Advertisement> component ) {
-		super( component );
+		super( component.getModule(), component.getPropertySource() );
 	}
 
 	/**

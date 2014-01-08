@@ -28,12 +28,14 @@ import net.osgi.jp2p.component.ComponentEventDispatcher;
 import net.osgi.jp2p.container.AbstractServiceContainer;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
 import net.osgi.jp2p.jxta.advertisement.IAdvertisementProvider;
+import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jp2p.log.Jp2pLevel;
 import net.osgi.jp2p.properties.AbstractJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
+import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 
 public class ChaupalDiscoveryService extends AbstractJp2pServiceNode<DiscoveryService> implements IAdvertisementProvider{
 	
@@ -50,8 +52,7 @@ public class ChaupalDiscoveryService extends AbstractJp2pServiceNode<DiscoverySe
 		this.service = this;
 		executor = Executors.newSingleThreadExecutor();
 	}
-
-	
+		
 	@Override
 	public synchronized Advertisement[] getAdvertisements() {
 		Collection<Advertisement> advertisements = discovery( false );
@@ -119,7 +120,17 @@ public class ChaupalDiscoveryService extends AbstractJp2pServiceNode<DiscoverySe
 	}
 	
 	@Override
-	public boolean start() {
+	public synchronized boolean start() {
+		boolean clear = DiscoveryPropertySource.getBoolean( super.getPropertySource(), Directives.CLEAR );
+		final IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getPropertySource();
+		if( !clear ){
+			Advertisement[] advertisements = this.getAdvertisements();
+			if(( advertisements != null ) && ( advertisements.length > 0 )){
+				size = advertisements.length;
+				source.setProperty( DiscoveryProperties.FOUND, size );
+				return false;
+			}
+		}
 		boolean retval = super.start();
 		DiscoveryService discovery = super.getModule();
 		listener = new DiscoveryListener(){
@@ -128,7 +139,8 @@ public class ChaupalDiscoveryService extends AbstractJp2pServiceNode<DiscoverySe
 			public void discoveryEvent(DiscoveryEvent event) {
 				DiscoveryResponseMsg res = event.getResponse();
 				// let's get the responding peer's advertisement
-				System.out.println(" [ Got a Discovery Response [" +
+				Logger log = Logger.getLogger( ChaupalDiscoveryService.class.getName() );
+				log.log( Jp2pLevel.JP2PLEVEL, " [ Got a Discovery Response [" +
 						res.getResponseCount() + " elements] from peer : " +
 						event.getSource() + " ]");
 				Advertisement adv;
@@ -138,10 +150,10 @@ public class ChaupalDiscoveryService extends AbstractJp2pServiceNode<DiscoverySe
 					while (en.hasMoreElements()) {
 						adv = (Advertisement) en.nextElement();
 						size++;
-						System.out.println(adv);
+						log.log( Jp2pLevel.JP2PLEVEL,adv.toString() );
 					}
 				}
-				getProperties().setProperty( DiscoveryProperties.FOUND, size );
+				source.setProperty( DiscoveryProperties.FOUND, size );
 			}	
 		};
 		discovery.addDiscoveryListener(listener);
@@ -150,7 +162,8 @@ public class ChaupalDiscoveryService extends AbstractJp2pServiceNode<DiscoverySe
 			public void run() {
 				int wait_time = ( Integer )getProperty( DiscoveryProperties.WAIT_TIME );
 				int count = getCount();
-				getProperties().getOrCreateManagedProperty( DiscoveryProperties.COUNTER, AbstractJp2pPropertySource.S_RUNTIME, false );
+				IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>)getPropertySource();
+				source.getOrCreateManagedProperty( DiscoveryProperties.COUNTER, AbstractJp2pPropertySource.S_RUNTIME, false );
 				while (( isActive() ) && ( count > 0 )) {
 					onActiveState();
 					try {
@@ -161,7 +174,7 @@ public class ChaupalDiscoveryService extends AbstractJp2pServiceNode<DiscoverySe
 					}
 					if( count > 0 )
 						count--;
-					getProperties().setProperty( DiscoveryProperties.COUNTER, count);
+					source.setProperty( DiscoveryProperties.COUNTER, count);
 					ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 					dispatcher.serviceChanged( new ComponentChangedEvent( service, AbstractServiceContainer.ServiceChange.COMPONENT_EVENT ));
 				}

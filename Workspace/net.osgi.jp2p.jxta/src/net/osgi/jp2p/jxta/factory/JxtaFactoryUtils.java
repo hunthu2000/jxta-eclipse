@@ -1,5 +1,6 @@
 package net.osgi.jp2p.jxta.factory;
 
+import net.jxta.document.Advertisement;
 import net.osgi.jp2p.builder.ContainerBuilder;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.jxta.advertisement.Jp2pAdvertisementFactory;
@@ -71,7 +72,7 @@ public class JxtaFactoryUtils {
 			factory = new JxtaAdvertisementFactory( builder, parentSource );
 			break;
 		case ADVERTISEMENT_SERVICE:
-			factory = new Jp2pAdvertisementFactory( builder, parentSource );
+			factory = new Jp2pAdvertisementFactory<Advertisement>( builder, parentSource );
 			break;
 		default:
 			break;

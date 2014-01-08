@@ -364,21 +364,28 @@ class JxtaHandler extends DefaultHandler{
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	protected IComponentFactory<?> getChaupalFactory( IComponentFactory<?> factory ){
-		Contexts context = Jp2pContainerPropertySource.getContext( factory.getPropertySource() );
+	protected IComponentFactory<?> getChaupalFactory( IComponentFactory<?> base ){
+		Contexts context = Jp2pContainerPropertySource.getContext( base.getPropertySource() );
+		IComponentFactory<?> factory = base;
 		switch( context ){
 		case CHAUPAL:
-			String str = StringStyler.styleToEnum(factory.getComponentName());
+			String str = StringStyler.styleToEnum(base.getComponentName());
 			if(! IJxtaComponentFactory.JxtaComponents.isComponent(str))
 				break;
 			IJxtaComponentFactory.JxtaComponents comp = IJxtaComponentFactory.JxtaComponents.valueOf(str );
 			switch( comp ){
 			case ADVERTISEMENT_SERVICE:
-				return new ChaupalAdvertisementFactory(container, (IComponentFactory<Advertisement>) factory);
+				factory = new ChaupalAdvertisementFactory<Advertisement>(container, (IComponentFactory<Advertisement>)base);
+				factory.createPropertySource();
+				break;
 			case DISCOVERY_SERVICE:
-				return new ChaupalDiscoveryServiceFactory( container, (DiscoveryServiceFactory) factory );
+				factory = new ChaupalDiscoveryServiceFactory( container, (DiscoveryServiceFactory)base );
+				factory.createPropertySource();
+				break;
 			case PIPE_SERVICE:
-				return new ChaupalPipeFactory(container, (PipeServiceFactory) factory);
+				factory = new ChaupalPipeFactory(container, (PipeServiceFactory) base);
+				factory.createPropertySource();
+				break;
 			default:
 				break;
 			}

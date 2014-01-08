@@ -33,15 +33,20 @@ public class ManagedProperty<T, U extends Object> {
 	private Collection<IManagedPropertyListener<T,U>> listeners;
 
 	public ManagedProperty( T id ) {
-		this( id, S_DEFAULT_CATEGORY );
+		this( id, null, S_DEFAULT_CATEGORY );
 	}
 	
-	public ManagedProperty( T id, String category ) {
+	public ManagedProperty( T id, U value ) {
 		super();
 		this.id = id;
-		this.category = category;
+		this.value = value;
 		attributes = new HashMap<String, String>();
 		this.listeners = new ArrayList<IManagedPropertyListener<T,U>>();
+	}
+
+	public ManagedProperty( T id, U value, String category ) {
+		this( id, value );
+		this.category = category;
 	}
 
 	/**
@@ -69,15 +74,6 @@ public class ManagedProperty<T, U extends Object> {
 		this( id, value, derived );
 		this.category = category;
 	}
-	
-	public ManagedProperty( T id, U value ) {
-		this( id, value, false );
-	}
-
-	public ManagedProperty( T id, U value, String category ) {
-		this( id, value, category, false );
-	}
-
 	
 	public String getCategory() {
 		return category;

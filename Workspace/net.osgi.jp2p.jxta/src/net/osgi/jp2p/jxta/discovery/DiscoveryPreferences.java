@@ -46,6 +46,7 @@ public class DiscoveryPreferences extends AbstractPreferences<IJp2pProperties>
 		case ATTRIBUTE:
 		case WILDCARD:
 			return value;
+		case COUNT:
 		case THRESHOLD:
 		case WAIT_TIME:
 			return Integer.valueOf( value);

@@ -225,7 +225,7 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementProperties.LIFE_TIME, PeerGroup.DEFAULT_LIFETIME ));
 		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementProperties.EXPIRATION, PeerGroup.DEFAULT_EXPIRATION ));	
 		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementProperties.MODE, AdvertisementMode.DISCOVERY_AND_PUBLISH, true ));
-		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementProperties.SCOPE, Scope.REMOTE.toString() ));
+		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementProperties.SCOPE, Scope.REMOTE ));
 	}
 	
 	@Override
