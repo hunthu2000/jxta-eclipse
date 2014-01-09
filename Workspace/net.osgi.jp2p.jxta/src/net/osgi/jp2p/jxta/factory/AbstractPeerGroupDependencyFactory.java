@@ -46,13 +46,9 @@ public abstract class AbstractPeerGroupDependencyFactory<T extends Object> exten
 
 		switch( event.getBuilderEvent()){
 		case COMPONENT_STARTED:
-			if( !isComponentFactory( JxtaComponents.PEERGROUP_SERVICE, event.getFactory() ) && 
-					!isComponentFactory( JxtaComponents.NET_PEERGROUP_SERVICE, event.getFactory() ))
+			if( !PeerGroupFactory.isCorrectPeerGroup( this.getPropertySource(), event.getFactory()))
 				return;
-			IComponentFactory<?> factory = event.getFactory();
-			if( !PeerGroupFactory.isCorrectPeerGroup( this.getPropertySource(), factory))
-				return;
-			peergroup = PeerGroupFactory.getPeerGroup( factory );
+			peergroup = PeerGroupFactory.getPeerGroup( event.getFactory());
 			super.setCanCreate( peergroup != null );
 			super.startComponent();
 			break;

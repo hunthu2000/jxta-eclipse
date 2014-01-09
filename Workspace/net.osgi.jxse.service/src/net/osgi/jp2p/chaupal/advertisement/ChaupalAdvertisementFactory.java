@@ -21,6 +21,7 @@ import net.osgi.jp2p.jxta.advertisement.Jp2pAdvertisementFactory;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.factory.JxtaFactoryUtils;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
@@ -57,8 +58,11 @@ public class ChaupalAdvertisementFactory<T extends Advertisement> extends Jp2pAd
 	public void extendContainer() {
 		ContainerBuilder builder = super.getBuilder();
 		IComponentFactory<?> df = builder.getFactory(JxtaComponents.DISCOVERY_SERVICE.toString());
-		if( df == null )
-			df = builder.addFactoryToContainer( JxtaComponents.DISCOVERY_SERVICE.toString(), this, false, false); 
+		if( df == null ){
+			df = JxtaFactoryUtils.getDefaultFactory(builder, super.getPropertySource(), JxtaComponents.DISCOVERY_SERVICE.toString());
+			df.createPropertySource();
+			builder.addFactory( df ); 
+		}
 		DiscoveryPropertySource ds = (DiscoveryPropertySource) df.getPropertySource();
 
 		AdvertisementPropertySource source = (AdvertisementPropertySource) super.getPropertySource().getChild( JxtaComponents.ADVERTISEMENT.toString() );

@@ -1,4 +1,4 @@
-package org.chaupal.jp2p.ui.context;
+package org.chaupal.jp2p.ui.container;
 
 import net.osgi.jp2p.component.IJp2pComponentNode;
 

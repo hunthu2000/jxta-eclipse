@@ -13,8 +13,6 @@ package net.osgi.jp2p.chaupal.advertisement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.osgi.service.log.LogService;
-
 import net.jxta.document.Advertisement;
 import net.osgi.jp2p.activator.ActivatorEvent;
 import net.osgi.jp2p.activator.ActivatorListener;

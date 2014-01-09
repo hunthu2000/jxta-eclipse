@@ -71,6 +71,9 @@ public class PeerGroupFactory extends AbstractComponentFactory<PeerGroup>
 	 * @return
 	 */
 	public static boolean isCorrectPeerGroup( IJp2pPropertySource<?> current, IComponentFactory<?> factory ){
+		if( !isComponentFactory( JxtaComponents.PEERGROUP_SERVICE, factory ) && 
+				!isComponentFactory( JxtaComponents.NET_PEERGROUP_SERVICE, factory ))
+			return false;
 		IJp2pPropertySource<?> ancestor = DiscoveryPropertySource.findPropertySource( current, PeerGroupDirectives.PEERGROUP );
 		String peergroupName = null;
 		if( ancestor != null ){

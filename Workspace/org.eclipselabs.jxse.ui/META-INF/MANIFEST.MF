@@ -54,6 +54,6 @@ Import-Package: net.jxta.configuration,
  org.osgi.util.tracker;version="1.5.1"
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/attendees.xml
-Export-Package: org.chaupal.jp2p.ui.context,
+Export-Package: org.chaupal.jp2p.ui.container,
  org.chaupal.jp2p.ui.log,
  org.chaupal.jp2p.ui.network

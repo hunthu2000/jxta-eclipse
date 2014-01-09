@@ -1,4 +1,4 @@
-package org.chaupal.jp2p.ui.context;
+package org.chaupal.jp2p.ui.container;
 
 import net.osgi.jp2p.chaupal.IServiceChangedListener;
 import net.osgi.jp2p.chaupal.ServiceChangedEvent;
@@ -127,6 +127,9 @@ public class Jp2pContainerNavigator extends CommonNavigator{
 		Display.getDefault().asyncExec(new Runnable() {
             @Override
 			public void run() {
+        		if( Display.getDefault().isDisposed() )
+        			return;
+
             	if( propertyPage != null )
             		propertyPage.refresh();
             	viewer.refresh();

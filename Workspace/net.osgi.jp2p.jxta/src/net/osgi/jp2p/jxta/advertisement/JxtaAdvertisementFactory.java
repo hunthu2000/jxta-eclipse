@@ -51,14 +51,6 @@ public class JxtaAdvertisementFactory extends AbstractPeerGroupDependencyFactory
 		return source;
 	}
 
-	/**
-	 * Make public
-	 */
-	@Override
-	public IJp2pComponent<Advertisement> createComponent() {
-		return super.createComponent();
-	}
-
 	@Override
 	protected IJp2pComponent<Advertisement> onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties) {
 		IJp2pPropertySource<IJp2pProperties> source = super.getPropertySource();

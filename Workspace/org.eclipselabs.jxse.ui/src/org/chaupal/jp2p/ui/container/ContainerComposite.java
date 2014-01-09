@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package org.chaupal.jp2p.ui.context;
+package org.chaupal.jp2p.ui.container;
 
 import java.net.URI;
 
@@ -38,7 +38,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Spinner;
 
-public class ContextComposite extends Composite {
+public class ContainerComposite extends Composite {
 	
 	private static final String S_JXSE_CONTEXT_1 = ".jxse.context1";
 	private Text text_identifier;
@@ -62,7 +62,7 @@ public class ContextComposite extends Composite {
 	private Label lblId;
 	private Text text_id;
 		
-	public ContextComposite(Composite parent, int span) {
+	public ContainerComposite(Composite parent, int span) {
 		super( parent, span);
 		this.createControl(parent, span);
 	}

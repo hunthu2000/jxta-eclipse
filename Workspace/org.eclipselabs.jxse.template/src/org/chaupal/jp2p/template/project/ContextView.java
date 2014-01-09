@@ -16,7 +16,7 @@ import java.util.Collection;
 import net.osgi.jp2p.container.Jp2pContainerPropertySource;
 
 import org.chaupal.jp2p.template.project.ContextWizardOption.TemplateOptions;
-import org.chaupal.jp2p.ui.context.ContextComposite;
+import org.chaupal.jp2p.ui.container.ContainerComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.GridLayout;
@@ -26,7 +26,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Group;
 
-public class ContextView extends ContextComposite {
+public class ContextView extends ContainerComposite {
 	
 	private Combo combo_template;
 	private Group grpTemplate;

@@ -57,5 +57,4 @@ public abstract class AbstractDependencyFactory<T extends Object, U extends Obje
 		}
 		super.notifyChange(event);
 	}
-
 }

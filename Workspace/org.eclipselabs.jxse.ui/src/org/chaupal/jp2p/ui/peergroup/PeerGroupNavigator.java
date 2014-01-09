@@ -5,7 +5,7 @@ import net.osgi.jp2p.chaupal.utils.Utils;
 import net.osgi.jp2p.container.IJxseServiceContainer;
 import net.osgi.jp2p.container.Swarm;
 
-import org.chaupal.jp2p.ui.context.Jp2pContainerNavigator;
+import org.chaupal.jp2p.ui.container.Jp2pContainerNavigator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;

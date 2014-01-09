@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
+<?eclipse version="3.2"?>
 <plugin>
    <extension
          point="org.eclipse.core.runtime.adapters">
@@ -49,7 +49,7 @@
       <view
             allowMultiple="false"
             category="org.eclipse.jxse.ui.connectivity"
-            class="org.chaupal.jp2p.ui.context.Jp2pContainerNavigator"
+            class="org.chaupal.jp2p.ui.container.Jp2pContainerNavigator"
             id="org.eclipse.jxse.ui.context.view"
             name="JP2P Service Context View"
             restorable="true">

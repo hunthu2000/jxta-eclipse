@@ -25,5 +25,5 @@ Import-Package: net.jxta.platform,
  net.osgi.jp2p.properties,
  net.osgi.jp2p.utils,
  net.osgi.jp2p.utils.io,
- org.chaupal.jp2p.ui.context,
+ org.chaupal.jp2p.ui.container,
  org.chaupal.jp2p.ui.network
