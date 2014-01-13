@@ -18,7 +18,7 @@ import net.osgi.jp2p.startup.StartupServiceFactory;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
 
-public class ContainerBuilder{
+public class ContainerBuilder implements IContainerBuilder{
 
 	public static final String S_WRN_NOT_COMPLETE = "\n\t!!! The Service Container did not complete: ";
 
@@ -29,6 +29,10 @@ public class ContainerBuilder{
 		factories = new ArrayList<ICompositeBuilderListener<?>>();
 	}
 	
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.builder.IContainerBuilder#addFactory(net.osgi.jp2p.factory.IComponentFactory)
+	 */
+	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public boolean addFactory( IComponentFactory<?> factory ){
 		boolean retval = this.factories.add( factory );
@@ -36,15 +40,23 @@ public class ContainerBuilder{
 		return retval;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.builder.IContainerBuilder#removeFactory(net.osgi.jp2p.factory.IComponentFactory)
+	 */
+	@Override
 	public boolean removeFactory( IComponentFactory<Object> factory ){
 		return this.factories.remove( factory );
 	}
 	
 	@SuppressWarnings("unchecked")
-	public IComponentFactory<Object>[] getChildren(){
+	public IComponentFactory<Object>[] getFactories(){
 		return this.factories.toArray( new IComponentFactory[0] );
 	}
 	
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.builder.IContainerBuilder#getFactory(java.lang.String)
+	 */
+	@Override
 	public IComponentFactory<?> getFactory( String name ){
 		for( ICompositeBuilderListener<?> listener: factories ){
 			IComponentFactory<?> factory = (IComponentFactory<?>) listener;
@@ -54,11 +66,10 @@ public class ContainerBuilder{
 		return null;	
 	}
 
-	/**
-	 * Returns the factory who'se source matched the given one
-	 * @param source
-	 * @return
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.builder.IContainerBuilder#getFactory(net.osgi.jp2p.properties.IJp2pPropertySource)
 	 */
+	@Override
 	public IComponentFactory<?> getFactory( IJp2pPropertySource<?> source ){
 		for( ICompositeBuilderListener<?> listener: factories ){
 			IComponentFactory<?> factory = (IComponentFactory<?>) listener;
@@ -68,10 +79,10 @@ public class ContainerBuilder{
 		return null;	
 	}
 
-	/**
-	 * Returns true if all the factorys have been completed
-	 * @return
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.builder.IContainerBuilder#isCompleted()
 	 */
+	@Override
 	public boolean isCompleted(){
 		for( ICompositeBuilderListener<?> listener: factories ){
 			IComponentFactory<?> factory = (IComponentFactory<?>) listener;
@@ -81,10 +92,10 @@ public class ContainerBuilder{
 		return true;
 	}
 	
-	/**
-	 * List the factorys that did not complete
-	 * @return
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.builder.IContainerBuilder#listModulesNotCompleted()
 	 */
+	@Override
 	public String listModulesNotCompleted(){
 		StringBuffer buffer = new StringBuffer();
 		for( ICompositeBuilderListener<?> listener: factories ){
@@ -97,10 +108,10 @@ public class ContainerBuilder{
 		return S_WRN_NOT_COMPLETE + buffer.toString();
 	}
 	
-	/**
-	 * Perform a request for updating the container
-	 * @param event
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.builder.IContainerBuilder#updateRequest(net.osgi.jp2p.factory.ComponentBuilderEvent)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public synchronized void updateRequest(ComponentBuilderEvent<?> event) {
 		for( ICompositeBuilderListener<?> listener: this.factories ){
@@ -111,12 +122,10 @@ public class ContainerBuilder{
 		}
 	}	
 	
-	/**
-	 * Get the default factory for this container
-	 * @param parent
-	 * @param componentName
-	 * @return
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.builder.IContainerBuilder#getDefaultFactory(net.osgi.jp2p.properties.IJp2pPropertySource, java.lang.String)
 	 */
+	@Override
 	public IComponentFactory<?> getDefaultFactory( IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
 		if( Utils.isNull(componentName))
 			return null;
@@ -145,44 +154,35 @@ public class ContainerBuilder{
 		return factory;
 	}
 
-	/** Add a factory with the given component name to the container. use the given component name and parent,
-	 * if 'createsource' is true, the property source is immediately created, and 'blockcreation' means that
-	 * the builder will not create the factory. instead the parent factory should provide for this 
-	 * 
-	 * @param componentName
-	 * @param createSource
-	 * @param blockCreation
-	 * @return
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.builder.IContainerBuilder#addFactoryToContainer(java.lang.String, net.osgi.jp2p.properties.IJp2pPropertySource, boolean, boolean)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
-	public IComponentFactory<?> addFactoryToContainer( String componentName, IComponentFactory<?> parent, boolean createSource, boolean blockCreation) {
+	public IComponentFactory<?> addFactoryToContainer( String componentName, IJp2pPropertySource<IJp2pProperties> parentSource, boolean createSource, boolean blockCreation) {
 		String str = StringStyler.styleToEnum(componentName);
-		IJp2pWritePropertySource<IJp2pProperties> ncp = (IJp2pWritePropertySource<IJp2pProperties>) parent.getPropertySource().getChild( str );
+		IJp2pWritePropertySource<IJp2pProperties> ncp = (IJp2pWritePropertySource<IJp2pProperties>) parentSource.getChild( str );
 		if( ncp != null )
 			return null;
-		IComponentFactory<?> ncf = getDefaultFactory( parent.getPropertySource(), componentName );
+		IComponentFactory<?> ncf = getDefaultFactory( parentSource, componentName );
 		addFactory(ncf);
 		if(!createSource )
 			return ncf;
 		IJp2pWritePropertySource<IJp2pProperties> props = (IJp2pWritePropertySource<IJp2pProperties>) ncf.createPropertySource();
 		props.setDirective( Directives.BLOCK_CREATION, Boolean.valueOf( blockCreation ).toString());
-		parent.getPropertySource().addChild(props);
+		parentSource.addChild(props);
 		return ncf; 
 	}
 
-	/**
-	 * Get or create a corresponding factory for a child component of the given source, with the given component name.
-	 * @param source: the source who should have a child source
-	 * @param componentName: the required component name of the child
-	 * @param createSource: create the property source immediately
-	 * @param blockCreation: do not allow the builder to create the component
-	 * @return
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.builder.IContainerBuilder#getOrCreateChildFactory(net.osgi.jp2p.properties.IJp2pPropertySource, java.lang.String, boolean, boolean)
 	 */
+	@Override
 	public IComponentFactory<?> getOrCreateChildFactory( IJp2pPropertySource<IJp2pProperties> source, String componentName, boolean createSource, boolean blockCreation ){
 		IJp2pPropertySource<?> child = source.getChild( componentName ); 
 		if( child != null )
 			return this.getFactory(child );
-		return addFactoryToContainer(componentName, (IComponentFactory<?>) source, createSource, blockCreation);
+		return addFactoryToContainer(componentName, source, createSource, blockCreation);
 	}
 }
 

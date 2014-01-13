@@ -2,6 +2,7 @@ package net.osgi.jp2p.chaupal.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -23,29 +24,22 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import net.jxta.document.Advertisement;
-import net.osgi.jp2p.builder.ContainerBuilder;
 import net.osgi.jp2p.builder.ComponentNode;
 import net.osgi.jp2p.builder.ICompositeBuilder;
 import net.osgi.jp2p.builder.ICompositeBuilderListener;
-import net.osgi.jp2p.chaupal.advertisement.ChaupalAdvertisementFactory;
-import net.osgi.jp2p.chaupal.discovery.ChaupalDiscoveryServiceFactory;
-import net.osgi.jp2p.chaupal.pipe.ChaupalPipeFactory;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.chaupal.xml.PreferenceStore.Persistence;
 import net.osgi.jp2p.chaupal.xml.PreferenceStore.SupportedAttributes;
-import net.osgi.jp2p.chaupal.xml.XMLFactoryBuilder.Groups;
 import net.osgi.jp2p.container.ContainerFactory;
 import net.osgi.jp2p.container.Jp2pContainerPropertySource;
-import net.osgi.jp2p.container.IJxseServiceContainer.ContextProperties;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.factory.IComponentFactory.Components;
 import net.osgi.jp2p.factory.IJp2pComponents;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementProperties;
-import net.osgi.jp2p.jxta.context.JxseContainerPreferences;
+import net.osgi.jp2p.jxta.context.Jp2pContainerPreferences;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPreferences;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
-import net.osgi.jp2p.jxta.discovery.DiscoveryServiceFactory;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory;
 import net.osgi.jp2p.jxta.factory.JxtaFactoryUtils;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
@@ -60,15 +54,15 @@ import net.osgi.jp2p.jxta.network.configurator.OverviewPreferences;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.jxta.pipe.PipePropertySource;
 import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeProperties;
-import net.osgi.jp2p.jxta.pipe.PipeServiceFactory;
 import net.osgi.jp2p.jxta.registration.RegistrationPropertySource;
 import net.osgi.jp2p.jxta.seeds.SeedListPropertySource;
 import net.osgi.jp2p.partial.PartialPropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives;
+import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 import net.osgi.jp2p.properties.IJp2pProperties;
+import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.ManagedProperty;
-import net.osgi.jp2p.properties.IJp2pDirectives.Contexts;
 import net.osgi.jp2p.seeds.SeedInfo;
 import net.osgi.jp2p.utils.IOUtils;
 import net.osgi.jp2p.utils.StringDirective;
@@ -117,15 +111,16 @@ public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory> {
 	
 	private boolean completed, failed;
 	private URL url;
-	private ContainerBuilder builder;
+	private IContainerBuilder builder;
 	private String bundleId;
+	private Class<?> clss;
 	
 	private Collection<ICompositeBuilderListener<Object>> listeners;
 		
 	private Logger logger = Logger.getLogger( XMLFactoryBuilder.class.getName() );
 	
-	public XMLFactoryBuilder( String bundleId, Class<?> clss, ContainerBuilder builder ) {
-		this( bundleId, clss.getResource( S_DEFAULT_LOCATION ), builder );
+	public XMLFactoryBuilder( String bundleId, Class<?> clss, IContainerBuilder builder ) {
+		this( bundleId, clss.getResource( S_DEFAULT_LOCATION ), clss, builder );
 	}
 
 	/**
@@ -135,10 +130,11 @@ public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory> {
 	 * @param location
 	 * @param builder
 	 */
-	public XMLFactoryBuilder( String bundleId, URL url, ContainerBuilder builder ) {
+	public XMLFactoryBuilder( String bundleId, URL url, Class<?> clss, IContainerBuilder builder ) {
 		this.bundleId = bundleId;
 		this.builder = builder;
 		this.url = url;
+		this.clss = clss;
 		this.completed = false;
 		this.failed = false;
 		this.listeners = new ArrayList<ICompositeBuilderListener<Object>>();
@@ -188,7 +184,7 @@ public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory> {
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
 		// note that if your XML already declares the XSD to which it has to conform, then there's no need to create a validator from a Schema object
-		Source schemaFile = new StreamSource( JxtaHandler.class.getResourceAsStream( S_SCHEMA_LOCATION ));
+		Source schemaFile = new StreamSource( Jp2pHandler.class.getResourceAsStream( S_SCHEMA_LOCATION ));
 		InputStream in;
 		try {
 			in = url.openStream();
@@ -210,7 +206,7 @@ public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory> {
 			
 			//saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA); 
 			//saxParser.setProperty(JAXP_SCHEMA_SOURCE, new File(JP2P_XSD_SCHEMA)); 
-			JxtaHandler handler = new JxtaHandler( builder, bundleId );
+			Jp2pHandler handler = new Jp2pHandler( builder, bundleId, clss );
 			saxParser.parse( in, handler);
 			root = handler.getRoot();
 			logger.info("JP2P Bundle Parsed: " + this.bundleId );
@@ -255,22 +251,22 @@ public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory> {
 	}
 }
 
-class JxtaHandler extends DefaultHandler{
+class Jp2pHandler extends DefaultHandler{
 
-	private IJp2pComponents current;
-	
 	private ManagedProperty<IJp2pProperties,Object> property;
 
-	private ContainerBuilder container;
+	private IContainerBuilder container;
 	private ContainerFactory root;
 	private FactoryNode node;
 	private String bundleId;
+	private Class<?> clss;
 
 	private static Logger logger = Logger.getLogger( XMLFactoryBuilder.class.getName() );
 
-	public JxtaHandler( ContainerBuilder container, String bundleId ) {
+	public Jp2pHandler( IContainerBuilder container, String bundleId, Class<?> clss ) {
 		this.bundleId = bundleId;
 		this.container = container;
+		this.clss = clss;
 	}
 
 	/**
@@ -281,10 +277,12 @@ class JxtaHandler extends DefaultHandler{
 		return root;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void startElement(String uri, String localName, String qName, 
 			Attributes attributes) throws SAXException {
 		IComponentFactory<?> factory = null;
+		IJp2pComponents current;
 		if( Components.isComponent( qName )){
 			current = Components.valueOf( StringStyler.styleToEnum( qName ));
 			switch(( Components )current ){
@@ -300,12 +298,36 @@ class JxtaHandler extends DefaultHandler{
 			}
 			node = this.processFactory(attributes, node, factory);
 			return;
-		}else if( IJxtaComponentFactory.JxtaComponents.isComponent( qName )){
+		}
+		if( IJxtaComponentFactory.JxtaComponents.isComponent( qName )){
 			current = IJxtaComponentFactory.JxtaComponents.valueOf( StringStyler.styleToEnum( qName ));
 			factory = JxtaFactoryUtils.getDefaultFactory(container, node.getData().getPropertySource(), current.toString());
 			node = this.processFactory(attributes, node, factory);
 			return;
-		}if( Groups.isGroup( qName )){
+		}
+		if( attributes.getValue(Directives.CLASS.toString().toLowerCase()) != null ){
+			String className = attributes.getValue(Directives.CLASS.toString().toLowerCase());
+			Class<?> factoryClass = null;
+			try{
+				factoryClass = clss.getClassLoader().loadClass( className );
+			}
+			catch( ClassNotFoundException ex1 ){
+				try{
+					factoryClass = XMLFactoryBuilder.class.getClassLoader().loadClass( className );
+				}
+				catch( ClassNotFoundException ex2 ){ /* do nothing */ }
+			}
+			if( factoryClass != null  ){
+				try {
+					Constructor<IComponentFactory<?>> constructor = (Constructor<IComponentFactory<?>>) factoryClass.getDeclaredConstructor(IJp2pPropertySource.class );
+					factory = constructor.newInstance( node.getData().getPropertySource() );
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return;
+				}
+			}
+		}else if( XMLFactoryBuilder.Groups.isGroup( qName )){
 			logger.info(" Group value: " + qName );
 			return;
 		}else{
@@ -335,47 +357,11 @@ class JxtaHandler extends DefaultHandler{
 				}
 			}
 		}
-		container.addFactory( getChaupalFactory( factory ));
+		container.addFactory( factory );
 		if( node == null )
 			return new FactoryNode( factory );
 		else
 			return (FactoryNode) node.addChild(factory);	
-	}
-	/**
-	 * Change the factory to a Chaupal factory if required and available
-	 * @param factory
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	protected IComponentFactory<?> getChaupalFactory( IComponentFactory<?> base ){
-		Contexts context = Jp2pContainerPropertySource.getContext( base.getPropertySource() );
-		IComponentFactory<?> factory = base;
-		switch( context ){
-		case CHAUPAL:
-			String str = StringStyler.styleToEnum(base.getComponentName());
-			if(! IJxtaComponentFactory.JxtaComponents.isComponent(str))
-				break;
-			IJxtaComponentFactory.JxtaComponents comp = IJxtaComponentFactory.JxtaComponents.valueOf(str );
-			switch( comp ){
-			case ADVERTISEMENT_SERVICE:
-				factory = new ChaupalAdvertisementFactory<Advertisement>(container, (IComponentFactory<Advertisement>)base);
-				factory.createPropertySource();
-				break;
-			case DISCOVERY_SERVICE:
-				factory = new ChaupalDiscoveryServiceFactory( container, (DiscoveryServiceFactory)base );
-				factory.createPropertySource();
-				break;
-			case PIPE_SERVICE:
-				factory = new ChaupalPipeFactory(container, (PipeServiceFactory) base);
-				factory.createPropertySource();
-				break;
-			default:
-				break;
-			}
-		default:
-			break;
-		}
-		return factory;
 	}
 
 	/**
@@ -432,8 +418,8 @@ class JxtaHandler extends DefaultHandler{
 		
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) node.getData().getPropertySource();
 		if( source instanceof Jp2pContainerPropertySource ){
-			JxseContainerPreferences preferences = new JxseContainerPreferences( (Jp2pContainerPropertySource) source );
-			preferences.setPropertyFromString((ContextProperties) property.getKey(), value);
+			Jp2pContainerPreferences preferences = new Jp2pContainerPreferences( (Jp2pContainerPropertySource) source );
+			preferences.setPropertyFromString( property.getKey(), value);
 			return;
 		}
 		if( source instanceof NetworkManagerPropertySource ){

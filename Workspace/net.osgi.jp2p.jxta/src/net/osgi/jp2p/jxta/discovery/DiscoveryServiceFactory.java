@@ -11,7 +11,7 @@
 package net.osgi.jp2p.jxta.discovery;
 
 import net.jxta.discovery.DiscoveryService;
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponent;
 import net.osgi.jp2p.container.Jp2pContainerPropertySource;
@@ -27,7 +27,7 @@ import net.osgi.jp2p.properties.IJp2pPropertySource;
 public class DiscoveryServiceFactory extends
 		AbstractPeerGroupDependencyFactory<DiscoveryService> {
 
-	public DiscoveryServiceFactory( ContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent) {
+	public DiscoveryServiceFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent) {
 		super( container, parent );
 	}
 
@@ -64,6 +64,6 @@ public class DiscoveryServiceFactory extends
 	@Override
 	protected IJp2pComponent<DiscoveryService> onCreateComponent(
 			IJp2pPropertySource<IJp2pProperties> properties) {
-		return new Jp2pComponent<DiscoveryService>( super.getPropertySource(), super.getPeerGroup().getDiscoveryService());
+		return new Jp2pComponent<DiscoveryService>( super.getPropertySource(), super.getDependency().getModule().getDiscoveryService());
 	}
 }

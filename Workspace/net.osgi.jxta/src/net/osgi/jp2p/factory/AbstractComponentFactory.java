@@ -14,7 +14,7 @@ import java.util.Iterator;
 
 import net.osgi.jp2p.activator.IActivator;
 import net.osgi.jp2p.activator.IActivator.Status;
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.IJp2pComponentNode;
 import net.osgi.jp2p.component.Jp2pComponentNode;
@@ -34,22 +34,22 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	private boolean canCreate;
 	private boolean completed;
 	private boolean failed;
-	private ContainerBuilder container;
+	private IContainerBuilder container;
 	private int weight;
 
-	protected AbstractComponentFactory( ContainerBuilder container ) {
+	protected AbstractComponentFactory( IContainerBuilder container ) {
 		this( container, true );
 	}
 
-	protected AbstractComponentFactory( ContainerBuilder container, boolean canCreate) {
+	protected AbstractComponentFactory( IContainerBuilder container, boolean canCreate) {
 		this( container, null, canCreate );
 	}
 
-	protected AbstractComponentFactory( ContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
+	protected AbstractComponentFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
 		this( container, parentSource, true );
 	}
 
-	protected AbstractComponentFactory( ContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource, boolean canCreate ) {
+	protected AbstractComponentFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource, boolean canCreate ) {
 		this.canCreate = canCreate;
 		this.completed = false;
 		this.failed = false;
@@ -86,7 +86,7 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	 */
 	public void extendContainer(){ /* DO NOTHING */}
 
-	protected ContainerBuilder getBuilder() {
+	protected IContainerBuilder getBuilder() {
 		return container;
 	}
 

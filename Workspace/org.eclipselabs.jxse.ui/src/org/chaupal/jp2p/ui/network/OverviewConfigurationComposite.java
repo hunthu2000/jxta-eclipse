@@ -4,7 +4,7 @@ import java.net.URI;
 
 import net.jxta.peer.PeerID;
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.osgi.jp2p.jxta.context.JxseContainerPreferences;
+import net.osgi.jp2p.jxta.context.Jp2pContainerPreferences;
 import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
 import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jp2p.properties.IJp2pProperties;
@@ -129,7 +129,7 @@ public class OverviewConfigurationComposite extends Composite {
 		if( value != null)
 			this.descriptionText.setText(( String )value );
 
-		this.combo.setItems( JxseContainerPreferences.getConfigModes());
+		this.combo.setItems( Jp2pContainerPreferences.getConfigModes());
 		value = source.getDefault( NetworkConfiguratorProperties.MODE );
 		ConfigMode mode = ( value == null )? ConfigMode.EDGE: (ConfigMode ) value;
 		this.combo.select( mode.ordinal() );

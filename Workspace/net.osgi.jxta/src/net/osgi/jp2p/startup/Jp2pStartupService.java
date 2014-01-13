@@ -14,34 +14,31 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.logging.Logger;
 
 import net.osgi.jp2p.activator.AbstractActivator;
 import net.osgi.jp2p.activator.IActivator;
 import net.osgi.jp2p.activator.IJp2pService;
-import net.osgi.jp2p.builder.ContainerBuilder;
 import net.osgi.jp2p.builder.ICompositeBuilderListener;
+import net.osgi.jp2p.builder.IContainerBuilder;
+import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.properties.IJp2pDirectives;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
-import net.osgi.jp2p.utils.Utils;
 
-public class Jp2pStartupService extends AbstractActivator implements IJp2pService<ContainerBuilder>{
+public class Jp2pStartupService extends AbstractActivator implements IJp2pService<IContainerBuilder>{
 
 	public static final String S_ERR_NO_SERVICE_LOADED = "\n\t!!! No service is loaded. Not starting context:  ";
 	public static final String S_ERR_CONTEXT_NOT_BUILT = "\n\t!!! The context was not built! Not starting context:  ";
 	public static final String S_INFO_AUTOSTART = "\n\t!!! Autostarting container:  ";
 
 	private Jp2pStartupPropertySource source;
-	
-	private ContainerBuilder container;
+	private IJp2pComponent<?> parent; 
 	
 	private Collection<ICompositeBuilderListener<Object>> listeners;
 	
-	public Jp2pStartupService( ContainerBuilder container, Jp2pStartupPropertySource source ) {
+	public Jp2pStartupService( Jp2pStartupPropertySource source ) {
 		this.source = source;
-		this.container = container;
 		listeners = new ArrayList<ICompositeBuilderListener<Object>>();
 		super.setStatus(Status.AVAILABLE);
 	}
@@ -94,21 +91,21 @@ public class Jp2pStartupService extends AbstractActivator implements IJp2pServic
 		//}
 		
 		//Then listen to new additions
-		Logger logger = Logger.getLogger( this.getClass().getName());
-		String list = container.listModulesNotCompleted();
-		if( !Utils.isNull( list )){
-			logger.warning( list );
-		}
+		//Logger logger = Logger.getLogger( this.getClass().getName());
+		//String list = container.listModulesNotCompleted();
+		//if( !Utils.isNull( list )){
+		//	logger.warning( list );
+		//}
 	}
 	
 	//Make public
 	@SuppressWarnings("unchecked")
 	@Override
 	public void deactivate() {
-		this.listeners.remove(this.container);
-		for( IComponentFactory<?> factory: container.getChildren()){
-			this.stopModule( (IComponentFactory<Object>) factory );
-		}
+		//this.listeners.remove(this.container);
+		//for( IComponentFactory<?> factory: container.getFactories()){
+		//	this.stopModule( (IComponentFactory<Object>) factory );
+		//}
 	}
 
 	@Override
@@ -140,8 +137,8 @@ public class Jp2pStartupService extends AbstractActivator implements IJp2pServic
 
 
 	@Override
-	public ContainerBuilder getModule() {
-		return this.container;
+	public IContainerBuilder getModule() {
+		return null;
 	}
 
 
@@ -154,5 +151,13 @@ public class Jp2pStartupService extends AbstractActivator implements IJp2pServic
 	public String getCategory(Object key) {
 		return this.source.getCategory( (IJp2pProperties) key);
 	}
-	
+
+	@Override
+	public IJp2pComponent<?> getParent() {
+		return parent;
+	}
+
+	public void setParent( IJp2pComponent<?> parent) {
+		this.parent = parent;
+	}	
 }

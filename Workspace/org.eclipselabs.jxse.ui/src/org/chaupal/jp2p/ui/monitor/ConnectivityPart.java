@@ -9,6 +9,8 @@ import net.jxta.rendezvous.RendezVousService;
 import net.jxta.rendezvous.RendezvousEvent;
 import net.jxta.rendezvous.RendezvousListener;
 import net.osgi.jp2p.component.IJp2pComponent;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupFactory;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.log.Jp2pLevel;
 
 import org.chaupal.jp2p.ui.log.Jp2pLog;
@@ -89,7 +91,7 @@ public class ConnectivityPart implements Runnable {
 
 	// use field injection for the service
 	@Inject ESelectionService selectionService;
-
+	
 	@Inject
 	public ConnectivityPart() {
 		//TODO Your code here
@@ -294,10 +296,10 @@ public class ConnectivityPart implements Runnable {
 		if(!( element instanceof IJp2pComponent<?>))
 			return;
 		IJp2pComponent<?> component = (IJp2pComponent<?> )element;
-		if(!( component.getModule() instanceof PeerGroup ))
-			this.setPeerGroup(null );
-		else
-		  this.setPeerGroup( (PeerGroup) component.getModule());
+		String peerGroupName = PeerGroupPropertySource.S_NET_PEER_GROUP;
+		if( peerGroup != null )
+			peerGroupName = peerGroup.getPeerGroupName();
+		this.setPeerGroup( PeerGroupFactory.findPeerGroup( component, peerGroupName ));
 	}
 
     /** Creates new form ConnectivityMonitor */

@@ -24,9 +24,9 @@ import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.utils.ProjectFolderUtils;
 import net.osgi.jp2p.utils.Utils;
 
-public class JxseContainerPreferences extends AbstractPreferences<IJp2pProperties>
+public class Jp2pContainerPreferences extends AbstractPreferences
 {
-	public JxseContainerPreferences( Jp2pContainerPropertySource source )
+	public Jp2pContainerPreferences( Jp2pContainerPropertySource source )
 	{
 		super( source );
 	}
@@ -82,8 +82,9 @@ public class JxseContainerPreferences extends AbstractPreferences<IJp2pPropertie
 	public Object convertValue( IJp2pProperties props, String value ){
 		if(( props == null ) || ( Utils.isNull(value )))
 			return false;
-		if( !( props instanceof ContextProperties ))
-			return false;
+		if( !( props instanceof ContextProperties )){
+			return value;
+		}
 		ContextProperties id = (ContextProperties) props;
 		switch( id ){
 		case CONFIG_MODE:

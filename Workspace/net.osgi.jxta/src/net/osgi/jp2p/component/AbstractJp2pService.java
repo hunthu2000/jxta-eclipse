@@ -33,13 +33,14 @@ implements IJp2pService<T>{
 	public static final String S_SERVICE = "Service";
 	
 	public static final String S_ERR_ILLEGAL_INIT = 
-			"The component is initialised but already exists. Please finalise first.";
+			"The module is initialised but already exists. Please finalise first.";
 	public static final String S_ERR_NOT_COMPLETED = 
-			"The factory did not create the component. The flag setCompleted must be true, which is usually checked  with setAvailable.";
+			"The factory did not create the module. The flag setCompleted must be true, which is usually checked  with setAvailable.";
 	
-	private T component;
+	private T module;
 	private IJp2pWritePropertySource<IJp2pProperties> source;
-	
+	private IJp2pComponent<?> parent;
+
 	private ComponentEventDispatcher dispatcher;
 
 	protected AbstractJp2pService( String bundleId, String componentName) {
@@ -49,7 +50,7 @@ implements IJp2pService<T>{
 	protected AbstractJp2pService( IJp2pWritePropertySource<IJp2pProperties> source, T module ) {
 		dispatcher = ComponentEventDispatcher.getInstance();
 		this.source = source;
-		this.component = module;
+		this.module = module;
 		super.setStatus( Status.AVAILABLE );
 		super.initialise();
 	}
@@ -80,6 +81,16 @@ implements IJp2pService<T>{
 		return source;
 	}
 
+	@Override
+	public IJp2pComponent<?> getParent() {
+		return parent;
+	}
+
+	@Override
+	public void setParent(IJp2pComponent<?> parent) {
+		this.parent=  parent;
+	}
+
 	/**
 	 * Make public
 	 */
@@ -104,16 +115,16 @@ implements IJp2pService<T>{
 
 	@Override
 	protected void onFinalising(){
-		this.component = null;
+		this.module = null;
 	}
 
 	@Override
 	public T getModule(){
-		return component;
+		return module;
 	}
 	
-	protected void setComponent( T module ){
-		this.component = module;
+	protected void setModule( T module ){
+		this.module = module;
 	}
 	
 	@Override

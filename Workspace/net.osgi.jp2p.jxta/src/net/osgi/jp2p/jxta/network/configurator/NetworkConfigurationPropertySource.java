@@ -97,7 +97,7 @@ public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropert
 		Iterator<IJp2pProperties> iterator = source.propertyIterator();
 		NetworkConfiguratorProperties nmp = null;
 		while( iterator.hasNext() ){
-			NetworkManagerProperties cp = (NetworkManagerProperties) iterator.next();
+			IJp2pProperties cp = iterator.next();
 			nmp = convertTo( cp );
 			if( nmp != null ){
 				Object value = source.getProperty( cp );
@@ -160,8 +160,11 @@ public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropert
 	 * @param context
 	 * @return
 	 */
-	public static NetworkConfiguratorProperties convertTo( NetworkManagerProperties props ){
-		switch( props ){
+	public static NetworkConfiguratorProperties convertTo( IJp2pProperties props ){
+		if(!( props instanceof NetworkManagerProperties ))
+			return null;
+		NetworkManagerProperties id = (NetworkManagerProperties) props;
+		switch( id ){
 		case INSTANCE_NAME:
 			return NetworkConfiguratorProperties.NAME;			
 		case MODE:

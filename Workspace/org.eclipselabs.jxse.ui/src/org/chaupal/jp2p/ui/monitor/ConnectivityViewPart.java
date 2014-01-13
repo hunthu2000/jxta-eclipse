@@ -8,6 +8,8 @@ import net.jxta.rendezvous.RendezVousService;
 import net.jxta.rendezvous.RendezvousEvent;
 import net.jxta.rendezvous.RendezvousListener;
 import net.osgi.jp2p.component.IJp2pComponent;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupFactory;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.log.Jp2pLevel;
 
 import org.chaupal.jp2p.ui.log.Jp2pLog;
@@ -212,7 +214,7 @@ public class ConnectivityViewPart extends ViewPart implements Runnable{
 		composite_4.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		tableViewer_1 = new TableViewer(composite_4, SWT.BORDER | SWT.FULL_SELECTION);
-		createColumn("Edges", tableViewer_1);
+		createColumn("Conntected Edges", tableViewer_1);
 		tableViewer_1.setColumnProperties(new String[] {"Relays"});
 		table_1 = tableViewer_1.getTable();
 		table_1.setHeaderVisible(true);
@@ -223,7 +225,7 @@ public class ConnectivityViewPart extends ViewPart implements Runnable{
 		composite_3.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		tableViewer = new TableViewer(composite_3, SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-		createColumn("Relays", tableViewer);
+		createColumn("Connected Relays", tableViewer);
 		table = tableViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -292,10 +294,11 @@ public class ConnectivityViewPart extends ViewPart implements Runnable{
 		if(!( element instanceof IJp2pComponent<?>))
 			return;
 		IJp2pComponent<?> component = (IJp2pComponent<?> )element;
-		if(!( component.getModule() instanceof PeerGroup ))
-			this.setPeerGroup(null );
-		else
-		  this.setPeerGroup( (PeerGroup) component.getModule());
+
+		String peerGroupName = PeerGroupPropertySource.S_NET_PEER_GROUP;
+		if( peerGroup != null )
+			peerGroupName = peerGroup.getPeerGroupName();
+		  this.setPeerGroup( PeerGroupFactory.findPeerGroup(component, peerGroupName));
 	}
 
     /** Creates new form ConnectivityMonitor */

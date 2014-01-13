@@ -17,11 +17,12 @@ import net.jxta.peer.PeerID;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jp2p.jxta.registration.RegistrationPropertySource.RegistrationProperties;
 import net.osgi.jp2p.properties.AbstractPreferences;
+import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 
-public class RegistrationPreferences extends AbstractPreferences<RegistrationProperties>
+public class RegistrationPreferences extends AbstractPreferences
 {
-	public RegistrationPreferences( IJp2pWritePropertySource<RegistrationProperties> source )
+	public RegistrationPreferences( IJp2pWritePropertySource<IJp2pProperties> source )
 	{
 		super( source );
 	}
@@ -34,9 +35,12 @@ public class RegistrationPreferences extends AbstractPreferences<RegistrationPro
 	 * @throws URISyntaxException
 	 */
 	@Override
-	public Object convertValue( RegistrationProperties id, String value ){
-		IJp2pWritePropertySource<RegistrationProperties> source = super.getSource();
-		switch( id ){
+	public Object convertValue( IJp2pProperties id, String value ){
+		IJp2pWritePropertySource<IJp2pProperties> source = super.getSource();
+		if(!( id instanceof IJp2pProperties ))
+			return null;
+		RegistrationProperties key = (RegistrationProperties) id;
+		switch( key ){
 		case ATTRIBUTE:
 		case WILDCARD:
 			return source.setProperty(id, value);

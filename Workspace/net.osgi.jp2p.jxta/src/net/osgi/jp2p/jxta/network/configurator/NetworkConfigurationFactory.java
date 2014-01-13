@@ -18,9 +18,11 @@ import java.util.logging.Logger;
 
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager;
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
+import net.osgi.jp2p.component.IJp2pComponentNode;
 import net.osgi.jp2p.component.Jp2pComponent;
+import net.osgi.jp2p.container.Jp2pServiceContainer;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
@@ -49,7 +51,7 @@ public class NetworkConfigurationFactory extends
 
 	private NetworkManager manager;
 
-	public NetworkConfigurationFactory( ContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource) {
+	public NetworkConfigurationFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource) {
 		super( container, parentSource, false );
 		super.setCanCreate(this.manager != null );
 	}
@@ -193,5 +195,38 @@ public class NetworkConfigurationFactory extends
 		default:
 			return null;
 		}
+	}
+
+	/**
+	 * Get the network configurator of the container in which the given component resides
+	 * @param component
+	 * @return
+	 */
+	public static NetworkConfigurator findNetworkConfigurator( IJp2pComponent<?> component ){
+		IJp2pComponent<?> nccomp = Jp2pServiceContainer.findServiceContainer(component);
+		return getNetworkConfigurator(nccomp);
+	}
+
+	/**
+	 * Get the network configurator of the container in which the given component resides,
+	 * by parsing through the tree
+	 * @param component
+	 * @return
+	 */
+	protected static NetworkConfigurator getNetworkConfigurator( IJp2pComponent<?> component ){
+		if( component == null )
+			return null;
+		if( component.getModule() instanceof NetworkConfigurator)
+			return (NetworkConfigurator) component.getModule();
+		if(!( component instanceof IJp2pComponentNode ))
+			return null;
+		IJp2pComponentNode<?> node = (IJp2pComponentNode<?>) component;
+		NetworkConfigurator nc = null;
+		for( IJp2pComponent<?> child: node.getChildren() ){
+			nc = getNetworkConfigurator(child);
+			if( nc != null )
+				return nc;
+		}
+		return null;
 	}
 }

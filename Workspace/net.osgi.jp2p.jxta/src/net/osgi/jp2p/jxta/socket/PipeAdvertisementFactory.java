@@ -20,7 +20,7 @@ import net.jxta.id.IDFactory;
 import net.jxta.pipe.PipeID;
 import net.jxta.pipe.PipeService;
 import net.jxta.protocol.PipeAdvertisement;
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponent;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
@@ -36,7 +36,7 @@ public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdver
 	public final static String SOCKETIDSTR = "urn:jxta:uuid-59616261646162614E5047205032503393B5C2F6CA7A41FBB0F890173088E79404";
 	public final static String DEFAULT_SOCKET_NAME = "Default Socket Server";
 
-	public PipeAdvertisementFactory( ContainerBuilder container) {
+	public PipeAdvertisementFactory( IContainerBuilder container) {
 		super( container );
 		this.fillDefaultValues();
 	}

@@ -11,13 +11,14 @@
 package net.osgi.jp2p.jxta.peergroup;
 
 import net.jxta.peergroup.PeerGroup;
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
+import net.osgi.jp2p.component.IJp2pComponentNode;
+import net.osgi.jp2p.container.Jp2pServiceContainer;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.IComponentFactory;
-import net.osgi.jp2p.jxta.netpeergroup.NetPeerGroupPropertySource;
 import net.osgi.jp2p.utils.Utils;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupFactory;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
@@ -29,7 +30,7 @@ public class PeerGroupFactory extends AbstractComponentFactory<PeerGroup>
 {
 	private PeerGroup parentPeerGroup;
 	
-	public PeerGroupFactory( ContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent) {
+	public PeerGroupFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent) {
 		super( container, parent );
 	}
 
@@ -60,13 +61,15 @@ public class PeerGroupFactory extends AbstractComponentFactory<PeerGroup>
 			peergroup = (PeerGroup) component;
 		else if( component instanceof IJp2pComponent ){
 			IJp2pComponent<?> comp = (IJp2pComponent<?>) component;
+			if( !( comp.getModule() instanceof PeerGroup ))
+				return null;
 			peergroup = (PeerGroup) comp.getModule();		
 		}
 		return peergroup;
 	}
 	
 	/**
-	 * Returns true if the factory contasins the correct peergroup
+	 * Returns true if the factory contains the correct peergroup
 	 * @param factory
 	 * @return
 	 */
@@ -80,7 +83,7 @@ public class PeerGroupFactory extends AbstractComponentFactory<PeerGroup>
 			peergroupName = ancestor.getDirective(PeerGroupDirectives.PEERGROUP);
 		}
 		if( Utils.isNull( peergroupName ))
-			peergroupName = NetPeerGroupPropertySource.S_NET_PEER_GROUP;
+			peergroupName = PeerGroupPropertySource.S_NET_PEER_GROUP;
 		PeerGroup peergroup = PeerGroupFactory.getPeerGroup(factory);
 		if( peergroup == null )
 			return false;
@@ -96,8 +99,47 @@ public class PeerGroupFactory extends AbstractComponentFactory<PeerGroup>
 	public static String findAncestorPeerGroup( IJp2pPropertySource<?> current ){
 		String peergroup = PeerGroupPropertySource.findFirstAncestorDirective(current, PeerGroupDirectives.PEERGROUP );
 		if( Utils.isNull( peergroup ))
-			return NetPeerGroupPropertySource.S_NET_PEER_GROUP;
+			return PeerGroupPropertySource.S_NET_PEER_GROUP;
 		else
 			return peergroup;
 	}
+	
+	/**
+	 * Get the network configurator of the container in which the given component resides
+	 * @param component
+	 * @return
+	 */
+	public static PeerGroup findPeerGroup( IJp2pComponent<?> component, String peergroupName ){
+		if( component.getModule() instanceof PeerGroup )
+			return (PeerGroup) component.getModule();
+		IJp2pComponent<?> container = Jp2pServiceContainer.findServiceContainer(component);
+		return getPeerGroup(container, peergroupName );
+	}
+
+	/**
+	 * Get the network configurator of the container in which the given component resides,
+	 * by parsing through the tree
+	 * @param component
+	 * @return
+	 */
+	protected static PeerGroup getPeerGroup( IJp2pComponent<?> component, String peergroupName ){
+		if( component == null )
+			return null;
+		if( component.getModule() instanceof PeerGroup){
+			PeerGroup peergroup = (PeerGroup) component.getModule();
+			if( peergroup.getPeerGroupName().equals(peergroupName ))
+				return (PeerGroup) component.getModule();
+		}
+		if(!( component instanceof IJp2pComponentNode ))
+			return null;
+		IJp2pComponentNode<?> node = (IJp2pComponentNode<?>) component;
+		PeerGroup pg = null;
+		for( IJp2pComponent<?> child: node.getChildren() ){
+			pg = getPeerGroup(child, peergroupName );
+			if( pg != null )
+				return pg;
+		}
+		return null;
+	}
+	
 }

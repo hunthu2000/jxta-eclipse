@@ -11,5 +11,5 @@
 package net.osgi.jp2p.factory;
 
 public interface IComponentFactoryListener<T extends Object> {
-	public void notifyComponentCompleted( JxseComponentEvent<T> event );
+	public void notifyComponentCompleted( Jp2pComponentEvent<T> event );
 }

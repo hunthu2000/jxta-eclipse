@@ -24,7 +24,7 @@ import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.ManagedProperty;
 
-public class AdvertisementPreferences extends AbstractPreferences<IJp2pProperties>{
+public class AdvertisementPreferences extends AbstractPreferences{
 
 	public enum PipeServiceTypes{
 		UNICAST,

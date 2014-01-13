@@ -15,7 +15,7 @@ import java.net.URI;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jp2p.container.Jp2pContainerPropertySource;
 import net.osgi.jp2p.container.IJxseServiceContainer.ContextProperties;
-import net.osgi.jp2p.jxta.context.JxseContainerPreferences;
+import net.osgi.jp2p.jxta.context.Jp2pContainerPreferences;
 import net.osgi.jp2p.properties.IJp2pDirectives;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 import net.osgi.jp2p.utils.Utils;
@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Spinner;
 
 public class ContainerComposite extends Composite {
 	
-	private static final String S_JXSE_CONTEXT_1 = ".jxse.context1";
+	private static final String S_JP2P_CONTAINER = ".jp2p.container";
 	private Text text_identifier;
 	private Label lbl_plugin_id;
 	private Text text_home_folder;
@@ -217,7 +217,7 @@ public class ContainerComposite extends Composite {
 		obj = properties.getProperty( ContextProperties.BUNDLE_ID );
 		if( obj != null ){
 			this.lbl_plugin_id.setText( " " + obj.toString() );
-			this.text_id.setText( obj.toString() + S_JXSE_CONTEXT_1);
+			this.text_id.setText( obj.toString() + S_JP2P_CONTAINER);
 		}
 		StringDataBinding sdb = new StringDataBinding<ContextProperties>( ContextProperties.BUNDLE_ID, properties, this.text_id );  
 		sdb.setValidator( new StringValidator<ContextProperties>( ContextProperties.BUNDLE_ID, StringValidator.S_BUNDLE_ID_REGEX ));
@@ -230,7 +230,7 @@ public class ContainerComposite extends Composite {
 		ConfigMode mode = ConfigMode.EDGE;
 		if( obj != null )
 			mode = ( ConfigMode )obj;
-		this.combo.setItems( JxseContainerPreferences.getConfigModes());
+		this.combo.setItems( Jp2pContainerPreferences.getConfigModes());
 		this.combo.select(mode.ordinal());
 		new ComboDataBinding( ContextProperties.CONFIG_MODE, properties, combo);  
 		

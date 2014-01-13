@@ -19,6 +19,7 @@ import java.util.TreeMap;
 import net.osgi.jp2p.container.Jp2pContainerPropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives.Contexts;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
+import net.osgi.jp2p.properties.IJp2pProperties.Jp2pProperties;
 import net.osgi.jp2p.utils.SimpleComparator;
 import net.osgi.jp2p.utils.StringDirective;
 import net.osgi.jp2p.utils.StringProperty;
@@ -38,29 +39,28 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 	private Collection<IJp2pPropertySource<?>> children;
 
 	private int depth = 0;
-	private String id_root;
-	private String bundleId, componentName;
+	private String componentName;
 	
 	public AbstractJp2pPropertySource( String bundleId, String componentName) {
 		this( bundleId, componentName, 0);
 	}
 
 	protected AbstractJp2pPropertySource( String bundleId, String componentName, int depth ) {
-		properties = new TreeMap<IJp2pProperties,ManagedProperty<IJp2pProperties,Object>>( new SimpleComparator<IJp2pProperties>());
-		directives = new TreeMap<IJp2pDirectives,String>(new SimpleComparator<IJp2pDirectives>());
-		this.bundleId = bundleId;
-		this.directives.put( IJp2pDirectives.Directives.ID, this.bundleId + "." + componentName.toLowerCase() );
-		this.id_root = this.bundleId;
+		this.properties = new TreeMap<IJp2pProperties,ManagedProperty<IJp2pProperties,Object>>( new SimpleComparator<IJp2pProperties>());
+		this.properties.put( Jp2pProperties.BUNDLE_ID, new ManagedProperty<IJp2pProperties,Object>( Jp2pProperties.BUNDLE_ID, bundleId ));
+		this.directives = new TreeMap<IJp2pDirectives,String>(new SimpleComparator<IJp2pDirectives>());
+		this.directives.put( IJp2pDirectives.Directives.ID, bundleId + "." + componentName.toLowerCase() );
 		this.componentName = componentName;
-		children = new ArrayList<IJp2pPropertySource<?>>();
+		this.children = new ArrayList<IJp2pPropertySource<?>>();
 		this.depth = depth;
 		this.parent = null;
 	}
 
-	protected AbstractJp2pPropertySource( String componentName, IJp2pPropertySource<?> parent ) {
-		this( parent.getBundleId(), parent.getComponentName(), parent.getDepth() + 1 );
+	protected AbstractJp2pPropertySource( String componentName, IJp2pPropertySource<IJp2pProperties> parent ) {
+		this( parent.getId(), parent.getComponentName(), parent.getDepth() + 1 );
 		this.componentName = componentName;
 		this.parent = parent;
+		this.properties.put( Jp2pProperties.BUNDLE_ID, new ManagedProperty<IJp2pProperties,Object>( Jp2pProperties.BUNDLE_ID, parent.getProperty( Jp2pProperties.BUNDLE_ID) ));
 		this.directives.put( IJp2pDirectives.Directives.AUTO_START, parent.getDirective(IJp2pDirectives.Directives.AUTO_START ));
 		this.directives.put( IJp2pDirectives.Directives.CONTEXT, parent.getDirective(IJp2pDirectives.Directives.CONTEXT ));
 		this.directives.put( IJp2pDirectives.Directives.ID, parent.getId() + "." + componentName.toLowerCase() );
@@ -74,17 +74,11 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 		return (String) this.directives.get( IJp2pDirectives.Directives.ID );
 	}
 
-	public String getIdRoot() {
-		return id_root;
+	protected String getBundleId(){
+		return (String) this.getProperty( Jp2pProperties.BUNDLE_ID );
 	}
-
-	@Override
-	public String getBundleId() {
-		return this.bundleId;
-	}
-
-	@Override
-	public String getIdentifier() {
+	
+	protected String getIdentifier() {
 		return (String) this.directives.get( IJp2pDirectives.Directives.NAME );
 	}
 

@@ -10,7 +10,7 @@ import net.osgi.jp2p.utils.Utils;
 
 public class ManagedProperty<T, U extends Object> {
 	
-	public static final String S_DEFAULT_CATEGORY = "JXSE";
+	public static final String S_DEFAULT_CATEGORY = "JP2P";
 	
 	public enum Attributes{
 		PERSIST,

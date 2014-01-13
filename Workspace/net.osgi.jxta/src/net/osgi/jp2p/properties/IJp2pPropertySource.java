@@ -35,13 +35,13 @@ public interface IJp2pPropertySource< T extends Object> {
 	 * Get the plugin ID
 	 * @return
 	 */
-	public String getBundleId();
+	//public String getBundleId();
 
 	/**
 	 * Get the identifier
 	 * @return
 	 */
-	public String getIdentifier();
+	//public String getIdentifier();
 
 	/**
 	 * Get the component name

@@ -71,6 +71,9 @@ public class Jp2pAdvertisementService<T extends Advertisement> extends AbstractJ
 				discovery.getModule().publish(ad, lifetime, expiration);
 				discovery.getModule().remotePublish(ad, expiration);
 				break;
+			case REMOTE_ONLY:
+				discovery.getModule().remotePublish(ad, expiration);
+				break;
 			default:
 				break;
 			}

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package net.osgi.jp2p.jxta.registration;
 
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
@@ -22,7 +22,7 @@ import net.osgi.jp2p.jxta.registration.RegistrationService;
 public class RegistrationServiceFactory extends
 		AbstractComponentFactory<RegistrationService> {
 
-	public RegistrationServiceFactory( ContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
+	public RegistrationServiceFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
 		super( container, parent );
 	}
 

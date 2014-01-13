@@ -11,8 +11,9 @@
 package net.osgi.jp2p.chaupal.discovery;
 
 import net.jxta.discovery.DiscoveryService;
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
+import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.jxta.discovery.DiscoveryServiceFactory;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
@@ -21,10 +22,16 @@ import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 public class ChaupalDiscoveryServiceFactory extends DiscoveryServiceFactory {
 
 	@SuppressWarnings("unchecked")
-	public ChaupalDiscoveryServiceFactory( ContainerBuilder container, DiscoveryServiceFactory factory ) {
+	public ChaupalDiscoveryServiceFactory( IContainerBuilder container, DiscoveryServiceFactory factory ) {
 		super( container, (IJp2pPropertySource<IJp2pProperties>) factory.getPropertySource().getParent() );
 		super.setCanCreate(false);
 		super.setSource(factory.getPropertySource());
+	}	
+	
+	@Override
+	public void notifyChange(ComponentBuilderEvent<Object> event) {
+		System.out.println( event.toString());// TODO Auto-generated method stub
+		super.notifyChange(event);
 	}
 
 	@Override

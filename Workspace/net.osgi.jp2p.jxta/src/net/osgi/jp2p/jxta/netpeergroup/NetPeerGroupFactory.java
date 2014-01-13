@@ -12,74 +12,42 @@ package net.osgi.jp2p.jxta.netpeergroup;
 
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkManager;
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.factory.AbstractComponentFactory;
-import net.osgi.jp2p.factory.ComponentBuilderEvent;
-import net.osgi.jp2p.utils.StringStyler;
-import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
+import net.osgi.jp2p.factory.AbstractComponentDependencyFactory;
+import net.osgi.jp2p.filter.ComponentFilter;
+import net.osgi.jp2p.filter.IComponentFactoryFilter;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
-import net.osgi.jp2p.jxta.netpeergroup.NetPeerGroupPropertySource;
 import net.osgi.jp2p.jxta.netpeergroup.NetPeerGroupService;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 
-public class NetPeerGroupFactory extends AbstractComponentFactory<PeerGroup>{
+public class NetPeerGroupFactory extends AbstractComponentDependencyFactory<PeerGroup, IJp2pComponent<NetworkManager>>{
 
-	private NetworkManager manager;
-
-	public NetPeerGroupFactory( ContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
-		super( container, parent, false );
+	public NetPeerGroupFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
+		super( container, parent );
 	}
 
 	@Override
 	public String getComponentName() {
 		return JxtaComponents.NET_PEERGROUP_SERVICE.toString();
 	}	
-	
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public NetPeerGroupPropertySource onCreatePropertySource() {
-		NetPeerGroupPropertySource source = new NetPeerGroupPropertySource( super.getParentSource());
+	protected IComponentFactoryFilter createFilter() {
+		return new ComponentFilter( BuilderEvents.FACTORY_COMPLETED, JxtaComponents.NETWORK_MANAGER.toString(), this );
+	}
+
+	@Override
+	public PeerGroupPropertySource onCreatePropertySource() {
+		PeerGroupPropertySource source = new PeerGroupPropertySource( PeerGroupPropertySource.S_NET_PEER_GROUP, super.getParentSource());
 		return source;
 	}
 	
 	@Override
 	protected IJp2pComponent<PeerGroup> onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties) {
-		NetPeerGroupService service = new NetPeerGroupService( this, manager );
-		super.setCompleted( true );
-		return service;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void notifyChange(ComponentBuilderEvent<Object> event) {
-		String name = StringStyler.styleToEnum(event.getFactory().getComponentName());
-		if( !JxtaComponents.isComponent(name))
-			return;
-
-		switch( event.getBuilderEvent()){
-		case COMPONENT_CREATED:
-			switch(JxtaComponents.valueOf( name )){
-
-			case NETWORK_MANAGER:
-				if( NetPeerGroupPropertySource.isAutoStart(super.getPropertySource() )){
-					this.manager = ((IJp2pComponent<NetworkManager>) event.getFactory().getComponent()).getModule();
-					super.setCanCreate(this.manager != null );
-				}
-				break;
-			default:
-				break;
-			}
-			break;
-		case FACTORY_COMPLETED:
-			if( !isComponentFactory( JxtaComponents.NETWORK_MANAGER, event.getFactory() ))
-				return;
-			Boolean autostart = DiscoveryPropertySource.isAutoStart( this.getPropertySource() );
-			if( autostart )
-				this.startComponent();
-			break;
-		default:
-			break;
-		}
+		return new NetPeerGroupService( this, (NetworkManager) super.getDependency().getModule() );
 	}
 }

@@ -25,7 +25,7 @@ import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.ManagedProperty;
 
-public class NetworkManagerPreferences extends AbstractPreferences<IJp2pProperties> implements INetworkManagerPreferences
+public class NetworkManagerPreferences extends AbstractPreferences implements INetworkManagerPreferences
 {
 	public NetworkManagerPreferences( IJp2pWritePropertySource<IJp2pProperties> source )
 	{
@@ -104,7 +104,7 @@ public class NetworkManagerPreferences extends AbstractPreferences<IJp2pProperti
 	 */
 	@Override
 	public PeerID getPeerID() throws URISyntaxException{
-		IJp2pWritePropertySource<IJp2pProperties> source = super.getSource();
+		NetworkManagerPropertySource source = (NetworkManagerPropertySource) super.getSource();
 		String name = source.getIdentifier();
 		PeerID pgId = IDFactory.newPeerID( PeerGroupID.defaultNetPeerGroupID, name.getBytes() );
 		ManagedProperty<IJp2pProperties, Object> property = source.getOrCreateManagedProperty( NetworkManagerProperties.PEER_ID, pgId.toString(), false );

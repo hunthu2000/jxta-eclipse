@@ -12,7 +12,7 @@ package net.osgi.jp2p.log;
 
 import java.util.logging.Logger;
 
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.properties.IJp2pProperties;
@@ -24,7 +24,7 @@ public class LoggerFactory extends
 	private Logger logger = Logger.getLogger(LoggerFactory.class.getName());
 
 	
-	public LoggerFactory( ContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
+	public LoggerFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
 		super( container, parent, true );
 	}
 

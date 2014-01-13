@@ -80,12 +80,18 @@ public class Jp2pComponent<T extends Object> implements IJp2pComponent<T>, Compa
 	public boolean isRoot(){
 		return ( this.parent == null );
 	}
+
 	/**
 	 * Get the parent of the component
 	 * @return
 	 */
 	public IJp2pComponent<?> getParent(){
 		return parent;
+	}
+
+	@Override
+	public void setParent(IJp2pComponent<?> parent) {
+		this.parent=  parent;
 	}
 
 	@Override

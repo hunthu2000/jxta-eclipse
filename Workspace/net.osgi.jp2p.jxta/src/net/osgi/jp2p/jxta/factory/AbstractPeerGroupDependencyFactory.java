@@ -11,50 +11,23 @@
 package net.osgi.jp2p.jxta.factory;
 
 import net.jxta.peergroup.PeerGroup;
-import net.osgi.jp2p.builder.ContainerBuilder;
-import net.osgi.jp2p.factory.AbstractComponentFactory;
-import net.osgi.jp2p.factory.ComponentBuilderEvent;
-import net.osgi.jp2p.factory.IComponentFactory;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
-import net.osgi.jp2p.jxta.peergroup.PeerGroupFactory;
+import net.osgi.jp2p.builder.IContainerBuilder;
+import net.osgi.jp2p.component.IJp2pComponent;
+import net.osgi.jp2p.factory.AbstractComponentDependencyFactory;
+import net.osgi.jp2p.filter.IComponentFactoryFilter;
+import net.osgi.jp2p.jxta.filter.PeerGroupFilter;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
-import net.osgi.jp2p.utils.StringStyler;
 
 public abstract class AbstractPeerGroupDependencyFactory<T extends Object> extends
-		AbstractComponentFactory<T> {
+		AbstractComponentDependencyFactory<T, IJp2pComponent<PeerGroup>> {
 
-	private PeerGroup peergroup;
-
-	public AbstractPeerGroupDependencyFactory( ContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
+	public AbstractPeerGroupDependencyFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
 		super( container, parent );
 	}
 
-	/**
-	 * Get the dependency that must be provided in order to allow creation of the cpomponent
-	 * @return
-	 */
-	protected PeerGroup getPeerGroup() {
-		return peergroup;
-	}
-
 	@Override
-	public void notifyChange(ComponentBuilderEvent<Object> event) {
- 		String name = StringStyler.styleToEnum(event.getFactory().getComponentName());
-		if( !JxtaComponents.isComponent(name))
-			return;
-
-		switch( event.getBuilderEvent()){
-		case COMPONENT_STARTED:
-			if( !PeerGroupFactory.isCorrectPeerGroup( this.getPropertySource(), event.getFactory()))
-				return;
-			peergroup = PeerGroupFactory.getPeerGroup( event.getFactory());
-			super.setCanCreate( peergroup != null );
-			super.startComponent();
-			break;
-		default:
-			break;
-		}
-		super.notifyChange(event);
+	protected IComponentFactoryFilter createFilter() {
+		return new PeerGroupFilter<IJp2pComponent<T>>( this );
 	}
 }

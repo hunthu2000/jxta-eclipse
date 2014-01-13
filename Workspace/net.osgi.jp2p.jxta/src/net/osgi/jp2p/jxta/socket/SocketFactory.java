@@ -13,7 +13,7 @@ package net.osgi.jp2p.jxta.socket;
 import net.jxta.platform.NetworkManager;
 import net.jxta.protocol.PipeAdvertisement;
 import net.jxta.socket.JxtaSocket;
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponent;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
@@ -31,7 +31,7 @@ public class SocketFactory extends AbstractComponentFactory<JxtaSocket> implemen
 	private NetworkManager manager;
 	private PipeAdvertisementFactory pipeFactory;
 
-	public SocketFactory( ContainerBuilder container, NetworkManager manager ) {
+	public SocketFactory( IContainerBuilder container, NetworkManager manager ) {
 		super( container );
 		this.manager = manager;
 		this.fillDefaultValues();

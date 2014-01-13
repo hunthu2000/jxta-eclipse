@@ -1,7 +1,7 @@
 package net.osgi.jp2p.jxta.factory;
 
 import net.jxta.document.Advertisement;
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.jxta.advertisement.Jp2pAdvertisementFactory;
 import net.osgi.jp2p.jxta.advertisement.JxtaAdvertisementFactory;
@@ -28,7 +28,7 @@ public class JxtaFactoryUtils {
 	 * @param componentName
 	 * @return
 	 */
-	public static IComponentFactory<?> getDefaultFactory( ContainerBuilder builder, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+	public static IComponentFactory<?> getDefaultFactory( IContainerBuilder builder, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
 		if( Utils.isNull(componentName))
 			return null;
 		String comp = StringStyler.styleToEnum(componentName);
@@ -77,6 +77,24 @@ public class JxtaFactoryUtils {
 		default:
 			break;
 		}
+		return factory;
+	}
+
+	/**
+	 * Get or create a corresponding factory for a child component of the given source, with the given component name.
+	 * @param source: the source who should have a child source
+	 * @param componentName: the required component name of the child
+	 * @param createSource: create the property source immediately
+	 * @return
+	 */
+	public static IComponentFactory<?> getOrCreateChildFactory( IContainerBuilder builder, IJp2pPropertySource<IJp2pProperties> source, String componentName, boolean createSource ){
+		IJp2pPropertySource<?> child = source.getChild( componentName ); 
+		if( child != null )
+			return builder.getFactory(child );
+		IComponentFactory<?> factory = getDefaultFactory(builder, source, componentName );
+		if( createSource )
+			factory.createPropertySource();
+		builder.addFactory( factory );
 		return factory;
 	}
 

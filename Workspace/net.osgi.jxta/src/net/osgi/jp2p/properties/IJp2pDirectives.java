@@ -14,6 +14,7 @@ public interface IJp2pDirectives{
 		SCHEMA_LOCATION,
 		ID,
 		NAME,
+		CLASS,
 		CONTEXT,
 		AUTO_START,
 		CLEAR,

@@ -19,6 +19,8 @@ import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jp2p.component.AbstractJp2pService;
 import net.osgi.jp2p.jxta.netpeergroup.NetPeerGroupFactory;
+import net.osgi.jp2p.properties.IJp2pProperties;
+import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 
 public class NetPeerGroupService extends AbstractJp2pService<PeerGroup>{
 
@@ -27,7 +29,7 @@ public class NetPeerGroupService extends AbstractJp2pService<PeerGroup>{
 	private NetworkManager manager;
 
 	public NetPeerGroupService( NetPeerGroupFactory factory, NetworkManager manager ) {
-		super( factory.getPropertySource().getBundleId(), S_NETPEERGROUP_SERVICE );
+		super(( IJp2pWritePropertySource<IJp2pProperties> ) factory.getPropertySource(), null );
 		this.manager = manager;
 	}
 
@@ -35,7 +37,7 @@ public class NetPeerGroupService extends AbstractJp2pService<PeerGroup>{
 	protected void activate() {
 		try {
 			PeerGroup peergroup = manager.startNetwork();
-			super.setComponent( peergroup );
+			super.setModule( peergroup );
 		} catch (PeerGroupException | IOException e) {
 			Logger log = Logger.getLogger( this.getClass().getName() );
 			log.log( Level.SEVERE, e.getMessage() );

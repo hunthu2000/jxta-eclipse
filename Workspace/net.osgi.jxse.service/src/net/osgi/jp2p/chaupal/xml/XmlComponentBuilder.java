@@ -65,8 +65,6 @@ public class XmlComponentBuilder<T extends Object> {
 		Map<String,String> directives = new HashMap<String, String>();
 		if(!Utils.isNull( source.getId() ))
 			directives.put( IJp2pDirectives.Directives.ID.toString().toLowerCase(), source.getId() );
-		if(!Utils.isNull( source.getIdentifier() ))
-			directives.put( IJp2pDirectives.Directives.NAME.toString().toLowerCase(), source.getIdentifier() );
 		Iterator<?> iterator = source.directiveIterator();
 		IJp2pDirectives key;
 		Object value;

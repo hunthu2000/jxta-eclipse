@@ -17,6 +17,7 @@ import net.osgi.jp2p.container.IJxseServiceContainer.ContextProperties;
 import net.osgi.jp2p.factory.IComponentFactory.Components;
 import net.osgi.jp2p.properties.AbstractJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pProperties;
+import net.osgi.jp2p.properties.IJp2pProperties.Jp2pProperties;
 import net.osgi.jp2p.utils.ProjectFolderUtils;
 import net.osgi.jp2p.validator.ClassValidator;
 import net.osgi.jp2p.validator.RangeValidator;
@@ -32,7 +33,7 @@ public class Jp2pContainerPropertySource extends AbstractJp2pWritePropertySource
 	public Jp2pContainerPropertySource( String bundleId) {
 		super( bundleId, Components.JP2P_CONTAINER.toString() );
 		this.setProperty( ContextProperties.BUNDLE_ID, bundleId, 
-				new ClassValidator( ContextProperties.CONFIG_MODE, String.class ), false );
+				new ClassValidator( Jp2pProperties.BUNDLE_ID, String.class ), false );
 		this.setProperty( ContextProperties.HOME_FOLDER, ProjectFolderUtils.getParsedUserDir(DEF_HOME_FOLDER, bundleId),
 				new ClassValidator( ContextProperties.HOME_FOLDER, URI.class ), false);
 		this.setProperty( ContextProperties.PORT, DEF_PORT,
@@ -46,7 +47,13 @@ public class Jp2pContainerPropertySource extends AbstractJp2pWritePropertySource
 	public String getBundleId(){
 		return (String) super.getProperty( ContextProperties.BUNDLE_ID );
 	}
+
 	
+	@Override
+	public String getIdentifier() {
+		return super.getIdentifier();
+	}
+
 	@Override
 	public IJp2pProperties getIdFromString(String key) {
 		return ContextProperties.valueOf( key );

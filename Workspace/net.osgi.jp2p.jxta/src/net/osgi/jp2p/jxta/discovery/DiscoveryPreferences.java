@@ -21,7 +21,7 @@ import net.osgi.jp2p.properties.AbstractPreferences;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 
-public class DiscoveryPreferences extends AbstractPreferences<IJp2pProperties>
+public class DiscoveryPreferences extends AbstractPreferences
 {
 	public DiscoveryPreferences( IJp2pWritePropertySource<IJp2pProperties> source )
 	{

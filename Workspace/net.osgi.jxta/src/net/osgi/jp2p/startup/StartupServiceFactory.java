@@ -10,7 +10,7 @@
  *******************************************************************************/
 package net.osgi.jp2p.startup;
 
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.container.ContainerFactory;
@@ -20,9 +20,9 @@ import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 
-public class StartupServiceFactory extends AbstractComponentFactory<ContainerBuilder>
+public class StartupServiceFactory extends AbstractComponentFactory<IContainerBuilder>
 {
-	public StartupServiceFactory( ContainerBuilder container,IJp2pPropertySource<IJp2pProperties> parent) {
+	public StartupServiceFactory( IContainerBuilder container,IJp2pPropertySource<IJp2pProperties> parent) {
 		super( container, parent );
 		super.setCanCreate( container != null );
 	}
@@ -40,7 +40,7 @@ public class StartupServiceFactory extends AbstractComponentFactory<ContainerBui
 
 	@Override
 	public void extendContainer() {
-		ContainerBuilder container = super.getBuilder();
+		IContainerBuilder container = super.getBuilder();
 		IComponentFactory<?> factory = container.getFactory( Components.JP2P_CONTAINER.toString() );
 		ContainerFactory cf = (ContainerFactory) factory;
 		if( !cf.isAutoStart() )
@@ -52,7 +52,7 @@ public class StartupServiceFactory extends AbstractComponentFactory<ContainerBui
 
 	@Override
 	protected Jp2pStartupService onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties) {
-		Jp2pStartupService service = new Jp2pStartupService( super.getBuilder(), (Jp2pStartupPropertySource) super.getPropertySource() );
+		Jp2pStartupService service = new Jp2pStartupService( (Jp2pStartupPropertySource) super.getPropertySource() );
 		if( Jp2pStartupPropertySource.isAutoStart( super.getPropertySource()))
 			service.initialise();
 		return service;

@@ -50,6 +50,7 @@
             allowMultiple="false"
             category="org.eclipse.jxse.ui.connectivity"
             class="org.chaupal.jp2p.ui.container.Jp2pContainerNavigator"
+            icon="resources/container.png"
             id="org.eclipse.jxse.ui.context.view"
             name="JP2P Service Context View"
             restorable="true">
@@ -58,6 +59,7 @@
             allowMultiple="false"
             category="org.eclipse.jxse.ui.connectivity"
             class="org.chaupal.jp2p.ui.peergroup.PeerGroupNavigator"
+            icon="resources/Peer_to_peer.png"
             id="org.eclipselabs.jxse.ui.context.peergroups"
             name="JP2P PeerGroup Viewer"
             restorable="true">
@@ -65,6 +67,7 @@
       <view
             category="org.eclipse.jxse.ui.connectivity"
             class="org.chaupal.jp2p.ui.monitor.ConnectivityViewPart"
+            icon="resources/connection.png"
             id="org.eclipse.jxse.ui.monitor.ConnectivityViewPart"
             name="JP2P Connectivity Monitor">
       </view>
@@ -72,11 +75,13 @@
             allowMultiple="true"
             category="org.eclipse.jxse.ui.connectivity"
             class="org.chaupal.jp2p.ui.view.ModuleTableViewer"
+            icon="resources/component.png"
             id="org.eclipse.jxse.ui.view.ModuleTableViewer"
             name="JP2P Module Viewer ">
       </view>
       <view
             class="org.chaupal.jp2p.ui.advertisement.AdvertisementTableViewer"
+            icon="resources/advertisement.png"
             id="org.eclipse.jxse.ui.view.AdvertisementTableViewer"
             name="Advertisement Viewer"
             restorable="true">
@@ -84,9 +89,17 @@
       <view
             allowMultiple="true"
             class="org.chaupal.jp2p.ui.view.advertisements.AdvertisementNavigator"
+            icon="resources/advertisement.png"
             id="org.condast.jxta.ide.view.jxta.advertisements"
             name="JP2P Advertisement Viewer"
             restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            class="org.chaupal.jp2p.ui.platform.PlatformConfigViewer"
+            icon="resources/component.png"
+            id="org.chaupal.jp2p.ui.platform.PlatformConfigViewer"
+            name="Platform Configuration Viewer">
       </view>
    </extension>
    <extension
@@ -290,6 +303,16 @@
                relative="org.eclipse.jxse.ui.monitor.ConnectivityViewPart"
                showTitle="true"
                standalone="true"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="org.chaupal.jp2p.ui.platform.PlatformConfigViewer"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.eclipse.ui.views.ProblemView"
+               showTitle="true"
                visible="true">
          </view>
       </perspectiveExtension>

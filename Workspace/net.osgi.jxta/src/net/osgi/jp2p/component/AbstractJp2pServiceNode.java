@@ -41,12 +41,14 @@ public abstract class AbstractJp2pServiceNode<T extends Object>
 	@Override
 	public void addChild( IJp2pComponent<?> child ){
 		this.children.add( child );
+		child.setParent(this);
 		notifyComponentChanged( new ComponentChangedEvent( this, AbstractServiceContainer.ServiceChange.CHILD_ADDED ));
 	}
 
 	@Override
 	public void removeChild( IJp2pComponent<?> child ){
 		this.children.remove( child );
+		child.setParent(null);
 		notifyComponentChanged( new ComponentChangedEvent( this, AbstractServiceContainer.ServiceChange.CHILD_REMOVED ));
 	}
 

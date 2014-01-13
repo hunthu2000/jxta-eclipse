@@ -22,8 +22,8 @@ import org.eclipselabs.osgi.ds.broker.service.AbstractProvider;
 
 public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
 
-	public static final String S_IJXSE_CONTAINER_PACKAGE_ID = "org.osgi.jxse.service.core";
-	public static final String S_IJXSE_TOKEN = "org.osgi.jxse.token";
+	public static final String S_IJP2P_CONTAINER_PACKAGE_ID = "org.osgi.jxse.service.core";
+	public static final String S_IP2P_TOKEN = "org.osgi.jxse.token";
 	
 	private JxseContextProvider provider;
 	private String introduction;
@@ -32,7 +32,7 @@ public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
 	protected Jp2pDSComponent() {}
 
 	protected Jp2pDSComponent( AbstractJp2pBundleActivator activator ) {
-		this( S_IJXSE_CONTAINER_PACKAGE_ID, S_IJXSE_TOKEN, activator);
+		this( S_IJP2P_CONTAINER_PACKAGE_ID, S_IP2P_TOKEN, activator);
 	}
 
 	protected Jp2pDSComponent( String introduction, String token, AbstractJp2pBundleActivator activator ) {
@@ -125,7 +125,7 @@ class Palaver extends AbstractPalaver<String>{
 	private String providedToken;
 	
 	protected Palaver() {
-		super( Jp2pDSComponent.S_IJXSE_CONTAINER_PACKAGE_ID);
+		super( Jp2pDSComponent.S_IJP2P_CONTAINER_PACKAGE_ID);
 	}
 
 	protected Palaver( String introduction, String token ) {
@@ -136,7 +136,7 @@ class Palaver extends AbstractPalaver<String>{
 	@Override
 	public String giveToken() {
 		if( providedToken == null )
-			return Jp2pDSComponent.S_IJXSE_TOKEN;
+			return Jp2pDSComponent.S_IP2P_TOKEN;
 		return providedToken;
 	}
 
@@ -144,7 +144,7 @@ class Palaver extends AbstractPalaver<String>{
 	public boolean confirm(Object token) {
 		boolean retval = false;
 		if( providedToken == null )
-			retval = Jp2pDSComponent.S_IJXSE_TOKEN .equals( token );
+			retval = Jp2pDSComponent.S_IP2P_TOKEN .equals( token );
 		else
 			retval = providedToken.equals(token);
 		return retval;

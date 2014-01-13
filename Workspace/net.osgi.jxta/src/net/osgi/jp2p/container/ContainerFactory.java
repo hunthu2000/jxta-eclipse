@@ -10,7 +10,7 @@
  *******************************************************************************/
 package net.osgi.jp2p.container;
 
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.factory.IComponentFactory;
@@ -24,7 +24,7 @@ public class ContainerFactory extends AbstractComponentFactory<Jp2pStartupServic
 {
 	private String bundleId;
 	
-	public ContainerFactory( ContainerBuilder container, String bundleId) {
+	public ContainerFactory( IContainerBuilder container, String bundleId) {
 		super(container, true );
 		this.bundleId = bundleId;
 	}	
@@ -68,7 +68,7 @@ public class ContainerFactory extends AbstractComponentFactory<Jp2pStartupServic
 	 * @return
 	 */
 	public boolean isAutoStart(){
-		ContainerBuilder container = super.getBuilder();
+		IContainerBuilder container = super.getBuilder();
 		boolean autostart = Jp2pContainerPropertySource.isAutoStart(this.getPropertySource());
 		if( autostart)
 			return true;
@@ -79,7 +79,7 @@ public class ContainerFactory extends AbstractComponentFactory<Jp2pStartupServic
 
 	@SuppressWarnings("unchecked")
 	private void onPropertySourceCreated(){
-		ContainerBuilder container = super.getBuilder();
+		IContainerBuilder container = super.getBuilder();
 		boolean autostart = Jp2pContainerPropertySource.isAutoStart(this.getPropertySource());
 		String comp = Components.STARTUP_SERVICE.toString();
 		IComponentFactory<?> startup = container.getFactory( comp );

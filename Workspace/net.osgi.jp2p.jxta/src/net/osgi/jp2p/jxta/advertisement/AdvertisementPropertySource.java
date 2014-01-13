@@ -27,7 +27,8 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 	public enum Scope{
 		INTERNAL,
 		LOCAL,
-		REMOTE;
+		REMOTE,
+		REMOTE_ONLY;
 	
 		@Override
 		public String toString() {

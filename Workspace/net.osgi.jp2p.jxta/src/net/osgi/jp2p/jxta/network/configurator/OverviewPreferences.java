@@ -22,12 +22,13 @@ import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.osgi.jp2p.jxta.network.INetworkPreferences;
 import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.properties.AbstractPreferences;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.ManagedProperty;
 
-public class OverviewPreferences extends AbstractPreferences<IJp2pProperties> implements INetworkPreferences{
+public class OverviewPreferences extends AbstractPreferences implements INetworkPreferences{
 
 	public static final String S_OVERVIEW = "Overview";
 
@@ -81,7 +82,8 @@ public class OverviewPreferences extends AbstractPreferences<IJp2pProperties> im
 		Object value = null;
 		switch( id ){
 		case PEER_ID:
-			String name = super.getSource().getIdentifier();
+			PeerGroupPropertySource source = (PeerGroupPropertySource) super.getSource();
+			String name = source.getIdentifier();
 			value = IDFactory.newPeerID( PeerGroupID.defaultNetPeerGroupID, name.getBytes() );
 			break;
 		default:

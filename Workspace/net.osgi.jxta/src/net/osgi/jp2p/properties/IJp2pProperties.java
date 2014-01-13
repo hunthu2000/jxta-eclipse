@@ -9,8 +9,9 @@ public interface IJp2pProperties{
 	 * @author Kees
 	 *
 	 */
-	public enum JxseProperties implements IJp2pProperties{
+	public enum Jp2pProperties implements IJp2pProperties{
 		STATUS,
+		BUNDLE_ID,
 		CREATE_DATE;
 
 		@Override
@@ -27,7 +28,7 @@ public interface IJp2pProperties{
 			str = StringStyler.styleToEnum(str);
 			if(( str == null ) || ( str.length() == 0 ))
 				return false;
-			for( JxseProperties comp: values()){
+			for( Jp2pProperties comp: values()){
 				if( comp.name().equals( str.toUpperCase() ))
 					return true;
 			}

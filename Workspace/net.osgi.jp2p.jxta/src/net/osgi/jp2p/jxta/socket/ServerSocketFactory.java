@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 import net.jxta.platform.NetworkManager;
 import net.jxta.protocol.PipeAdvertisement;
 import net.jxta.socket.JxtaServerSocket;
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponent;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
@@ -34,7 +34,7 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 	private NetworkManager manager;
 	private PipeAdvertisementFactory pipeFactory;
 
-	public ServerSocketFactory( ContainerBuilder container, NetworkManager manager ) {
+	public ServerSocketFactory( IContainerBuilder container, NetworkManager manager ) {
 		super( container );
 		this.manager = manager;
 		this.fillDefaultValues();

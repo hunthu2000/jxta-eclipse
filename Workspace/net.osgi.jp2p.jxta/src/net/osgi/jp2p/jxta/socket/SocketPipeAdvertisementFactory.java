@@ -20,7 +20,7 @@ import net.jxta.id.IDFactory;
 import net.jxta.pipe.PipeID;
 import net.jxta.pipe.PipeService;
 import net.jxta.protocol.PipeAdvertisement;
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponent;
 import net.osgi.jp2p.utils.StringStyler;
@@ -44,7 +44,7 @@ public class SocketPipeAdvertisementFactory extends PipeAdvertisementFactory {
 		}
 	}
 	
-	public SocketPipeAdvertisementFactory( ContainerBuilder container) {
+	public SocketPipeAdvertisementFactory( IContainerBuilder container) {
 		super( container);
 		this.fillDefaultValues();
 	}

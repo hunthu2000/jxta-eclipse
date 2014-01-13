@@ -21,15 +21,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jxta.platform.NetworkManager;
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponentNode;
 import net.osgi.jp2p.container.ContainerFactory;
 import net.osgi.jp2p.container.Jp2pContainerPropertySource;
-import net.osgi.jp2p.factory.AbstractComponentFactory;
-import net.osgi.jp2p.factory.ComponentBuilderEvent;
-import net.osgi.jp2p.factory.IComponentFactory;
+import net.osgi.jp2p.factory.AbstractFilterFactory;
+import net.osgi.jp2p.filter.ComponentFilter;
+import net.osgi.jp2p.filter.IComponentFactoryFilter;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.factory.JxtaFactoryUtils;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerDirectives;
 import net.osgi.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jp2p.jxta.network.NetworkManagerPreferences;
@@ -40,11 +42,11 @@ import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 
-public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManager>{
+public class NetworkManagerFactory extends AbstractFilterFactory<NetworkManager>{
 		
 	public static final String S_WRN_NO_CONFIGURATOR = "Could not add network configurator";
 	
-	public NetworkManagerFactory( ContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
+	public NetworkManagerFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
 		super( container, parentSource );
 	}
 
@@ -54,6 +56,11 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 	}
 	
 	@Override
+	protected IComponentFactoryFilter createFilter() {
+		return new ComponentFilter<IJp2pComponent<NetworkManager>, ContainerFactory>( BuilderEvents.COMPONENT_CREATED, Components.JP2P_CONTAINER.toString(), this );
+	}
+
+	@Override
 	protected NetworkManagerPropertySource onCreatePropertySource() {
 		NetworkManagerPropertySource source = new NetworkManagerPropertySource( (Jp2pContainerPropertySource) super.getParentSource());
 		NetworkManagerPropertySource.setParentDirective(Directives.AUTO_START, source);
@@ -62,11 +69,10 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 
 	@Override
 	public void extendContainer() {
-		ContainerBuilder container = super.getBuilder();
-		IComponentFactory<?> ncf = container.getFactory( JxtaComponents.NETWORK_CONFIGURATOR.toString() );
-		if( ncf == null )
-			ncf = container.addFactoryToContainer( JxtaComponents.NETWORK_CONFIGURATOR.toString(), this, true, true );
-		
+		IContainerBuilder builder = super.getBuilder();
+		JxtaFactoryUtils.getOrCreateChildFactory( builder, super.getPropertySource(), JxtaComponents.NETWORK_CONFIGURATOR.toString(), true );
+		PeerGroupPropertySource npps = (PeerGroupPropertySource) JxtaFactoryUtils.getOrCreateChildFactory( builder, super.getParentSource(), JxtaComponents.NET_PEERGROUP_SERVICE.toString(), true ).getPropertySource();
+		npps.setDirective( Directives.AUTO_START, this.getPropertySource().getDirective( Directives.AUTO_START ));
 		super.extendContainer();
 	}
 
@@ -106,21 +112,4 @@ public class NetworkManagerFactory extends AbstractComponentFactory<NetworkManag
 			return null;
 		}
 	}
-	
-	@Override
-	public void notifyChange(ComponentBuilderEvent<Object> event) {
-		switch( event.getBuilderEvent()){
-		case COMPONENT_CREATED:
-			if( !isComponentFactory( Components.JP2P_CONTAINER, event.getFactory() ))
-				break;
-			IComponentFactory<?> factory = event.getFactory();
-			ContainerFactory cf = (ContainerFactory) factory;
-			if( cf.isAutoStart() )
-				this.createComponent();
-			break;
-		default:
-			break;
-		}
-		super.notifyChange(event);
-	}	
 }

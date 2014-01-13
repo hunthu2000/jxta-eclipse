@@ -70,12 +70,17 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 		return JxtaComponents.NETWORK_MANAGER.toString();
 	}
 
+	@Override
+	public String getIdentifier() {
+		return super.getIdentifier();
+	}
+
 	private void fill( Jp2pContainerPropertySource parent ){
 		Iterator<IJp2pProperties> iterator = parent.propertyIterator();
 		this.setDirective( Directives.AUTO_START, parent.getDirective( Directives.AUTO_START ));
 		this.setDirective( Directives.CLEAR, parent.getDirective( Directives.CLEAR ));
 		while( iterator.hasNext() ){
-			ContextProperties cp = (ContextProperties) iterator.next();
+			IJp2pProperties cp =  iterator.next();
 			IJp2pProperties nmp = convertFrom( cp );
 			if( nmp == null )
 				continue;
@@ -132,8 +137,11 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 	 * @param context
 	 * @return
 	 */
-	public IJp2pProperties convertFrom( ContextProperties context ){
-		switch( context ){
+	public IJp2pProperties convertFrom( IJp2pProperties context ){
+		if(!( context instanceof ContextProperties ))
+			return context;
+		ContextProperties key = (ContextProperties) context;
+		switch( key ){
 		case CONFIG_MODE:
 			return NetworkManagerProperties.MODE;
 		case HOME_FOLDER:

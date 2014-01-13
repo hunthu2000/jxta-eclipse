@@ -13,7 +13,7 @@ package net.osgi.jp2p.jxta.seeds;
 import java.util.Iterator;
 
 import net.jxta.platform.NetworkConfigurator;
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
@@ -27,7 +27,7 @@ public class SeedListFactory extends AbstractComponentFactory<String> implements
 
 	private NetworkConfigurator configurator;
 	
-	public SeedListFactory( ContainerBuilder container,  IJp2pPropertySource<IJp2pProperties> parent ) {
+	public SeedListFactory( IContainerBuilder container,  IJp2pPropertySource<IJp2pProperties> parent ) {
 		super( container, parent);
 	}
 
@@ -63,6 +63,8 @@ public class SeedListFactory extends AbstractComponentFactory<String> implements
 		Iterator<IJp2pProperties> iterator = source.propertyIterator();
 		while( iterator.hasNext() ){
 			IJp2pProperties key = iterator.next();
+			if(!( source.getProperty(key) instanceof SeedInfo ))
+				continue;
 			SeedInfo seedInfo = ( SeedInfo ) source.getProperty( key);
 			switch( seedInfo.getSeedType() ){
 			case RDV:

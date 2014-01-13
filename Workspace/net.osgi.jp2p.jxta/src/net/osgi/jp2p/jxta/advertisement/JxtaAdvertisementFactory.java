@@ -19,7 +19,7 @@ import net.jxta.document.AdvertisementFactory;
 import net.jxta.id.ID;
 import net.jxta.pipe.PipeID;
 import net.jxta.protocol.PipeAdvertisement;
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponent;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
@@ -36,7 +36,7 @@ import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 
 public class JxtaAdvertisementFactory extends AbstractPeerGroupDependencyFactory<Advertisement> {
 	
-	public JxtaAdvertisementFactory( ContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource) {
+	public JxtaAdvertisementFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource) {
 		super( container, parentSource );
 	}
 
@@ -45,6 +45,7 @@ public class JxtaAdvertisementFactory extends AbstractPeerGroupDependencyFactory
 		return JxtaComponents.ADVERTISEMENT.toString();
 	}
 
+	
 	@Override
 	protected AdvertisementPropertySource onCreatePropertySource() {
 		AdvertisementPropertySource source = new AdvertisementPropertySource( super.getParentSource() );
@@ -72,7 +73,7 @@ public class JxtaAdvertisementFactory extends AbstractPeerGroupDependencyFactory
 		}
 		return new Jp2pComponent<Advertisement>((IJp2pWritePropertySource<IJp2pProperties>) source, adv );
 	}
-	
+
 	/**
 	 * Create a pipe advertisement
 	 * @return
@@ -81,7 +82,7 @@ public class JxtaAdvertisementFactory extends AbstractPeerGroupDependencyFactory
 	protected PipeAdvertisement createPipeAdvertisement() throws URISyntaxException{
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getPropertySource();
 		AdvertisementTypes type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( (String) source.getDirective( AdvertisementDirectives.TYPE )));
-		AdvertisementPreferences preferences = new AdvertisementPreferences( source, super.getPeerGroup());
+		AdvertisementPreferences preferences = new AdvertisementPreferences( source, super.getDependency().getModule());
 		PipeAdvertisement pipead = ( PipeAdvertisement )AdvertisementFactory.newAdvertisement( AdvertisementTypes.convertTo(type));
 		PipeID pipeId = preferences.getPipeID();
 		pipead.setPipeID( (ID) pipeId );

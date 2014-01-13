@@ -128,7 +128,8 @@ public class ChaupalDiscoveryService extends AbstractJp2pServiceNode<DiscoverySe
 			if(( advertisements != null ) && ( advertisements.length > 0 )){
 				size = advertisements.length;
 				source.setProperty( DiscoveryProperties.FOUND, size );
-				return false;
+				if( size > 0 )
+					return false;
 			}
 		}
 		boolean retval = super.start();

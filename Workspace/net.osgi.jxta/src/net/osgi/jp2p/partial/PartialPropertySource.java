@@ -69,11 +69,6 @@ implements  IJp2pWritePropertySource<IJp2pProperties>{
 	}
 
 	@Override
-	public String getIdentifier() {
-		return  Utils.isNull( this.componentName )? super.getIdentifier(): null;
-	}
-
-	@Override
 	public IJp2pPropertySource<?> getParent() {
 		return super.getSource();
 	}

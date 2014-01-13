@@ -1,6 +1,6 @@
 package net.osgi.jp2p.partial;
 
-import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
@@ -12,7 +12,7 @@ public class PartialFactory<T extends Object> extends AbstractComponentFactory<T
 	private String componentName;
 	private boolean completed;
 	
-	public PartialFactory( ContainerBuilder container, String componentName, IJp2pPropertySource<IJp2pProperties> parentSource ){
+	public PartialFactory( IContainerBuilder container, String componentName, IJp2pPropertySource<IJp2pProperties> parentSource ){
 		super( container, parentSource, false);
 		this.componentName = componentName;
 		this.completed = false;

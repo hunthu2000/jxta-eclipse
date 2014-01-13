@@ -12,13 +12,13 @@ package net.osgi.jp2p.factory;
 
 import java.util.EventObject;
 
-public class JxseComponentEvent<T extends Object> extends EventObject {
+public class Jp2pComponentEvent<T extends Object> extends EventObject {
 
 	private static final long serialVersionUID = 302931451825865288L;
 
 	private T module;
 	
-	public JxseComponentEvent( IComponentFactory<T> source, T module ) {
+	public Jp2pComponentEvent( IComponentFactory<T> source, T module ) {
 		super(source);
 		this.module = module;
 	}

@@ -160,6 +160,18 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public IJp2pComponent<?> getParent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setParent(IJp2pComponent<?> parent) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
 /**
@@ -170,7 +182,7 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
  */
 class ResourcePalaver extends AbstractPalaver<String>{
 
-	private static final String S_JXSE_INF = "/JXSE-INF/token.txt";
+	private static final String S_JP2P_INF = "/JP2P-INF/token.txt";
 	
 	private String providedToken;
 
@@ -181,13 +193,13 @@ class ResourcePalaver extends AbstractPalaver<String>{
 
 	private static final String[] getProvidedInfo(){
 		Class<?> clss = ResourcePalaver.class;
-		String[] info = { Jp2pDSComponent.S_IJXSE_CONTAINER_PACKAGE_ID, Jp2pDSComponent.S_IJXSE_TOKEN} ;
-		URL url = clss.getResource(S_JXSE_INF );
+		String[] info = { Jp2pDSComponent.S_IJP2P_CONTAINER_PACKAGE_ID, Jp2pDSComponent.S_IP2P_TOKEN} ;
+		URL url = clss.getResource(S_JP2P_INF );
 		if( url == null )
 			return info;
 		Scanner scanner = null;
 		try{
-			scanner = new Scanner( clss.getResourceAsStream( S_JXSE_INF ));
+			scanner = new Scanner( clss.getResourceAsStream( S_JP2P_INF ));
 			String str = scanner.nextLine();
 			if( !Utils.isNull(str))
 				info[0] = str;
@@ -209,7 +221,7 @@ class ResourcePalaver extends AbstractPalaver<String>{
 	@Override
 	public String giveToken() {
 		if( this.providedToken == null )
-			return  Jp2pDSComponent.S_IJXSE_TOKEN;
+			return  Jp2pDSComponent.S_IP2P_TOKEN;
 		return this.providedToken;	
 	}
 
@@ -217,7 +229,7 @@ class ResourcePalaver extends AbstractPalaver<String>{
 	public boolean confirm(Object token) {
 		if( token == null )
 			return false;
-		boolean retval = token.equals( Jp2pDSComponent.S_IJXSE_TOKEN ); 
+		boolean retval = token.equals( Jp2pDSComponent.S_IP2P_TOKEN ); 
 		if( retval )
 			return ( retval );
 		return token.equals(this.providedToken );

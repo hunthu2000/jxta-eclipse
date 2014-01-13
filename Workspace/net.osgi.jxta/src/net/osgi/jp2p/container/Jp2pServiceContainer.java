@@ -17,8 +17,8 @@ import net.osgi.jp2p.startup.Jp2pStartupService;
 
 public class Jp2pServiceContainer extends AbstractServiceContainer<Jp2pStartupService>{
 
-	public Jp2pServiceContainer( IJp2pPropertySource<IJp2pProperties> iJxsePropertySource ) {
-		super( iJxsePropertySource );
+	public Jp2pServiceContainer( IJp2pPropertySource<IJp2pProperties> IJxsePropertySource ) {
+		super( IJxsePropertySource );
 	}
 
 	@Override
