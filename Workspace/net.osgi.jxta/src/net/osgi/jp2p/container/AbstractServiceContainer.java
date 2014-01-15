@@ -31,7 +31,7 @@ import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 import net.osgi.jp2p.utils.StringStyler;
 
 public class AbstractServiceContainer<T extends Object> extends AbstractActivator 
-implements IJxseServiceContainer<T>{
+implements	IJxseServiceContainer<T>{
 
 	public static enum ServiceChange{
 		CHILD_ADDED,
@@ -51,8 +51,6 @@ implements IJxseServiceContainer<T>{
 	
 	private Collection<IJp2pComponent<?>> children;
 	private IJp2pPropertySource<IJp2pProperties> source;
-	private IJp2pComponent<?> parent;
-
 	
 	//Takes care of all the messaging through the container
 	private ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
@@ -60,7 +58,7 @@ implements IJxseServiceContainer<T>{
 	private Swarm<?> swarm;
 
 	protected AbstractServiceContainer( String bundleId, String identifier) {
-		this((IJp2pPropertySource<IJp2pProperties>) new Jp2pContainerPropertySource( bundleId ));
+		this( (IJp2pPropertySource<IJp2pProperties>) new Jp2pContainerPropertySource( bundleId ));
 	}
 
 	protected AbstractServiceContainer( IJp2pPropertySource<IJp2pProperties> source ) {
@@ -78,15 +76,6 @@ implements IJxseServiceContainer<T>{
 	@Override
 	public String getId() {
 		return (String) this.source.getDirective( Directives.ID );
-	}
-
-	public IJp2pComponent<?> getParent(){
-		return parent;
-	}
-
-	@Override
-	public void setParent(IJp2pComponent<?> parent) {
-		this.parent=  parent;
 	}
 
 	/**
@@ -220,19 +209,4 @@ implements IJxseServiceContainer<T>{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	/**
-	 * Get the service container for the given container
-	 * @param component
-	 * @return
-	 */
-	public static final IJxseServiceContainer<?> findServiceContainer( IJp2pComponent<?> component ){
-		if( component == null )
-			return null;
-		if( component instanceof IJxseServiceContainer<?> )
-			return (IJxseServiceContainer<?>) component;
-		else
-			return findServiceContainer(component.getParent());
-	}
-
 }

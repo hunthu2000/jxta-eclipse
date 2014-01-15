@@ -160,18 +160,6 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public IJp2pComponent<?> getParent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setParent(IJp2pComponent<?> parent) {
-		// TODO Auto-generated method stub
-		
-	}
 }
 
 /**

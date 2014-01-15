@@ -35,8 +35,8 @@ import net.osgi.jp2p.container.Jp2pContainerPropertySource;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.factory.IComponentFactory.Components;
 import net.osgi.jp2p.factory.IJp2pComponents;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPreferences;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementProperties;
 import net.osgi.jp2p.jxta.context.Jp2pContainerPreferences;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPreferences;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
@@ -53,7 +53,7 @@ import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySourc
 import net.osgi.jp2p.jxta.network.configurator.OverviewPreferences;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.jxta.pipe.PipePropertySource;
-import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeProperties;
+import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeServiceProperties;
 import net.osgi.jp2p.jxta.registration.RegistrationPropertySource;
 import net.osgi.jp2p.jxta.seeds.SeedListPropertySource;
 import net.osgi.jp2p.partial.PartialPropertySource;
@@ -438,13 +438,13 @@ class Jp2pHandler extends DefaultHandler{
 			return;
 		}
 		if( source instanceof AdvertisementPropertySource ){
-			AdvertisementPropertySource aps = ( AdvertisementPropertySource )source ;
-			aps.setProperty( (AdvertisementProperties) property.getKey(), value);
+			AdvertisementPreferences preferences = new AdvertisementPreferences( source );
+			preferences.setPropertyFromString( property.getKey(), value);
 			return;
 		}
 		if( source instanceof PipePropertySource ){
 			PipePropertySource pps = ( PipePropertySource )source ;
-			pps.setProperty( (PipeProperties) property.getKey(), value);
+			pps.setProperty( (PipeServiceProperties) property.getKey(), value);
 			return;
 		}
 		if( source instanceof PeerGroupPropertySource ){

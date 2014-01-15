@@ -24,7 +24,7 @@ import net.osgi.jp2p.component.IComponentChangedListener;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.container.AbstractServiceContainer;
 import net.osgi.jp2p.container.AbstractServiceContainer.ServiceChange;
-import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeProperties;
+import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeServiceProperties;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 
@@ -55,7 +55,7 @@ public class ChaupalPipeService extends AbstractJp2pServiceNode<PipeService>{
 	 * @throws IOException
 	 */
 	public OutputPipe getOutputPipe() throws IOException{
-		return super.getModule().createOutputPipe( pipead, (long) super.getPropertySource().getProperty( PipeProperties.TIME_OUT ));
+		return super.getModule().createOutputPipe( pipead, (long) super.getPropertySource().getProperty( PipeServiceProperties.TIME_OUT ));
 	}
 
 	@Override

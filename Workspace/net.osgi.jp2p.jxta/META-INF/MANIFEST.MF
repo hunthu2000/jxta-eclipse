@@ -43,6 +43,7 @@ Import-Package: net.jxta.discovery,
  org.osgi.util.tracker;version="1.5.1"
 Service-Component: OSGI-INF/attendees.xml 
 Export-Package: net.osgi.jp2p.jxta.advertisement,
+ net.osgi.jp2p.jxta.advertisement.service,
  net.osgi.jp2p.jxta.context,
  net.osgi.jp2p.jxta.discovery,
  net.osgi.jp2p.jxta.factory,

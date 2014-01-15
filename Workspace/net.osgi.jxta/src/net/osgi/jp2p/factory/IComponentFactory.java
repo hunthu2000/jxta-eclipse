@@ -96,10 +96,4 @@ public interface IComponentFactory<T extends Object> extends ICompositeBuilderLi
 	 * @return
 	 */
 	public T getComponent();
-	
-	/**
-	 * Returns true if the module is activated
-	 * @return
-	 */
-	public boolean componentActive();
 }

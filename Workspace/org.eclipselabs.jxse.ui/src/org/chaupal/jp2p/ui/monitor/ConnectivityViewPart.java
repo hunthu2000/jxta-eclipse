@@ -8,8 +8,6 @@ import net.jxta.rendezvous.RendezVousService;
 import net.jxta.rendezvous.RendezvousEvent;
 import net.jxta.rendezvous.RendezvousListener;
 import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.jxta.peergroup.PeerGroupFactory;
-import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.log.Jp2pLevel;
 
 import org.chaupal.jp2p.ui.log.Jp2pLog;
@@ -53,7 +51,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.jface.viewers.TableViewer;
 
-public class ConnectivityViewPart extends ViewPart implements Runnable{
+public class ConnectivityViewPart extends ViewPart{
 
 	public static final String ID = "net.equinox.jxta.ui.monitor.ConnectivityViewPart"; //$NON-NLS-1$
 	public static final String S_CONNECTIVITY_MONITOR = "Connectivity Monitor";
@@ -86,6 +84,15 @@ public class ConnectivityViewPart extends ViewPart implements Runnable{
 	private Table table_1;
 	private Composite composite_1;
 	private SashForm sashForm_1;
+	
+	private Runnable runner = new Runnable(){
+
+		@Override
+		public void run() {
+	    	if( peerGroup != null )
+	            refresh();
+		}
+	};
 	
 	public ConnectivityViewPart() {
 		setPartName( S_CONNECTIVITY_MONITOR );
@@ -165,36 +172,36 @@ public class ConnectivityViewPart extends ViewPart implements Runnable{
 		aliveRadioButton = new Button(composite_2, SWT.RADIO);
 		aliveRadioButton.setBounds(0, 0, 90, 16);
 		aliveRadioButton.setText("Alive");
-		
-				isRDVCheckBox = new Button(composite_2, SWT.CHECK);
-				isRDVCheckBox.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						IsRDVCheckBoxActionPerformed(e);			}
-				});
-				isRDVCheckBox.setText("is RDV");
-				new Label(composite_2, SWT.NONE);
-				new Label(composite_2, SWT.NONE);
-				
-				isConnectedToRDVCheckBox = new Button(composite_2, SWT.CHECK);
-				isConnectedToRDVCheckBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
-				isConnectedToRDVCheckBox.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-                IsConnectedToRDVCheckBoxActionPerformed(e);
-					}
-				});
-				isConnectedToRDVCheckBox.setText("is connected to RDV");
-				
-				isConnectedToRelayCheckBox = new Button(composite_2, SWT.CHECK);
-				isConnectedToRelayCheckBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-				isConnectedToRelayCheckBox.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-	               IsConnectedToRelayCheckBoxActionPerformed( e );
-	        }
-				});
-				isConnectedToRelayCheckBox.setText("is connected to Relay");
+
+		isRDVCheckBox = new Button(composite_2, SWT.CHECK);
+		isRDVCheckBox.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IsRDVCheckBoxActionPerformed(e);			}
+		});
+		isRDVCheckBox.setText("is RDV");
+		new Label(composite_2, SWT.NONE);
+		new Label(composite_2, SWT.NONE);
+
+		isConnectedToRDVCheckBox = new Button(composite_2, SWT.CHECK);
+		isConnectedToRDVCheckBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
+		isConnectedToRDVCheckBox.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IsConnectedToRDVCheckBoxActionPerformed(e);
+			}
+		});
+		isConnectedToRDVCheckBox.setText("is connected to RDV");
+
+		isConnectedToRelayCheckBox = new Button(composite_2, SWT.CHECK);
+		isConnectedToRelayCheckBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		isConnectedToRelayCheckBox.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IsConnectedToRelayCheckBoxActionPerformed( e );
+			}
+		});
+		isConnectedToRelayCheckBox.setText("is connected to Relay");
 				
 				new Label(composite_2, SWT.NONE);
 				new Label(composite_2, SWT.NONE);
@@ -214,7 +221,7 @@ public class ConnectivityViewPart extends ViewPart implements Runnable{
 		composite_4.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		tableViewer_1 = new TableViewer(composite_4, SWT.BORDER | SWT.FULL_SELECTION);
-		createColumn("Conntected Edges", tableViewer_1);
+		createColumn("Edges", tableViewer_1);
 		tableViewer_1.setColumnProperties(new String[] {"Relays"});
 		table_1 = tableViewer_1.getTable();
 		table_1.setHeaderVisible(true);
@@ -225,7 +232,7 @@ public class ConnectivityViewPart extends ViewPart implements Runnable{
 		composite_3.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		tableViewer = new TableViewer(composite_3, SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-		createColumn("Connected Relays", tableViewer);
+		createColumn("Relays", tableViewer);
 		table = tableViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -236,7 +243,7 @@ public class ConnectivityViewPart extends ViewPart implements Runnable{
 		createActions();
 		initializeToolBar();
 		initializeMenu();
-        theMonitorFuture = theExecutor.scheduleAtFixedRate(this, 5, 1, TimeUnit.SECONDS);
+        theMonitorFuture = theExecutor.scheduleAtFixedRate(runner, 5, 1, TimeUnit.SECONDS);
 	}
 
 	private void createColumn( String name, TableViewer viewer ){
@@ -294,11 +301,10 @@ public class ConnectivityViewPart extends ViewPart implements Runnable{
 		if(!( element instanceof IJp2pComponent<?>))
 			return;
 		IJp2pComponent<?> component = (IJp2pComponent<?> )element;
-
-		String peerGroupName = PeerGroupPropertySource.S_NET_PEER_GROUP;
-		if( peerGroup != null )
-			peerGroupName = peerGroup.getPeerGroupName();
-		  this.setPeerGroup( PeerGroupFactory.findPeerGroup(component, peerGroupName));
+		if(!( component.getModule() instanceof PeerGroup ))
+			this.setPeerGroup(null );
+		else
+		  this.setPeerGroup( (PeerGroup) component.getModule());
 	}
 
     /** Creates new form ConnectivityMonitor */
@@ -430,12 +436,6 @@ public class ConnectivityViewPart extends ViewPart implements Runnable{
             }
          });			
 	}
-
-    @Override
-	public void run() {
-    	if( this.peerGroup != null )
-          this.refresh();
-    }
 
     private void IsConnectedToRelayCheckBoxActionPerformed( SelectionEvent evt) {//GEN-FIRST:event_IsConnectedToRelayCheckBoxActionPerformed
         // TODO add your handling code here:

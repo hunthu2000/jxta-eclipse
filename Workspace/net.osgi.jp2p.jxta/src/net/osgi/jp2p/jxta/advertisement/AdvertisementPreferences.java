@@ -13,51 +13,26 @@ package net.osgi.jp2p.jxta.advertisement;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import net.jxta.id.ID;
 import net.jxta.id.IDFactory;
-import net.jxta.peergroup.PeerGroup;
-import net.jxta.pipe.PipeID;
-import net.jxta.pipe.PipeService;
-import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeProperties;
-import net.osgi.jp2p.utils.StringStyler;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
+import net.osgi.jp2p.jxta.advertisement.ModuleClassAdvertisementPropertySource.ModuleClassProperties;
+import net.osgi.jp2p.jxta.advertisement.ModuleSpecAdvertisementPropertySource.ModuleSpecProperties;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementDirectives;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
+import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeServiceProperties;
 import net.osgi.jp2p.properties.AbstractPreferences;
 import net.osgi.jp2p.properties.IJp2pProperties;
+import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.ManagedProperty;
+import net.osgi.jp2p.utils.StringStyler;
+import net.osgi.jp2p.utils.Utils;
 
 public class AdvertisementPreferences extends AbstractPreferences{
 
-	public enum PipeServiceTypes{
-		UNICAST,
-		SECURE_UNICAST,
-		PROPAGATE;
-		
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString());
-		}
-		
-		/**
-		 * Convert the enum to a form that the jxta lib can understand
-		 * @param pipeType
-		 * @return
-		 */
-		public static String convert( PipeServiceTypes pipeType ){
-			switch( pipeType ){
-			case UNICAST:
-				return PipeService.UnicastType;
-			case SECURE_UNICAST:
-				return PipeService.UnicastSecureType;
-			default:
-				return PipeService.PropagateType;
-			}
-		}
-	}
-
-	private PeerGroup peergroup;
-	
-	public AdvertisementPreferences( IJp2pWritePropertySource<IJp2pProperties> source, PeerGroup peergroup ) {
+	public AdvertisementPreferences( IJp2pWritePropertySource<IJp2pProperties> source ) {
 		super( source );
-		this.peergroup = peergroup;
 	}
 
 	/* (non-Javadoc)
@@ -65,21 +40,12 @@ public class AdvertisementPreferences extends AbstractPreferences{
 	 */
 	@Override
 	public Object convertValue( IJp2pProperties id, String value ){
-		if( !( id instanceof PipeProperties ))
-			return null;
-		PipeProperties pid = ( PipeProperties )id;
-		switch( pid ){
-		case PIPE_ID:
-			URI uri = URI.create(value);
-			try {
-				return IDFactory.fromURI( uri );
-			} catch (URISyntaxException e) {
-				throw new RuntimeException( e );
-			}
-		case TYPE:
-			return PipeServiceTypes.valueOf( value );
-		default:
-			break;
+		if(!( isID( super.getSource(), id )))
+			return value;
+		try {
+			return getCorrectID( super.getSource() );
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}	
@@ -94,39 +60,65 @@ public class AdvertisementPreferences extends AbstractPreferences{
 		if( ManagedProperty.isCreated( super.getSource().getManagedProperty(id)))
 			return null;
 		
-		if( !( id instanceof PipeProperties ))
-			return null;
-		PipeProperties pid = ( PipeProperties )id;
-		switch( pid ){
-		case PIPE_ID:
-			return IDFactory.newPipeID( peergroup.getPeerGroupID() );
-		default:
-			break;
-		}
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see net.osgi.jxta.preferences.IJxtaPreferences#getPeerID()
+	/**
+	 * Get the correct id, based on the relevant id property. returns null if nothing was entered 
+	 * @param source
+	 * @return
+	 * @throws URISyntaxException
 	 */
-	/* (non-Javadoc)
-	 * @see net.osgi.jxse.network.INetworkManagerPropertySource#getPeerID()
-	 */
-	public PipeID getPipeID() throws URISyntaxException{
-		IJp2pWritePropertySource<IJp2pProperties> source = super.getSource();
-		PipeID pgId = (PipeID) createDefaultValue( PipeProperties.PIPE_ID );
-		ManagedProperty<IJp2pProperties, Object> property = source.getOrCreateManagedProperty( PipeProperties.PIPE_ID, pgId.toString(), false );
-		String str = (String) property.getValue();
-		URI uri = new URI( str );
-		return (PipeID) IDFactory.fromURI( uri );
+	public static ID getCorrectID( IJp2pPropertySource<IJp2pProperties> source ) throws URISyntaxException{
+		AdvertisementTypes type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( (String) source.getDirective( AdvertisementDirectives.TYPE )));
+		String str = null;
+		switch( type ){
+		case ADV:
+			break;
+		case MODULE_CLASS:
+			str = (String) source.getProperty( ModuleClassProperties.MODULE_CLASS_ID );
+			break;
+		case MODULE_SPEC:
+			str = (String) source.getProperty( ModuleSpecProperties.MODULE_SPEC_ID );
+			break;
+		case PEER:
+			str = (String) source.getProperty( PeerGroupProperties.PEER_ID );
+			break;
+		case PEERGROUP:
+			str = (String) source.getProperty( PeerGroupProperties.PEERGROUP_ID );
+			break;
+		case PIPE:
+			str = (String) source.getProperty( PipeServiceProperties.PIPE_ID );
+			break;
+		}
+		if( Utils.isNull(str))
+			return null;
+		return IDFactory.fromURI( new URI( str ));
 	}
 
-	/* (non-Javadoc)
-	 * @see net.osgi.jxse.network.INetworkManagerPropertySource#setPeerID(net.jxta.peer.PeerID)
+	/**
+	 * Get the correct id, based on the relevant id property. returns null if nothing was entered 
+	 * @param source
+	 * @return
+	 * @throws URISyntaxException
 	 */
-	public void setPipeID( PipeID pipeID ){
-		IJp2pWritePropertySource<IJp2pProperties> source = super.getSource();
-		source.setProperty( PipeProperties.PIPE_ID, pipeID.toString() );
+	public static boolean isID( IJp2pPropertySource<IJp2pProperties> source, IJp2pProperties id ){
+		AdvertisementTypes type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( (String) source.getDirective( AdvertisementDirectives.TYPE )));
+		switch( type ){
+		case ADV:
+			break;
+		case MODULE_CLASS:
+			return ( ModuleClassProperties.MODULE_CLASS_ID.equals( id ));
+		case MODULE_SPEC:
+			return ( ModuleSpecProperties.MODULE_SPEC_ID.equals( id ) );
+		case PEER:
+			return ( PeerGroupProperties.PEER_ID.equals( id ) );
+		case PEERGROUP:
+			return ( PeerGroupProperties.PEERGROUP_ID.equals( id ) );
+		case PIPE:
+			return ( PipeServiceProperties.PIPE_ID.equals( id ) );
+		}
+		return false;
 	}
-	
+
 }

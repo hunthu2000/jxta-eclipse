@@ -30,14 +30,12 @@ public class Jp2pComponentNode<T extends Object> extends Jp2pComponent<T> implem
 	@Override
 	public void addChild( IJp2pComponent<?> child ){
 		this.children.add( child );
-		child.setParent(this);
 		dispatcher.serviceChanged( new ComponentChangedEvent( this, AbstractServiceContainer.ServiceChange.CHILD_ADDED ));
 	}
 
 	@Override
 	public void removeChild( IJp2pComponent<?> child ){
 		this.children.remove( child );
-		child.setParent(null);
 		dispatcher.serviceChanged( new ComponentChangedEvent( this, AbstractServiceContainer.ServiceChange.CHILD_REMOVED ));
 	}
 

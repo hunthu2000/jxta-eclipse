@@ -30,4 +30,8 @@ public abstract class AbstractPeerGroupDependencyFactory<T extends Object> exten
 	protected IComponentFactoryFilter createFilter() {
 		return new PeerGroupFilter<IJp2pComponent<T>>( this );
 	}
+	
+	protected PeerGroup getPeerGroup(){
+		return (PeerGroup) super.getDependency();
+	}
 }

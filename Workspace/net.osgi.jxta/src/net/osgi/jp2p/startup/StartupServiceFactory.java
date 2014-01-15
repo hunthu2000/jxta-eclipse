@@ -52,7 +52,7 @@ public class StartupServiceFactory extends AbstractComponentFactory<IContainerBu
 
 	@Override
 	protected Jp2pStartupService onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties) {
-		Jp2pStartupService service = new Jp2pStartupService( (Jp2pStartupPropertySource) super.getPropertySource() );
+		Jp2pStartupService service = new Jp2pStartupService( super.getBuilder(), (Jp2pStartupPropertySource) super.getPropertySource() );
 		if( Jp2pStartupPropertySource.isAutoStart( super.getPropertySource()))
 			service.initialise();
 		return service;

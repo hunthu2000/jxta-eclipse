@@ -1,16 +1,17 @@
 package net.osgi.jp2p.jxta.discovery;
 
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupDirectives;
 import net.osgi.jp2p.utils.StringStyler;
-import net.osgi.jp2p.properties.AbstractPeerGroupProviderPropertySource;
+import net.osgi.jp2p.properties.AbstractJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.ManagedProperty;
 
-public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySource<IJp2pProperties>
+public class DiscoveryPropertySource extends AbstractJp2pWritePropertySource
 {
 	public static final String S_NAME = "Name";
 	public static final String S_WILDCARD = "*";
@@ -73,8 +74,8 @@ public class DiscoveryPropertySource extends AbstractPeerGroupProviderPropertySo
 
 	@Override
 	public boolean setDirective(IJp2pDirectives id, String value) {
-		if( AdvertisementPropertySource.AdvertisementDirectives.isValidDirective( id.name()))
-			return super.setDirective(PeerGroupDirectives.valueOf( id.name()), value );
+		if( AdvertisementServicePropertySource.AdvertisementDirectives.isValidDirective( id.name()))
+			return super.setDirective(PeerGroupDirectives.valueOf( id.name() ), value );
 		return super.setDirective(id, value);
 	}
 }

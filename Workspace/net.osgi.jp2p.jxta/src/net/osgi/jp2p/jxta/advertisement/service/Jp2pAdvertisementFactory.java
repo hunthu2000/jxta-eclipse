@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jp2p.jxta.advertisement;
+package net.osgi.jp2p.jxta.advertisement.service;
 
 import net.jxta.document.Advertisement;
 import net.osgi.jp2p.builder.IContainerBuilder;
@@ -83,19 +83,19 @@ public class Jp2pAdvertisementFactory<T extends Advertisement> extends AbstractF
 	 * @return
 	 */
 	protected boolean isChild( IJp2pPropertySource<?> source ){
-		return AdvertisementPropertySource.isChild( this.getPropertySource(), source );
+		return AdvertisementServicePropertySource.isChild( this.getPropertySource(), source );
 	}
 
 	@Override
-	protected AdvertisementPropertySource onCreatePropertySource() {
-		AdvertisementPropertySource source = new AdvertisementPropertySource( JxtaComponents.ADVERTISEMENT_SERVICE.toString(), super.getParentSource() );
+	protected AdvertisementServicePropertySource onCreatePropertySource() {
+		AdvertisementServicePropertySource source = new AdvertisementServicePropertySource( JxtaComponents.ADVERTISEMENT_SERVICE.toString(), super.getParentSource() );
 		return source;
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	protected IJp2pComponent<T> onCreateComponent( IJp2pPropertySource<IJp2pProperties> source) {
-		AdvertisementPropertySource adsource = (AdvertisementPropertySource) source.getChild( JxtaComponents.ADVERTISEMENT.toString() );
+		AdvertisementServicePropertySource adsource = (AdvertisementServicePropertySource) source.getChild( JxtaComponents.ADVERTISEMENT.toString() );
 		JxtaAdvertisementFactory factory = (JxtaAdvertisementFactory) super.getBuilder().getFactory( adsource );
 		return (IJp2pComponent<T>) factory.getComponent();
 	}

@@ -23,12 +23,12 @@ import net.osgi.jp2p.component.ComponentEventDispatcher;
 import net.osgi.jp2p.component.IComponentChangedListener;
 import net.osgi.jp2p.component.IJp2pComponentNode;
 import net.osgi.jp2p.container.AbstractServiceContainer;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementMode;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementProperties;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementDirectives;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementMode;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementServiceProperties;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.Scope;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.Scope;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jp2p.log.Jp2pLevel;
@@ -55,9 +55,9 @@ public class Jp2pAdvertisementService<T extends Advertisement> extends AbstractJ
 	 * @param provider
 	 */
 	protected synchronized void publishAdvertisements( Advertisement ad ){
-		long lifetime = (long) super.getPropertySource().getProperty( AdvertisementProperties.LIFE_TIME );
-		long expiration = (long) super.getPropertySource().getProperty( AdvertisementProperties.EXPIRATION );
-		Scope scope = AdvertisementPropertySource.getScope( super.getPropertySource());
+		long lifetime = (long) super.getPropertySource().getProperty( AdvertisementServiceProperties.LIFE_TIME );
+		long expiration = (long) super.getPropertySource().getProperty( AdvertisementServiceProperties.EXPIRATION );
+		Scope scope = AdvertisementServicePropertySource.getScope( super.getPropertySource());
 		Logger log = Logger.getLogger( this.getClass().getName() );
 		log.log( Jp2pLevel.JP2PLEVEL, "Publishing the following advertisement with lifetime :"
 				+ lifetime + " expiration :" + expiration);
@@ -69,9 +69,6 @@ public class Jp2pAdvertisementService<T extends Advertisement> extends AbstractJ
 				break;
 			case REMOTE:
 				discovery.getModule().publish(ad, lifetime, expiration);
-				discovery.getModule().remotePublish(ad, expiration);
-				break;
-			case REMOTE_ONLY:
 				discovery.getModule().remotePublish(ad, expiration);
 				break;
 			default:
@@ -140,7 +137,7 @@ public class Jp2pAdvertisementService<T extends Advertisement> extends AbstractJ
 	 */
 	protected void checkAdvertisements(){
 		Advertisement adv = super.getModule();
-		AdvertisementMode mode = (AdvertisementMode) getPropertySource().getProperty( AdvertisementProperties.MODE );;
+		AdvertisementMode mode = (AdvertisementMode) getPropertySource().getProperty( AdvertisementServiceProperties.MODE );;
 		Advertisement[] advertisements = null;
 		switch( mode ){
 		case DISCOVERY:

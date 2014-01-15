@@ -23,9 +23,8 @@ import net.jxta.document.Advertisement;
 import net.jxta.protocol.DiscoveryResponseMsg;
 import net.osgi.jp2p.activator.AbstractActivator;
 import net.osgi.jp2p.activator.IJp2pService;
-import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementMode;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementMode;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jp2p.jxta.registration.RegistrationPropertySource.RegistrationProperties;
 import net.osgi.jp2p.log.Jp2pLevel;
@@ -169,19 +168,5 @@ public class RegistrationService extends AbstractActivator implements IJp2pServi
 	public String getCategory(Object key) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-
-	@Override
-	public IJp2pComponent<?> getParent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void setParent(IJp2pComponent<?> parent) {
-		// TODO Auto-generated method stub
-		
 	}
 }

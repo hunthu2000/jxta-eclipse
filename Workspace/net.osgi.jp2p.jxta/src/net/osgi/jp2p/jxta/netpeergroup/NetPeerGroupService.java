@@ -10,15 +10,11 @@
  *******************************************************************************/
 package net.osgi.jp2p.jxta.netpeergroup;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import net.jxta.exception.PeerGroupException;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkManager;
 import net.osgi.jp2p.component.AbstractJp2pService;
 import net.osgi.jp2p.jxta.netpeergroup.NetPeerGroupFactory;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupPreferences;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 
@@ -36,14 +32,14 @@ public class NetPeerGroupService extends AbstractJp2pService<PeerGroup>{
 	@Override
 	protected void activate() {
 		try {
+			PeerGroupPreferences preferences = new PeerGroupPreferences(( IJp2pWritePropertySource<IJp2pProperties> )super.getPropertySource() );
+			manager.setPeerID( preferences.getPeerID());
 			PeerGroup peergroup = manager.startNetwork();
 			super.setModule( peergroup );
-		} catch (PeerGroupException | IOException e) {
-			Logger log = Logger.getLogger( this.getClass().getName() );
-			log.log( Level.SEVERE, e.getMessage() );
+			super.activate();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		super.activate();
 	}
 
 	@Override

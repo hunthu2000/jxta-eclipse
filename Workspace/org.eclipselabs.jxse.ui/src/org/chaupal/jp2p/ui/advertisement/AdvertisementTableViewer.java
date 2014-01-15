@@ -18,14 +18,11 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipselabs.osgi.ds.broker.util.StringStyler;
-import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.custom.StyledText;
 
 public class AdvertisementTableViewer extends ViewPart {
 
@@ -44,7 +41,6 @@ public class AdvertisementTableViewer extends ViewPart {
 	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 	private Table table;
 	private TableViewer tableViewer;
-	private StyledText styledText;
 
 	private ISelectionListener listener = new ISelectionListener() {
 		@Override
@@ -52,8 +48,7 @@ public class AdvertisementTableViewer extends ViewPart {
 			// we ignore our own selections
 			if ( sourcepart instanceof ConnectivityViewPart )
 				return;
-			showComponentSelection( sourcepart, selection);
-			showAdvertisementSelection( sourcepart, selection);
+			showSelection( sourcepart, selection);
 		}
 	};
 
@@ -66,45 +61,32 @@ public class AdvertisementTableViewer extends ViewPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		{
-			SashForm sashForm = new SashForm(parent, SWT.VERTICAL);
-			toolkit.adapt(sashForm);
-			toolkit.paintBordersFor(sashForm);
-			{
-				Composite container = toolkit.createComposite(sashForm, SWT.NONE);
-				toolkit.paintBordersFor(container);
-				container.setLayout(new FillLayout(SWT.HORIZONTAL));
+		Composite container = toolkit.createComposite(parent, SWT.NONE);
+		toolkit.paintBordersFor(container);
+		container.setLayout(new FillLayout(SWT.HORIZONTAL));
+		
+		tableViewer = new TableViewer(container, SWT.BORDER | SWT.FULL_SELECTION);
+		createColumn( AdvertisementColumns.TYPE.toString(), tableViewer);
+		table = tableViewer.getTable();
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
+		toolkit.paintBordersFor(table);
 
-				tableViewer = new TableViewer(container, SWT.BORDER | SWT.FULL_SELECTION);
-				createColumn( AdvertisementColumns.TYPE.toString(), tableViewer);
-				table = tableViewer.getTable();
-				table.setHeaderVisible(true);
-				table.setLinesVisible(true);
-				tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-				toolkit.paintBordersFor(table);
+		createColumn(AdvertisementColumns.NAME.toString(), tableViewer);
+		table = tableViewer.getTable();
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
+		toolkit.paintBordersFor(table);
 
-				createColumn(AdvertisementColumns.NAME.toString(), tableViewer);
-				table = tableViewer.getTable();
-				table.setHeaderVisible(true);
-				table.setLinesVisible(true);
-				tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-				toolkit.paintBordersFor(table);
+		createColumn(AdvertisementColumns.ID.name(), tableViewer);
+		table = tableViewer.getTable();
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
+		toolkit.paintBordersFor(table);
 
-				createColumn(AdvertisementColumns.ID.name(), tableViewer);
-				table = tableViewer.getTable();
-				table.setHeaderVisible(true);
-				table.setLinesVisible(true);
-				tableViewer.setContentProvider(ArrayContentProvider.getInstance());
-				toolkit.paintBordersFor(table);
-			}
-
-			{
-				styledText = new StyledText(sashForm, SWT.BORDER);
-				toolkit.adapt(styledText);
-				toolkit.paintBordersFor(styledText);
-			}
-			sashForm.setWeights(new int[] {3,1});
-		}
 		createActions();
 		initializeToolBar();
 		initializeMenu();
@@ -116,31 +98,16 @@ public class AdvertisementTableViewer extends ViewPart {
 	/**
 	 * Shows the given selection in this view.
 	 */
-	void showComponentSelection(IWorkbenchPart sourcepart, ISelection selection) {
+	void showSelection(IWorkbenchPart sourcepart, ISelection selection) {
 		if(!( selection instanceof TreeSelection))
 			return;
-
+		
 		TreeSelection ss = (TreeSelection) selection;
 		Object element = ss.getFirstElement();
 		if(!( element instanceof IAdvertisementProvider ))
 			return;
 		IAdvertisementProvider provider = (IAdvertisementProvider) element;
 		this.tableViewer.setInput( provider.getAdvertisements() );
-	}
-
-	/**
-	 * Shows the given selection in this view.
-	 */
-	void showAdvertisementSelection(IWorkbenchPart sourcepart, ISelection selection) {
-		if(!sourcepart.equals( this ))
-			return;
-		if(!( selection instanceof StructuredSelection))
-			return;
-		StructuredSelection ss = (StructuredSelection) selection;
-			Object element = ss.getFirstElement();
-			if(( element == null ) || !( element instanceof Advertisement ))
-				return;
-		this.styledText.setText( element.toString());
 	}
 
 	@Override

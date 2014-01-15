@@ -34,7 +34,7 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 	private Map<IJp2pProperties,ManagedProperty<IJp2pProperties,Object>> properties;
 	private Map<IJp2pDirectives,String> directives;
 	
-	private IJp2pPropertySource<?> parent;
+	private IJp2pPropertySource<IJp2pProperties> parent;
 
 	private Collection<IJp2pPropertySource<?>> children;
 
@@ -66,7 +66,7 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 		this.directives.put( IJp2pDirectives.Directives.ID, parent.getId() + "." + componentName.toLowerCase() );
 	}
 
-	public IJp2pPropertySource<?> getParent(){
+	public IJp2pPropertySource<IJp2pProperties> getParent(){
 		return this.parent;
 	}
 

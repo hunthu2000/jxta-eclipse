@@ -1,6 +1,7 @@
 package net.osgi.jp2p.jxta.pipe;
 
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
+import net.jxta.pipe.PipeService;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.utils.StringStyler;
@@ -9,7 +10,7 @@ import net.osgi.jp2p.properties.IJp2pDirectives;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 
-public class PipePropertySource extends AdvertisementPropertySource{
+public class PipePropertySource extends AdvertisementServicePropertySource{
 
 	public static final long DEFAULT_OUTPUT_PIPE_TIME_OUT = 5000;
 	
@@ -18,7 +19,7 @@ public class PipePropertySource extends AdvertisementPropertySource{
 	 * @author Kees
 	 *
 	 */
-	public enum PipeProperties implements IJp2pProperties{
+	public enum PipeServiceProperties implements IJp2pProperties{
 		PIPE_ID,
 		TIME_OUT,
 		TYPE;
@@ -26,7 +27,7 @@ public class PipePropertySource extends AdvertisementPropertySource{
 		public static boolean isValidProperty( String str ){
 			if( Utils.isNull( str ))
 				return false;
-			for( PipeProperties dir: values() ){
+			for( PipeServiceProperties dir: values() ){
 				if( dir.name().equals( str ))
 					return true;
 			}
@@ -39,9 +40,35 @@ public class PipePropertySource extends AdvertisementPropertySource{
 		}
 	}
 
+	public enum PipeServiceTypes{
+		UNICAST,
+		SECURE_UNICAST,
+		PROPAGATE;
+		
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString());
+		}
+		
+		/**
+		 * Convert the enum to a form that the jxta lib can understand
+		 * @param pipeType
+		 * @return
+		 */
+		public static String convert( PipeServiceTypes pipeType ){
+			switch( pipeType ){
+			case UNICAST:
+				return PipeService.UnicastType;
+			case SECURE_UNICAST:
+				return PipeService.UnicastSecureType;
+			default:
+				return PipeService.PropagateType;
+			}
+		}
+	}
 	public PipePropertySource( IJp2pPropertySource<IJp2pProperties> parent) {
 		super( JxtaComponents.PIPE_SERVICE.toString(), parent);
-		super.setProperty( PipeProperties.TIME_OUT, DEFAULT_OUTPUT_PIPE_TIME_OUT);
+		super.setProperty( PipeServiceProperties.TIME_OUT, DEFAULT_OUTPUT_PIPE_TIME_OUT);
 	}
 
 	@Override
@@ -53,13 +80,13 @@ public class PipePropertySource extends AdvertisementPropertySource{
 
 	@Override
 	public IJp2pProperties getIdFromString(String key) {
-		if( PipeProperties.isValidProperty(key))
-			return PipeProperties.valueOf(key);
+		if( PipeServiceProperties.isValidProperty(key))
+			return PipeServiceProperties.valueOf(key);
 		return super.getIdFromString(key);
 	}
 
 	@Override
 	public boolean validate(IJp2pProperties id, Object value) {
-		return PipeProperties.isValidProperty(id.toString());	
+		return PipeServiceProperties.isValidProperty(id.toString());	
 	}	
 }

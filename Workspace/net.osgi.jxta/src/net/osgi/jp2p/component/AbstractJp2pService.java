@@ -39,8 +39,7 @@ implements IJp2pService<T>{
 	
 	private T module;
 	private IJp2pWritePropertySource<IJp2pProperties> source;
-	private IJp2pComponent<?> parent;
-
+	
 	private ComponentEventDispatcher dispatcher;
 
 	protected AbstractJp2pService( String bundleId, String componentName) {
@@ -79,16 +78,6 @@ implements IJp2pService<T>{
 	@Override
 	public IJp2pPropertySource<IJp2pProperties> getPropertySource() {
 		return source;
-	}
-
-	@Override
-	public IJp2pComponent<?> getParent() {
-		return parent;
-	}
-
-	@Override
-	public void setParent(IJp2pComponent<?> parent) {
-		this.parent=  parent;
 	}
 
 	/**

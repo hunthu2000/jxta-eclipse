@@ -36,10 +36,6 @@ public interface IJp2pComponent<T extends Object>{
 	
 	public Date getCreateDate();
 	
-	public IJp2pComponent<?> getParent();
-
-	public void setParent( IJp2pComponent<?> parent);
-
 	/**
 	 * Get the property source of this component
 	 * @return

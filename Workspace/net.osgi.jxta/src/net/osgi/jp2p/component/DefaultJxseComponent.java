@@ -31,8 +31,6 @@ public class DefaultJxseComponent<T extends Object> implements IJp2pComponent<T>
 	
 	private T module;
 	private IJp2pWritePropertySource<IJp2pProperties> source;
-	public IJp2pComponent<?> parent;
-
 	
 	protected DefaultJxseComponent( String bundleId, String componentName) {
 		this( new DefaultPropertySource( bundleId, componentName), null);
@@ -101,15 +99,5 @@ public class DefaultJxseComponent<T extends Object> implements IJp2pComponent<T>
 	@Override
 	public Iterator<IJp2pProperties> iterator() {
 		return this.source.propertyIterator();
-	}
-
-	@Override
-	public IJp2pComponent<?> getParent() {
-		return parent;
-	}
-
-	@Override
-	public void setParent(IJp2pComponent<?> parent) {
-		this.parent=  parent;
 	}
 }

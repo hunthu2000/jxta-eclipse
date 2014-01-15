@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.osgi.jp2p.jxta.advertisement;
+package net.osgi.jp2p.jxta.advertisement.service;
 
 import java.net.URISyntaxException;
 
@@ -22,12 +22,15 @@ import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponent;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementProperties;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementDirectives;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementServiceProperties;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
+import net.osgi.jp2p.jxta.advertisement.ModuleClassAdvertisementPropertySource;
 import net.osgi.jp2p.jxta.factory.AbstractPeerGroupDependencyFactory;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
-import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeProperties;
+import net.osgi.jp2p.jxta.pipe.PipeAdvertisementPreferences;
+import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeServiceProperties;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
 import net.osgi.jp2p.properties.IJp2pProperties;
@@ -47,9 +50,22 @@ public class JxtaAdvertisementFactory extends AbstractPeerGroupDependencyFactory
 
 	
 	@Override
-	protected AdvertisementPropertySource onCreatePropertySource() {
-		AdvertisementPropertySource source = new AdvertisementPropertySource( super.getParentSource() );
+	protected AdvertisementServicePropertySource onCreatePropertySource() {
+		AdvertisementServicePropertySource source = new AdvertisementServicePropertySource( super.getParentSource() );
 		return source;
+	}
+
+	
+	@Override
+	public void extendContainer() {
+		AdvertisementTypes type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( (String) super.getPropertySource().getDirective( AdvertisementDirectives.TYPE )));
+		if( !AdvertisementTypes.MODULE_SPEC.equals( type ))
+			return;
+		ModuleClassAdvertisementPropertySource msps = (ModuleClassAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(super.getPropertySource(), AdvertisementTypes.MODULE_CLASS );
+		if( msps == null )
+			super.getPropertySource().addChild( new ModuleClassAdvertisementPropertySource( super.getPropertySource() ));
+		// TODO Auto-generated method stub
+		super.extendContainer();
 	}
 
 	@Override
@@ -82,12 +98,12 @@ public class JxtaAdvertisementFactory extends AbstractPeerGroupDependencyFactory
 	protected PipeAdvertisement createPipeAdvertisement() throws URISyntaxException{
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getPropertySource();
 		AdvertisementTypes type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( (String) source.getDirective( AdvertisementDirectives.TYPE )));
-		AdvertisementPreferences preferences = new AdvertisementPreferences( source, super.getDependency().getModule());
+		PipeAdvertisementPreferences preferences = new PipeAdvertisementPreferences( source, super.getDependency().getModule());
 		PipeAdvertisement pipead = ( PipeAdvertisement )AdvertisementFactory.newAdvertisement( AdvertisementTypes.convertTo(type));
 		PipeID pipeId = preferences.getPipeID();
 		pipead.setPipeID( (ID) pipeId );
-		pipead.setType((String) source.getProperty(PipeProperties.TYPE ));
-		String name = (String) source.getProperty( AdvertisementProperties.NAME );
+		pipead.setType((String) source.getProperty(PipeServiceProperties.TYPE ));
+		String name = (String) source.getProperty( AdvertisementServiceProperties.NAME );
 		pipead.setName(name);
 		return pipead;
 	}

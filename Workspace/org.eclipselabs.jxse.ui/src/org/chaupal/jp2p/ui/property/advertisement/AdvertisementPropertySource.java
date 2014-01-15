@@ -7,7 +7,7 @@ import java.util.Collection;
 import net.jxta.document.Advertisement;
 import net.jxta.protocol.ModuleImplAdvertisement;
 import net.jxta.protocol.ModuleSpecAdvertisement;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementProperties;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementServiceProperties;
 import net.osgi.jp2p.component.IJp2pComponent;
 
 import org.chaupal.jp2p.ui.property.AbstractJp2pPropertySource;
@@ -42,7 +42,7 @@ public class AdvertisementPropertySource extends AbstractJp2pPropertySource<Adve
 			ModuleImplAdvPropertySource miaps = new ModuleImplAdvPropertySource((ModuleImplAdvertisement) advertisement );
 			descriptors.addAll( Arrays.asList( miaps.getPropertyDescriptors()));
 		}
-		descriptors.addAll( Arrays.asList(super.getPropertyDescriptors( AdvertisementProperties.values())));
+		descriptors.addAll( Arrays.asList(super.getPropertyDescriptors( AdvertisementServiceProperties.values())));
 		descriptors.addAll( Arrays.asList(super.getPropertyDescriptors()));
 		return descriptors.toArray( new IPropertyDescriptor[ descriptors.size() ]);
 	}
@@ -58,10 +58,10 @@ public class AdvertisementPropertySource extends AbstractJp2pPropertySource<Adve
 			ModuleImplAdvPropertySource miaps = new ModuleImplAdvPropertySource((ModuleImplAdvertisement) advertisement );
 			return miaps.getPropertyValue(id);
 		}
-		if(!( id instanceof AdvertisementProperties ))
+		if(!( id instanceof AdvertisementServiceProperties ))
 			return super.getPropertyValue(id);
 		
-		AdvertisementProperties property = ( AdvertisementProperties )id;
+		AdvertisementServiceProperties property = ( AdvertisementServiceProperties )id;
 		/**
 		case ID:
 			return advertisement.getID();

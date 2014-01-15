@@ -50,7 +50,7 @@ public class Jp2pServiceContentProvider implements ITreeContentProvider {
 		if(( inputElement == null ) || !( inputElement instanceof IJp2pComponent<?> ))
 			return null;
 		IJp2pComponent<?> decorator = (IJp2pComponent<?>)inputElement;
-		if( decorator.getModule() instanceof PeerGroup ){
+		if( decorator.getModule() instanceof NetworkConfigurator ){
 			ITreeContentProvider provider = new NetworkConfiguratorContentProvider();
 			return provider.getElements(inputElement);
 		}
@@ -62,7 +62,7 @@ public class Jp2pServiceContentProvider implements ITreeContentProvider {
 		if(!( element instanceof IJp2pComponentNode ))
 			return null;
 		IJp2pComponentNode<?> decorator = (IJp2pComponentNode<?>)element;
-		if( decorator.getModule() instanceof PeerGroup ){
+		if( decorator.getModule() instanceof NetworkConfigurator ){
 			ITreeContentProvider provider = new NetworkConfiguratorContentProvider( decorator.getPropertySource().getParent() );
 			return provider.getParent(element);
 		}
@@ -77,7 +77,7 @@ public class Jp2pServiceContentProvider implements ITreeContentProvider {
 	 * @return
 	 */
 	public static NetworkConfiguratorContentProvider getNetworkConfiguratorContentProvider( IJp2pComponent<?> component ){
-		if(!( component.getModule() instanceof PeerGroup ))
+		if(!( component.getModule() instanceof NetworkConfigurator ))
 			return null;
 		Object parent = null;
 		if( component instanceof IJp2pComponentNode ){

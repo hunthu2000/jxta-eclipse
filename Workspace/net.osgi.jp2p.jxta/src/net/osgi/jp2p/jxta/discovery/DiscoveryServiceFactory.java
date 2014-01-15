@@ -20,7 +20,7 @@ import net.osgi.jp2p.jxta.factory.AbstractPeerGroupDependencyFactory;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
 import net.osgi.jp2p.jxta.netpeergroup.NetPeerGroupFactory;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
-import net.osgi.jp2p.properties.AbstractPeerGroupProviderPropertySource.PeerGroupDirectives;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupDirectives;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 

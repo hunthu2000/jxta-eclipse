@@ -50,16 +50,16 @@
             allowMultiple="false"
             category="org.eclipse.jxse.ui.connectivity"
             class="org.chaupal.jp2p.ui.container.Jp2pContainerNavigator"
-            icon="resources/container.png"
+            icon="resources/ContainerRed.png"
             id="org.eclipse.jxse.ui.context.view"
-            name="JP2P Service Context View"
+            name="JP2P Service Container View"
             restorable="true">
       </view>
       <view
             allowMultiple="false"
             category="org.eclipse.jxse.ui.connectivity"
             class="org.chaupal.jp2p.ui.peergroup.PeerGroupNavigator"
-            icon="resources/Peer_to_peer.png"
+            icon="resources/peergroup.png"
             id="org.eclipselabs.jxse.ui.context.peergroups"
             name="JP2P PeerGroup Viewer"
             restorable="true">
@@ -81,7 +81,7 @@
       </view>
       <view
             class="org.chaupal.jp2p.ui.advertisement.AdvertisementTableViewer"
-            icon="resources/advertisement.png"
+            icon="resources/advertisement2.png"
             id="org.eclipse.jxse.ui.view.AdvertisementTableViewer"
             name="Advertisement Viewer"
             restorable="true">
@@ -95,11 +95,10 @@
             restorable="true">
       </view>
       <view
-            allowMultiple="false"
-            class="org.chaupal.jp2p.ui.platform.PlatformConfigViewer"
-            icon="resources/component.png"
-            id="org.chaupal.jp2p.ui.platform.PlatformConfigViewer"
-            name="Platform Configuration Viewer">
+            class="org.chaupal.jp2p.ui.rendezvous.RendezvousServiceViewPart"
+            icon="resources/rendezvous.png"
+            id="org.chaupal.jp2p.ui.rendezvous.RendezvousServiceViewPart"
+            name="Rendezvous Service Viewer">
       </view>
    </extension>
    <extension
@@ -227,7 +226,7 @@
             class="org.chaupal.jp2p.ui.perspective.Perspective"
             fixed="false"
             id="org.eclipse.jxse.perspective"
-            name="JXSE IDE Perspective">
+            name="JP2P IDE Perspective">
       </perspective>
    </extension>
    <extension
@@ -306,14 +305,10 @@
                visible="true">
          </view>
          <view
-               closeable="true"
-               id="org.chaupal.jp2p.ui.platform.PlatformConfigViewer"
+               id="org.chaupal.jp2p.ui.rendezvous.RendezvousServiceViewPart"
                minimized="false"
-               moveable="true"
                relationship="stack"
-               relative="org.eclipse.ui.views.ProblemView"
-               showTitle="true"
-               visible="true">
+               relative="org.eclipse.jxse.ui.view.AdvertisementTableViewer">
          </view>
       </perspectiveExtension>
    </extension>

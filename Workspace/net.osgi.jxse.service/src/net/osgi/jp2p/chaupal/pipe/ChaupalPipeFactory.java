@@ -26,7 +26,7 @@ import net.osgi.jp2p.filter.FilterChain.Operators;
 import net.osgi.jp2p.filter.FilterChainEvent;
 import net.osgi.jp2p.filter.IComponentFactoryFilter;
 import net.osgi.jp2p.filter.IFilterChainListener;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
 import net.osgi.jp2p.jxta.filter.PeerGroupFilter;

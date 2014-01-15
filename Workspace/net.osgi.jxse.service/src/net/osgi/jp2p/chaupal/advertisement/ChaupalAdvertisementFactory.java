@@ -19,8 +19,8 @@ import net.osgi.jp2p.filter.AbstractComponentFactoryFilter;
 import net.osgi.jp2p.filter.FilterChain;
 import net.osgi.jp2p.filter.IComponentFactoryFilter;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementProperties;
-import net.osgi.jp2p.jxta.advertisement.Jp2pAdvertisementFactory;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementServiceProperties;
+import net.osgi.jp2p.jxta.advertisement.service.Jp2pAdvertisementFactory;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryProperties;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
@@ -114,7 +114,7 @@ public class ChaupalAdvertisementFactory<T extends Advertisement> extends Jp2pAd
 		if( value == null ){
 			ds.setProperty(DiscoveryProperties.ATTRIBUTE, DiscoveryPropertySource.S_NAME );
 		}
-		String name = (String) source.getProperty( AdvertisementProperties.NAME );
+		String name = (String) source.getProperty( AdvertisementServiceProperties.NAME );
 		if( Utils.isNull( name ))
 			name = DiscoveryPropertySource.S_WILDCARD;
 		value = ds.getProperty( DiscoveryProperties.WILDCARD );
