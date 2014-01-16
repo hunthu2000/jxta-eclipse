@@ -101,7 +101,7 @@ public class ChaupalAdvertisementFactory<T extends Advertisement> extends Jp2pAd
 		IContainerBuilder builder = super.getBuilder();
 		IComponentFactory<?> df = builder.getFactory(JxtaComponents.DISCOVERY_SERVICE.toString());
 		if( df == null ){
-			df = JxtaFactoryUtils.getDefaultFactory(builder, super.getPropertySource(), JxtaComponents.DISCOVERY_SERVICE.toString());
+			df = JxtaFactoryUtils.getDefaultFactory(builder, new String[0], super.getPropertySource(), JxtaComponents.DISCOVERY_SERVICE.toString());
 			df.createPropertySource();
 			builder.addFactory( df ); 
 		}

@@ -4,11 +4,8 @@ import java.net.URISyntaxException;
 
 import net.jxta.document.AdvertisementFactory;
 import net.jxta.protocol.ModuleClassAdvertisement;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementProperties;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jp2p.jxta.advertisement.ModuleImplAdvertisementPropertySource.ModuleImplProperties;
-import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
 import net.osgi.jp2p.properties.IJp2pProperties;
@@ -17,7 +14,7 @@ import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.ManagedProperty;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 
-public class ModuleClassAdvertisementPropertySource extends AdvertisementServicePropertySource{
+public class ModuleClassAdvertisementPropertySource extends AdvertisementPropertySource{
 	
 	/**
 	 * Properties specific for module class services
@@ -45,12 +42,12 @@ public class ModuleClassAdvertisementPropertySource extends AdvertisementService
 	}
 
 	public ModuleClassAdvertisementPropertySource( IJp2pPropertySource<IJp2pProperties> parent) {
-		super( JxtaComponents.ADVERTISEMENT.toString(), parent);
-		this.fillDefaultValues();
+		super( AdvertisementTypes.MODULE_CLASS, parent);
 	}
 
-	protected void fillDefaultValues( ) {
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementProperties.ADVERTISEMENT_TYPE, AdvertisementTypes.MODULE_SPEC ));
+	@Override
+	protected void fillDefaultValues( IJp2pPropertySource<IJp2pProperties> parent ) {
+		super.fillDefaultValues(parent);
 		String name = super.getParent().getDirective( Directives.NAME );
 		if(!Utils.isNull( name )){
 			this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( ModuleImplProperties.CODE, name ));
@@ -79,10 +76,10 @@ public class ModuleClassAdvertisementPropertySource extends AdvertisementService
 	 * @throws URISyntaxException 
 	 */
 	public static ModuleClassAdvertisement createModuleClassAdvertisement( IJp2pPropertySource<IJp2pProperties> source ) throws URISyntaxException{
-		AdvertisementTypes type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( (String) source.getDirective( AdvertisementDirectives.TYPE )));
+		AdvertisementTypes type = AdvertisementTypes.convertFrom((String) source.getDirective( AdvertisementDirectives.TYPE ));
 		ModuleClassAdvertisementPreferences preferences = new ModuleClassAdvertisementPreferences( (IJp2pWritePropertySource<IJp2pProperties>) source );
 		ModuleClassAdvertisement mcad = ( ModuleClassAdvertisement )AdvertisementFactory.newAdvertisement( AdvertisementTypes.convertTo(type));
-		String name = (String) source.getProperty( AdvertisementServiceProperties.NAME );
+		String name = (String) source.getProperty( AdvertisementProperties.NAME );
 		mcad.setName(name);
 		mcad.setDescription(( String )source.getProperty( ModuleClassProperties.DESCRIPTION ));
 		mcad.setModuleClassID( preferences.getModuleClassID());

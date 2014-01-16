@@ -1,5 +1,6 @@
-package org.chaupal.jp2p.ui.rendezvous;
+package org.chaupal.jp2p.ui.endpoint;
 
+import net.jxta.endpoint.EndpointService;
 import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkManager.ConfigMode;
@@ -30,12 +31,14 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.layout.GridData;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -51,27 +54,17 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.custom.StyledText;
 
-public class RendezvousServiceViewPart extends ViewPart{
+public class EndPointViewPart extends ViewPart{
 
-	public static final String ID = "org.chaupal.jp2p.ui.rendezvous.RendezVousServiceViewPart"; //$NON-NLS-1$
-	public static final String S_RENDEZ_VOUS_VIEWER = "Rendezvous Viewer";
-	
+	public static final String ID = "net.equinox.jxta.ui.endpoint.EndPointViewPart"; //$NON-NLS-1$
+	public static final String S_ENDPOINT_VIEWER = "End Point Viewer";
+
 	private Button aliveRadioButton;
-	private Button isRDVCheckBox;
-	private Button isConnectedToRDVCheckBox;
 	
-	private TableViewer tableViewer;
-	private TableViewer edgesTableViewer;
-
    private RdvEventMonitor rdvMonitor;
     
     private Future<?> theMonitorFuture = null;
 	public static final ScheduledExecutorService theExecutor = Executors.newScheduledThreadPool(5);
-
-	private Table table;
-	private Table edgesTable;
-	private Composite composite_1;
-	private StyledText styledText;
 
 	private RendezVousService rdvService;
 	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
@@ -96,9 +89,18 @@ public class RendezvousServiceViewPart extends ViewPart{
 			showSelection( sourcepart, selection);
 		}
 	};
-
-	public RendezvousServiceViewPart() {
-		setPartName( S_RENDEZ_VOUS_VIEWER );
+	private Button isConnectedToRelayCheckBox;
+	private Text relayIDTextField;
+	
+	private TableViewer tableViewer;
+	private StyledText styledText;
+	
+    private PeerGroup peerGroup = null;
+    
+	private Table table;
+		
+	public EndPointViewPart() {
+		setPartName( S_ENDPOINT_VIEWER );
 	}
 
 	/**
@@ -112,77 +114,58 @@ public class RendezvousServiceViewPart extends ViewPart{
 			@Override
 			public void selectionChanged(IWorkbenchPart sourcepart, ISelection selection) {
 				// we ignore our own selections
-				if ( sourcepart instanceof RendezvousServiceViewPart )
+				if ( sourcepart instanceof EndPointViewPart )
 					return;
 				showSelection( sourcepart, selection);
 			}
 		});
 		SashForm sashForm = new SashForm(parent, SWT.VERTICAL);
-				
 				Composite composite_2 = new Composite(sashForm, SWT.NONE);
 				composite_2.setLayout(new GridLayout(2, false));
 				
-				aliveRadioButton = new Button(composite_2, SWT.RADIO);
-				aliveRadioButton.setBounds(0, 0, 90, 16);
-				aliveRadioButton.setText("Alive");
-				
-						isRDVCheckBox = new Button(composite_2, SWT.CHECK);
-						isRDVCheckBox.addSelectionListener(new SelectionAdapter() {
-							@Override
-							public void widgetSelected(SelectionEvent e) {
-								IsRDVCheckBoxActionPerformed(e);			}
-						});
-						isRDVCheckBox.setText("is RDV");
+						aliveRadioButton = new Button(composite_2, SWT.RADIO);
+						aliveRadioButton.setBounds(0, 0, 90, 16);
+						aliveRadioButton.setText("Alive");
 						
-								isConnectedToRDVCheckBox = new Button(composite_2, SWT.CHECK);
-								isConnectedToRDVCheckBox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
-								isConnectedToRDVCheckBox.addSelectionListener(new SelectionAdapter() {
+								isConnectedToRelayCheckBox = new Button(composite_2, SWT.RADIO);
+								isConnectedToRelayCheckBox.addSelectionListener(new SelectionAdapter() {
 									@Override
 									public void widgetSelected(SelectionEvent e) {
-										IsConnectedToRDVCheckBoxActionPerformed(e);
+										IsConnectedToRelayCheckBoxActionPerformed( e );
 									}
 								});
-								isConnectedToRDVCheckBox.setText("is connected to RDV");
+								isConnectedToRelayCheckBox.setText("is connected to Relay");
+								Label lblRelayId = new Label(composite_2, SWT.NONE);
+								lblRelayId.setText("Relay ID");
+								
+										relayIDTextField = new Text(composite_2, SWT.BORDER);
+										relayIDTextField.setEditable(false);
+										relayIDTextField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		composite_1 = new Composite( composite_2, SWT.NONE);
-		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		composite_1.setLayout(new FillLayout(SWT.HORIZONTAL));
-
-		Composite edgesComposite = new Composite(composite_1, SWT.NONE);
+		Composite tableComposite = new Composite(composite_2, SWT.NONE);
+		tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		TableColumnLayout tableColumnLayout = new TableColumnLayout();
-		edgesComposite.setLayout(tableColumnLayout);
-
-		edgesTableViewer = new TableViewer(edgesComposite, SWT.BORDER | SWT.FULL_SELECTION);
-		TableViewerColumn column = createColumn("Edges", edgesTableViewer);
-		tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(100, 200, true)); 		
-		edgesTableViewer.setColumnProperties(new String[] {"Relays"});
-		edgesTable = edgesTableViewer.getTable();
-		edgesTable.setHeaderVisible(true);
-		edgesTable.setLinesVisible(true);
-		edgesTableViewer.setContentProvider(ArrayContentProvider.getInstance());
-		
-		Composite tableComposite = new Composite(composite_1, SWT.NONE);
-		tableColumnLayout = new TableColumnLayout();
 		tableComposite.setLayout(tableColumnLayout);
 		
-		tableViewer = new TableViewer(tableComposite, SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-		column = createColumn("RendezVous", tableViewer);
+		tableViewer = new TableViewer(tableComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		TableViewerColumn column = createColumn("Edges", tableViewer);
 		tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(100, 200, true)); 		
+		tableViewer.setColumnProperties(new String[] {"Relays"});
 		table = tableViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 
-		styledText = new StyledText(sashForm, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP);
+		styledText = new StyledText(sashForm, SWT.BORDER);
 		toolkit.adapt(styledText);
 		toolkit.paintBordersFor(styledText);
-
+		
 		sashForm.setWeights(new int[] {3, 1});
 
 		createActions();
 		initializeToolBar();
 		initializeMenu();
-        theMonitorFuture = theExecutor.scheduleAtFixedRate( runner, 5, 1, TimeUnit.SECONDS);
+        theMonitorFuture = theExecutor.scheduleAtFixedRate(runner, 5, 1, TimeUnit.SECONDS);
 		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(listener);
 	}
 
@@ -193,7 +176,7 @@ public class RendezvousServiceViewPart extends ViewPart{
 		  public String getText(Object element) {
 		    return super.getText(element);
 		  }
-		});	
+		});		
 		return col;
 	}
 
@@ -208,19 +191,9 @@ public class RendezvousServiceViewPart extends ViewPart{
 	}
 	
 	public void setInput( ConfigMode mode, List<String> values ){
-		switch( mode){
-		case EDGE:
-			edgesTableViewer.setInput( values );
-		default: 
-			tableViewer.setInput(values);
-		}
+			tableViewer.setInput( values );
 	}
 	
-    // Resetting frame value
-    public void resettingFrameValues() {        
-        this.setPartName("Connectivity Monitor");
-    }
-
 	/**
 	 * Shows the given selection in this view.
 	 */
@@ -236,18 +209,28 @@ public class RendezvousServiceViewPart extends ViewPart{
 			return;
 		IJp2pComponent<?> component = (IJp2pComponent<?> )element;
 		if(!( component.getModule() instanceof PeerGroup ))
-			return;
-		PeerGroup peergroup = ((PeerGroup) component.getModule());
-		this.rdvService = peergroup.getRendezVousService();
-         if( this.rdvMonitor != null ){
-             this.rdvService.removeListener(this.rdvMonitor);        	 
-         }
-		 this.rdvMonitor = new RdvEventMonitor();
-         this.rdvService.addListener(this.rdvMonitor);
+			this.setPeerGroup(null );
+		else
+		  this.setPeerGroup( (PeerGroup) component.getModule());
+	}
+
+    /** Creates new form ConnectivityMonitor */
+    private void setPeerGroup(final PeerGroup inGroup) {
+
+        // Initialization
+        peerGroup = inGroup;
+        if( peerGroup == null )
+        	 return;
+         
+         // Registering as rendezvous event listener
+         if( this.rdvMonitor != null )
+         	inGroup.getRendezVousService().removeListener(this.rdvMonitor );
+         this.rdvMonitor = new RdvEventMonitor(this);
+         inGroup.getRendezVousService().addListener(this.rdvMonitor);
 
         // Starting the monitor
-        logJxta( peergroup, "Starting to monitor the peergroup " + peergroup.getPeerGroupName() );
-	}
+        logJxta( peerGroup, "Starting to monitor the peergroup " + peerGroup.getPeerGroupName() );
+    }
 
 	/**
 	 * Create the actions.
@@ -282,65 +265,68 @@ public class RendezvousServiceViewPart extends ViewPart{
 			return;
 		Display.getDefault().asyncExec(new Runnable() {
             @Override
-            public void run() {
-            	if( rdvService == null )
-            		return;
+			public void run() {
+                if(( peerGroup == null ) || ( aliveRadioButton.isDisposed() ))
+                	return;
+                aliveRadioButton.setEnabled( isrunning );
+            	String msg = peerGroup.getPeerName();
+                if( peerGroup.getPeerID() != null )
+                	msg += "[" + peerGroup.getPeerID().toString() + "]";
+            	setContentDescription( msg );
+                   
+                EndpointService endpointService =peerGroup.getEndpointService();
+                styledText.setText( endpointService.getImplAdvertisement().toString());
+                if ( endpointService != null ) {
+                    Collection<PeerID> x = endpointService.getConnectedRelayPeers();
+                    if ( x.isEmpty() ) {
+                        isConnectedToRelayCheckBox.setSelection(false);
+                        relayIDTextField.setText("");
+                    } else {
+                        isConnectedToRelayCheckBox.setSelection(true);
+                        PeerID[] TmpPID = x.toArray(new PeerID[x.size()]);
+                        relayIDTextField.setText(TmpPID[0].toString());
+                    }
 
-    	    	aliveRadioButton.setEnabled( isrunning );
-    	    	isRDVCheckBox.setSelection(rdvService.isRendezVous());
-            	isConnectedToRDVCheckBox.setSelection(rdvService.isConnectedToRendezVous());
+                    Collection<PeerID> items = endpointService.getConnectedRelayPeers();
+                    // Sorting Peer IDs
+                    List<String> strItems = new ArrayList<String>();
+                    for( PeerID item: items ) 
+                        strItems.add( item.toString());
 
-            	List<PeerID> items = rdvService.getLocalRendezVousView();
-            	// Sorting Peer IDs
-            	List<String> StrItems = new ArrayList<String>();
-            	for (int i=0;i<items.size();i++) 
-            		StrItems.add(items.get(i).toString());
-            	setInput( ConfigMode.RENDEZVOUS, StrItems );
-            	items = rdvService.getLocalEdgeView();
-            	// Sorting Peer IDs
-            	StrItems = new ArrayList<String>();
-            	for (int i=0;i<items.size();i++) 
-            		StrItems.add(items.get(i).toString());
-            	//statusPanel.updateRDVs( StrItems );
-            	setInput( ConfigMode.EDGE, StrItems );
-            	styledText.setText( rdvService.getImplAdvertisement().toString());
-            //} else {
-            //	logJxta( peerGroup, "Rendezvous service is NULL");
+                    //statusPanel.updateEdges( StrItems );
+                    setInput( ConfigMode.RELAY, strItems );
+
+                	logJxta( peerGroup, "Endpoint service started");
+                }
             }
-
-		});		
+         });			
 	}
 
-    private void IsConnectedToRDVCheckBoxActionPerformed(SelectionEvent e) {//GEN-FIRST:event_IsConnectedToRDVCheckBoxActionPerformed
+    private void IsConnectedToRelayCheckBoxActionPerformed( SelectionEvent evt) {//GEN-FIRST:event_IsConnectedToRelayCheckBoxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_IsConnectedToRDVCheckBoxActionPerformed
-
-    private void IsRDVCheckBoxActionPerformed(SelectionEvent e) {//GEN-FIRST:event_IsRDVCheckBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_IsRDVCheckBoxActionPerformed
+    }//GEN-LAST:event_IsConnectedToRelayCheckBoxActionPerformed
 
     private synchronized void stopMonitorTask() {
 
         if ( theMonitorFuture != null ) {
             theMonitorFuture.cancel(false);
         }
-    	this.isrunning = false;;
-  }
+    }
 
     @Override
     protected void finalize() {
         stopMonitorTask();
-        this.rdvService.removeListener( this.rdvMonitor);
     }
 
     public class RdvEventMonitor implements RendezvousListener {
 
-    	@Override
+        public RdvEventMonitor( EndPointViewPart inCM) {
+        }
+
+        @Override
 		public void rendezvousEvent(RendezvousEvent event) {
-     		if ( event == null ) 
-    			return;
+            if ( event == null ) return;
             String Log = null;
-            //RendezVousService ddvs = (RendezVousService) event.getSource();
 
             if ( event.getType() == RendezvousEvent.RDVCONNECT ) {
                 Log = "Connection to RDV";
@@ -368,7 +354,7 @@ public class RendezvousServiceViewPart extends ViewPart{
             if ( TempPID != null ) Log = Log + "\n  " + TempPID;
 
             // Adding the entry
-            //logJxta( ddvs.gpeerGroup, Log );
+            logJxta( peerGroup, Log );
 
         }
     }

@@ -21,6 +21,7 @@ import net.osgi.jp2p.properties.AbstractPreferences;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.ManagedProperty;
+import net.osgi.jp2p.utils.Utils;
 
 public class ModuleSpecAdvertisementPreferences extends AbstractPreferences{
 
@@ -107,6 +108,10 @@ public class ModuleSpecAdvertisementPreferences extends AbstractPreferences{
 		ModuleSpecID pgId = (ModuleSpecID) createDefaultValue( ModuleSpecProperties.MODULE_SPEC_ID );
 		ManagedProperty<IJp2pProperties, Object> property = source.getOrCreateManagedProperty( ModuleSpecProperties.MODULE_SPEC_ID, pgId.toString(), false );
 		String str = (String) property.getValue();
+		if( Utils.isNull(str)){
+			str = pgId.toString();
+			property.setValue(str);
+		}
 		URI uri = new URI( str );
 		return (ModuleSpecID) IDFactory.fromURI( uri );
 	}

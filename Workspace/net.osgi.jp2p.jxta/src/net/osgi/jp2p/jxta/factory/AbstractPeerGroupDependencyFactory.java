@@ -32,6 +32,6 @@ public abstract class AbstractPeerGroupDependencyFactory<T extends Object> exten
 	}
 	
 	protected PeerGroup getPeerGroup(){
-		return (PeerGroup) super.getDependency();
+		return (PeerGroup) super.getDependency().getModule();
 	}
 }

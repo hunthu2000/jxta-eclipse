@@ -3,6 +3,7 @@ package net.osgi.jp2p.jxta.factory;
 import net.jxta.document.Advertisement;
 import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.factory.IComponentFactory;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jp2p.jxta.advertisement.service.Jp2pAdvertisementFactory;
 import net.osgi.jp2p.jxta.advertisement.service.JxtaAdvertisementFactory;
 import net.osgi.jp2p.jxta.discovery.DiscoveryServiceFactory;
@@ -28,7 +29,7 @@ public class JxtaFactoryUtils {
 	 * @param componentName
 	 * @return
 	 */
-	public static IComponentFactory<?> getDefaultFactory( IContainerBuilder builder, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+	public static IComponentFactory<?> getDefaultFactory( IContainerBuilder builder, String[] attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
 		if( Utils.isNull(componentName))
 			return null;
 		String comp = StringStyler.styleToEnum(componentName);
@@ -69,7 +70,8 @@ public class JxtaFactoryUtils {
 			factory = new PeerGroupFactory( builder, parentSource );
 			break;			
 		case ADVERTISEMENT:
-			factory = new JxtaAdvertisementFactory( builder, parentSource );
+			AdvertisementTypes type = AdvertisementTypes.convertFrom(attributes[0]);
+			factory = new JxtaAdvertisementFactory( builder, type, parentSource );
 			break;
 		case ADVERTISEMENT_SERVICE:
 			factory = new Jp2pAdvertisementFactory<Advertisement>( builder, parentSource );
@@ -87,11 +89,11 @@ public class JxtaFactoryUtils {
 	 * @param createSource: create the property source immediately
 	 * @return
 	 */
-	public static IComponentFactory<?> getOrCreateChildFactory( IContainerBuilder builder, IJp2pPropertySource<IJp2pProperties> source, String componentName, boolean createSource ){
+	public static IComponentFactory<?> getOrCreateChildFactory( IContainerBuilder builder, String[] attributes, IJp2pPropertySource<IJp2pProperties> source, String componentName, boolean createSource ){
 		IJp2pPropertySource<?> child = source.getChild( componentName ); 
 		if( child != null )
 			return builder.getFactory(child );
-		IComponentFactory<?> factory = getDefaultFactory(builder, source, componentName );
+		IComponentFactory<?> factory = getDefaultFactory(builder, attributes, source, componentName );
 		if( createSource )
 			factory.createPropertySource();
 		builder.addFactory( factory );

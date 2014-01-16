@@ -15,6 +15,8 @@ public interface IJp2pDirectives{
 		ID,
 		NAME,
 		CLASS,
+		FILE,
+		VISIBLE,
 		CONTEXT,
 		AUTO_START,
 		CLEAR,

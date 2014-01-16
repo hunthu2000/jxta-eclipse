@@ -15,13 +15,14 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TreeSelection;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipselabs.osgi.ds.broker.util.StringStyler;
 
 public class AdvertisementTableViewer extends ViewPart {
@@ -63,24 +64,28 @@ public class AdvertisementTableViewer extends ViewPart {
 	public void createPartControl(Composite parent) {
 		Composite container = toolkit.createComposite(parent, SWT.NONE);
 		toolkit.paintBordersFor(container);
-		container.setLayout(new FillLayout(SWT.HORIZONTAL));
+		TableColumnLayout tableColumnLayout = new TableColumnLayout();
+		container.setLayout(tableColumnLayout);
 		
 		tableViewer = new TableViewer(container, SWT.BORDER | SWT.FULL_SELECTION);
-		createColumn( AdvertisementColumns.TYPE.toString(), tableViewer);
+		TableViewerColumn column = createColumn( AdvertisementColumns.TYPE.toString(), tableViewer);
+		tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(20, 20, true)); 		
 		table = tableViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		toolkit.paintBordersFor(table);
 
-		createColumn(AdvertisementColumns.NAME.toString(), tableViewer);
+		column = createColumn(AdvertisementColumns.NAME.toString(), tableViewer);
+		tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(20, 20, true)); 		
 		table = tableViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		toolkit.paintBordersFor(table);
 
-		createColumn(AdvertisementColumns.ID.name(), tableViewer);
+		column = createColumn(AdvertisementColumns.ID.name(), tableViewer);
+		tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(60, 200, true)); 		
 		table = tableViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -116,7 +121,7 @@ public class AdvertisementTableViewer extends ViewPart {
 		super.dispose();
 	}
 
-	private void createColumn( final String name, TableViewer viewer ){
+	private TableViewerColumn createColumn( final String name, TableViewer viewer ){
 		TableViewerColumn col = createTableViewerColumn( viewer, name, 100, 0 );
 		col.setLabelProvider(new ColumnLabelProvider() {
 			
@@ -141,6 +146,7 @@ public class AdvertisementTableViewer extends ViewPart {
 		    
 		  }
 		});		
+		return col;
 	}
 
 	private TableViewerColumn createTableViewerColumn( TableViewer viewer, String title, int bound, final int colNumber) {

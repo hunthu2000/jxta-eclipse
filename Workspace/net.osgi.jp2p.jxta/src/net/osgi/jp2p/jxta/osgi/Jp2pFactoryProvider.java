@@ -23,7 +23,7 @@ public class Jp2pFactoryProvider extends AbstractProvider<String, String, ICompo
 
 	@Override
 	protected void onDataReceived( String componentName ) {
-		super.provide( JxtaFactoryUtils.getDefaultFactory(null, null, componentName));
+		super.provide( JxtaFactoryUtils.getDefaultFactory(null, new String[0], null, componentName));
 	}
 }
 

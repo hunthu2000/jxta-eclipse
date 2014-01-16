@@ -73,8 +73,6 @@ public class AdvertisementPreferences extends AbstractPreferences{
 		AdvertisementTypes type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( (String) source.getDirective( AdvertisementDirectives.TYPE )));
 		String str = null;
 		switch( type ){
-		case ADV:
-			break;
 		case MODULE_CLASS:
 			str = (String) source.getProperty( ModuleClassProperties.MODULE_CLASS_ID );
 			break;
@@ -90,6 +88,8 @@ public class AdvertisementPreferences extends AbstractPreferences{
 		case PIPE:
 			str = (String) source.getProperty( PipeServiceProperties.PIPE_ID );
 			break;
+		default:
+			break;
 		}
 		if( Utils.isNull(str))
 			return null;
@@ -103,10 +103,8 @@ public class AdvertisementPreferences extends AbstractPreferences{
 	 * @throws URISyntaxException
 	 */
 	public static boolean isID( IJp2pPropertySource<IJp2pProperties> source, IJp2pProperties id ){
-		AdvertisementTypes type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( (String) source.getDirective( AdvertisementDirectives.TYPE )));
+		AdvertisementTypes type = AdvertisementTypes.convertFrom( (String) source.getDirective( AdvertisementDirectives.TYPE ));
 		switch( type ){
-		case ADV:
-			break;
 		case MODULE_CLASS:
 			return ( ModuleClassProperties.MODULE_CLASS_ID.equals( id ));
 		case MODULE_SPEC:
@@ -117,6 +115,8 @@ public class AdvertisementPreferences extends AbstractPreferences{
 			return ( PeerGroupProperties.PEERGROUP_ID.equals( id ) );
 		case PIPE:
 			return ( PipeServiceProperties.PIPE_ID.equals( id ) );
+		default:
+			break;
 		}
 		return false;
 	}

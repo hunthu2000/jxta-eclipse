@@ -18,7 +18,9 @@ import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.IJp2pComponentNode;
 import net.osgi.jp2p.component.Jp2pComponentNode;
+import net.osgi.jp2p.properties.AbstractJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives;
+import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 
@@ -179,10 +181,19 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	
 	/**
 	 * Create the component. By default, the factory can do this internally.
-	 * If this has to be done externally, it has to be specifically implemented 
+	 * If this has to be done externally, it has to be specifically implemented.
+	 * The Creation follows a number of steps:
+	 * 1: if the blockCreation directive is set, the factory will return null
+	 * 2: If the factory is completed, the component is not created
+	 * 3: if the factory cannot the create the component, an exception is given
+	 * 4: the component is created and events are spawned 
 	 * @return
 	 */
 	protected IJp2pComponent<T> createComponent() {
+		boolean blockCreation = AbstractJp2pPropertySource.getBoolean( this.source, Directives.BLOCK_CREATION );
+		if( blockCreation )
+			return null;
+		
 		if( this.completed )
 			return component;
 		if(!this.canCreate() )

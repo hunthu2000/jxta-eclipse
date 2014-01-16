@@ -28,7 +28,6 @@ import net.osgi.jp2p.jxta.advertisement.ModuleSpecAdvertisementPropertySource;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
 import net.osgi.jp2p.jxta.factory.AbstractPeerGroupDependencyFactory;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
-import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.utils.Utils;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupFactory;
@@ -60,8 +59,8 @@ public class PeerGroupFactory extends AbstractPeerGroupDependencyFactory<PeerGro
 	@Override
 	protected IJp2pComponent<PeerGroup> onCreateComponent( IJp2pPropertySource<IJp2pProperties> source ) {
 		ModuleImplAdvertisementPropertySource mips = (ModuleImplAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(source, AdvertisementTypes.MODULE_IMPL );
-		ModuleSpecAdvertisementPropertySource msps = (ModuleSpecAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(mips, AdvertisementTypes.MODULE_SPEC );
-		ModuleClassAdvertisementPropertySource mcps = (ModuleClassAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(mips, AdvertisementTypes.MODULE_CLASS );
+		ModuleSpecAdvertisementPropertySource msps = (ModuleSpecAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(source, AdvertisementTypes.MODULE_SPEC );
+		ModuleClassAdvertisementPropertySource mcps = (ModuleClassAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(msps, AdvertisementTypes.MODULE_CLASS );
 		PipeAdvertisementPropertySource paps = (PipeAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(mips, AdvertisementTypes.PIPE );
 		
 		ModuleImplAdvertisement miad = null;

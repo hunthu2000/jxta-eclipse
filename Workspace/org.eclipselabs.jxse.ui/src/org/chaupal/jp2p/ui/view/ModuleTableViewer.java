@@ -14,8 +14,10 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -24,7 +26,7 @@ import org.eclipse.swt.layout.FillLayout;
 
 public class ModuleTableViewer extends ViewPart {
 
-	public static final String ID = "net.equinox.jxta.ui.view.ModuleTableViewer"; //$NON-NLS-1$
+	public static final String ID = "org.chaupal.jp2p.ui.view.ModuleTableViewer"; //$NON-NLS-1$
 	
 	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 	private Table table;
@@ -50,10 +52,12 @@ public class ModuleTableViewer extends ViewPart {
 
 		Composite container = toolkit.createComposite(parent, SWT.NONE);
 		toolkit.paintBordersFor(container);
-		container.setLayout(new FillLayout(SWT.HORIZONTAL));
+		TableColumnLayout tableColumnLayout = new TableColumnLayout();
+		container.setLayout(tableColumnLayout);
 		
 		TableViewer tableViewer = new TableViewer(container, SWT.BORDER | SWT.FULL_SELECTION);
-		createColumn("Relays", tableViewer);
+		TableViewerColumn column = createColumn("Relays", tableViewer);
+		tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(100, 200, true)); 		
 		table = tableViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -91,14 +95,15 @@ public class ModuleTableViewer extends ViewPart {
 		super.dispose();
 	}
 
-	private void createColumn( String name, TableViewer viewer ){
+	private TableViewerColumn createColumn( String name, TableViewer viewer ){
 		TableViewerColumn col = createTableViewerColumn( viewer, name, 100, 0 );
 		col.setLabelProvider(new ColumnLabelProvider() {
 		  @Override
 		  public String getText(Object element) {
 		    return super.getText(element);
 		  }
-		});		
+		});	
+		return col;
 	}
 
 	private TableViewerColumn createTableViewerColumn( TableViewer viewer, String title, int bound, final int colNumber) {

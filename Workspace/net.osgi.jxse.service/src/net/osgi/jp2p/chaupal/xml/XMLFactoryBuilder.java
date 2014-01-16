@@ -37,6 +37,7 @@ import net.osgi.jp2p.factory.IComponentFactory.Components;
 import net.osgi.jp2p.factory.IJp2pComponents;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPreferences;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.jxta.context.Jp2pContainerPreferences;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPreferences;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
@@ -52,6 +53,7 @@ import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySourc
 import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jp2p.jxta.network.configurator.OverviewPreferences;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 import net.osgi.jp2p.jxta.pipe.PipePropertySource;
 import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeServiceProperties;
 import net.osgi.jp2p.jxta.registration.RegistrationPropertySource;
@@ -301,7 +303,9 @@ class Jp2pHandler extends DefaultHandler{
 		}
 		if( IJxtaComponentFactory.JxtaComponents.isComponent( qName )){
 			current = IJxtaComponentFactory.JxtaComponents.valueOf( StringStyler.styleToEnum( qName ));
-			factory = JxtaFactoryUtils.getDefaultFactory(container, node.getData().getPropertySource(), current.toString());
+			String[] attrs = new String[1];
+			attrs[0] = attributes.getValue(AdvertisementDirectives.TYPE.toString().toLowerCase());
+			factory = JxtaFactoryUtils.getDefaultFactory(container, attrs, node.getData().getPropertySource(), current.toString());
 			node = this.processFactory(attributes, node, factory);
 			return;
 		}
@@ -322,7 +326,6 @@ class Jp2pHandler extends DefaultHandler{
 					Constructor<IComponentFactory<?>> constructor = (Constructor<IComponentFactory<?>>) factoryClass.getDeclaredConstructor(IJp2pPropertySource.class );
 					factory = constructor.newInstance( node.getData().getPropertySource() );
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					return;
 				}
@@ -448,8 +451,8 @@ class Jp2pHandler extends DefaultHandler{
 			return;
 		}
 		if( source instanceof PeerGroupPropertySource ){
-			//DiscoveryPreferences<IJxseDirectives> preferences = new DiscoveryPreferences<IJxseDirectives>( source );
-			//preferences.setPropertyFromString(( DiscoveryProperties) property.getKey(), value);
+			PeerGroupPropertySource pgps = ( PeerGroupPropertySource) source;
+			pgps.setProperty( (PeerGroupProperties) property.getKey(), value);
 			return;
 		}
 		if( source instanceof RegistrationPropertySource ){

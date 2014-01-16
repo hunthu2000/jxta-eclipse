@@ -5,11 +5,9 @@ import java.net.URISyntaxException;
 import net.jxta.document.AdvertisementFactory;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.protocol.PipeAdvertisement;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementProperties;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
 import net.osgi.jp2p.jxta.advertisement.ModuleImplAdvertisementPropertySource.ModuleImplProperties;
-import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
 import net.osgi.jp2p.properties.IJp2pProperties;
@@ -18,7 +16,7 @@ import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.ManagedProperty;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 
-public class PipeAdvertisementPropertySource extends AdvertisementServicePropertySource{
+public class PipeAdvertisementPropertySource extends AdvertisementPropertySource{
 	
 	/**
 	 * Properties specific for module spec services
@@ -47,12 +45,12 @@ public class PipeAdvertisementPropertySource extends AdvertisementServicePropert
 	}
 
 	public PipeAdvertisementPropertySource( IJp2pPropertySource<IJp2pProperties> parent) {
-		super( JxtaComponents.ADVERTISEMENT.toString(), parent);
-		this.fillDefaultValues();
+		super( AdvertisementTypes.PIPE, parent);
 	}
 
-	protected void fillDefaultValues( ) {
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementProperties.ADVERTISEMENT_TYPE, AdvertisementTypes.PIPE ));
+	@Override
+	protected void fillDefaultValues( IJp2pPropertySource<IJp2pProperties> parent ) {
+		super.fillDefaultValues(parent);
 		String name = super.getParent().getDirective( Directives.NAME );
 		if(Utils.isNull( name )){
 			name = (String) super.getParent().getProperty( ModuleImplProperties.CODE );

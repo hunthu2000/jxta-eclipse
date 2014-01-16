@@ -27,9 +27,13 @@ import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySour
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jp2p.jxta.advertisement.ModuleClassAdvertisementPropertySource;
+import net.osgi.jp2p.jxta.advertisement.ModuleImplAdvertisementPropertySource;
+import net.osgi.jp2p.jxta.advertisement.ModuleSpecAdvertisementPropertySource;
 import net.osgi.jp2p.jxta.factory.AbstractPeerGroupDependencyFactory;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupAdvertisementPropertySource;
 import net.osgi.jp2p.jxta.pipe.PipeAdvertisementPreferences;
+import net.osgi.jp2p.jxta.pipe.PipeAdvertisementPropertySource;
 import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeServiceProperties;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
@@ -39,8 +43,11 @@ import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 
 public class JxtaAdvertisementFactory extends AbstractPeerGroupDependencyFactory<Advertisement> {
 	
-	public JxtaAdvertisementFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource) {
+	private AdvertisementTypes type;
+	
+	public JxtaAdvertisementFactory( IContainerBuilder container, AdvertisementTypes type, IJp2pPropertySource<IJp2pProperties> parentSource) {
 		super( container, parentSource );
+		this.type = type;
 	}
 
 	@Override
@@ -50,15 +57,38 @@ public class JxtaAdvertisementFactory extends AbstractPeerGroupDependencyFactory
 
 	
 	@Override
-	protected AdvertisementServicePropertySource onCreatePropertySource() {
-		AdvertisementServicePropertySource source = new AdvertisementServicePropertySource( super.getParentSource() );
+	protected AdvertisementPropertySource onCreatePropertySource() {
+		AdvertisementPropertySource source;
+		switch( type ){
+		case MODULE_CLASS:
+			source = new ModuleClassAdvertisementPropertySource(super.getParentSource() );
+			break;
+		case MODULE_SPEC:
+			source = new ModuleSpecAdvertisementPropertySource(super.getParentSource() );
+			break;
+		case MODULE_IMPL:
+			source = new ModuleImplAdvertisementPropertySource(super.getParentSource() );
+			break;
+		case PEERGROUP:
+			source = new PeerGroupAdvertisementPropertySource(super.getParentSource() );
+			break;
+		case PEER:
+			source = null;//new PeerAdvertisementPropertySource(super.getParentSource() );
+			break;
+		case PIPE:
+			source = new PipeAdvertisementPropertySource(super.getParentSource() );
+			break;
+		default:
+			source = new AdvertisementPropertySource( super.getParentSource() );
+			break;
+		}
 		return source;
 	}
 
 	
 	@Override
 	public void extendContainer() {
-		AdvertisementTypes type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( (String) super.getPropertySource().getDirective( AdvertisementDirectives.TYPE )));
+		AdvertisementTypes type = AdvertisementTypes.convertFrom((String) super.getPropertySource().getDirective( AdvertisementDirectives.TYPE ));
 		if( !AdvertisementTypes.MODULE_SPEC.equals( type ))
 			return;
 		ModuleClassAdvertisementPropertySource msps = (ModuleClassAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(super.getPropertySource(), AdvertisementTypes.MODULE_CLASS );
@@ -122,5 +152,5 @@ public class JxtaAdvertisementFactory extends AbstractPeerGroupDependencyFactory
 		if( Utils.isNull(type))
 			return AdvertisementTypes.ADV;
 		return AdvertisementTypes.valueOf( StringStyler.styleToEnum( type ));
-	}
+	}	
 }

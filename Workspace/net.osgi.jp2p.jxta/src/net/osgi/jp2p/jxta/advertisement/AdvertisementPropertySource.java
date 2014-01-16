@@ -5,8 +5,10 @@ import net.jxta.document.Advertisement;
 import net.jxta.protocol.ModuleClassAdvertisement;
 import net.jxta.protocol.ModuleImplAdvertisement;
 import net.jxta.protocol.ModuleSpecAdvertisement;
+import net.jxta.protocol.PeerAdvertisement;
 import net.jxta.protocol.PeerGroupAdvertisement;
 import net.jxta.protocol.PipeAdvertisement;
+import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
 import net.osgi.jp2p.properties.AbstractJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
@@ -70,21 +72,27 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 		}
 
 		/**
+		 * Returns true if the given String type is contained in the enum
+		*/
+		public static boolean isValidType( String tp ){
+			if( Utils.isNull(tp))
+				return false;
+			String type = StringStyler.styleToEnum(tp);
+			for( AdvertisementTypes adtype: AdvertisementTypes.values() ){
+				if( adtype.name().equals(type ))
+					return true;
+			}
+
+			return false;
+		}
+
+		/**
 		 * Concert from advertisement type 
 		*/
 		public static AdvertisementTypes convertFrom( String tp ){
-			if( Utils.isNull(tp))
+			if( !isValidType( tp))
 				return AdvertisementTypes.ADV;
-			String type = StringStyler.styleToEnum(tp);
-			if( type.equals( PeerGroupAdvertisement.getAdvertisementType()))
-				return AdvertisementTypes.PEERGROUP;
-			if( type.equals(PipeAdvertisement.getAdvertisementType()))
-				  return AdvertisementTypes.PIPE;
-			if( type.equals(ModuleClassAdvertisement.getAdvertisementType()))
-				  return AdvertisementTypes.MODULE_CLASS;
-			if( type.equals(ModuleSpecAdvertisement.getAdvertisementType()))
-				  return AdvertisementTypes.MODULE_SPEC;
-			return AdvertisementTypes.ADV;
+			return AdvertisementTypes.valueOf( StringStyler.styleToEnum( tp ));
 		}
 
 		/**
@@ -94,12 +102,16 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 			switch( advType ){
 			case PEERGROUP:
 				return PeerGroupAdvertisement.getAdvertisementType();
+			case PEER:
+				return PeerAdvertisement.getAdvertisementType();
 			case PIPE:
 				return PipeAdvertisement.getAdvertisementType();
 			case MODULE_CLASS: 
 				return ModuleClassAdvertisement.getAdvertisementType();
 			case MODULE_SPEC:
 				return ModuleSpecAdvertisement.getAdvertisementType();
+			case MODULE_IMPL:
+				return ModuleImplAdvertisement.getAdvertisementType();
 			default:
 				return null;
 			}
@@ -107,8 +119,7 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 	}
 
 	public enum AdvertisementProperties implements IJp2pProperties{
-		NAME,
-		ADVERTISEMENT_TYPE;
+		NAME;
 	
 		public static boolean isValidProperty( String str ){
 			if( Utils.isNull( str ))
@@ -152,20 +163,30 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 		}
 	}
 
+	private AdvertisementTypes type;
+	
 	public AdvertisementPropertySource( IJp2pPropertySource<IJp2pProperties> parent) {
-		super( JxtaComponents.ADVERTISEMENT.toString(), parent);
-		this.fillDefaultValues( parent );
+		this( JxtaComponents.ADVERTISEMENT.toString(), parent);
 	}
 
-	public AdvertisementPropertySource(String componentName, IJp2pPropertySource<IJp2pProperties> parent) {
+	protected AdvertisementPropertySource(String componentName, IJp2pPropertySource<IJp2pProperties> parent) {
+		this(componentName, AdvertisementTypes.ADV, parent);
+	}
+
+	protected AdvertisementPropertySource(AdvertisementTypes type, IJp2pPropertySource<IJp2pProperties> parent) {
+		this( JxtaComponents.ADVERTISEMENT.toString(), type, parent );
+	}
+
+	protected AdvertisementPropertySource(String componentName, AdvertisementTypes type, IJp2pPropertySource<IJp2pProperties> parent) {
 		super(componentName, parent);
+		this.type = type;
 		this.fillDefaultValues( parent);
 	}
 
 	protected void fillDefaultValues( IJp2pPropertySource<IJp2pProperties> parent ){
 		super.setDirective(Directives.BLOCK_CREATION, Boolean.TRUE.toString());
-	}
-	
+		super.setDirective( AdvertisementDirectives.TYPE, type.toString() );
+}	
 
 	@Override
 	public boolean validate( IJp2pProperties id, Object value) {
@@ -187,13 +208,19 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 	 */
 	@SuppressWarnings("unchecked")
 	public static IJp2pPropertySource<IJp2pProperties> findAdvertisementDescendant( IJp2pPropertySource<IJp2pProperties> source, AdvertisementTypes type ){
-		if(( type == null ) || ( !JxtaComponents.ADVERTISEMENT.equals( source.getComponentName() )))
+		AdvertisementTypes adtype =null;
+		if(( source == null ) || ( type == null ))
 			return null;
-		AdvertisementTypes adtype = (AdvertisementTypes) source.getProperty( AdvertisementProperties.ADVERTISEMENT_TYPE );
-		if( type.equals(adtype ))
-			return (IJp2pPropertySource<IJp2pProperties>) source;
+		if( JxtaComponents.ADVERTISEMENT.toString().equals( source.getComponentName() )){
+			adtype = AdvertisementTypes.convertFrom( source.getDirective( AdvertisementDirectives.TYPE ));
+			if( type.equals(adtype ))
+				return (IJp2pPropertySource<IJp2pProperties>) source;
+		}
+		IJp2pPropertySource<IJp2pProperties> retval;
 		for( IJp2pPropertySource<?> child: source.getChildren() ){
-			return findAdvertisementDescendant((IJp2pPropertySource<IJp2pProperties>) child, adtype);
+			retval = findAdvertisementDescendant((IJp2pPropertySource<IJp2pProperties>) child, type);
+			if( retval != null )
+				return retval;
 		}
 		return null;
 	}
