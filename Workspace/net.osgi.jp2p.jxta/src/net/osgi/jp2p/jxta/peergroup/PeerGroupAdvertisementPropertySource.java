@@ -8,6 +8,7 @@ import net.jxta.protocol.PeerGroupAdvertisement;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
 import net.osgi.jp2p.jxta.advertisement.ModuleImplAdvertisementPropertySource.ModuleImplProperties;
 import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementDirectives;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
 import net.osgi.jp2p.properties.IJp2pProperties;
@@ -77,12 +78,12 @@ public class PeerGroupAdvertisementPropertySource extends AdvertisementPropertyS
 	 * @throws URISyntaxException 
 	 */
 	public static PeerGroupAdvertisement createPeerGroupAdvertisement( IJp2pPropertySource<IJp2pProperties> source, ModuleSpecAdvertisement msadv ) throws URISyntaxException{
-		AdvertisementTypes type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( (String) source.getDirective( AdvertisementDirectives.TYPE )));
+		AdvertisementTypes type = AdvertisementTypes.convertFrom((String) source.getDirective( AdvertisementDirectives.TYPE ));
 		PeerGroupAdvertisement pgad = ( PeerGroupAdvertisement )AdvertisementFactory.newAdvertisement( AdvertisementTypes.convertTo(type));
 		String name = (String) source.getProperty( AdvertisementProperties.NAME );
 		pgad.setName(name);
 		pgad.setModuleSpecID( msadv.getModuleSpecID());
-		pgad.setDescription(( String )source.getProperty( PeerGroupAdvertisementProperties.DESCRIPTION ));
+		pgad.setDescription(( String )source.getProperty( PeerGroupProperties.DESCRIPTION ));
 		PeerGroupPreferences preferences = new PeerGroupPreferences((IJp2pWritePropertySource<IJp2pProperties>) source); 
 		pgad.setPeerGroupID(preferences.getPeerGroupID());
 		return pgad;

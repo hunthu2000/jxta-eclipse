@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import net.jxta.id.IDFactory;
 import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementProperties;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 import net.osgi.jp2p.properties.AbstractPreferences;
 import net.osgi.jp2p.properties.IJp2pProperties;
@@ -61,8 +62,8 @@ public class PeerGroupPreferences extends AbstractPreferences
 	 * @see net.osgi.jxse.network.INetworkManagerPropertySource#getPeerID()
 	 */
 	public PeerGroupID getPeerGroupID() throws URISyntaxException{
-		PeerGroupPropertySource source = (PeerGroupPropertySource) super.getSource();
-		String name = source.getIdentifier();
+		PeerGroupAdvertisementPropertySource source = (PeerGroupAdvertisementPropertySource) super.getSource();
+		String name = (String) source.getProperty( AdvertisementProperties.NAME );
 		PeerGroupID pgId = IDFactory.newPeerGroupID( PeerGroupID.defaultNetPeerGroupID, name.getBytes() );
 		ManagedProperty<IJp2pProperties, Object> property = source.getOrCreateManagedProperty( PeerGroupProperties.PEERGROUP_ID, pgId.toString(), false );
 		String str = (String) property.getValue();

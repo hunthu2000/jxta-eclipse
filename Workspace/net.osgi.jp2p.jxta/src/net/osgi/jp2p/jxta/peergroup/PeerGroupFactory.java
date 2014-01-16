@@ -10,6 +10,7 @@
  *******************************************************************************/
 package net.osgi.jp2p.jxta.peergroup;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 import net.jxta.exception.PeerGroupException;
@@ -17,13 +18,13 @@ import net.jxta.peergroup.PeerGroup;
 import net.jxta.protocol.ModuleClassAdvertisement;
 import net.jxta.protocol.ModuleImplAdvertisement;
 import net.jxta.protocol.ModuleSpecAdvertisement;
+import net.jxta.protocol.PeerGroupAdvertisement;
 import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jp2p.jxta.advertisement.ModuleClassAdvertisementPropertySource;
-import net.osgi.jp2p.jxta.advertisement.ModuleImplAdvertisementPropertySource;
 import net.osgi.jp2p.jxta.advertisement.ModuleSpecAdvertisementPropertySource;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
 import net.osgi.jp2p.jxta.factory.AbstractPeerGroupDependencyFactory;
@@ -58,17 +59,22 @@ public class PeerGroupFactory extends AbstractPeerGroupDependencyFactory<PeerGro
 	@SuppressWarnings("unchecked")
 	@Override
 	protected IJp2pComponent<PeerGroup> onCreateComponent( IJp2pPropertySource<IJp2pProperties> source ) {
-		ModuleImplAdvertisementPropertySource mips = (ModuleImplAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(source, AdvertisementTypes.MODULE_IMPL );
+		//ModuleImplAdvertisementPropertySource mips = (ModuleImplAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(source, AdvertisementTypes.MODULE_IMPL );
+		PeerGroupAdvertisementPropertySource pgps = (PeerGroupAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(source, AdvertisementTypes.PEERGROUP );
 		ModuleSpecAdvertisementPropertySource msps = (ModuleSpecAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(source, AdvertisementTypes.MODULE_SPEC );
 		ModuleClassAdvertisementPropertySource mcps = (ModuleClassAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(msps, AdvertisementTypes.MODULE_CLASS );
-		PipeAdvertisementPropertySource paps = (PipeAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(mips, AdvertisementTypes.PIPE );
+		PipeAdvertisementPropertySource paps = (PipeAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(pgps, AdvertisementTypes.PIPE );
 		
 		ModuleImplAdvertisement miad = null;
+		ModuleSpecAdvertisement msad = null;
+		PeerGroupAdvertisement pgad = null;
+		ModuleClassAdvertisement mcad = null;
 		try {
-			miad = ModuleImplAdvertisementPropertySource.createModuleClassAdvertisement(mips );
-			ModuleClassAdvertisement mcad = ModuleClassAdvertisementPropertySource.createModuleClassAdvertisement(mcps );
+			//miad = ModuleImplAdvertisementPropertySource.createModuleClassAdvertisement(mips );
+			mcad = ModuleClassAdvertisementPropertySource.createModuleClassAdvertisement(mcps );
 			PipeAdvertisement pipeAdv = PipeAdvertisementPropertySource.createPipeAdvertisement(paps, super.getPeerGroup() );
-			ModuleSpecAdvertisement msad = ModuleSpecAdvertisementPropertySource.createModuleSpecAdvertisement(msps, mcad, pipeAdv);
+			msad = ModuleSpecAdvertisementPropertySource.createModuleSpecAdvertisement(msps, mcad, pipeAdv);
+			pgad = PeerGroupAdvertisementPropertySource.createPeerGroupAdvertisement( pgps, msad);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
@@ -76,11 +82,19 @@ public class PeerGroupFactory extends AbstractPeerGroupDependencyFactory<PeerGro
 		String description = (String) super.getPropertySource().getProperty( PeerGroupProperties.DESCRIPTION );
 		boolean publish = PeerGroupPropertySource.getBoolean(super.getPropertySource(), PeerGroupDirectives.PUBLISH );
 		PeerGroupPreferences prefs = new PeerGroupPreferences((IJp2pWritePropertySource<IJp2pProperties>) super.getPropertySource());
+		IJp2pComponent<PeerGroup> peergroup;
 		try {
-			return (IJp2pComponent<PeerGroup>) super.getPeerGroup().newGroup( prefs.getPeerGroupID(), miad, name, description, publish);
-		} catch (PeerGroupException e) {
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
+			if( publish ){
+				PeerGroup parent = super.getPeerGroup();
+				parent.getDiscoveryService().publish(mcad);
+				parent.getDiscoveryService().publish(msad);	
+			}
+			peergroup = (IJp2pComponent<PeerGroup>) super.getPeerGroup().newGroup( pgad );
+			if( publish ){
+				peergroup.getModule().publishGroup(name, description);
+				return peergroup;
+			}
+		} catch (PeerGroupException | IOException e) {
 			e.printStackTrace();
 		}
 		return null;
