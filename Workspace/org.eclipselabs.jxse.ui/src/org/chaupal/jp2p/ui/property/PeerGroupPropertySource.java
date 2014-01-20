@@ -12,7 +12,7 @@ import org.chaupal.jp2p.ui.provider.DecoratorLabelProvider;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
-public class PeerGroupPropertySource extends AbstractJp2pPropertySource<PeerGroup> {
+public class PeerGroupPropertySource extends AbstractJp2pUIPropertySource<PeerGroup> {
 
 	public PeerGroupPropertySource( IJp2pComponent<PeerGroup> component) {
 		super( component.getModule(), component.getPropertySource() );
@@ -40,7 +40,7 @@ public class PeerGroupPropertySource extends AbstractJp2pPropertySource<PeerGrou
 		switch( property ){
 		case PEERGROUP_ID:
 			return peergroup.getPeerGroupID();
-		case PEERGROUP_NAME:
+		case NAME:
 			return peergroup.getPeerGroupName();
 		case PEER_ID:
 			return peergroup.getPeerID();

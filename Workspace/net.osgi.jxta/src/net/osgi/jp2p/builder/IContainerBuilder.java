@@ -41,16 +41,6 @@ public interface IContainerBuilder {
 	 */
 	public abstract void updateRequest(ComponentBuilderEvent<?> event);
 
-	/**
-	 * Get the default factory for this container
-	 * @param parent
-	 * @param componentName
-	 * @return
-	 */
-	public abstract IComponentFactory<?> getDefaultFactory(
-			IJp2pPropertySource<IJp2pProperties> parentSource,
-			String componentName);
-
 	/** Add a factory with the given component name to the container. use the given component name and parent,
 	 * if 'createsource' is true, the property source is immediately created, and 'blockcreation' means that
 	 * the builder will not create the factory. instead the parent factory should provide for this 

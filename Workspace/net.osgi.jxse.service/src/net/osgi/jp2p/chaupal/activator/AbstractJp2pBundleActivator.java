@@ -10,12 +10,6 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.activator;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,7 +35,7 @@ public abstract class AbstractJp2pBundleActivator implements BundleActivator {
 	 * Create the context
 	 * @return
 	 */
-	protected abstract Jp2pServiceContainer createContext();
+	protected abstract Jp2pServiceContainer createContainer();
 	
 	/*
 	 * (non-Javadoc)
@@ -66,12 +60,8 @@ public abstract class AbstractJp2pBundleActivator implements BundleActivator {
 		if(logService != null)
 			logService.log(LogService.LOG_INFO, "Logging service started");
 
-		ClassLoader parentClassLoader = this.getClass().getClassLoader();
-	    MyClassLoader classLoader = new MyClassLoader(parentClassLoader);
-	    classLoader.loadClass( Jp2pActivator.class.getCanonicalName() );
-
 		jxtaActivator = new Jp2pActivator();
-		jxtaActivator.setJxtaContext( this.createContext() );
+		jxtaActivator.setJxtaContext( this.createContainer() );
 		jxtaActivator.start();
 	}
 
@@ -91,51 +81,7 @@ public abstract class AbstractJp2pBundleActivator implements BundleActivator {
 		logServiceTracker = null;
 	}
 
-	public Jp2pServiceContainer getServiceContext(){
+	public Jp2pServiceContainer getServiceContainer(){
 		return jxtaActivator.getServiceContext();
 	}
-}
-
-class MyClassLoader extends ClassLoader{
-
-	private static String S_NETWORK_MANAGER = "net.jxta.platform.NetworkManager";
-	
-    public MyClassLoader(ClassLoader parent) {
-        super(parent);
-    }
-
-    @Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Class loadClass(String name) throws ClassNotFoundException {
-        if(!S_NETWORK_MANAGER.equals(name))
-                return super.loadClass(name);
-
-        try {
-        	String url = "file:C:/data/projects/tutorials/web/WEB-INF/" +
-                            "classes/reflection/MyObject.class";
-            URL myUrl = new URL(url);
-            URLConnection connection = myUrl.openConnection();
-            InputStream input = connection.getInputStream();
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            int data = input.read();
-
-            while(data != -1){
-                buffer.write(data);
-                data = input.read();
-            }
-
-            input.close();
-
-            byte[] classData = buffer.toByteArray();
-
-            return defineClass( S_NETWORK_MANAGER, classData, 0, classData.length);
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace(); 
-        }
-
-        return null;
-    }
 }

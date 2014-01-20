@@ -105,7 +105,7 @@ public class NetworkManagerPreferences extends AbstractPreferences implements IN
 	@Override
 	public PeerID getPeerID() throws URISyntaxException{
 		NetworkManagerPropertySource source = (NetworkManagerPropertySource) super.getSource();
-		String name = source.getIdentifier();
+		String name = NetworkManagerPropertySource.getIdentifier( source );
 		PeerID pgId = IDFactory.newPeerID( PeerGroupID.defaultNetPeerGroupID, name.getBytes() );
 		ManagedProperty<IJp2pProperties, Object> property = source.getOrCreateManagedProperty( NetworkManagerProperties.PEER_ID, pgId.toString(), false );
 		String str = (String) property.getValue();

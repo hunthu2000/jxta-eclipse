@@ -15,7 +15,7 @@ import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.jxta.registration.RegistrationPropertySource;
 import net.osgi.jp2p.jxta.registration.RegistrationService;
 

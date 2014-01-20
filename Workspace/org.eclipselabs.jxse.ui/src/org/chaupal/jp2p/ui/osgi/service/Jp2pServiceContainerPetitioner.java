@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
-import net.osgi.jp2p.chaupal.IServiceChangedListener;
+import net.osgi.jp2p.chaupal.IServiceChangedListener.ServiceChange;
 import net.osgi.jp2p.chaupal.ServiceChangedEvent;
 import net.osgi.jp2p.chaupal.ServiceEventDispatcher;
 import net.osgi.jp2p.chaupal.comparator.Jp2pServiceComparator;
@@ -26,13 +26,12 @@ import net.osgi.jp2p.utils.Utils;
 
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
 import org.eclipselabs.osgi.ds.broker.service.AbstractPetitioner;
-import org.eclipselabs.osgi.ds.broker.service.IParlezListener.Notifications;
 import org.eclipselabs.osgi.ds.broker.service.ParlezEvent;
 
 public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, String, Jp2pServiceContainer>
-	implements IJp2pComponentNode<Collection<Jp2pServiceContainer>>, IServiceChangedListener
+	implements IJp2pComponentNode<Collection<Jp2pServiceContainer>>
 {
-	public static final String S_JXSE = "Jxse";
+	public static final String S_JP2P = "Jp2p";
 
 	private static Jp2pServiceContainerPetitioner attendee = new Jp2pServiceContainerPetitioner();
 	
@@ -63,11 +62,10 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 	
 	@Override
 	public IJp2pPropertySource<IJp2pProperties> getPropertySource() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Jp2pServiceContainer getJxtaContainer( String identifier ) {
+	public Jp2pServiceContainer getJp2pContainer( String identifier ) {
 		for( Jp2pServiceContainer container: super.getCollection() )
 			if( container.getIdentifier().equals( identifier ))
 				return container;
@@ -117,12 +115,6 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 	@Override
 	public Collection<IJp2pComponent<?>> getChildren() {
 		return children;
-	}
-
-	@Override
-	public void notifyServiceChanged(ServiceChangedEvent event) {
-		super.notifyChange( new ParlezEvent<Object>( this, Notifications.DATA_UPDATED ));
-		
 	}
 
 	@Override

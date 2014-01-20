@@ -2,7 +2,7 @@ package net.osgi.jp2p.jxta.network.configurator;
 
 import java.util.Iterator;
 
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.jxta.network.NetworkManagerPropertySource;
 import net.osgi.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.osgi.jp2p.utils.StringStyler;
@@ -48,6 +48,8 @@ public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropert
 		MULTICAST_8PORT,
 		MULTICAST_8SIZE,
 		MULTICAST_8STATUS,
+		MULTICAST_8USE_ONLY_RELAY_SEEDS,
+		MULTICAST_8USE_ONLY_RENDEZVOUS_SEEDS,
 		NAME,
 		PEER_ID,
 		SECURITY_8AUTHENTICATION_TYPE,
@@ -117,14 +119,6 @@ public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropert
 	@Override
 	public NetworkConfiguratorProperties getIdFromString(String key) {
 		return NetworkConfiguratorProperties.valueOf( key );
-	}
-
-	@Override
-	public String getIdentifier() {
-		NetworkManagerPropertySource source = (NetworkManagerPropertySource) super.getParent();
-		if( source != null )
-			return source.getIdentifier();
-		return null;
 	}
 
 	@Override

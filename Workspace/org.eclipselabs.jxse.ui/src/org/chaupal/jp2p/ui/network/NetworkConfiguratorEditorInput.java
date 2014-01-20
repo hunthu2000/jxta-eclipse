@@ -3,6 +3,7 @@
  */
 package org.chaupal.jp2p.ui.network;
 
+import net.osgi.jp2p.container.Jp2pContainerPropertySource;
 import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -32,7 +33,7 @@ public class NetworkConfiguratorEditorInput implements IEditorInput {
 
 	@Override
 	public String getName() {
-		return source.getIdentifier();
+		return Jp2pContainerPropertySource.getIdentifier( source );
 	}
 
 	public IPersistableElement getPersistable() {

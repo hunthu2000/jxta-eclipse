@@ -1,11 +1,9 @@
 package net.osgi.jp2p.jxta.advertisement;
 
-import java.net.URISyntaxException;
-
 import net.jxta.document.AdvertisementFactory;
+import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.ModuleSpecID;
 import net.jxta.protocol.ModuleImplAdvertisement;
-import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
@@ -54,7 +52,7 @@ public class ModuleImplAdvertisementPropertySource extends AdvertisementProperty
 		super.fillDefaultValues( parent);
 		String name = super.getParent().getDirective( Directives.NAME );
 		if(Utils.isNull( name )){
-			name = (String) super.getParent().getProperty( PeerGroupProperties.PEERGROUP_NAME );
+			name = (String) super.getParent().getProperty( PeerGroupProperties.NAME );
 		}
 			
 		if(!Utils.isNull( name ))		
@@ -80,11 +78,12 @@ public class ModuleImplAdvertisementPropertySource extends AdvertisementProperty
 	/**
 	 * Create a module class advertisement
 	 * @return
-	 * @throws URISyntaxException 
+	 * @throws Exception 
 	 */
-	public static ModuleImplAdvertisement createModuleClassAdvertisement( IJp2pPropertySource<IJp2pProperties> source ) throws URISyntaxException{
-		AdvertisementTypes type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( (String) source.getDirective( AdvertisementDirectives.TYPE )));
-		ModuleImplAdvertisement mcimpl = ( ModuleImplAdvertisement )AdvertisementFactory.newAdvertisement( AdvertisementTypes.convertTo(type));
+	public static ModuleImplAdvertisement createModuleImplAdvertisement( IJp2pPropertySource<IJp2pProperties> source, PeerGroup peergroup ) throws Exception{
+		if( source == null )
+			return peergroup.getAllPurposePeerGroupImplAdvertisement();
+		ModuleImplAdvertisement mcimpl = ( ModuleImplAdvertisement )AdvertisementFactory.newAdvertisement( AdvertisementTypes.convertTo( AdvertisementTypes.MODULE_IMPL ));
 		mcimpl.setModuleSpecID( (ModuleSpecID) source.getProperty( ModuleImplProperties.MODULE_SPEC_ID ));
 		mcimpl.setCode(( String )source.getProperty( ModuleImplProperties.CODE ));
 		mcimpl.setDescription(( String )source.getProperty( ModuleImplProperties.DESCRIPTION ));

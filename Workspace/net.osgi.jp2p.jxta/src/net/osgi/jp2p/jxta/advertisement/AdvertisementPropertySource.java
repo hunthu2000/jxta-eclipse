@@ -8,10 +8,10 @@ import net.jxta.protocol.ModuleSpecAdvertisement;
 import net.jxta.protocol.PeerAdvertisement;
 import net.jxta.protocol.PeerGroupAdvertisement;
 import net.jxta.protocol.PipeAdvertisement;
-import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementDirectives;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.properties.AbstractJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
+import net.osgi.jp2p.properties.IJp2pDirectives;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.utils.StringStyler;
@@ -126,6 +126,26 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 				return false;
 			for( AdvertisementProperties dir: values() ){
 				if( dir.name().equals( str ))
+					return true;
+			}
+			return false;
+		}
+
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString() );
+		}
+	}
+
+	public enum AdvertisementDirectives implements IJp2pDirectives{
+		PEERGROUP,
+		TYPE;
+	
+		public static boolean isValidDirective( String directive ){
+			if( Utils.isNull( directive ))
+				return false;
+			for( AdvertisementDirectives dir: values() ){
+				if( dir.name().equals( directive ))
 					return true;
 			}
 			return false;

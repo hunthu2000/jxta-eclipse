@@ -7,14 +7,10 @@ import java.util.List;
 
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.factory.IComponentFactory;
-import net.osgi.jp2p.factory.IComponentFactory.Components;
-import net.osgi.jp2p.log.LoggerFactory;
-import net.osgi.jp2p.partial.PartialFactory;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
-import net.osgi.jp2p.startup.StartupServiceFactory;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
 
@@ -24,11 +20,11 @@ public class ContainerBuilder implements IContainerBuilder{
 
 	private List<ICompositeBuilderListener<?>> factories;
 	
-	
 	public ContainerBuilder() {
 		factories = new ArrayList<ICompositeBuilderListener<?>>();
 	}
-	
+
+
 	/* (non-Javadoc)
 	 * @see net.osgi.jp2p.builder.IContainerBuilder#addFactory(net.osgi.jp2p.factory.IComponentFactory)
 	 */
@@ -122,37 +118,6 @@ public class ContainerBuilder implements IContainerBuilder{
 		}
 	}	
 	
-	/* (non-Javadoc)
-	 * @see net.osgi.jp2p.builder.IContainerBuilder#getDefaultFactory(net.osgi.jp2p.properties.IJp2pPropertySource, java.lang.String)
-	 */
-	@Override
-	public IComponentFactory<?> getDefaultFactory( IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
-		if( Utils.isNull(componentName))
-			return null;
-		String comp = StringStyler.styleToEnum(componentName);
-		if( !Components.isComponent( comp ))
-			return null;
-		Components component = Components.valueOf(comp);
-		IComponentFactory<?> factory = null;
-		switch( component ){
-		case STARTUP_SERVICE:
-			factory = new StartupServiceFactory( this, parentSource );
-			break;
-		case TCP:
-		case HTTP:
-		case HTTP2:
-		case MULTICAST:
-		case SECURITY:
-			factory = new PartialFactory<Object>( this, componentName, parentSource );
-			break;
-		case LOGGER_SERVICE:
-			factory = new LoggerFactory( this, parentSource );
-			break;
-		default:
-			break;
-		}
-		return factory;
-	}
 
 	/* (non-Javadoc)
 	 * @see net.osgi.jp2p.builder.IContainerBuilder#addFactoryToContainer(java.lang.String, net.osgi.jp2p.properties.IJp2pPropertySource, boolean, boolean)
@@ -164,7 +129,7 @@ public class ContainerBuilder implements IContainerBuilder{
 		IJp2pWritePropertySource<IJp2pProperties> ncp = (IJp2pWritePropertySource<IJp2pProperties>) parentSource.getChild( str );
 		if( ncp != null )
 			return null;
-		IComponentFactory<?> ncf = getDefaultFactory( parentSource, componentName );
+		IComponentFactory<?> ncf = Jp2pContext.getDefaultFactory( this, parentSource, componentName );
 		addFactory(ncf);
 		if(!createSource )
 			return ncf;

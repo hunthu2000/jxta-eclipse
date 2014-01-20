@@ -7,15 +7,15 @@ import java.util.Collection;
 import net.jxta.document.Advertisement;
 import net.jxta.protocol.ModuleImplAdvertisement;
 import net.jxta.protocol.ModuleSpecAdvertisement;
-import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementServiceProperties;
 import net.osgi.jp2p.component.IJp2pComponent;
 
-import org.chaupal.jp2p.ui.property.AbstractJp2pPropertySource;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementProperties;
+import org.chaupal.jp2p.ui.property.AbstractJp2pUIPropertySource;
 import org.chaupal.jp2p.ui.property.advertisement.ModuleImplAdvPropertySource.ModuleImplAdvProperties;
 import org.chaupal.jp2p.ui.property.advertisement.ModuleSpecAdvPropertySource.ModuleSpecAdvProperties;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
-public class AdvertisementPropertySource extends AbstractJp2pPropertySource<Advertisement> {
+public class AdvertisementPropertySource extends AbstractJp2pUIPropertySource<Advertisement> {
 
 	public static final String S_DEFAULT_NAME = "Default JP2P Advertisement";
 
@@ -42,7 +42,7 @@ public class AdvertisementPropertySource extends AbstractJp2pPropertySource<Adve
 			ModuleImplAdvPropertySource miaps = new ModuleImplAdvPropertySource((ModuleImplAdvertisement) advertisement );
 			descriptors.addAll( Arrays.asList( miaps.getPropertyDescriptors()));
 		}
-		descriptors.addAll( Arrays.asList(super.getPropertyDescriptors( AdvertisementServiceProperties.values())));
+		descriptors.addAll( Arrays.asList(super.getPropertyDescriptors( AdvertisementProperties.values())));
 		descriptors.addAll( Arrays.asList(super.getPropertyDescriptors()));
 		return descriptors.toArray( new IPropertyDescriptor[ descriptors.size() ]);
 	}
@@ -58,10 +58,10 @@ public class AdvertisementPropertySource extends AbstractJp2pPropertySource<Adve
 			ModuleImplAdvPropertySource miaps = new ModuleImplAdvPropertySource((ModuleImplAdvertisement) advertisement );
 			return miaps.getPropertyValue(id);
 		}
-		if(!( id instanceof AdvertisementServiceProperties ))
+		if(!( id instanceof AdvertisementProperties ))
 			return super.getPropertyValue(id);
 		
-		AdvertisementServiceProperties property = ( AdvertisementServiceProperties )id;
+		AdvertisementProperties property = ( AdvertisementProperties )id;
 		/**
 		case ID:
 			return advertisement.getID();

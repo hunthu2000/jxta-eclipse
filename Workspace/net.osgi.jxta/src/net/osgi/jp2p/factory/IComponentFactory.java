@@ -19,6 +19,7 @@ public interface IComponentFactory<T extends Object> extends ICompositeBuilderLi
 
 	public enum Components implements IJp2pComponents{
 		JP2P_CONTAINER,
+		CONTEXT,
 		STARTUP_SERVICE,
 		SECURITY,
 		TCP,

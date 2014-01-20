@@ -15,10 +15,10 @@ import java.net.URISyntaxException;
 
 import net.jxta.id.ID;
 import net.jxta.id.IDFactory;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.osgi.jp2p.jxta.advertisement.ModuleClassAdvertisementPropertySource.ModuleClassProperties;
 import net.osgi.jp2p.jxta.advertisement.ModuleSpecAdvertisementPropertySource.ModuleSpecProperties;
-import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeServiceProperties;
 import net.osgi.jp2p.properties.AbstractPreferences;

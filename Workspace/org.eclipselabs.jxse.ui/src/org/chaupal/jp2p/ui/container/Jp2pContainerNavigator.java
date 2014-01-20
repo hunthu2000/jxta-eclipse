@@ -130,7 +130,7 @@ public class Jp2pContainerNavigator extends CommonNavigator{
         		if( Display.getDefault().isDisposed() )
         			return;
 
-            	if( propertyPage != null )
+       		if( propertyPage != null )
             		propertyPage.refresh();
             	viewer.refresh();
             }

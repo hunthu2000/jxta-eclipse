@@ -5,21 +5,14 @@ Bundle-SymbolicName: net.osgi.jp2p.chaupal;singleton:=true
 Bundle-Version: 1.0.0.v20130117
 Bundle-Vendor: Condast
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/attendees.xml
 Export-Package: net.osgi.jp2p.chaupal,
  net.osgi.jp2p.chaupal.activator,
- net.osgi.jp2p.chaupal.advertisement,
  net.osgi.jp2p.chaupal.comparator,
  net.osgi.jp2p.chaupal.core,
- net.osgi.jp2p.chaupal.discovery,
- net.osgi.jp2p.chaupal.network,
- net.osgi.jp2p.chaupal.peergroup,
- net.osgi.jp2p.chaupal.sockets,
  net.osgi.jp2p.chaupal.utils,
  net.osgi.jp2p.chaupal.xml
 Import-Package: net.osgi.jp2p.activator,
  net.osgi.jp2p.builder,
- net.osgi.jp2p.chaupal.advertisement,
  net.osgi.jp2p.component,
  net.osgi.jp2p.container,
  net.osgi.jp2p.factory,
@@ -46,21 +39,11 @@ Import-Package: net.osgi.jp2p.activator,
  net.osgi.jp2p.utils,
  org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.core.runtime.preferences;version="3.3.0",
- org.eclipse.debug.internal.core.variables,
- org.eclipse.e4.ui.workbench,
- org.eclipse.jface.window,
  org.eclipse.osgi.framework.eventmgr;version="1.2.0",
- org.eclipse.pde.internal.core.schema,
- org.eclipse.swt,
- org.eclipse.swt.widgets,
- org.eclipse.ui,
  org.eclipselabs.osgi.ds.broker.service,
- org.h2.tools;version="1.3.170",
  org.osgi.framework;version="1.7.0",
  org.osgi.service.component;version="1.2.0",
  org.osgi.service.log;version="1.3.0",
  org.osgi.service.prefs;version="1.1.1",
  org.osgi.util.tracker;version="1.5.1"
-Require-Bundle: net.jxse;bundle-version="2.7.0"
-Bundle-Activator: net.osgi.jp2p.chaupal.Activator
 Bundle-ActivationPolicy: lazy

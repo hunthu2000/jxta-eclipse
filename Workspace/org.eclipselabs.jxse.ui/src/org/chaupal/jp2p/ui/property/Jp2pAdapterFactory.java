@@ -37,7 +37,7 @@ public class Jp2pAdapterFactory implements IAdapterFactory {
 			  return new AdvertisementPropertySource( (IJp2pComponent<Advertisement>)adaptableObject);
 		  if( adaptableObject.getModule() instanceof PeerGroup )
 			  return new PeerGroupPropertySource( (IJp2pComponent<PeerGroup> )adaptableObject);
-		  return new Jp2pComponentPropertySource( adaptableObject, Jp2pComponentPropertySource.S_PROPERTY_JP2P_TEXT );			
+		  return new Jp2pComponentUIPropertySource( adaptableObject, Jp2pComponentUIPropertySource.S_PROPERTY_JP2P_TEXT );			
 	}
 
 	@SuppressWarnings("rawtypes")

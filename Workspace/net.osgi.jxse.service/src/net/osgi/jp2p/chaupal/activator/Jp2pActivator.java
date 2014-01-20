@@ -10,7 +10,6 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.activator;
 
-import net.jxta.platform.NetworkManager;
 import net.osgi.jp2p.activator.ISimpleActivator;
 import net.osgi.jp2p.activator.Jp2pContextStarter;
 import net.osgi.jp2p.container.Jp2pServiceContainer;
@@ -19,8 +18,8 @@ import net.osgi.jp2p.properties.IJp2pProperties;
 
 public class Jp2pActivator implements ISimpleActivator {
 
-	private Jp2pServiceContainer jxtaContext;
-	private Jp2pContextStarter<Jp2pServiceContainer, NetworkManager, IJp2pProperties, IJp2pDirectives> starter;
+	private Jp2pServiceContainer container;
+	private Jp2pContextStarter<Jp2pServiceContainer, IJp2pProperties, IJp2pDirectives> starter;
 	
 	private boolean active;
 		
@@ -29,7 +28,7 @@ public class Jp2pActivator implements ISimpleActivator {
 	}
 
 	void setJxtaContext(Jp2pServiceContainer jxtaContext) {
-		this.jxtaContext = jxtaContext;
+		this.container = jxtaContext;
 	}
 
 	/*
@@ -39,7 +38,7 @@ public class Jp2pActivator implements ISimpleActivator {
 	@Override
 	public boolean start(){
 		try{
-			starter = new Jp2pContextStarter<Jp2pServiceContainer,NetworkManager, IJp2pProperties, IJp2pDirectives>( jxtaContext );
+			starter = new Jp2pContextStarter<Jp2pServiceContainer, IJp2pProperties, IJp2pDirectives>( container );
 			starter.createContext();
 			this.active = true;
 		}
@@ -56,12 +55,12 @@ public class Jp2pActivator implements ISimpleActivator {
 	@Override
 	public void stop(){
 		this.active = false;
-		jxtaContext.stop();
+		container.stop();
 		starter.removeContext();
 	}
 
 	public Jp2pServiceContainer getServiceContext(){
-		return jxtaContext;
+		return container;
 	}
 
 	@Override

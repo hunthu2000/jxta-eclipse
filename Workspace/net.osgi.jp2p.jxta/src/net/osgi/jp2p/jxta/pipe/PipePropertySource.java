@@ -1,16 +1,17 @@
 package net.osgi.jp2p.jxta.pipe;
 
 import net.jxta.pipe.PipeService;
-import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
+import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
 import net.osgi.jp2p.properties.IJp2pDirectives;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
+import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 
-public class PipePropertySource extends AdvertisementServicePropertySource{
+public class PipePropertySource extends AdvertisementPropertySource{
 
 	public static final long DEFAULT_OUTPUT_PIPE_TIME_OUT = 5000;
 	
@@ -69,6 +70,7 @@ public class PipePropertySource extends AdvertisementServicePropertySource{
 	public PipePropertySource( IJp2pPropertySource<IJp2pProperties> parent) {
 		super( JxtaComponents.PIPE_SERVICE.toString(), parent);
 		super.setProperty( PipeServiceProperties.TIME_OUT, DEFAULT_OUTPUT_PIPE_TIME_OUT);
+		super.setDirective( Directives.BLOCK_CREATION, Boolean.FALSE.toString() );
 	}
 
 	@Override

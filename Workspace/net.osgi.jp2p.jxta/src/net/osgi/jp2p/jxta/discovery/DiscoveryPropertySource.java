@@ -1,12 +1,15 @@
 package net.osgi.jp2p.jxta.discovery;
 
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupDirectives;
 import net.osgi.jp2p.utils.StringStyler;
+import net.osgi.jp2p.utils.Utils;
 import net.osgi.jp2p.properties.AbstractJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives;
+import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.ManagedProperty;
@@ -55,18 +58,30 @@ public class DiscoveryPropertySource extends AbstractJp2pWritePropertySource
 
 	public DiscoveryPropertySource( String componentName, IJp2pPropertySource<IJp2pProperties> parent) {
 		super( componentName, parent );
-		this.fillDefaultValues();
+		this.fillDefaultValues( parent );
 		setDirectiveFromParent( PeerGroupDirectives.PEERGROUP, this );
 	}
 
-	protected void fillDefaultValues( ) {
+	protected void fillDefaultValues( IJp2pPropertySource<IJp2pProperties> parent) {
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.MODE, DiscoveryMode.COUNT, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.COUNT, DEFAULT_COUNT, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.WAIT_TIME, DEFAULT_WAIT_TIME, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.PEER_ID, null, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.ATTRIBUTE, S_NAME, false ));
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.WILDCARD, null, false ));
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.ADVERTISEMENT_TYPE, AdvertisementTypes.ADV, false ));
+		AdvertisementTypes type = AdvertisementTypes.convertFrom( parent.getDirective( AdvertisementDirectives.TYPE ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.ADVERTISEMENT_TYPE, type, false ));
+		String wildcard = "*";
+		switch( type ){
+		case PEER:
+		case PEERGROUP:
+		case PIPE:
+			String wc = parent.getDirective( Directives.NAME );
+			if( !Utils.isNull( wc ))
+				wildcard = wc;
+		default:
+			break;
+		}
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.WILDCARD, wildcard, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.THRESHOLD, DEFAULT_THRESHOLD, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.COUNTER, 0, S_RUNTIME, false ));
 		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.FOUND, 0, S_RUNTIME, false ));
@@ -74,7 +89,7 @@ public class DiscoveryPropertySource extends AbstractJp2pWritePropertySource
 
 	@Override
 	public boolean setDirective(IJp2pDirectives id, String value) {
-		if( AdvertisementServicePropertySource.AdvertisementDirectives.isValidDirective( id.name()))
+		if( AdvertisementPropertySource.AdvertisementDirectives.isValidDirective( id.name()))
 			return super.setDirective(PeerGroupDirectives.valueOf( id.name() ), value );
 		return super.setDirective(id, value);
 	}

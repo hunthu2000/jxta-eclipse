@@ -11,6 +11,7 @@
 package net.osgi.jp2p.container;
 
 import net.osgi.jp2p.builder.IContainerBuilder;
+import net.osgi.jp2p.builder.Jp2pContext;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.factory.IComponentFactory;
@@ -79,16 +80,16 @@ public class ContainerFactory extends AbstractComponentFactory<Jp2pStartupServic
 
 	@SuppressWarnings("unchecked")
 	private void onPropertySourceCreated(){
-		IContainerBuilder container = super.getBuilder();
+		IContainerBuilder builder = super.getBuilder();
 		boolean autostart = Jp2pContainerPropertySource.isAutoStart(this.getPropertySource());
 		String comp = Components.STARTUP_SERVICE.toString();
-		IComponentFactory<?> startup = container.getFactory( comp );
+		IComponentFactory<?> startup = builder.getFactory( comp );
 		if( !autostart || ( startup != null ))
 			return;
 		
-		startup = container.getDefaultFactory( this.getPropertySource(), comp);
+		startup = Jp2pContext.getDefaultFactory( builder, this.getPropertySource(), comp);
 		IJp2pWritePropertySource<IJp2pProperties> props = (IJp2pWritePropertySource<IJp2pProperties>) startup.createPropertySource();
 		props.setDirective( Directives.AUTO_START, Boolean.TRUE.toString());
-		container.addFactory((IComponentFactory<Object>) startup);
+		builder.addFactory((IComponentFactory<Object>) startup);
 	}
 }

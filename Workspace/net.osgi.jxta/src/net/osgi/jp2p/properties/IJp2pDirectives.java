@@ -47,8 +47,19 @@ public interface IJp2pDirectives{
 	 */
 	public enum Contexts{
 		JXTA,
-		JXSE,
+		JP2P,
 		CHAUPAL;
+
+		public static boolean isValidContext( String str ){
+			str = StringStyler.styleToEnum(str);
+			if(( str == null ) || ( str.length() == 0 ))
+				return false;
+			for( Contexts context: values()){
+				if( context.name().equals( str.toUpperCase() ))
+					return true;
+			}
+			return false;
+		}
 
 		@Override
 		public String toString() {

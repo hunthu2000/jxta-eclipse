@@ -13,12 +13,9 @@ package net.osgi.jp2p.log;
 import java.util.logging.Level;
 
 public class Jp2pLevel extends Level {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -4215501769316462679L;
-	public static final Level JP2PLEVEL = new Jp2pLevel("JXSELEVEL", Level.WARNING.intValue()+10);  
+
+	public static final Level JP2PLEVEL = new Jp2pLevel("JP2PLEVEL", Level.WARNING.intValue()+10);  
 	
 	public Jp2pLevel(String arg0, int arg1) {
 		super(arg0, arg1);

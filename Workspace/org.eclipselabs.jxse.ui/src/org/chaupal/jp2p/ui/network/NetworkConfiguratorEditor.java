@@ -3,6 +3,8 @@
  */
 package org.chaupal.jp2p.ui.network;
 
+import net.osgi.jp2p.container.Jp2pContainerPropertySource;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -89,7 +91,8 @@ public class NetworkConfiguratorEditor extends FormEditor {
 						((AbstractEditor) p).doSave(monitor);
 					}
 				}
-				getEditorSite().getActionBars().getStatusLineManager().setMessage("Wijzigingen " + ncEditorInput.getSource().getIdentifier() + " zijn opgeslagen.");
+				String identifier = Jp2pContainerPropertySource.getIdentifier( ncEditorInput.getSource());
+				getEditorSite().getActionBars().getStatusLineManager().setMessage("Wijzigingen " + identifier + " zijn opgeslagen.");
 			 }
 
 			 

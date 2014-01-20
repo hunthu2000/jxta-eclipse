@@ -17,11 +17,12 @@ import java.util.Collection;
 import java.util.Enumeration;
 
 import net.osgi.jp2p.builder.ContainerBuilder;
+import net.osgi.jp2p.builder.ContextLoader;
 import net.osgi.jp2p.builder.ICompositeBuilder;
 import net.osgi.jp2p.builder.ICompositeBuilderListener;
 import net.osgi.jp2p.builder.ICompositeBuilderListener.BuilderEvents;
 import net.osgi.jp2p.builder.IContainerBuilder;
-import net.osgi.jp2p.chaupal.builder.ChaupalContainerBuilder;
+import net.osgi.jp2p.builder.Jp2pContext;
 import net.osgi.jp2p.container.ContainerFactory;
 import net.osgi.jp2p.container.Jp2pServiceContainer;
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
@@ -33,6 +34,7 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer
 	private String plugin_id;
 	private Class<?> clss;
 	private Collection<ICompositeBuilder<ContainerFactory>> builders;
+	private ContextLoader contexts;
 	
 	private Collection<ICompositeBuilderListener<?>> listeners;
 	
@@ -54,7 +56,7 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer
 		Enumeration<URL> enm = clss.getClassLoader().getResources( XMLFactoryBuilder.S_DEFAULT_LOCATION );
 		while( enm.hasMoreElements()){
 			URL url = enm.nextElement();
-			builders.add( new XMLFactoryBuilder( plugin_id, url, clss, containerBuilder ));
+			builders.add( new XMLFactoryBuilder( plugin_id, url, clss, containerBuilder, contexts ));
 		}
 	}
 	
@@ -63,21 +65,26 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer
 		
 		//Object obj;
 		//try {
-		//	obj = this.getClass().getClassLoader().loadClass("net.osgi.jp2p.chaupal.factories.TestFactory");
+		//	obj = this.getClass().getClassLoader().loadClass("net.osgi.jp2p.chaupal.jxta.factories.TestFactory");
 		//	System.out.println("URL found: " + ( obj != null ));
 		//} catch (ClassNotFoundException e1) {
 		//	// TODO Auto-generated catch block
 		//	e1.printStackTrace();
 		//}
 		
-		//First build the property sources
-		ContainerBuilder containerBuilder = new ChaupalContainerBuilder();
+		//First register all the discovered builders
+		ContainerBuilder containerBuilder = new ContainerBuilder();
+		this.contexts = new ContextLoader();
+		contexts.addContext( new Jp2pContext());
+
 		try {
+			this.extendBuilders( XMLFactoryBuilder.class, containerBuilder);
 			this.extendBuilders(clss, containerBuilder);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
+		//Build the container from the resource files
 		for( ICompositeBuilder<ContainerFactory> builder: this.builders){
 			this.addListenersToBuilder(builder);
 			builder.build();

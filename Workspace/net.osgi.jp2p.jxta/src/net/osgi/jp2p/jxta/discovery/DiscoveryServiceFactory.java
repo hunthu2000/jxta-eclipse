@@ -17,7 +17,7 @@ import net.osgi.jp2p.component.Jp2pComponent;
 import net.osgi.jp2p.container.Jp2pContainerPropertySource;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
 import net.osgi.jp2p.jxta.factory.AbstractPeerGroupDependencyFactory;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.jxta.netpeergroup.NetPeerGroupFactory;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupDirectives;

@@ -16,7 +16,7 @@ import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;

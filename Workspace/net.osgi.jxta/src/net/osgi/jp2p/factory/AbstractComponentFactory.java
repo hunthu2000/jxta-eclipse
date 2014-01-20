@@ -10,7 +10,11 @@
  *******************************************************************************/
 package net.osgi.jp2p.factory;
 
+import java.util.Calendar;
 import java.util.Iterator;
+import java.util.Stack;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import net.osgi.jp2p.activator.IActivator;
 import net.osgi.jp2p.activator.IActivator.Status;
@@ -22,7 +26,9 @@ import net.osgi.jp2p.properties.AbstractJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 import net.osgi.jp2p.properties.IJp2pProperties;
+import net.osgi.jp2p.properties.IJp2pProperties.Jp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
+import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 
 public abstract class AbstractComponentFactory<T extends Object> implements IComponentFactory<IJp2pComponent<T>>{
 
@@ -38,6 +44,8 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	private boolean failed;
 	private IContainerBuilder container;
 	private int weight;
+	
+	private Stack<Object> stack;
 
 	protected AbstractComponentFactory( IContainerBuilder container ) {
 		this( container, true );
@@ -58,6 +66,7 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 		this.parentSource = parentSource;
 		this.container = container;
 		this.weight = Integer.MAX_VALUE;
+		stack = new Stack<Object>();
 	}
 
 	protected IJp2pPropertySource<IJp2pProperties> getParentSource() {
@@ -189,7 +198,7 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	 * 4: the component is created and events are spawned 
 	 * @return
 	 */
-	protected IJp2pComponent<T> createComponent() {
+	protected synchronized IJp2pComponent<T> createComponent() {
 		boolean blockCreation = AbstractJp2pPropertySource.getBoolean( this.source, Directives.BLOCK_CREATION );
 		if( blockCreation )
 			return null;
@@ -203,7 +212,15 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 		if( this.component == null )
 			return null;
 		this.parseDirectivesAfter();
+		if( component instanceof IJp2pComponentNode ){
+			while( stack.size() >0 ){
+				Jp2pComponentNode.addModule( (IJp2pComponentNode<?>) component, stack.pop() );
+			}
+		}
+		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) component.getPropertySource();
+		source.setProperty( Jp2pProperties.CREATE_DATE, Calendar.getInstance().getTime() );
 		updateState( BuilderEvents.COMPONENT_CREATED );
+			
 		complete();
 		updateState( BuilderEvents.FACTORY_COMPLETED );
 		return component;
@@ -259,7 +276,7 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	 * Allow an update of the 
 	 * @param event
 	 */
-	public void updateState( BuilderEvents event ){
+	public synchronized void updateState( BuilderEvents event ){
 		try{
 			this.container.updateRequest( new ComponentBuilderEvent<IJp2pComponent<T>>( this, event ));
 		}
@@ -268,18 +285,18 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		switch( event.getBuilderEvent()){
 		case COMPONENT_CREATED:
-			if(( this.component == null) || (!( this.component instanceof IJp2pComponentNode )))
-				return;
-			IJp2pComponentNode<IJp2pProperties> comp = (IJp2pComponentNode<IJp2pProperties>) component;		
 			IComponentFactory<?>factory = event.getFactory();
-			if( !isChildFactory( factory ))
-				return;
-			Jp2pComponentNode.addModule( comp, factory.getComponent());
+			if( isChildFactory( factory )){
+				if( component == null )
+				  stack.push( factory.getComponent() );
+				else{
+					Jp2pComponentNode.addModule( (IJp2pComponentNode<?>) component, factory.getComponent() );
+				}
+			}
 			break;
 		default:
 			break;
@@ -322,9 +339,21 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	 * @return
 	 */
 	protected boolean startComponent(){
+		this.updateState( BuilderEvents.COMPONENT_PREPARED );
+		ExecutorService executor = Executors.newCachedThreadPool();
+		StartRunnable runnable = new StartRunnable( this );
+		executor.execute( runnable );
+		return true;
+	}
+
+	/**
+	 * Create and start the component
+	 * @return
+	 */
+	protected synchronized boolean createAndStartComponent(){
 		Object component = this.createComponent();
 		if(!( component instanceof IActivator ))
-			return false;
+			return true;
 		boolean retval = false;
 		try{
 			IActivator activator = (IActivator)component;
@@ -338,4 +367,28 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 		}
 		return retval;
 	}
+}
+
+class StartRunnable implements Runnable{
+
+	private AbstractComponentFactory<?> factory;
+	
+	private boolean result;
+	
+	StartRunnable( AbstractComponentFactory<?> factory ){
+		this.factory = factory;
+		this.result = false;
+	}
+	
+	boolean isResult() {
+		return result;
+	}
+
+
+	@Override
+	public void run(){
+		result = this.factory.createAndStartComponent();
+	}
+	
+	
 }

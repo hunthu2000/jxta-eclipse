@@ -51,7 +51,7 @@ public class ContainerComposite extends Composite {
 	private Button btnGenerate;
 	private Button btnPersist;
 	
-	private Jp2pContainerPropertySource properties;
+	private Jp2pContainerPropertySource source;
 	private Label lblPort;
 	private Spinner spinner;
 	private Group grpSecurity;
@@ -87,7 +87,7 @@ public class ContainerComposite extends Composite {
 		text_id.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				properties.setDirective( Directives.ID, (( Text )e.item ).getText() );
+				source.setDirective( Directives.ID, (( Text )e.item ).getText() );
 			}
 		});
 		text_id.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -100,7 +100,7 @@ public class ContainerComposite extends Composite {
 		text_identifier.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				properties.setDirective( Directives.NAME, (( Text )e.item ).getText() );
+				source.setDirective( Directives.NAME, (( Text )e.item ).getText() );
 			}
 		});
 		text_identifier.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -113,7 +113,7 @@ public class ContainerComposite extends Composite {
 		text_home_folder.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				properties.setProperty( ContextProperties.HOME_FOLDER, (( Text )e.item ).getText() );
+				source.setProperty( ContextProperties.HOME_FOLDER, (( Text )e.item ).getText() );
 			}
 		});
 		text_home_folder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -137,7 +137,7 @@ public class ContainerComposite extends Composite {
 		btnAutoStart.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				properties.setDirective( IJp2pDirectives.Directives.AUTO_START, Boolean.toString((( Button )e.item ).getSelection() ));
+				source.setDirective( IJp2pDirectives.Directives.AUTO_START, Boolean.toString((( Button )e.item ).getSelection() ));
 			}
 		});
 		btnAutoStart.setText("Auto Start");
@@ -183,7 +183,7 @@ public class ContainerComposite extends Composite {
 		text_pass1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				properties.setProperty( ContextProperties.PASS_1, (( Text )e.item ).getText() );
+				source.setProperty( ContextProperties.PASS_1, (( Text )e.item ).getText() );
 			}
 		});
 		text_pass1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -196,7 +196,7 @@ public class ContainerComposite extends Composite {
 		text_pass2.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				properties.setProperty( ContextProperties.PASS_1, (( Text )e.item ).getText() );
+				source.setProperty( ContextProperties.PASS_1, (( Text )e.item ).getText() );
 			}
 		});
 		text_pass2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -204,12 +204,12 @@ public class ContainerComposite extends Composite {
 	
 	
 	public Jp2pContainerPropertySource getPropertySource() {
-		return properties;
+		return source;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void init( Jp2pContainerPropertySource properties ){
-		this.properties = properties;
+		this.source = properties;
 		Object obj = properties.getProperty( ContextProperties.HOME_FOLDER );
 		if( obj != null )
 			this.text_home_folder.setText( obj.toString() );
@@ -222,7 +222,7 @@ public class ContainerComposite extends Composite {
 		StringDataBinding sdb = new StringDataBinding<ContextProperties>( ContextProperties.BUNDLE_ID, properties, this.text_id );  
 		sdb.setValidator( new StringValidator<ContextProperties>( ContextProperties.BUNDLE_ID, StringValidator.S_BUNDLE_ID_REGEX ));
 
-		obj = properties.getIdentifier();
+		obj = Jp2pContainerPropertySource.getIdentifier( source);
 		sdb = new StringDataBinding<Directives>( Directives.NAME, properties, this.text_identifier );  
 		sdb.setValidator( new StringValidator<ContextProperties>( ContextProperties.BUNDLE_ID, StringValidator.S_NAME_REGEX ));
 
@@ -251,20 +251,20 @@ public class ContainerComposite extends Composite {
 	public boolean complete() throws Exception{
 		if( Utils.isNull( this.text_id.getText()))
 			return false;
-		properties.setDirective( Directives.ID, text_id.getText() );
-		if( !properties.setProperty( ContextProperties.HOME_FOLDER, URI.create( this.text_home_folder.getText() )))
+		source.setDirective( Directives.ID, text_id.getText() );
+		if( !source.setProperty( ContextProperties.HOME_FOLDER, URI.create( this.text_home_folder.getText() )))
 			return false;
-		if( !properties.setProperty( ContextProperties.BUNDLE_ID, this.lbl_plugin_id.getText() ))
+		if( !source.setProperty( ContextProperties.BUNDLE_ID, this.lbl_plugin_id.getText() ))
 			return false;
-		if( !properties.setProperty( ContextProperties.CONFIG_MODE, this.combo.getText() ))
+		if( !source.setProperty( ContextProperties.CONFIG_MODE, this.combo.getText() ))
 			return false;
-		if( !properties.setProperty( ContextProperties.PORT, this.spinner.getText() ))
+		if( !source.setProperty( ContextProperties.PORT, this.spinner.getText() ))
 			return false;
-		if( !properties.setProperty( ContextProperties.PASS_1, this.text_pass1.getText() ))
+		if( !source.setProperty( ContextProperties.PASS_1, this.text_pass1.getText() ))
 			return false;
-		if( !properties.setProperty( ContextProperties.PASS_2, this.text_pass2.getText() ))
+		if( !source.setProperty( ContextProperties.PASS_2, this.text_pass2.getText() ))
 			return false;
-		if( !properties.setDirective( IJp2pDirectives.Directives.AUTO_START, Boolean.toString( this.btnAutoStart.getSelection() )))
+		if( !source.setDirective( IJp2pDirectives.Directives.AUTO_START, Boolean.toString( this.btnAutoStart.getSelection() )))
 			return false;
 		return true;
 		//if( !properties.setDirective( IJxseDirectives.Directives.PEER_ID_CREATE, this.btnGenerate.getSelection() ))

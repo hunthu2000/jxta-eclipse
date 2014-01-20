@@ -1,6 +1,5 @@
 package org.chaupal.jp2p.ui.provider;
 
-import net.osgi.jp2p.chaupal.discovery.ChaupalDiscoveryService;
 import net.osgi.jp2p.chaupal.utils.Utils;
 import net.osgi.jp2p.component.AbstractJp2pService;
 import net.osgi.jp2p.component.IJp2pComponent;
@@ -32,12 +31,12 @@ public class Jp2pLabelProvider extends LabelProvider{
 			return super.getText(element);
 		IJp2pComponent<?> component = (IJp2pComponent<?> )element;
 		String text = Utils.getLabel(component); 
-		if( component instanceof ChaupalDiscoveryService )
-		{
-			ChaupalDiscoveryService service = ( ChaupalDiscoveryService )component;
-			if( service.getSize() > 0 )
-				text += "(" + service.getSize() + ")";
-		}
+		//if( component instanceof ChaupalDiscoveryService )
+		//{
+		//	ChaupalDiscoveryService service = ( ChaupalDiscoveryService )component;
+		//	if( service.getSize() > 0 )
+		//		text += "(" + service.getSize() + ")";
+		//}
 		return text;
 	}	
 }

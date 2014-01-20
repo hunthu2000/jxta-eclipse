@@ -22,7 +22,7 @@ import net.osgi.jp2p.properties.IJp2pProperties;
  * @author keesp
  *
  */
-public class Jp2pContextStarter<T extends Jp2pServiceContainer, U extends Object, V extends IJp2pProperties, W extends IJp2pDirectives> implements Runnable{
+public class Jp2pContextStarter<T extends Jp2pServiceContainer, V extends IJp2pProperties, W extends IJp2pDirectives> implements Runnable{
 
 	private T activator;
 	

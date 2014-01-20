@@ -5,10 +5,10 @@ import net.jxta.platform.ModuleSpecID;
 import net.jxta.protocol.ModuleImplAdvertisement;
 import net.osgi.jp2p.utils.StringStyler;
 
-import org.chaupal.jp2p.ui.property.AbstractJp2pPropertySource;
+import org.chaupal.jp2p.ui.property.AbstractJp2pUIPropertySource;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
-public class ModuleImplAdvPropertySource extends AbstractJp2pPropertySource<ModuleImplAdvertisement> {
+public class ModuleImplAdvPropertySource extends AbstractJp2pUIPropertySource<ModuleImplAdvertisement> {
 
 	public enum ModuleImplAdvProperties{
 		BASE_ADVERTISEMENT_TYPE,

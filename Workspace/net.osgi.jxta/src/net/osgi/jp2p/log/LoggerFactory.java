@@ -13,6 +13,7 @@ package net.osgi.jp2p.log;
 import java.util.logging.Logger;
 
 import net.osgi.jp2p.builder.IContainerBuilder;
+import net.osgi.jp2p.builder.Jp2pContext;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.properties.IJp2pProperties;
@@ -48,7 +49,8 @@ public class LoggerFactory extends
 	
 	@Override
 	public void notifyChange(ComponentBuilderEvent<Object> event) {
-		String msg = event.getBuilderEvent().toString() + ": " + event.getFactory().getComponentName();
+		String contextName = Jp2pContext.getContextName( event.getFactory().getPropertySource() );
+		String msg = event.getBuilderEvent().toString() + ": <" + contextName + ">:" + event.getFactory().getComponentName();
 		logger.log( Jp2pLevel.JP2PLEVEL, msg );
 		System.out.println(msg);
 	}

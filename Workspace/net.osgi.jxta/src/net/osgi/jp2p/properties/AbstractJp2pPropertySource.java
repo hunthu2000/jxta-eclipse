@@ -47,7 +47,7 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 
 	protected AbstractJp2pPropertySource( String bundleId, String componentName, int depth ) {
 		this.properties = new TreeMap<IJp2pProperties,ManagedProperty<IJp2pProperties,Object>>( new SimpleComparator<IJp2pProperties>());
-		this.properties.put( Jp2pProperties.BUNDLE_ID, new ManagedProperty<IJp2pProperties,Object>( Jp2pProperties.BUNDLE_ID, bundleId ));
+		this.properties.put( Jp2pProperties.BUNDLE_ID, new ManagedProperty<IJp2pProperties,Object>( Jp2pProperties.BUNDLE_ID, bundleId, S_JP2P ));
 		this.directives = new TreeMap<IJp2pDirectives,String>(new SimpleComparator<IJp2pDirectives>());
 		this.directives.put( IJp2pDirectives.Directives.ID, bundleId + "." + componentName.toLowerCase() );
 		this.componentName = componentName;
@@ -57,10 +57,10 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 	}
 
 	protected AbstractJp2pPropertySource( String componentName, IJp2pPropertySource<IJp2pProperties> parent ) {
-		this( parent.getId(), parent.getComponentName(), parent.getDepth() + 1 );
+		this( getBundleId( parent ), parent.getComponentName(), parent.getDepth() + 1 );
 		this.componentName = componentName;
 		this.parent = parent;
-		this.properties.put( Jp2pProperties.BUNDLE_ID, new ManagedProperty<IJp2pProperties,Object>( Jp2pProperties.BUNDLE_ID, parent.getProperty( Jp2pProperties.BUNDLE_ID) ));
+		this.properties.put( Jp2pProperties.BUNDLE_ID, new ManagedProperty<IJp2pProperties,Object>( Jp2pProperties.BUNDLE_ID, parent.getProperty( Jp2pProperties.BUNDLE_ID), S_JP2P ));
 		this.directives.put( IJp2pDirectives.Directives.AUTO_START, parent.getDirective(IJp2pDirectives.Directives.AUTO_START ));
 		this.directives.put( IJp2pDirectives.Directives.CONTEXT, parent.getDirective(IJp2pDirectives.Directives.CONTEXT ));
 		this.directives.put( IJp2pDirectives.Directives.ID, parent.getId() + "." + componentName.toLowerCase() );
@@ -72,14 +72,6 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 
 	public String getId() {
 		return (String) this.directives.get( IJp2pDirectives.Directives.ID );
-	}
-
-	protected String getBundleId(){
-		return (String) this.getProperty( Jp2pProperties.BUNDLE_ID );
-	}
-	
-	protected String getIdentifier() {
-		return (String) this.directives.get( IJp2pDirectives.Directives.NAME );
 	}
 
 	@Override
@@ -321,6 +313,24 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 	}
 
 	/**
+	 * Get the bundle id for the given source
+	 * @param source
+	 * @return
+	 */
+	public static String getBundleId( IJp2pPropertySource<IJp2pProperties> source ){
+		return (String) source.getProperty( Jp2pProperties.BUNDLE_ID );
+	}
+
+	/**
+	 * Get the bundle id for the given source
+	 * @param source
+	 * @return
+	 */
+	public static String getIdentifier( IJp2pPropertySource<IJp2pProperties> source ){
+		return source.getDirective( IJp2pDirectives.Directives.NAME );
+	}
+
+	/**
 	 * Get the extended property iterator. This iterator adds the category before the key:
 	 *   category.key
 	 * @return
@@ -391,4 +401,17 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 		return findRootPropertySource( current.getParent() );
 	}
 
+	/**
+	 * Convert the given object to a Jp2p property
+	 * @param key
+	 * @return
+	 */
+	public static IJp2pProperties convert(Object key) {
+		IJp2pProperties id = null;
+		if (!( key instanceof IJp2pProperties ))
+			id = new StringProperty( key.toString() );
+		else
+			id = (IJp2pProperties) key;
+		return id;
+	}
 }

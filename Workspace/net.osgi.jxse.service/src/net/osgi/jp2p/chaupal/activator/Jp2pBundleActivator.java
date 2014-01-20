@@ -33,7 +33,7 @@ public class Jp2pBundleActivator extends AbstractJp2pBundleActivator {
 	}
 
 	@Override
-	protected Jp2pServiceContainer createContext() {
+	protected Jp2pServiceContainer createContainer() {
 		XMLServiceBuilder builder = new XMLServiceBuilder( bundle_id, this.getClass() );
 		if( observer != null )
 			builder.addListener(observer);

@@ -23,8 +23,8 @@ import net.jxta.document.Advertisement;
 import net.jxta.protocol.DiscoveryResponseMsg;
 import net.osgi.jp2p.activator.AbstractActivator;
 import net.osgi.jp2p.activator.IJp2pService;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementMode;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.osgi.jp2p.jxta.registration.RegistrationPropertySource.RegistrationProperties;
 import net.osgi.jp2p.log.Jp2pLevel;
@@ -76,8 +76,8 @@ public class RegistrationService extends AbstractActivator implements IJp2pServi
 	 */
 	protected void onActiveState(){
 		DiscoveryMode mode = ( DiscoveryMode )this.getProperty( RegistrationProperties.DISCOVERY_MODE );
-		if(!( mode.equals( AdvertisementMode.PUBLISH )))
-		  this.discovery();		
+		//if(!( mode.equals( AdvertisementMode.PUBLISH )))
+		 // this.discovery();		
 	}
 
 	

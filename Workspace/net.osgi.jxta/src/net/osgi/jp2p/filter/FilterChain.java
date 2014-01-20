@@ -54,11 +54,17 @@ public class FilterChain<T extends Object> extends AbstractComponentFactoryFilte
 		return this.listeners.remove( listener );
 	}
 
-	protected void notifyFilterAccept( IComponentFactoryFilter filter, IComponentFactory<?> factory){
+	public void reset(){
+		this.completed = false;
+	}
+	
+	protected boolean notifyFilterAccept( IComponentFactoryFilter filter, IComponentFactory<?> factory){
 		if( !filter.hasAccepted() )
-			return;
+			return false;
+		boolean retval = true;
 		for( IFilterChainListener listener: this.listeners )
-			listener.notifyComponentCompleted( new FilterChainEvent( filter, factory ));
+			retval |= listener.notifyComponentCompleted( new FilterChainEvent( filter, factory ));
+		return retval;
 	}
 	
 	@Override
@@ -69,37 +75,43 @@ public class FilterChain<T extends Object> extends AbstractComponentFactoryFilte
 		switch( operator ){
 			case OR:
 				for( IComponentFactoryFilter filter: this.filters.keySet() ){
+					if( filters.get(filter))
+						continue;
 					accept = filter.accept(event);
 					filters.put(filter, accept);
 					if( accept ){
-						completed = true;
-						this.notifyFilterAccept(filter, event.getFactory());
-						return true;
+						completed = notifyFilterAccept(filter, event.getFactory());
 					}
-				}			
+				}
+				break;
 			case SEQUENTIAL_AND:
 				boolean retval = true;
 				for( IComponentFactoryFilter filter: this.filters.keySet() ){
+					if( filters.get(filter))
+						continue;
 					accept = filter.hasAccepted() || filter.accept(event);
 					retval &= accept;
 					filters.put(filter, accept);
-					this.notifyFilterAccept(filter, event.getFactory());
+					if( accept )
+						this.notifyFilterAccept(filter, event.getFactory());
+						//retval &= accept;
 				}
-				if( retval )
-					completed = true;
-				return retval;
+				completed = retval;
+				break;
 			default:
 				for( IComponentFactoryFilter filter: this.filters.keySet() ){
+					if( filters.get(filter))
+						continue;
 					accept = filter.accept(event);
 					filters.put(filter, accept);
 					if( !accept )
 						return false;
-					else{
-						this.notifyFilterAccept(filter, event.getFactory());
-						completed = true;
-					}
+					else
+						accept = this.notifyFilterAccept(filter, event.getFactory());
 				}
+				completed = true;
+				break;
 			}
-		return true;
+		return completed;
 	}
 }

@@ -19,7 +19,7 @@ public class Jp2pComponentAdapterFactory implements IAdapterFactory {
 		  Object retval = factory.getAdapter(component, adapterType);
 		  if( retval != null )
 			  return retval;
-		  return new Jp2pComponentPropertySource( component, null );	
+		  return new Jp2pComponentUIPropertySource( component, null );	
 	}
 
 	@SuppressWarnings("rawtypes")

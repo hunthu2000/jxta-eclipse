@@ -2,12 +2,13 @@ package net.osgi.jp2p.chaupal.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Stack;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.XMLConstants;
@@ -25,9 +26,12 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import net.osgi.jp2p.builder.ComponentNode;
+import net.osgi.jp2p.builder.ContextLoader;
 import net.osgi.jp2p.builder.ICompositeBuilder;
 import net.osgi.jp2p.builder.ICompositeBuilderListener;
 import net.osgi.jp2p.builder.IContainerBuilder;
+import net.osgi.jp2p.builder.IJp2pContext;
+import net.osgi.jp2p.builder.IJp2pContext.ContextDirectives;
 import net.osgi.jp2p.chaupal.xml.PreferenceStore.Persistence;
 import net.osgi.jp2p.chaupal.xml.PreferenceStore.SupportedAttributes;
 import net.osgi.jp2p.container.ContainerFactory;
@@ -37,13 +41,9 @@ import net.osgi.jp2p.factory.IComponentFactory.Components;
 import net.osgi.jp2p.factory.IJp2pComponents;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPreferences;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
-import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.jxta.context.Jp2pContainerPreferences;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPreferences;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory;
-import net.osgi.jp2p.jxta.factory.JxtaFactoryUtils;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
 import net.osgi.jp2p.jxta.network.INetworkPreferences;
 import net.osgi.jp2p.jxta.network.NetworkManagerPreferences;
 import net.osgi.jp2p.jxta.network.NetworkManagerPropertySource;
@@ -52,13 +52,14 @@ import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationFactory;
 import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
 import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jp2p.jxta.network.configurator.OverviewPreferences;
+import net.osgi.jp2p.jxta.peergroup.PeerGroupPreferences;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 import net.osgi.jp2p.jxta.pipe.PipePropertySource;
-import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeServiceProperties;
 import net.osgi.jp2p.jxta.registration.RegistrationPropertySource;
 import net.osgi.jp2p.jxta.seeds.SeedListPropertySource;
 import net.osgi.jp2p.partial.PartialPropertySource;
+import net.osgi.jp2p.properties.AbstractJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 import net.osgi.jp2p.properties.IJp2pProperties;
@@ -114,6 +115,7 @@ public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory> {
 	private boolean completed, failed;
 	private URL url;
 	private IContainerBuilder builder;
+	private ContextLoader contexts;
 	private String bundleId;
 	private Class<?> clss;
 	
@@ -121,8 +123,8 @@ public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory> {
 		
 	private Logger logger = Logger.getLogger( XMLFactoryBuilder.class.getName() );
 	
-	public XMLFactoryBuilder( String bundleId, Class<?> clss, IContainerBuilder builder ) {
-		this( bundleId, clss.getResource( S_DEFAULT_LOCATION ), clss, builder );
+	public XMLFactoryBuilder( String bundleId, Class<?> clss, IContainerBuilder builder, ContextLoader contexts ) {
+		this( bundleId, clss.getResource( S_DEFAULT_LOCATION ), clss, builder, contexts );
 	}
 
 	/**
@@ -132,9 +134,10 @@ public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory> {
 	 * @param location
 	 * @param builder
 	 */
-	public XMLFactoryBuilder( String bundleId, URL url, Class<?> clss, IContainerBuilder builder ) {
+	public XMLFactoryBuilder( String bundleId, URL url, Class<?> clss, IContainerBuilder builder, ContextLoader contexts ) {
 		this.bundleId = bundleId;
 		this.builder = builder;
+		this.contexts = contexts;
 		this.url = url;
 		this.clss = clss;
 		this.completed = false;
@@ -208,7 +211,7 @@ public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory> {
 			
 			//saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA); 
 			//saxParser.setProperty(JAXP_SCHEMA_SOURCE, new File(JP2P_XSD_SCHEMA)); 
-			Jp2pHandler handler = new Jp2pHandler( builder, bundleId, clss );
+			Jp2pHandler handler = new Jp2pHandler( builder, contexts, bundleId, clss );
 			saxParser.parse( in, handler);
 			root = handler.getRoot();
 			logger.info("JP2P Bundle Parsed: " + this.bundleId );
@@ -258,17 +261,21 @@ class Jp2pHandler extends DefaultHandler{
 	private ManagedProperty<IJp2pProperties,Object> property;
 
 	private IContainerBuilder container;
+	private ContextLoader contexts;
 	private ContainerFactory root;
 	private FactoryNode node;
 	private String bundleId;
 	private Class<?> clss;
+	private Stack<String> stack;
 
 	private static Logger logger = Logger.getLogger( XMLFactoryBuilder.class.getName() );
 
-	public Jp2pHandler( IContainerBuilder container, String bundleId, Class<?> clss ) {
+	public Jp2pHandler( IContainerBuilder container, ContextLoader contexts, String bundleId, Class<?> clss ) {
 		this.bundleId = bundleId;
 		this.container = container;
+		this.contexts = contexts;
 		this.clss = clss;
+		this.stack = new Stack<String>();
 	}
 
 	/**
@@ -279,7 +286,6 @@ class Jp2pHandler extends DefaultHandler{
 		return root;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public void startElement(String uri, String localName, String qName, 
 			Attributes attributes) throws SAXException {
@@ -294,19 +300,30 @@ class Jp2pHandler extends DefaultHandler{
 					factory = new ContainerFactory( container, bundleId );
 				this.root = (ContainerFactory) factory;
 				break;
+			case CONTEXT:
+				String className = attributes.getValue( ContextDirectives.CLASS.toString().toLowerCase() );
+				IJp2pContext<?> context = this.loadContext( className );
+				if( context != null )
+					contexts.addContext( context );
+				return;
 			default:
-				factory = container.getDefaultFactory( node.getData().getPropertySource(), current.toString());
 				break;
 			}
-			node = this.processFactory(attributes, node, factory);
-			return;
 		}
-		if( IJxtaComponentFactory.JxtaComponents.isComponent( qName )){
-			current = IJxtaComponentFactory.JxtaComponents.valueOf( StringStyler.styleToEnum( qName ));
-			String[] attrs = new String[1];
-			attrs[0] = attributes.getValue(AdvertisementDirectives.TYPE.toString().toLowerCase());
-			factory = JxtaFactoryUtils.getDefaultFactory(container, attrs, node.getData().getPropertySource(), current.toString());
+		if( factory == null ){
+			factory = this.getFactory( qName, attributes, node.getData().getPropertySource());
+		}
+		/*		if( factory == null ) || IJxtaComponents.JxtaComponents.isComponent( qName )){
+		current = IJxtaComponents.JxtaComponents.valueOf( StringStyler.styleToEnum( qName ));
+		String[] attrs = new String[1];
+		attrs[0] = attributes.getValue(AdvertisementDirectives.TYPE.toString().toLowerCase());
+		factory = JxtaFactoryUtils.getDefaultFactory(container, attrs, node.getData().getPropertySource(), current.toString());
+		node = this.processFactory(attributes, node, factory);
+		return;
+	}*/
+		if( factory != null ){
 			node = this.processFactory(attributes, node, factory);
+			this.stack.push( qName );
 			return;
 		}
 		if( attributes.getValue(Directives.CLASS.toString().toLowerCase()) != null ){
@@ -323,21 +340,39 @@ class Jp2pHandler extends DefaultHandler{
 			}
 			if( factoryClass != null  ){
 				try {
-					Constructor<IComponentFactory<?>> constructor = (Constructor<IComponentFactory<?>>) factoryClass.getDeclaredConstructor(IJp2pPropertySource.class );
-					factory = constructor.newInstance( node.getData().getPropertySource() );
+					//Constructor<IComponentFactory<?>> constructor = (Constructor<IComponentFactory<?>>) factoryClass.getDeclaredConstructor(IJp2pPropertySource.class );
+					//factory = constructor.newInstance( node.getData().getPropertySource() );
 				} catch (Exception e) {
 					e.printStackTrace();
 					return;
 				}
 			}
-		}else if( XMLFactoryBuilder.Groups.isGroup( qName )){
+			return;
+		}
+		if( XMLFactoryBuilder.Groups.isGroup( qName )){
 			logger.info(" Group value: " + qName );
 			return;
 		}else{
-			this.property = this.createProperty(qName, attributes );
+			try{
+				this.property = this.createProperty(qName, attributes );
+			}
+			catch( Exception ex ){
+				logger.log( Level.SEVERE, "\n\n !!!Value " + qName + " icorrectly parsed as property.\n\n\n");
+				ex.printStackTrace();
+			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	protected IComponentFactory<?> getFactory( String componentName, Attributes attributes, IJp2pPropertySource<?> parentSource ){
+		String contextName = attributes.getValue(Directives.CONTEXT.toString().toLowerCase());
+		if( Utils.isNull( contextName )){
+			contextName = AbstractJp2pPropertySource.findFirstAncestorDirective( parentSource, Directives.CONTEXT );
+		}
+		IJp2pContext<?> context = this.contexts.getContextForComponent( contextName, componentName);
+		return context.getFactory( this.container, attributes, (IJp2pPropertySource<IJp2pProperties>) parentSource, componentName);
+	}
+	
 	/**
 	 * Process the factory by adding the directives and adding it to the container
 	 * @param attributes
@@ -393,10 +428,11 @@ class Jp2pHandler extends DefaultHandler{
 
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-		if( !Components.isComponent( qName ) && !JxtaComponents.isComponent(qName ))
+		if( !stack.peek().equals( qName ))
 			return;
 		node = (FactoryNode) node.getParent();
 		this.property = null;
+		this.stack.pop();
 	}
 
 	@Override
@@ -447,12 +483,12 @@ class Jp2pHandler extends DefaultHandler{
 		}
 		if( source instanceof PipePropertySource ){
 			PipePropertySource pps = ( PipePropertySource )source ;
-			pps.setProperty( (PipeServiceProperties) property.getKey(), value);
+			pps.setProperty( property.getKey(), value);
 			return;
 		}
 		if( source instanceof PeerGroupPropertySource ){
-			PeerGroupPropertySource pgps = ( PeerGroupPropertySource) source;
-			pgps.setProperty( (PeerGroupProperties) property.getKey(), value);
+			PeerGroupPreferences preferences = new PeerGroupPreferences( source );
+			preferences.setPropertyFromString( property.getKey(), value);
 			return;
 		}
 		if( source instanceof RegistrationPropertySource ){
@@ -474,7 +510,29 @@ class Jp2pHandler extends DefaultHandler{
 		}
 		this.property.setValue(value);
 	}
-	
+
+	/**
+	 * Load a context from the given directives
+	 * @param name
+	 * @param className
+	 * @return
+	 */
+	protected IJp2pContext<?> loadContext( String className ){
+		if( Utils.isNull( className ))
+			return null;
+		Class<?> clss;
+		IJp2pContext<?> context = null;
+		try {
+			clss = this.getClass().getClassLoader().loadClass( className );
+			context = (IJp2pContext<?>) clss.newInstance();
+			System.out.println("URL found: " + ( clss != null ));
+		}
+		catch ( Exception e1) {
+			e1.printStackTrace();
+		}
+		return context;
+	}
+
 	protected PreferenceStore getPreferences( String pluginId, Map<SupportedAttributes, String> attrs ){
 		if(( attrs == null ) || ( attrs.size() == 0 ))
 			return null;

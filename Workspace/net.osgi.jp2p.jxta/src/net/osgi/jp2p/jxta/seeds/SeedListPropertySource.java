@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.properties.AbstractJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;

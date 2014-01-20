@@ -1,13 +1,11 @@
 package net.osgi.jp2p.jxta.factory;
 
-import net.jxta.document.Advertisement;
 import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.osgi.jp2p.jxta.advertisement.service.Jp2pAdvertisementFactory;
-import net.osgi.jp2p.jxta.advertisement.service.JxtaAdvertisementFactory;
+import net.osgi.jp2p.jxta.advertisement.service.SimpleJxtaAdvertisementFactory;
 import net.osgi.jp2p.jxta.discovery.DiscoveryServiceFactory;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.jxta.netpeergroup.NetPeerGroupFactory;
 import net.osgi.jp2p.jxta.network.NetworkManagerFactory;
 import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationFactory;
@@ -71,10 +69,7 @@ public class JxtaFactoryUtils {
 			break;			
 		case ADVERTISEMENT:
 			AdvertisementTypes type = AdvertisementTypes.convertFrom(attributes[0]);
-			factory = new JxtaAdvertisementFactory( builder, type, parentSource );
-			break;
-		case ADVERTISEMENT_SERVICE:
-			factory = new Jp2pAdvertisementFactory<Advertisement>( builder, parentSource );
+			factory = new SimpleJxtaAdvertisementFactory( builder, type, parentSource );
 			break;
 		default:
 			break;

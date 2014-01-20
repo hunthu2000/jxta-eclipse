@@ -77,7 +77,7 @@ public class Jp2pContainerPropertySource extends AbstractJp2pWritePropertySource
 		case RENDEZVOUZ_AUTOSTART:
 			return true;
 		case PEER_ID:
-			str = ( String )this.getIdentifier();
+			str = getIdentifier( this );
 			if( Utils.isNull(str))
 				return null;
 			PeerID pgId = IDFactory.newPeerID( PeerGroupID.defaultNetPeerGroupID, ( str.getBytes() ));

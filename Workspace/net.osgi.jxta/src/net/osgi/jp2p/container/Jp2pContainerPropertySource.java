@@ -47,13 +47,7 @@ public class Jp2pContainerPropertySource extends AbstractJp2pWritePropertySource
 	public String getBundleId(){
 		return (String) super.getProperty( ContextProperties.BUNDLE_ID );
 	}
-
 	
-	@Override
-	public String getIdentifier() {
-		return super.getIdentifier();
-	}
-
 	@Override
 	public IJp2pProperties getIdFromString(String key) {
 		return ContextProperties.valueOf( key );

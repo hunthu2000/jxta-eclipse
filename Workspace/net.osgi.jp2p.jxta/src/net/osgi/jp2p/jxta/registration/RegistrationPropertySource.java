@@ -1,6 +1,6 @@
 package net.osgi.jp2p.jxta.registration;
 
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.properties.AbstractJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives;

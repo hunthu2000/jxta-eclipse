@@ -18,6 +18,8 @@ public class StatusImages extends AbstractImages{
 	public static final String S_ACTIVE_ICON = "active.png";
 	public static final String S_PAUSED_ICON = "player_pause.png";
 	public static final String S_STOPPING_ICON = "stop.png";
+	public static final String S_CHECK_ICON = "check.png";
+	public static final String S_NOT_FOUND_ICON = "not_found.png";
 	public static final String S_FINALISING_ICON = "shuttingdown.png";
 	public static final String S_FINALISED_ICON = "shutdown.png";
 
@@ -58,6 +60,8 @@ public class StatusImages extends AbstractImages{
 		setImage( S_ACTIVE_ICON );
 		setImage( S_PAUSED_ICON );
 		setImage( S_STOPPING_ICON );
+		setImage( S_CHECK_ICON );
+		setImage( S_NOT_FOUND_ICON );
 		setImage( S_FINALISING_ICON );
 		setImage( S_FINALISED_ICON );
 		setImage( S_COMPONENT_ICON );
@@ -87,6 +91,10 @@ public class StatusImages extends AbstractImages{
 			return getImageFromName( S_AVAILABLE_ICON );
 		case SHUTTING_DOWN:
 			return getImageFromName( S_STOPPING_ICON );
+		case COMPLETED:
+			return getImageFromName( S_CHECK_ICON );
+		case FAILED:
+			return getImageFromName( S_NOT_FOUND_ICON );
 		case FINALISING:
 			return getImageFromName( S_FINALISING_ICON );
 		case FINALISED:

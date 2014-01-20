@@ -25,7 +25,7 @@ public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
 	public static final String S_IJP2P_CONTAINER_PACKAGE_ID = "org.osgi.jxse.service.core";
 	public static final String S_IP2P_TOKEN = "org.osgi.jxse.token";
 	
-	private JxseContextProvider provider;
+	private Jp2pContainerProvider provider;
 	private String introduction;
 	private String token;
 
@@ -41,21 +41,21 @@ public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
 		this.setActivator(activator);
 	}
 
-	protected Jp2pServiceContainer getContext() {
+	protected Jp2pServiceContainer getContainer() {
 		return provider.getContainer();
 	}
 
 	private final void setActivator(AbstractJp2pBundleActivator activator) {
 		try{
-			Jp2pServiceContainer context = activator.getServiceContext();
-			String pass = (String) context.getProperty( ContextProperties.PASS_1);
+			Jp2pServiceContainer container = activator.getServiceContainer();
+			String pass = (String) container.getProperty( ContextProperties.PASS_1);
 			if( !Utils.isNull( pass ))
 				this.introduction = pass;
-			pass = (String) context.getProperty( ContextProperties.PASS_2);
+			pass = (String) container.getProperty( ContextProperties.PASS_2);
 			if( !Utils.isNull( pass ))
 				this.token = pass;
-			provider = new JxseContextProvider( introduction, token );
-			this.provider.setContainer( context );
+			provider = new Jp2pContainerProvider( introduction, token );
+			this.provider.setContainer( container );
 		}
 		catch( Exception ex ){
 			ex.printStackTrace();
@@ -73,15 +73,15 @@ public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
  * @author Kees
  *
  */
-class JxseContextProvider extends AbstractProvider<String, Object, Jp2pServiceContainer> {
+class Jp2pContainerProvider extends AbstractProvider<String, Object, Jp2pServiceContainer> {
 
 	private Jp2pServiceContainer  container;
 	
-	JxseContextProvider() {
+	Jp2pContainerProvider() {
 		super( new Palaver());
 	}
 
-	JxseContextProvider( String introduction, String token ) {
+	Jp2pContainerProvider( String introduction, String token ) {
 		super( new Palaver( introduction, token ));
 	}
 

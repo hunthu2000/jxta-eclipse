@@ -12,12 +12,14 @@ package net.osgi.jp2p.chaupal.utils;
 
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.container.IJxseServiceContainer;
+import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
+import net.osgi.jp2p.properties.IJp2pPropertySource;
 
 public class Utils
 {
 
 	/**
-	 * Get the label of a JXTA service compoent
+	 * Get the label of a JP2P service compoent
 	 * @param component
 	 * @return
 	 */
@@ -29,5 +31,18 @@ public class Utils
 		if( component.getModule() == null )
 			return component.getClass().getSimpleName();
 		return component.getModule().getClass().getSimpleName();
+	}
+
+	/**
+	 * Get the label of a JP2P service compoent
+	 * @param component
+	 * @return
+	 */
+	public static String getLabel( IJp2pPropertySource<?> source ) {
+		String label = source.getDirective( Directives.NAME );
+		if(( label == null ) || ( label.length() == 0 )){
+			return source.getComponentName();			
+		}
+		return label;
 	}
 }

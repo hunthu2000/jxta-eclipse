@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jp2p.activator.IJp2pService;
 import net.osgi.jp2p.chaupal.comparator.Jp2pServiceComparator;
@@ -13,7 +12,6 @@ import net.osgi.jp2p.component.IJp2pComponentNode;
 import net.osgi.jp2p.component.Jp2pComponent;
 import net.osgi.jp2p.properties.DefaultPropertySource;
 
-import org.chaupal.jp2p.ui.component.PeerGroupComponent;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -131,8 +129,6 @@ public class Jp2pServiceContentProvider implements ITreeContentProvider {
 	public static IJp2pComponent<?> getComponent( Object module ){
 		if( module instanceof IJp2pComponent )
 			return (IJp2pComponent<?>) module;
-		if( module instanceof PeerGroup )
-			return new PeerGroupComponent( (PeerGroup) module );
 		return new Jp2pComponent( new DefaultPropertySource( S_BUNDLE_ID, module.toString() ), module );
 	}
 

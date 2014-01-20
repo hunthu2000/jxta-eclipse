@@ -21,7 +21,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
-public class NetworkManagerPropertySource extends AbstractJp2pPropertySource<NetworkManager> {
+public class NetworkManagerPropertySource extends AbstractJp2pUIPropertySource<NetworkManager> {
 
 	public NetworkManagerPropertySource( IJp2pComponent<NetworkManager> component ) {
 		super( component );

@@ -5,10 +5,10 @@ import net.jxta.platform.ModuleSpecID;
 import net.jxta.protocol.ModuleSpecAdvertisement;
 import net.osgi.jp2p.utils.StringStyler;
 
-import org.chaupal.jp2p.ui.property.AbstractJp2pPropertySource;
+import org.chaupal.jp2p.ui.property.AbstractJp2pUIPropertySource;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
-public class ModuleSpecAdvPropertySource extends AbstractJp2pPropertySource<ModuleSpecAdvertisement> {
+public class ModuleSpecAdvPropertySource extends AbstractJp2pUIPropertySource<ModuleSpecAdvertisement> {
 
 	public enum ModuleSpecAdvProperties{
 		AUTHENTICATION_SPECIFICATION_ID,

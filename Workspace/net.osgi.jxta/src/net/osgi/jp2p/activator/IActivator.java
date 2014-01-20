@@ -27,6 +27,8 @@ public interface IActivator extends ISimpleActivator
 		PAUSED,
 		AVAILABLE,
 		SHUTTING_DOWN,
+		COMPLETED,
+		FAILED,
 		FINALISING,
 		FINALISED;
 

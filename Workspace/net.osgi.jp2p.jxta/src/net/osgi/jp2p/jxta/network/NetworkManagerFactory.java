@@ -29,7 +29,7 @@ import net.osgi.jp2p.container.Jp2pContainerPropertySource;
 import net.osgi.jp2p.factory.AbstractFilterFactory;
 import net.osgi.jp2p.filter.ComponentFilter;
 import net.osgi.jp2p.filter.IComponentFactoryFilter;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.jxta.factory.JxtaFactoryUtils;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerDirectives;

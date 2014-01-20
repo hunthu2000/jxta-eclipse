@@ -39,7 +39,7 @@ public class PeerGroupPreferences extends AbstractPreferences
 	 */
 	public PeerID getPeerID() throws URISyntaxException{
 		PeerGroupPropertySource source = (PeerGroupPropertySource) super.getSource();
-		String name = source.getIdentifier();
+		String name = PeerGroupPropertySource.getIdentifier( source );
 		PeerID pgId = IDFactory.newPeerID( PeerGroupID.defaultNetPeerGroupID, name.getBytes() );
 		ManagedProperty<IJp2pProperties, Object> property = source.getOrCreateManagedProperty( PeerGroupProperties.PEER_ID, pgId.toString(), false );
 		String str = (String) property.getValue();
@@ -118,9 +118,9 @@ public class PeerGroupPreferences extends AbstractPreferences
 		PeerGroupProperties props = (PeerGroupProperties) id;
 		if( value == null )
 			return null;
+		URI uri;
 		switch( props ){
 		case PEER_ID:
-			URI uri;
 			try {
 				uri = new URI( value );
 				return (PeerID) IDFactory.fromURI( uri );
@@ -131,6 +131,13 @@ public class PeerGroupPreferences extends AbstractPreferences
 		case STORE_HOME:
 			this.setHomeFolder(value);
 			return true;
+		case GROUP_ID:
+			try {
+				return new URI( value );
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+			break;			
 		default:
 			return value;
 		}

@@ -23,7 +23,7 @@ import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponent;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.jxta.network.INetworkPreferences;
 import net.osgi.jp2p.jxta.network.NetworkManagerPropertySource;
 import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;

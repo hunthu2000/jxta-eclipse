@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import net.osgi.jp2p.container.Jp2pContainerPropertySource;
 import net.osgi.jp2p.container.IJxseServiceContainer.ContextProperties;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.utils.ProjectFolderUtils;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
@@ -70,11 +70,6 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 		return JxtaComponents.NETWORK_MANAGER.toString();
 	}
 
-	@Override
-	public String getIdentifier() {
-		return super.getIdentifier();
-	}
-
 	private void fill( Jp2pContainerPropertySource parent ){
 		Iterator<IJp2pProperties> iterator = parent.propertyIterator();
 		this.setDirective( Directives.AUTO_START, parent.getDirective( Directives.AUTO_START ));
@@ -86,7 +81,7 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 				continue;
 			Object retval = parent.getProperty( cp );
 			if( NetworkManagerProperties.INSTANCE_HOME.equals(nmp ) && ( retval instanceof String ))
-				retval = ProjectFolderUtils.getParsedUserDir((String) retval, super.getBundleId());
+				retval = ProjectFolderUtils.getParsedUserDir((String) retval, getBundleId( this ));
 			super.setProperty(nmp, retval, true);
 		}
 		String name=  parent.getDirective( Directives.NAME );

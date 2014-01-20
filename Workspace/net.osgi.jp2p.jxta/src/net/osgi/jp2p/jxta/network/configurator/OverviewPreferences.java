@@ -83,7 +83,7 @@ public class OverviewPreferences extends AbstractPreferences implements INetwork
 		switch( id ){
 		case PEER_ID:
 			PeerGroupPropertySource source = (PeerGroupPropertySource) super.getSource();
-			String name = source.getIdentifier();
+			String name = PeerGroupPropertySource.getIdentifier( source);
 			value = IDFactory.newPeerID( PeerGroupID.defaultNetPeerGroupID, name.getBytes() );
 			break;
 		default:

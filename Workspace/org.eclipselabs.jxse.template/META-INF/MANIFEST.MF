@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JXSE Tooling
-Bundle-SymbolicName: org.chaupal.jp2p.template;singleton:=true
+Bundle-SymbolicName: org.chaupal.jp2p.ui.template;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.chaupal.jp2p.template.Activator
+Bundle-Activator: org.chaupal.jp2p.ui.template.Activator
 Bundle-Vendor: Condast
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,

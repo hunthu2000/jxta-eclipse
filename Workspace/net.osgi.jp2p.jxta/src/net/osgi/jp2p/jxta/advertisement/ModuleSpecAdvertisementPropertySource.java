@@ -7,7 +7,6 @@ import net.jxta.protocol.ModuleClassAdvertisement;
 import net.jxta.protocol.ModuleSpecAdvertisement;
 import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jp2p.jxta.advertisement.ModuleImplAdvertisementPropertySource.ModuleImplProperties;
-import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
 import net.osgi.jp2p.properties.IJp2pProperties;

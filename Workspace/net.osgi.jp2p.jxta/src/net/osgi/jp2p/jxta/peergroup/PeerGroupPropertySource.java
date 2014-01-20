@@ -1,26 +1,27 @@
 package net.osgi.jp2p.jxta.peergroup;
 
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
+import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
-import net.osgi.jp2p.properties.AbstractJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 
-public class PeerGroupPropertySource extends AbstractJp2pWritePropertySource
+public class PeerGroupPropertySource extends AdvertisementPropertySource
 {
 	public static final String S_NET_PEER_GROUP = "NetPeerGroup";
 
 	public enum PeerGroupProperties implements IJp2pProperties{
+		NAME,
+		DESCRIPTION,
+		GROUP_ID,
 		PEER_ID,
 		STORE_HOME,
 		PEER_NAME,
-		PEERGROUP_NAME,
-		DESCRIPTION,
 		PEERGROUP_ID;
 	
 		@Override
@@ -53,23 +54,24 @@ public class PeerGroupPropertySource extends AbstractJp2pWritePropertySource
 
 	public PeerGroupPropertySource( IJp2pPropertySource<IJp2pProperties> parent) {
 		this( JxtaComponents.PEERGROUP_SERVICE.toString(), parent );
-		setDirectiveFromParent( Directives.AUTO_START, this );
+		this.fillDefaultValues();
 	}
 
 	public PeerGroupPropertySource( String componentName, IJp2pPropertySource<IJp2pProperties> parent) {
 		super( componentName,parent );
-		setDirectiveFromParent( Directives.AUTO_START, this );
 		this.fillDefaultValues();
 	}
 
 	protected void fillDefaultValues() {
+		setDirectiveFromParent( Directives.AUTO_START, this );
+		super.setDirective( Directives.BLOCK_CREATION, Boolean.FALSE.toString() );
 		IJp2pWritePropertySource<IJp2pProperties> parent = (IJp2pWritePropertySource<IJp2pProperties>) super.getParent();
 		this.setDirective( Directives.NAME, parent.getDirective( Directives.NAME ));
-	}
-
-	@Override
-	public String getIdentifier() {
-		return super.getIdentifier();
+		String name = (String) super.getProperty( PeerGroupProperties.NAME );
+		if( Utils.isNull( name ))
+			name = (String) super.getDirective( IJp2pDirectives.Directives.NAME );
+		if(!Utils.isNull( name ))
+			super.setProperty( PeerGroupProperties.NAME, name );
 	}
 
 	@Override

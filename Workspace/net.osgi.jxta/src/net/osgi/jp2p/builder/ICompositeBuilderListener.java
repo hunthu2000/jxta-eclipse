@@ -17,12 +17,12 @@ public interface ICompositeBuilderListener<T extends Object> {
 
 	public enum BuilderEvents{
 		PROPERTY_SOURCE_CREATED,
+		COMPONENT_PREPARED,
 		COMPONENT_CREATED,
 		COMPONENT_STARTED,
 		FACTORY_COMPLETED,
 		FACTORY_ADDED_TO_CONTAINER,
-		FACORY_REMOVED_FROM_CONTAINER
-		;
+		FACORY_REMOVED_FROM_CONTAINER;
 
 		@Override
 		public String toString() {

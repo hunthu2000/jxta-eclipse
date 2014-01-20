@@ -7,7 +7,6 @@ import net.jxta.peergroup.PeerGroup;
 import net.jxta.protocol.PipeAdvertisement;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
 import net.osgi.jp2p.jxta.advertisement.ModuleImplAdvertisementPropertySource.ModuleImplProperties;
-import net.osgi.jp2p.jxta.advertisement.service.AdvertisementServicePropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
 import net.osgi.jp2p.properties.IJp2pProperties;
@@ -78,9 +77,8 @@ public class PipeAdvertisementPropertySource extends AdvertisementPropertySource
 	 * @throws URISyntaxException 
 	 */
 	public static PipeAdvertisement createPipeAdvertisement( IJp2pPropertySource<IJp2pProperties> source, PeerGroup peergroup ) throws URISyntaxException{
-		AdvertisementTypes type = AdvertisementTypes.valueOf( StringStyler.styleToEnum( (String) source.getDirective( AdvertisementDirectives.TYPE )));
 		PipeAdvertisementPreferences preferences = new PipeAdvertisementPreferences( (IJp2pWritePropertySource<IJp2pProperties>) source, peergroup );
-		PipeAdvertisement pipead = ( PipeAdvertisement )AdvertisementFactory.newAdvertisement( AdvertisementTypes.convertTo(type));
+		PipeAdvertisement pipead = ( PipeAdvertisement )AdvertisementFactory.newAdvertisement( AdvertisementTypes.convertTo( AdvertisementTypes.PIPE ));
 		String name = (String) source.getProperty( AdvertisementProperties.NAME );
 		pipead.setName(name);
 		pipead.setType(( String )source.getProperty( PipeAdvertisementProperties.TYPE ));

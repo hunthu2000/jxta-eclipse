@@ -1,0 +1,27 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Chaupal Fragment
+Bundle-SymbolicName: net.osgi.jp2p.chaupal.jxta
+Bundle-Version: 1.0.0.v20140108
+Bundle-Vendor: Condast
+Fragment-Host: net.osgi.jp2p.chaupal;bundle-version="[1.0.0.v20130117,2.0.0)"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: net.jxta.discovery,
+ net.jxta.document,
+ net.jxta.exception,
+ net.jxta.id,
+ net.jxta.peer,
+ net.jxta.peergroup,
+ net.jxta.pipe,
+ net.jxta.platform,
+ net.jxta.protocol,
+ net.jxta.rendezvous,
+ net.jxta.socket,
+ net.osgi.jp2p.activator,
+ net.osgi.jp2p.factory,
+ net.osgi.jp2p.jxta.factory
+Export-Package: net.osgi.jp2p.chaupal.jxta.advertisement,
+ net.osgi.jp2p.chaupal.jxta.discovery,
+ net.osgi.jp2p.chaupal.jxta.network,
+ net.osgi.jp2p.chaupal.jxta.peergroup,
+ net.osgi.jp2p.chaupal.jxta.sockets,
+ net.osgi.jp2p.chaupal.jxta.xml

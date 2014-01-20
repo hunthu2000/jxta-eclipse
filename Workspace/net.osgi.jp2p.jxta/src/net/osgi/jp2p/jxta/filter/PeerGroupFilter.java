@@ -7,7 +7,7 @@ import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.filter.AbstractComponentFactoryFilter;
 import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
-import net.osgi.jp2p.jxta.factory.IJxtaComponentFactory.JxtaComponents;
+import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupFactory;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupDirectives;

@@ -25,7 +25,7 @@ import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.osgi.jp2p.utils.EnumUtils;
 
-public class NetworkConfiguratorPropertySource extends AbstractJp2pPropertySource<NetworkConfigurator> {
+public class NetworkConfiguratorPropertySource extends AbstractJp2pUIPropertySource<NetworkConfigurator> {
 
 	public static final String S_NO_READ_VALUE = "<Not a readable property>";
 	

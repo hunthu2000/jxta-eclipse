@@ -11,5 +11,5 @@
 package net.osgi.jp2p.filter;
 
 public interface IFilterChainListener {
-	public void notifyComponentCompleted( FilterChainEvent event );
+	public boolean notifyComponentCompleted( FilterChainEvent event );
 }
