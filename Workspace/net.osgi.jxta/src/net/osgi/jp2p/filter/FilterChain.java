@@ -80,7 +80,7 @@ public class FilterChain<T extends Object> extends AbstractComponentFactoryFilte
 					accept = filter.accept(event);
 					filters.put(filter, accept);
 					if( accept ){
-						completed = notifyFilterAccept(filter, event.getFactory());
+						completed = notifyFilterAccept(filter, (IComponentFactory<?>) event.getFactory());
 					}
 				}
 				break;
@@ -93,7 +93,7 @@ public class FilterChain<T extends Object> extends AbstractComponentFactoryFilte
 					retval &= accept;
 					filters.put(filter, accept);
 					if( accept )
-						this.notifyFilterAccept(filter, event.getFactory());
+						this.notifyFilterAccept(filter, (IComponentFactory<?>) event.getFactory());
 						//retval &= accept;
 				}
 				completed = retval;
@@ -107,7 +107,7 @@ public class FilterChain<T extends Object> extends AbstractComponentFactoryFilte
 					if( !accept )
 						return false;
 					else
-						accept = this.notifyFilterAccept(filter, event.getFactory());
+						accept = this.notifyFilterAccept(filter, (IComponentFactory<?>) event.getFactory());
 				}
 				completed = true;
 				break;

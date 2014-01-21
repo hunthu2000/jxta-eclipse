@@ -1,11 +1,11 @@
-package net.osgi.jp2p.builder;
+package net.osgi.jp2p.context;
 
 import org.xml.sax.Attributes;
 
 import net.osgi.jp2p.builder.IContainerBuilder;
-import net.osgi.jp2p.builder.IJp2pContext;
+import net.osgi.jp2p.context.IJp2pContext;
 import net.osgi.jp2p.factory.IComponentFactory;
-import net.osgi.jp2p.factory.IComponentFactory.Components;
+import net.osgi.jp2p.factory.IJp2pComponents;
 import net.osgi.jp2p.log.LoggerFactory;
 import net.osgi.jp2p.partial.PartialFactory;
 import net.osgi.jp2p.properties.AbstractJp2pPropertySource;
@@ -18,6 +18,35 @@ import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
 
 public class Jp2pContext implements IJp2pContext<Object> {
+
+	public static enum Components implements IJp2pComponents{
+		JP2P_CONTAINER,
+		CONTEXT,
+		STARTUP_SERVICE,
+		PERSISTENCE_SERVICE,
+		SECURITY,
+		TCP,
+		HTTP,
+		HTTP2,
+		MULTICAST,
+		LOGGER_SERVICE;
+	
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString() );
+		}	
+		
+		public static boolean isComponent( String str ){
+			str = StringStyler.styleToEnum(str);
+			if(( str == null ) || ( str.length() == 0 ))
+				return false;
+			for( Components comp: values()){
+				if( comp.name().equals( str.toUpperCase() ))
+					return true;
+			}
+			return false;
+		}
+	}
 
 	public Jp2pContext() {
 	}

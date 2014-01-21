@@ -16,6 +16,7 @@ import net.osgi.jp2p.utils.StringStyler;
 public interface IChaupalComponents{
 
 	public enum ChaupalComponents implements IJp2pComponents{
+		PERSISTENCE_SERVICE,
 		NET_PEERGROUP_SERVICE,
 		PEERGROUP_SERVICE,
 		DISCOVERY_SERVICE,

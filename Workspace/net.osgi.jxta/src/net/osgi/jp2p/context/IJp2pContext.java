@@ -1,7 +1,8 @@
-package net.osgi.jp2p.builder;
+package net.osgi.jp2p.context;
 
 import org.xml.sax.Attributes;
 
+import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.properties.IJp2pDirectives;
 import net.osgi.jp2p.properties.IJp2pProperties;

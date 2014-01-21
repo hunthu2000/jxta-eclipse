@@ -15,6 +15,7 @@ import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.container.ContainerFactory;
 import net.osgi.jp2p.container.Jp2pContainerPropertySource;
+import net.osgi.jp2p.context.Jp2pContext;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
@@ -29,7 +30,7 @@ public class StartupServiceFactory extends AbstractComponentFactory<IContainerBu
 
 	@Override
 	public String getComponentName() {
-		return Components.STARTUP_SERVICE.toString();
+		return Jp2pContext.Components.STARTUP_SERVICE.toString();
 	}
 
 	@Override
@@ -41,7 +42,7 @@ public class StartupServiceFactory extends AbstractComponentFactory<IContainerBu
 	@Override
 	public void extendContainer() {
 		IContainerBuilder container = super.getBuilder();
-		IComponentFactory<?> factory = container.getFactory( Components.JP2P_CONTAINER.toString() );
+		IComponentFactory<?> factory = container.getFactory( Jp2pContext.Components.JP2P_CONTAINER.toString() );
 		ContainerFactory cf = (ContainerFactory) factory;
 		if( !cf.isAutoStart() )
 			return;

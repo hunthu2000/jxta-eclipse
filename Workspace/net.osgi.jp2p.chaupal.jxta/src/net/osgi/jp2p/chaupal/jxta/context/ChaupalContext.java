@@ -1,21 +1,24 @@
-package net.osgi.jp2p.chaupal.jxta.builder;
+package net.osgi.jp2p.chaupal.jxta.context;
 
 import org.xml.sax.Attributes;
 
 import net.osgi.jp2p.builder.IContainerBuilder;
-import net.osgi.jp2p.builder.IJp2pContext;
-import net.osgi.jp2p.builder.Jp2pContext;
 import net.osgi.jp2p.chaupal.jxta.IChaupalComponents.ChaupalComponents;
 import net.osgi.jp2p.chaupal.jxta.advertisement.ChaupalAdvertisementFactory;
 import net.osgi.jp2p.chaupal.jxta.discovery.ChaupalDiscoveryServiceFactory;
 import net.osgi.jp2p.chaupal.jxta.peergroup.ChaupalPeerGroupFactory;
 import net.osgi.jp2p.chaupal.jxta.pipe.ChaupalPipeFactory;
+import net.osgi.jp2p.chaupal.persistence.PersistedProperty;
+import net.osgi.jp2p.context.IJp2pContext;
+import net.osgi.jp2p.context.Jp2pContext;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.jxta.discovery.DiscoveryServiceFactory;
 import net.osgi.jp2p.jxta.netpeergroup.NetPeerGroupFactory;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupFactory;
 import net.osgi.jp2p.jxta.pipe.PipeServiceFactory;
 import net.osgi.jp2p.jxta.registration.RegistrationServiceFactory;
+import net.osgi.jp2p.persistence.IPersistedProperty;
+import net.osgi.jp2p.persistence.PersistenceFactory;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pDirectives.Contexts;
@@ -111,6 +114,9 @@ public class ChaupalContext implements IJp2pContext<Object> {
 		ChaupalComponents component = ChaupalComponents.valueOf(comp);
 		IComponentFactory<?> factory = null;
 		switch( component ){
+		case PERSISTENCE_SERVICE:
+			IPersistedProperty<?> property = new PersistedProperty<Object>( null );
+			factory = new PersistenceFactory( builder, parentSource, property );
 		case NET_PEERGROUP_SERVICE:
 			factory = new NetPeerGroupFactory( builder, parentSource );
 			break;			

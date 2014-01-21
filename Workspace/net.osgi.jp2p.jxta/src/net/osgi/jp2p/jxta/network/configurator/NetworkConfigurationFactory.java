@@ -21,8 +21,10 @@ import net.jxta.platform.NetworkManager;
 import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponent;
+import net.osgi.jp2p.context.Jp2pContext;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
+import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.osgi.jp2p.jxta.network.INetworkPreferences;
 import net.osgi.jp2p.jxta.network.NetworkManagerPropertySource;
@@ -163,7 +165,7 @@ public class NetworkConfigurationFactory extends
 		case COMPONENT_CREATED:
 			if( !isComponentFactory( JxtaComponents.NETWORK_MANAGER, event.getFactory() ))
 				return;
-			this.manager = ((IJp2pComponent<NetworkManager>) event.getFactory().getComponent()).getModule();
+			this.manager = ((IJp2pComponent<NetworkManager>) ((IComponentFactory<?>) event.getFactory()).getComponent()).getModule();
 			super.setCanCreate(this.manager != null );
 			createComponent();
 			break;
@@ -178,7 +180,7 @@ public class NetworkConfigurationFactory extends
 	 * @return
 	 */
 	public static INetworkPreferences getPreferences( PartialPropertySource source ){
-		Components component = Components.valueOf( StringStyler.styleToEnum( source.getComponentName()));
+		Jp2pContext.Components component = Jp2pContext.Components.valueOf( StringStyler.styleToEnum( source.getComponentName()));
 		switch( component ){
 		case TCP:
 			return new TcpPreferences( source );

@@ -1,24 +1,24 @@
-package net.osgi.jp2p.persistence;
+package net.osgi.jp2p.chaupal.persistence;
 
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
+import net.osgi.jp2p.properties.AbstractJp2pPropertySource;
 import net.osgi.jp2p.properties.AbstractPreferences;
 import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pPropertySource;
+import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.ManagedProperty;
 import net.osgi.jp2p.utils.Utils;
 
-public class PersistedProperty {
+public class PersistedProperty<T extends Object> extends AbstractPreferences<T>{
 
-	private AbstractPreferences prefs;
 	private Preferences preferences;
 	
-	public PersistedProperty( String bundle_id, IScopeContext scope, AbstractPreferences prefs ) {
-		this.prefs = prefs;
-		IJp2pPropertySource<IJp2pProperties> source = prefs.getSource();
-		Preferences pref1 = scope.getNode( bundle_id );
+	public PersistedProperty(IScopeContext scope ) {
+		super();
+		IJp2pWritePropertySource<IJp2pProperties> source = super.getSource();
+		Preferences pref1 = scope.getNode( AbstractJp2pPropertySource.getBundleId(source));
 		Preferences pref2 = pref1.node( source.getId() );
 		this.preferences = pref2.node( source.getComponentName() );
 	}
@@ -28,13 +28,13 @@ public class PersistedProperty {
 	 * @param id
 	 * @return
 	 */
-	public Object getProperty( IJp2pProperties id ){
-		ManagedProperty<IJp2pProperties, Object> mp = this.prefs.getSource().getManagedProperty(id);
+	public T getProperty( IJp2pProperties id ){
+		ManagedProperty<IJp2pProperties, Object> mp = super.getSource().getManagedProperty(id);
 		String value = this.preferences.get( id.toString(), mp.getDefaultValue().toString());
 		if( !Utils.isNull( value )){
-			this.prefs.setPropertyFromString(id, value);
+			//this.prefs.setPropertyFromString(id, value);
 		}
-		return id;
+		return null; // id
 	}
 	
 	/**
@@ -52,6 +52,12 @@ public class PersistedProperty {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	@Override
+	protected T convertValue(IJp2pProperties id, String value) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

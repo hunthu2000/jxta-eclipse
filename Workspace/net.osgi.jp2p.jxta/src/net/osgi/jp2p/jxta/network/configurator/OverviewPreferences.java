@@ -151,4 +151,10 @@ public class OverviewPreferences extends AbstractPreferences implements INetwork
 		return retval;
 	}
 
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

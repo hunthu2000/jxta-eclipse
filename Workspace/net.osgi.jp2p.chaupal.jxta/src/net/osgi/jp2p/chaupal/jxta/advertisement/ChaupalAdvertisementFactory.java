@@ -16,6 +16,7 @@ import net.osgi.jp2p.chaupal.jxta.IChaupalComponents.ChaupalComponents;
 import net.osgi.jp2p.chaupal.jxta.advertisement.AdvertisementServicePropertySource.AdvertisementServiceProperties;
 import net.osgi.jp2p.chaupal.jxta.discovery.ChaupalDiscoveryService;
 import net.osgi.jp2p.component.IJp2pComponent;
+import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.filter.AbstractComponentFactoryFilter;
@@ -90,8 +91,8 @@ public abstract class ChaupalAdvertisementFactory<T extends Object, U extends Ad
 			public boolean onAccept(ComponentBuilderEvent<?> event) {
 				switch( event.getBuilderEvent() ){
 				case COMPONENT_CREATED:
-					if( event.getFactory().getComponent() instanceof ChaupalDiscoveryService){
-						service = (ChaupalDiscoveryService) event.getFactory().getComponent();
+					if( ((AbstractComponentFactory<T>) event.getFactory()).getComponent() instanceof ChaupalDiscoveryService){
+						service = (ChaupalDiscoveryService) ((AbstractComponentFactory<T>) event.getFactory()).getComponent();
 						return true;
 					}
 					return false;

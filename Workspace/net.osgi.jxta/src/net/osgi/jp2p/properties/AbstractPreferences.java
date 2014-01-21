@@ -2,30 +2,39 @@ package net.osgi.jp2p.properties;
 
 import java.net.URISyntaxException;
 
-import net.osgi.jp2p.persistence.PersistedProperty;
-import net.osgi.jp2p.properties.IJp2pProperties.Jp2pProperties;
+import net.osgi.jp2p.persistence.IPersistedProperty;
 
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
-
-public abstract class AbstractPreferences {
+public abstract class AbstractPreferences<T extends Object> implements IPersistedProperty<T> {
 
 	private IJp2pWritePropertySource<IJp2pProperties> source;
-	
+
+	public AbstractPreferences() {
+	}
+
 	public AbstractPreferences( IJp2pWritePropertySource<IJp2pProperties> source ) {
 		this.source = source;
 	}
 
-	public IJp2pWritePropertySource<IJp2pProperties> getSource() {
+	protected IJp2pWritePropertySource<IJp2pProperties> getSource() {
 		return source;
 	}
 
-	/**
-	 * Get the name of the preference store
-	 * @return
-	 */
-	public String getName()
-	{
-		return source.getComponentName();
+	
+	@Override
+	public void setPropertySource(IJp2pWritePropertySource<IJp2pProperties> source) {
+		this.source = source;
+	}
+
+	@Override
+	public T getProperty(IJp2pProperties id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean setProperty(IJp2pProperties id) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	/**
@@ -34,7 +43,7 @@ public abstract class AbstractPreferences {
 	 * @param value
 	 * @return
 	 */
-	protected abstract Object convertValue( IJp2pProperties id, String value );
+	protected abstract T convertValue( IJp2pProperties id, String value );
 	
 	/**
 	 * Create a default value for the given id
@@ -60,11 +69,6 @@ public abstract class AbstractPreferences {
 	 */
 	public boolean setPropertyFromString( IJp2pProperties id, String value ){
 		ManagedProperty<IJp2pProperties,Object> property = this.source.getManagedProperty(id);
-		boolean persisted = ManagedProperty.isPersisted(property);
-		if( persisted ){
-			PersistedProperty pp = new PersistedProperty( (String) source.getProperty( Jp2pProperties.BUNDLE_ID ), ConfigurationScope.INSTANCE, this );
-			pp.setProperty(id, value);
-		}
 		Object converted = this.convertValue(id, value);
 		if( converted == null )
 			return false;

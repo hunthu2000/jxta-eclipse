@@ -45,7 +45,7 @@ public abstract class AbstractDependencyFactory<T extends Object, U extends Obje
 	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		switch( event.getBuilderEvent()){
 		case COMPONENT_CREATED:
-			IComponentFactory<?> factory = event.getFactory();
+			IComponentFactory<?> factory = (IComponentFactory<?>) event.getFactory();
 			if( !this.isCorrectFactory( factory ))
 				return;
 			dependency = (U) factory.getComponent();

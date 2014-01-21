@@ -14,7 +14,8 @@ import java.io.File;
 import java.net.URI;
 
 import net.osgi.jp2p.container.IJxseServiceContainer.ContextProperties;
-import net.osgi.jp2p.factory.IComponentFactory.Components;
+import net.osgi.jp2p.context.Jp2pContext;
+import net.osgi.jp2p.context.Jp2pContext.Components;
 import net.osgi.jp2p.properties.AbstractJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pProperties.Jp2pProperties;
@@ -31,7 +32,7 @@ public class Jp2pContainerPropertySource extends AbstractJp2pWritePropertySource
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Jp2pContainerPropertySource( String bundleId) {
-		super( bundleId, Components.JP2P_CONTAINER.toString() );
+		super( bundleId, Jp2pContext.Components.JP2P_CONTAINER.toString() );
 		this.setProperty( ContextProperties.BUNDLE_ID, bundleId, 
 				new ClassValidator( Jp2pProperties.BUNDLE_ID, String.class ), false );
 		this.setProperty( ContextProperties.HOME_FOLDER, ProjectFolderUtils.getParsedUserDir(DEF_HOME_FOLDER, bundleId),

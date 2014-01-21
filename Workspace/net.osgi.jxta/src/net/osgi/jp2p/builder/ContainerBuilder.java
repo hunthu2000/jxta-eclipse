@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import net.osgi.jp2p.context.Jp2pContext;
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.properties.IJp2pProperties;

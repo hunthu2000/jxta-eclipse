@@ -33,10 +33,10 @@ public abstract class AbstractComponentFilter<T,U extends Object> extends Abstra
 	@SuppressWarnings("unchecked")
 	@Override
 	protected boolean onCorrectBuilderEvent(ComponentBuilderEvent<?> event) {
-		if( event.getFactory().getComponent() == null )
+		if( ((IComponentFactory<T>) event.getFactory()).getComponent() == null )
 			return false;
 		if( this.checkComponent((IComponentFactory<U>) event.getFactory() )){
-			component = (U) event.getFactory().getComponent();
+			component = (U) ((IComponentFactory<T>) event.getFactory()).getComponent();
 			return true;
 		}
 		return false;

@@ -1,13 +1,13 @@
-package net.osgi.jp2p.chaupal.jxta.builder;
+package net.osgi.jp2p.chaupal.jxta.context;
 
 import org.xml.sax.Attributes;
 
 import net.osgi.jp2p.builder.IContainerBuilder;
-import net.osgi.jp2p.builder.IJp2pContext;
-import net.osgi.jp2p.builder.Jp2pContext;
 import net.osgi.jp2p.chaupal.jxta.advertisement.ChaupalAdvertisementFactory;
 import net.osgi.jp2p.chaupal.jxta.discovery.ChaupalDiscoveryServiceFactory;
 import net.osgi.jp2p.chaupal.jxta.pipe.ChaupalPipeFactory;
+import net.osgi.jp2p.context.IJp2pContext;
+import net.osgi.jp2p.context.Jp2pContext;
 import net.osgi.jp2p.factory.IComponentFactory;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.osgi.jp2p.jxta.factory.JxtaFactoryUtils;

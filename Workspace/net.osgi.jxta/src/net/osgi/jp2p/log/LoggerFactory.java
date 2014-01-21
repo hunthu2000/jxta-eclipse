@@ -13,7 +13,7 @@ package net.osgi.jp2p.log;
 import java.util.logging.Logger;
 
 import net.osgi.jp2p.builder.IContainerBuilder;
-import net.osgi.jp2p.builder.Jp2pContext;
+import net.osgi.jp2p.context.Jp2pContext;
 import net.osgi.jp2p.factory.AbstractComponentFactory;
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.properties.IJp2pProperties;
@@ -32,7 +32,7 @@ public class LoggerFactory extends
 
 	@Override
 	public String getComponentName() {
-		return Components.LOGGER_SERVICE.toString();
+		return Jp2pContext.Components.LOGGER_SERVICE.toString();
 	}
 
 	@Override

@@ -11,7 +11,6 @@ import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IManagedPropertyListener;
 import net.osgi.jp2p.properties.IPropertyEventDispatcher;
-import net.osgi.jp2p.properties.ManagedPropertyEvent;
 
 public class PersistenceFactory extends AbstractFilterFactory<IManagedPropertyListener<IJp2pProperties, Object>> {
 
@@ -20,10 +19,11 @@ public class PersistenceFactory extends AbstractFilterFactory<IManagedPropertyLi
 	
 	@SuppressWarnings("unchecked")
 	public PersistenceFactory(IContainerBuilder container,
-			IJp2pPropertySource<IJp2pProperties> parentSource) {
+			IJp2pPropertySource<IJp2pProperties> parentSource, IPersistedProperty<?> property ) {
 		super(container, parentSource);
 		source = new PersistencePropertySource( parentSource );
-		service = new PersistenceService( (IJp2pWritePropertySource<IJp2pProperties>) source );
+		property.setPropertySource((IJp2pWritePropertySource<IJp2pProperties>) source);
+		service = new PersistenceService( (IJp2pWritePropertySource<IJp2pProperties>) source, property );
 		service.start();
 	}
 

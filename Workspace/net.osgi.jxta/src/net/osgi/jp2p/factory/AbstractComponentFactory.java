@@ -30,20 +30,15 @@ import net.osgi.jp2p.properties.IJp2pProperties.Jp2pProperties;
 import net.osgi.jp2p.properties.IJp2pPropertySource;
 import net.osgi.jp2p.properties.IJp2pWritePropertySource;
 
-public abstract class AbstractComponentFactory<T extends Object> implements IComponentFactory<IJp2pComponent<T>>{
+public abstract class AbstractComponentFactory<T extends Object> extends AbstractPropertySourceFactory<T> implements IComponentFactory<IJp2pComponent<T>>{
 
 	public static final String S_FACTORY = "Factory:";
 	public static final String S_ERR_CREATION_EXCEPTION = "The factory cannot be created, because it is not ready yet";
 	
 	private IJp2pComponent<T> component;
-	private IJp2pPropertySource<IJp2pProperties> parentSource;//Needed for it triggers the child source
-	private IJp2pPropertySource<IJp2pProperties> source;
 	
-	private boolean canCreate;
 	private boolean completed;
 	private boolean failed;
-	private IContainerBuilder container;
-	private int weight;
 	
 	private Stack<Object> stack;
 
@@ -52,70 +47,10 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	}
 
 	protected AbstractComponentFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
-		this.canCreate = false;
+		super( container, parentSource );
 		this.completed = false;
 		this.failed = false;
-		this.parentSource = parentSource;
-		this.container = container;
-		this.weight = Integer.MAX_VALUE;
 		stack = new Stack<Object>();
-	}
-
-	protected IJp2pPropertySource<IJp2pProperties> getParentSource() {
-		return parentSource;
-	}
-
-	@Override
-	public IJp2pPropertySource<IJp2pProperties> getPropertySource(){
-		return this.source;
-	}
-
-	/**
-	 * Set the source manually
-	 * @param source
-	 */
-	protected void setSource(IJp2pPropertySource<IJp2pProperties> source) {
-		this.source = source;
-	}
-
-	@Override
-	public String getComponentName() {
-		return source.getComponentName();
-	}
-
-	/**
-	 * This method is called after the property sources have been created,
-	 * to allow other factories to be added as well.
-	 */
-	public void extendContainer(){ /* DO NOTHING */}
-
-	protected IContainerBuilder getBuilder() {
-		return container;
-	}
-
-	/**
-	 * Get the weight of the factory. By default, the context factory is zero, startup service is one
-	 * @return
-	 */
-	public int getWeight(){
-		return weight;
-	}
-
-	protected void setWeight(int weight) {
-		this.weight = weight;
-	}
-
-	/**
-	 * Is called upon creating the property source.
-	 * @return
-	 */
-	protected abstract IJp2pPropertySource<IJp2pProperties> onCreatePropertySource();
-	
-	@Override
-	public IJp2pPropertySource<IJp2pProperties> createPropertySource() {
-		if( this.source == null )
-			this.source = this.onCreatePropertySource();
-		return source;
 	}
 
 	@Override
@@ -123,16 +58,6 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 		return this.completed;
 	}
 	
-	@Override
-	public final boolean canCreate() {
-		return this.canCreate;
-	}
-
-	protected void setCanCreate(boolean canCreate) {
-		this.canCreate = canCreate;
-	}
-
-
 	/**
 	 * All the directives are parsed prior to creating the factory 
 	 * @param directive
@@ -145,11 +70,11 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	 * @param node
 	 */
 	private final void parseDirectivesPrior( ){
-		Iterator<IJp2pDirectives> iterator = this.source.directiveIterator();
+		Iterator<IJp2pDirectives> iterator = super.getPropertySource().directiveIterator();
 		IJp2pDirectives directive;
 		while( iterator.hasNext()){
 			directive = iterator.next();
-			this.onParseDirectivePriorToCreation( directive, source.getDirective( directive ));
+			this.onParseDirectivePriorToCreation( directive, super.getPropertySource().getDirective( directive ));
 		}
 	}
 
@@ -165,11 +90,11 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	 * @param node
 	 */
 	private final void parseDirectivesAfter(){
-		Iterator<IJp2pDirectives> iterator = this.source.directiveIterator();
+		Iterator<IJp2pDirectives> iterator = super.getPropertySource().directiveIterator();
 		IJp2pDirectives directive;
 		while( iterator.hasNext()){
 			directive = iterator.next();
-			this.onParseDirectiveAfterCreation( directive, source.getDirective( directive ));
+			this.onParseDirectiveAfterCreation( directive, super.getPropertySource().getDirective( directive ));
 		}
 	}
 
@@ -191,7 +116,7 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	 * @return
 	 */
 	protected synchronized IJp2pComponent<T> createComponent() {
-		boolean blockCreation = AbstractJp2pPropertySource.getBoolean( this.source, Directives.BLOCK_CREATION );
+		boolean blockCreation = AbstractJp2pPropertySource.getBoolean( super.getPropertySource(), Directives.BLOCK_CREATION );
 		if( blockCreation )
 			return null;
 		
@@ -200,7 +125,7 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 		if(!this.canCreate() )
 			throw new FactoryException( S_ERR_CREATION_EXCEPTION );
 		this.parseDirectivesPrior();
-		this.component = this.onCreateComponent( this.source);
+		this.component = this.onCreateComponent( super.getPropertySource() );
 		if( this.component == null )
 			return null;
 		this.parseDirectivesAfter();
@@ -264,24 +189,11 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 		return activator.isActive();
 	}
 
-	/**
-	 * Allow an update of the 
-	 * @param event
-	 */
-	public synchronized void updateState( BuilderEvents event ){
-		try{
-			this.container.updateRequest( new ComponentBuilderEvent<IJp2pComponent<T>>( this, event ));
-		}
-		catch( Exception ex ){
-			ex.printStackTrace();
-		}
-	}
-
 	@Override
 	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		switch( event.getBuilderEvent()){
 		case COMPONENT_CREATED:
-			IComponentFactory<?>factory = event.getFactory();
+			IComponentFactory<?>factory = (IComponentFactory<?>) event.getFactory();
 			if( isChildFactory( factory )){
 				if( component == null )
 				  stack.push( factory.getComponent() );
@@ -320,7 +232,7 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	 * @param factory
 	 * @return
 	 */
-	public static boolean isComponentFactory( IJp2pComponents component, IComponentFactory<?> factory ){
+	public static boolean isComponentFactory( IJp2pComponents component, IPropertySourceFactory<?> factory ){
 		if( component == null )
 			return false;
 		return component.toString().equals(factory.getComponentName() );

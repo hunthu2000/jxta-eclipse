@@ -26,18 +26,18 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import net.osgi.jp2p.builder.ComponentNode;
-import net.osgi.jp2p.builder.ContextLoader;
 import net.osgi.jp2p.builder.ICompositeBuilder;
 import net.osgi.jp2p.builder.ICompositeBuilderListener;
 import net.osgi.jp2p.builder.IContainerBuilder;
-import net.osgi.jp2p.builder.IJp2pContext;
-import net.osgi.jp2p.builder.IJp2pContext.ContextDirectives;
 import net.osgi.jp2p.chaupal.xml.PreferenceStore.Persistence;
 import net.osgi.jp2p.chaupal.xml.PreferenceStore.SupportedAttributes;
 import net.osgi.jp2p.container.ContainerFactory;
 import net.osgi.jp2p.container.Jp2pContainerPropertySource;
+import net.osgi.jp2p.context.ContextLoader;
+import net.osgi.jp2p.context.IJp2pContext;
+import net.osgi.jp2p.context.IJp2pContext.ContextDirectives;
+import net.osgi.jp2p.context.Jp2pContext;
 import net.osgi.jp2p.factory.IComponentFactory;
-import net.osgi.jp2p.factory.IComponentFactory.Components;
 import net.osgi.jp2p.factory.IJp2pComponents;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPreferences;
 import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
@@ -54,7 +54,6 @@ import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySourc
 import net.osgi.jp2p.jxta.network.configurator.OverviewPreferences;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPreferences;
 import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
-import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 import net.osgi.jp2p.jxta.pipe.PipePropertySource;
 import net.osgi.jp2p.jxta.registration.RegistrationPropertySource;
 import net.osgi.jp2p.jxta.seeds.SeedListPropertySource;
@@ -291,11 +290,11 @@ class Jp2pHandler extends DefaultHandler{
 			Attributes attributes) throws SAXException {
 		IComponentFactory<?> factory = null;
 		IJp2pComponents current;
-		if( Components.isComponent( qName )){
-			current = Components.valueOf( StringStyler.styleToEnum( qName ));
-			switch(( Components )current ){
+		if( Jp2pContext.Components.isComponent( qName )){
+			current = Jp2pContext.Components.valueOf( StringStyler.styleToEnum( qName ));
+			switch(( Jp2pContext.Components )current ){
 			case JP2P_CONTAINER:
-				factory = container.getFactory( Components.JP2P_CONTAINER.toString() );
+				factory = container.getFactory( Jp2pContext.Components.JP2P_CONTAINER.toString() );
 				if( factory == null )
 					factory = new ContainerFactory( container, bundleId );
 				this.root = (ContainerFactory) factory;

@@ -51,7 +51,8 @@ public abstract class AbstractComponentDependencyFactory<T extends Object, U ext
 	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		if( filter != null ){
 			if( filter.accept((ComponentBuilderEvent<T>) event)){
-				dependency = (U) event.getFactory().getComponent();
+				IComponentFactory<T> factory = (IComponentFactory<T>) event.getFactory();
+				dependency = (U) factory.getComponent();
 				setCanCreate( dependency != null );
 				startComponent();
 			}

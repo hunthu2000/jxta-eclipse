@@ -17,17 +17,17 @@ import java.util.Collection;
 import java.util.Enumeration;
 
 import net.osgi.jp2p.builder.ContainerBuilder;
-import net.osgi.jp2p.builder.ContextLoader;
 import net.osgi.jp2p.builder.ICompositeBuilder;
 import net.osgi.jp2p.builder.ICompositeBuilderListener;
 import net.osgi.jp2p.builder.ICompositeBuilderListener.BuilderEvents;
 import net.osgi.jp2p.builder.IContainerBuilder;
-import net.osgi.jp2p.builder.Jp2pContext;
 import net.osgi.jp2p.container.ContainerFactory;
 import net.osgi.jp2p.container.Jp2pServiceContainer;
+import net.osgi.jp2p.context.ContextLoader;
+import net.osgi.jp2p.context.Jp2pContext;
+import net.osgi.jp2p.context.Jp2pContext.Components;
 import net.osgi.jp2p.factory.ComponentBuilderEvent;
 import net.osgi.jp2p.factory.IComponentFactory;
-import net.osgi.jp2p.factory.IComponentFactory.Components;
 
 public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer>{
 
@@ -96,7 +96,7 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer
 		this.notifyPropertyCreated( containerBuilder);
 		
 		//Last create the container and the components
-		ContainerFactory factory = (ContainerFactory) containerBuilder.getFactory( Components.JP2P_CONTAINER.toString() );
+		ContainerFactory factory = (ContainerFactory) containerBuilder.getFactory( Jp2pContext.Components.JP2P_CONTAINER.toString() );
 		return factory.createComponent();
 	}
 

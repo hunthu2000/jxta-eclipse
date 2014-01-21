@@ -26,6 +26,7 @@ import net.osgi.jp2p.component.IJp2pComponent;
 import net.osgi.jp2p.component.Jp2pComponentNode;
 import net.osgi.jp2p.container.ContainerFactory;
 import net.osgi.jp2p.container.Jp2pContainerPropertySource;
+import net.osgi.jp2p.context.Jp2pContext;
 import net.osgi.jp2p.factory.AbstractFilterFactory;
 import net.osgi.jp2p.filter.ComponentFilter;
 import net.osgi.jp2p.filter.IComponentFactoryFilter;
@@ -57,7 +58,7 @@ public class NetworkManagerFactory extends AbstractFilterFactory<NetworkManager>
 	
 	@Override
 	protected IComponentFactoryFilter createFilter() {
-		return new ComponentFilter<IJp2pComponent<NetworkManager>, ContainerFactory>( BuilderEvents.COMPONENT_CREATED, Components.JP2P_CONTAINER.toString(), this );
+		return new ComponentFilter<IJp2pComponent<NetworkManager>, ContainerFactory>( BuilderEvents.COMPONENT_CREATED, Jp2pContext.Components.JP2P_CONTAINER.toString(), this );
 	}
 
 	@Override

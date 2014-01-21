@@ -12,7 +12,8 @@ package net.osgi.jp2p.startup;
 
 import net.osgi.jp2p.container.Jp2pContainerPropertySource;
 import net.osgi.jp2p.container.IJxseServiceContainer.ContextProperties;
-import net.osgi.jp2p.factory.IComponentFactory.Components;
+import net.osgi.jp2p.context.Jp2pContext;
+import net.osgi.jp2p.context.Jp2pContext.Components;
 import net.osgi.jp2p.properties.AbstractJp2pWritePropertySource;
 import net.osgi.jp2p.properties.IJp2pProperties;
 import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
@@ -30,7 +31,7 @@ public class Jp2pStartupPropertySource extends AbstractJp2pWritePropertySource{
 	}
 	
 	public Jp2pStartupPropertySource( Jp2pContainerPropertySource parent ) {
-		super( Components.STARTUP_SERVICE.toString(), parent );
+		super( Jp2pContext.Components.STARTUP_SERVICE.toString(), parent );
 		super.setDirective( Directives.AUTO_START, parent.getDirective( Directives.AUTO_START ));
 		super.setProperty( StartupProperties.RETRIES, 10 );
 	}
