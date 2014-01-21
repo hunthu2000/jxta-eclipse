@@ -26,7 +26,8 @@ public class ContainerFactory extends AbstractComponentFactory<Jp2pStartupServic
 	private String bundleId;
 	
 	public ContainerFactory( IContainerBuilder container, String bundleId) {
-		super(container, true );
+		super(container );
+		super.setCanCreate(true);
 		this.bundleId = bundleId;
 	}	
 

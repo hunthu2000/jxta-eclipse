@@ -48,19 +48,11 @@ public abstract class AbstractComponentFactory<T extends Object> implements ICom
 	private Stack<Object> stack;
 
 	protected AbstractComponentFactory( IContainerBuilder container ) {
-		this( container, true );
-	}
-
-	protected AbstractComponentFactory( IContainerBuilder container, boolean canCreate) {
-		this( container, null, canCreate );
+		this( container, null );
 	}
 
 	protected AbstractComponentFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
-		this( container, parentSource, true );
-	}
-
-	protected AbstractComponentFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource, boolean canCreate ) {
-		this.canCreate = canCreate;
+		this.canCreate = false;
 		this.completed = false;
 		this.failed = false;
 		this.parentSource = parentSource;

@@ -50,7 +50,7 @@ public class NetworkConfigurationFactory extends
 	private NetworkManager manager;
 
 	public NetworkConfigurationFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource) {
-		super( container, parentSource, false );
+		super( container, parentSource );
 		super.setCanCreate(this.manager != null );
 	}
 

@@ -2,11 +2,16 @@ package net.osgi.jp2p.properties;
 
 import java.util.EventObject;
 
+import net.osgi.jp2p.properties.IManagedPropertyListener.PropertyEvents;
+
 public class ManagedPropertyEvent<T,U extends Object> extends EventObject {
 	private static final long serialVersionUID = 1L;
 
-	public ManagedPropertyEvent( ManagedProperty<T,U> property) {
+	private PropertyEvents event;
+	
+	public ManagedPropertyEvent( ManagedProperty<T,U> property, PropertyEvents event) {
 		super(property);
+		this.event = event;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -24,6 +29,10 @@ public class ManagedPropertyEvent<T,U extends Object> extends EventObject {
 	@SuppressWarnings("unchecked")
 	public ManagedProperty<T,U> getProperty(){
 		return (ManagedProperty<T, U>) this.getSource();
+	}
+
+	public PropertyEvents getEvent() {
+		return event;
 	}
 
 }

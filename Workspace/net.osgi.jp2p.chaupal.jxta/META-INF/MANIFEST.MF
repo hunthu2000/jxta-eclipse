@@ -23,5 +23,4 @@ Export-Package: net.osgi.jp2p.chaupal.jxta.advertisement,
  net.osgi.jp2p.chaupal.jxta.discovery,
  net.osgi.jp2p.chaupal.jxta.network,
  net.osgi.jp2p.chaupal.jxta.peergroup,
- net.osgi.jp2p.chaupal.jxta.sockets,
- net.osgi.jp2p.chaupal.jxta.xml
+ net.osgi.jp2p.chaupal.jxta.sockets

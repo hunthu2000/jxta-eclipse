@@ -15,7 +15,7 @@ import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
 public abstract class AbstractJp2pWritePropertySource 
 extends AbstractJp2pPropertySource implements IJp2pWritePropertySource<IJp2pProperties> {
 
-	public AbstractJp2pWritePropertySource( String bundleId, String componentName) {
+	protected AbstractJp2pWritePropertySource( String bundleId, String componentName) {
 		this( bundleId, componentName, 0);
 	}
 

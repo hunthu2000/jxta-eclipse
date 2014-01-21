@@ -1,10 +1,11 @@
 package net.osgi.jp2p.properties;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
+import net.osgi.jp2p.properties.IManagedPropertyListener.PropertyEvents;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
 
@@ -26,27 +27,35 @@ public class ManagedProperty<T, U extends Object> {
 	private U value, defaultValue;
 	private Map<String, String> attributes;
 	private boolean dirty;
+	private boolean readOnly;
 	private IJp2pValidator<T,U> validator;
 	private boolean derived;
 	private String category;
-
 	private Collection<IManagedPropertyListener<T,U>> listeners;
 
 	public ManagedProperty( T id ) {
 		this( id, null, S_DEFAULT_CATEGORY );
 	}
 	
-	public ManagedProperty( T id, U value ) {
+	public ManagedProperty( T id, U value, boolean derived, boolean readOnly, String category ) {
 		super();
 		this.id = id;
-		this.value = value;
+		this.readOnly = readOnly;
+		this.category = category;
+		this.derived = derived;
+		this.listeners = new HashSet<IManagedPropertyListener<T,U>>();
 		attributes = new HashMap<String, String>();
-		this.listeners = new ArrayList<IManagedPropertyListener<T,U>>();
+		this.defaultValue = value;
+		this.setValue(value, PropertyEvents.DEFAULT_VALUE_SET);
+		this.dirty = false;
+	}
+
+	public ManagedProperty( T id, U value ) {
+		this( id, value, false, true,  S_DEFAULT_CATEGORY );
 	}
 
 	public ManagedProperty( T id, U value, String category ) {
-		this( id, value );
-		this.category = category;
+		this( id, value, false, true, category );
 	}
 
 	/**
@@ -57,10 +66,7 @@ public class ManagedProperty<T, U extends Object> {
 	 * @param derived
 	 */
 	public ManagedProperty( T id, U value, boolean derived ) {
-		this( id );
-		this.value = value;
-		this.defaultValue = value;
-		this.derived = derived;
+		this( id, value, derived, true, S_DEFAULT_CATEGORY );
 	}
 
 	/**
@@ -84,6 +90,18 @@ public class ManagedProperty<T, U extends Object> {
 	}
 
 	/**
+	 * Returns true if the property is read only
+	 * @return
+	 */
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+
+	protected void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+
+	/**
 	 * A derived property is directly associated with another one. If true, a property can
 	 * be skipped because it can also be reconstructed from the source. For instance, the home folder
 	 * can be included in the context, the network manager and the network configurator. By marking
@@ -94,11 +112,11 @@ public class ManagedProperty<T, U extends Object> {
 		return derived;
 	}
 
-	public void addManagedPropertyListener( IManagedPropertyListener<T,U> listener ){
+	void addPropertyListener( IManagedPropertyListener<T,U> listener ){
 		this.listeners.add(listener);
 	}
 
-	public void removeManagedPropertyListener( IManagedPropertyListener<T,U> listener ){
+	void removePropertyListener( IManagedPropertyListener<T,U> listener ){
 		this.listeners.remove(listener);
 	}
 	
@@ -110,9 +128,9 @@ public class ManagedProperty<T, U extends Object> {
 		this.validator = validator;
 	}
 
-	protected void notifyValueChanged(){
+	protected void notifyValueChanged( PropertyEvents event ){
 		for( IManagedPropertyListener<T,U> listener: this.listeners ){
-			listener.notifyValueChanged( new ManagedPropertyEvent<>(this));
+			listener.notifyValueChanged( new ManagedPropertyEvent<>(this, event ));
 		}
 	}
 
@@ -151,6 +169,10 @@ public class ManagedProperty<T, U extends Object> {
 	}
 
 	public boolean setValue(U value) {
+		return this.setValue(value, PropertyEvents.VALUE_CHANGED );
+	}
+	
+	protected boolean setValue(U value, PropertyEvents event) {
 		this.dirty = (this.value == null ) || ( !this.value.equals( value ));
 		if( !this.dirty )
 			return false;
@@ -158,7 +180,7 @@ public class ManagedProperty<T, U extends Object> {
 			return false;
 		this.value = value;
 		this.derived = false;
-		this.notifyValueChanged();
+		this.notifyValueChanged( event );
 		return true;
 	}
 
@@ -166,6 +188,10 @@ public class ManagedProperty<T, U extends Object> {
 		return defaultValue;
 	}
 
+	void setDefaultValue( U value ){
+		this.defaultValue = value;
+	}
+	
 	public boolean isDefault() {
 		if((  this.value == null) && ( this.defaultValue == null ))
 			return true;

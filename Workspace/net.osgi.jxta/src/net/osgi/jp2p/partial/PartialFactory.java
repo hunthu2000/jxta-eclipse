@@ -13,7 +13,7 @@ public class PartialFactory<T extends Object> extends AbstractComponentFactory<T
 	private boolean completed;
 	
 	public PartialFactory( IContainerBuilder container, String componentName, IJp2pPropertySource<IJp2pProperties> parentSource ){
-		super( container, parentSource, false);
+		super( container, parentSource);
 		this.componentName = componentName;
 		this.completed = false;
 	}

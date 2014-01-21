@@ -23,7 +23,7 @@ public abstract class AbstractFilterFactory<T extends Object> extends
 	private IComponentFactoryFilter filter;
 
 	public AbstractFilterFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
-		super( container, parent, false );
+		super( container, parent );
 		filter = this.createFilter();
 	}
 

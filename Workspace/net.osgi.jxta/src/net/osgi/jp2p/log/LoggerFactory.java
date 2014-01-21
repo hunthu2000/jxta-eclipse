@@ -26,7 +26,8 @@ public class LoggerFactory extends
 
 	
 	public LoggerFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
-		super( container, parent, true );
+		super( container, parent );
+		super.setCanCreate(true);
 	}
 
 	@Override

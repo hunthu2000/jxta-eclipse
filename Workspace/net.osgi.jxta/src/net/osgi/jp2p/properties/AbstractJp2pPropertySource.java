@@ -26,7 +26,7 @@ import net.osgi.jp2p.utils.StringProperty;
 import net.osgi.jp2p.utils.StringStyler;
 import net.osgi.jp2p.utils.Utils;
 
-public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<IJp2pProperties> {
+public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<IJp2pProperties>, IPropertyEventDispatcher {
 	
 	public static final String S_RUNTIME = "Runtime"; //used for runtime properties
 	public static final String S_DIRECTIVES = "Directives"; 
@@ -37,11 +37,13 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 	private IJp2pPropertySource<IJp2pProperties> parent;
 
 	private Collection<IJp2pPropertySource<?>> children;
+	
+	private Collection<IManagedPropertyListener<IJp2pProperties, Object>> listeners;
 
 	private int depth = 0;
 	private String componentName;
 	
-	public AbstractJp2pPropertySource( String bundleId, String componentName) {
+	protected AbstractJp2pPropertySource( String bundleId, String componentName) {
 		this( bundleId, componentName, 0);
 	}
 
@@ -52,6 +54,7 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 		this.directives.put( IJp2pDirectives.Directives.ID, bundleId + "." + componentName.toLowerCase() );
 		this.componentName = componentName;
 		this.children = new ArrayList<IJp2pPropertySource<?>>();
+		this.listeners = new ArrayList<IManagedPropertyListener<IJp2pProperties, Object>>();
 		this.depth = depth;
 		this.parent = null;
 	}
@@ -66,10 +69,29 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 		this.directives.put( IJp2pDirectives.Directives.ID, parent.getId() + "." + componentName.toLowerCase() );
 	}
 
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.properties.IPropertyEventDispatcher#addPropertyListener(net.osgi.jp2p.properties.IManagedPropertyListener)
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public void addPropertyListener( IManagedPropertyListener<IJp2pProperties, ?> listener ){
+		this.listeners.add((IManagedPropertyListener<IJp2pProperties, Object>) listener);
+	}
+
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.properties.IPropertyEventDispatcher#removePropertyListener(net.osgi.jp2p.properties.IManagedPropertyListener)
+	 */
+	@Override
+	public void removePropertyListener( IManagedPropertyListener<IJp2pProperties, ?> listener ){
+		this.listeners.remove(listener);
+	}
+
+	@Override
 	public IJp2pPropertySource<IJp2pProperties> getParent(){
 		return this.parent;
 	}
 
+	@Override
 	public String getId() {
 		return (String) this.directives.get( IJp2pDirectives.Directives.ID );
 	}
@@ -105,9 +127,18 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 
 	protected boolean setManagedProperty( ManagedProperty<IJp2pProperties,Object> property ) {
 		this.properties.put( property.getKey(), property );
+		for( IManagedPropertyListener<IJp2pProperties, Object> listener: this.listeners )
+			property.addPropertyListener(listener);
 		return true;
 	}
-		
+
+	protected boolean removeManagedProperty( ManagedProperty<IJp2pProperties,Object> property ) {
+		this.properties.remove( property );
+		for( IManagedPropertyListener<IJp2pProperties, Object> listener: this.listeners )
+			property.removePropertyListener(listener);
+		return true;
+	}
+
 	@Override
 	public Object getDefault(IJp2pProperties id) {
 		ManagedProperty<IJp2pProperties,Object> select = this.getManagedProperty(id);
@@ -116,6 +147,7 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 		return select.getDefaultValue();
 	}
 
+	@Override
 	public ManagedProperty<IJp2pProperties,Object> getManagedProperty( IJp2pProperties id ){
 		return properties.get( id );
 	}

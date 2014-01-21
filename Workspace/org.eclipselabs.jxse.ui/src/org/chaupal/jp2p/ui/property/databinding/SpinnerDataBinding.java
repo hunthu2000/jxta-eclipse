@@ -37,11 +37,12 @@ public class SpinnerDataBinding<T extends Enum<T>> extends AbstractManagedProper
 				( int )source.getOrCreateManagedProperty(id_min, 0, false).getValue(), 
 				( int )source.getOrCreateManagedProperty(id_max, 65535, false).getValue());
 		this.minProp = source.getManagedProperty(id_min);
-		if( this.minProp != null )
-			this.minProp.addManagedPropertyListener(this);
-		this.maxProp = source.getManagedProperty(id_max);
-		if( this.maxProp != null )
-			this.maxProp.addManagedPropertyListener(this);
+		//TODO CP: Rethink
+		//if( this.minProp != null )
+		//	this.minProp.addPropertyListener(this);
+		//this.maxProp = source.getManagedProperty(id_max);
+		//if( this.maxProp != null )
+		//	this.maxProp.addPropertyListener(this);
 	}
 
 	@Override
