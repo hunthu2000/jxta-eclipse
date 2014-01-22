@@ -79,13 +79,18 @@ public class JxtaContext implements IJp2pContext<Object> {
 		return factory;
 	}
 
+	@Override
+	public Object createValue( String componentName, IJp2pProperties id ){
+		return null;
+	}
+	
 	/**
 	 * Get the default factory for this container
 	 * @param parent
 	 * @param componentName
 	 * @return
 	 */
-	public static IPropertyConvertor<String, Object> getConvertor( IJp2pWritePropertySource<IJp2pProperties> source ){
+	public IPropertyConvertor<String, Object> getConvertor( IJp2pWritePropertySource<IJp2pProperties> source ){
 		String comp = StringStyler.styleToEnum( source.getComponentName());
 		if( !JxtaComponents.isComponent( comp ))
 			return null;

@@ -1,14 +1,11 @@
 package net.osgi.jp2p.chaupal.jxta.context;
 
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
-import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.xml.sax.Attributes;
 
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.IComponentFactory;
-import net.jp2p.container.persistence.IPersistedProperties;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pDirectives.Contexts;
@@ -22,14 +19,12 @@ import net.osgi.jp2p.chaupal.jxta.discovery.ChaupalDiscoveryServiceFactory;
 import net.osgi.jp2p.chaupal.jxta.peergroup.ChaupalPeerGroupFactory;
 import net.osgi.jp2p.chaupal.jxta.persistence.OsgiPersistenceFactory;
 import net.osgi.jp2p.chaupal.jxta.pipe.ChaupalPipeFactory;
-import net.osgi.jp2p.chaupal.persistence.PersistedProperties;
 import net.jp2p.jxta.discovery.DiscoveryPreferences;
 import net.jp2p.jxta.discovery.DiscoveryServiceFactory;
 import net.jp2p.jxta.netpeergroup.NetPeerGroupFactory;
 import net.jp2p.jxta.network.NetworkManagerPreferences;
 import net.jp2p.jxta.peergroup.PeerGroupFactory;
 import net.jp2p.jxta.peergroup.PeerGroupPreferences;
-import net.jp2p.jxta.pipe.PipeAdvertisementPreferences;
 import net.jp2p.jxta.pipe.PipeServiceFactory;
 import net.jp2p.jxta.registration.RegistrationServiceFactory;
 
@@ -148,16 +143,21 @@ public class ChaupalContext implements IJp2pContext<Object> {
 		return factory;
 	}
 
+	@Override
+	public Object createValue( String componentName, IJp2pProperties id ){
+		return null;
+	}
+
 	/**
 	 * Get the default factory for this container
 	 * @param parent
 	 * @param componentName
 	 * @return
 	 */
-	public static IPropertyConvertor<String, Object> getConvertor( IJp2pWritePropertySource<IJp2pProperties> source ){
+	public IPropertyConvertor<String, Object> getConvertor( IJp2pWritePropertySource<IJp2pProperties> source ){
 		String comp = StringStyler.styleToEnum( source.getComponentName());
 		if( !ChaupalComponents.isComponent( comp ))
-			return JxtaContext.getConvertor(source);
+			return new JxtaContext().getConvertor(source);
 		ChaupalComponents component = ChaupalComponents.valueOf(comp);
 		IPropertyConvertor<String, Object> convertor = null;
 		switch( component ){

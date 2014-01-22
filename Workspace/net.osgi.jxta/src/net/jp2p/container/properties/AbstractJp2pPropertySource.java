@@ -20,6 +20,7 @@ import net.jp2p.container.Jp2pContainerPropertySource;
 import net.jp2p.container.properties.IJp2pDirectives.Contexts;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jp2p.container.properties.IJp2pProperties.Jp2pProperties;
+import net.jp2p.container.properties.IManagedPropertyListener.PropertyEvents;
 import net.jp2p.container.utils.SimpleComparator;
 import net.jp2p.container.utils.StringDirective;
 import net.jp2p.container.utils.StringProperty;
@@ -127,8 +128,10 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 
 	protected boolean setManagedProperty( ManagedProperty<IJp2pProperties,Object> property ) {
 		this.properties.put( property.getKey(), property );
-		for( IManagedPropertyListener<IJp2pProperties, Object> listener: this.listeners )
+		for( IManagedPropertyListener<IJp2pProperties, Object> listener: this.listeners ){
 			property.addPropertyListener(listener);
+			listener.notifyValueChanged( new ManagedPropertyEvent<IJp2pProperties, Object>( property, PropertyEvents.DEFAULT_VALUE_SET ));
+		}
 		return true;
 	}
 

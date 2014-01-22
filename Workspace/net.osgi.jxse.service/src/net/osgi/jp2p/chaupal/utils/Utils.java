@@ -28,6 +28,10 @@ public class Utils
 			IJxseServiceContainer<?> container = (IJxseServiceContainer<?> )component;
 			return container.getIdentifier();			
 		}
+		if(( component == null ) || ( component.getPropertySource() == null ))
+			return "NULL";
+		if( !net.jp2p.container.utils.Utils.isNull( component.getPropertySource().getComponentName()))
+			return component.getPropertySource().getComponentName();
 		if( component.getModule() == null )
 			return component.getClass().getSimpleName();
 		return component.getModule().getClass().getSimpleName();

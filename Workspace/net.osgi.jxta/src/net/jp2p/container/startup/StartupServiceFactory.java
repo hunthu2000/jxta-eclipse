@@ -17,7 +17,6 @@ import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.context.Jp2pContext.Components;
 import net.jp2p.container.factory.AbstractPropertySourceFactory;
 import net.jp2p.container.factory.IPropertySourceFactory;
-import net.jp2p.container.persistence.SimplePersistenceFactory;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;

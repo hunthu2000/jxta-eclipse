@@ -7,6 +7,8 @@ import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.properties.IJp2pDirectives;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.properties.IJp2pWritePropertySource;
+import net.jp2p.container.properties.IPropertyConvertor;
 import net.jp2p.container.utils.StringStyler;
 
 public interface IJp2pContext<T extends Object> {
@@ -52,4 +54,20 @@ public interface IJp2pContext<T extends Object> {
 			Attributes attributes,
 			IJp2pPropertySource<IJp2pProperties> parentSource,
 			String componentName);
+	
+	/**
+	 * Get the default factory for this container
+	 * @param parent
+	 * @param componentName
+	 * @return
+	 */
+	public IPropertyConvertor<String, Object> getConvertor( IJp2pWritePropertySource<IJp2pProperties> source );
+
+	/**
+	 * Create a value for the given component name and id
+	 * @param parent
+	 * @param componentName
+	 * @return
+	 */
+	public Object createValue( String componentName, IJp2pProperties id );
 }

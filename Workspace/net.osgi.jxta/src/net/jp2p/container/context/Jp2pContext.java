@@ -109,7 +109,38 @@ public class Jp2pContext implements IJp2pContext<Object> {
 			contextName = Contexts.JP2P.toString();
 		return contextName;
 	}
-	
+
+	/**
+	 * Get the default factory for this container
+	 * @param parent
+	 * @param componentName
+	 * @return
+	 */
+	public IPropertyConvertor<String, Object> getConvertor( IJp2pWritePropertySource<IJp2pProperties> source ){
+		String comp = StringStyler.styleToEnum( source.getComponentName());
+		if( !Components.isComponent( comp ))
+			return getConvertor(source);
+		Components component = Components.valueOf(comp);
+		IPropertyConvertor<String, Object> convertor = null;
+		switch( component ){
+		default:
+			convertor = new SimplePropertyConvertor( source );
+			break;
+		}
+		return convertor;
+	}
+
+	/**
+	 * Create a value for the given component name and id
+	 * @param parent
+	 * @param componentName
+	 * @return
+	 */
+	@Override
+	public Object createValue( String componentName, IJp2pProperties id ){
+		return id.toString();
+	}
+
 	/* (non-Javadoc)
 	 * @see net.osgi.jp2p.builder.IContainerBuilder#getDefaultFactory(net.osgi.jp2p.properties.IJp2pPropertySource, java.lang.String)
 	*/
@@ -127,6 +158,7 @@ public class Jp2pContext implements IJp2pContext<Object> {
 			break;
 		case PERSISTENCE_SERVICE:
 			factory = new SimplePersistenceFactory(builder, parentSource);
+			break;
 		case TCP:
 		case HTTP:
 		case HTTP2:
@@ -142,25 +174,4 @@ public class Jp2pContext implements IJp2pContext<Object> {
 		}
 		return factory;
 	}
-
-	/**
-	 * Get the default factory for this container
-	 * @param parent
-	 * @param componentName
-	 * @return
-	 */
-	public static IPropertyConvertor<String, Object> getConvertor( IJp2pWritePropertySource<IJp2pProperties> source ){
-		String comp = StringStyler.styleToEnum( source.getComponentName());
-		if( !Components.isComponent( comp ))
-			return getConvertor(source);
-		Components component = Components.valueOf(comp);
-		IPropertyConvertor<String, Object> convertor = null;
-		switch( component ){
-		default:
-			convertor = new SimplePropertyConvertor( source );
-			break;
-		}
-		return convertor;
-	}
-
 }

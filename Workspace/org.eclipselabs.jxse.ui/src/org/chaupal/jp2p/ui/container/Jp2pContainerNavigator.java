@@ -120,20 +120,20 @@ public class Jp2pContainerNavigator extends CommonNavigator{
 	/**
 	 * Refresh the property page
 	 */
-	protected void refresh(){
+	protected synchronized void refresh(){
 		if( Display.getDefault().isDisposed() )
 			return;
-		
-		Display.getDefault().asyncExec(new Runnable() {
-            @Override
-			public void run() {
-        		if( Display.getDefault().isDisposed() )
-        			return;
 
-       		if( propertyPage != null )
-            		propertyPage.refresh();
-            	viewer.refresh();
-            }
-         });			
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				if( Display.getDefault().isDisposed() )
+					return;
+				
+				if( propertyPage != null )
+					propertyPage.refresh();
+				viewer.refresh();
+			}
+		});			
 	}
 }

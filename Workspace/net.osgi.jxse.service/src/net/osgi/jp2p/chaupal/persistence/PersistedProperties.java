@@ -30,9 +30,11 @@ public class PersistedProperties extends AbstractPersistedProperty<String>{
 	 * @return
 	 */
 	public String getProperty( IJp2pProperties id ){
-		ManagedProperty<IJp2pProperties, Object> mp = super.getSource().getManagedProperty(id);
-		IPreferencesService service = Platform.getPreferencesService();
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getSource();
+		ManagedProperty<IJp2pProperties, Object> mp = source.getManagedProperty(id);
+		if( !ManagedProperty.isPersisted(mp))
+			return source.getProperty(id).toString();
+		IPreferencesService service = Platform.getPreferencesService();
 		Preferences pref1 = scope.getNode( AbstractJp2pPropertySource.getBundleId(source));
 		Preferences[] nodes = new Preferences[] {pref1};
 		String defaultValue = convertor.convertFrom( mp.getKey() );
@@ -48,6 +50,9 @@ public class PersistedProperties extends AbstractPersistedProperty<String>{
 	 */
 	public boolean setProperty( IJp2pProperties id, String value ){
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getSource();
+		ManagedProperty<IJp2pProperties, Object> mp = source.getManagedProperty(id);
+		if( !ManagedProperty.isPersisted(mp))
+			return false;
 		Preferences pref1 = scope.getNode( AbstractJp2pPropertySource.getBundleId(source));
 		pref1.put( id.toString(), value.toString());
 		try {

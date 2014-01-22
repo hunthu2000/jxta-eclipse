@@ -42,11 +42,11 @@ public class Jp2pLog {
 
 	public static void log( int severity, int code, String message ){
 		
-		Activator.getDefault().getLog().log( severity, message );
+		Activator.getLog().log( severity, message );
 	}
 
 	public static void log( int severity, int code, String message, Throwable exception ){
 		
-		Activator.getDefault().getLog().log( severity, message, exception);
+		Activator.getLog().log( severity, message, exception);
 	}
 }

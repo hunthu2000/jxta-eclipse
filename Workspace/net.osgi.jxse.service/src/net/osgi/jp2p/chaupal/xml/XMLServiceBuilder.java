@@ -27,7 +27,6 @@ import net.jp2p.container.builder.ICompositeBuilderListener.BuilderEvents;
 import net.jp2p.container.context.ContextLoader;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.ComponentBuilderEvent;
-import net.jp2p.container.factory.IComponentFactory;
 import net.jp2p.container.factory.IPropertySourceFactory;
 
 public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer>{

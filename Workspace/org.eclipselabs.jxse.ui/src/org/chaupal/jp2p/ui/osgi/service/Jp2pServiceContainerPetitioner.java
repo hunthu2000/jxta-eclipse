@@ -15,10 +15,12 @@ import net.jp2p.container.component.ComponentChangedEvent;
 import net.jp2p.container.component.IComponentChangedListener;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.IJp2pComponentNode;
+import net.jp2p.container.properties.DefaultPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.utils.Utils;
 import net.osgi.jp2p.chaupal.IServiceChangedListener.ServiceChange;
+import net.osgi.jp2p.chaupal.Activator;
 import net.osgi.jp2p.chaupal.ServiceChangedEvent;
 import net.osgi.jp2p.chaupal.ServiceEventDispatcher;
 import net.osgi.jp2p.chaupal.comparator.Jp2pServiceComparator;
@@ -62,7 +64,7 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 	
 	@Override
 	public IJp2pPropertySource<IJp2pProperties> getPropertySource() {
-		return null;
+		return new DefaultPropertySource( Activator.PLUGIN_ID, this.getClass().getName());
 	}
 
 	public Jp2pServiceContainer getJp2pContainer( String identifier ) {
