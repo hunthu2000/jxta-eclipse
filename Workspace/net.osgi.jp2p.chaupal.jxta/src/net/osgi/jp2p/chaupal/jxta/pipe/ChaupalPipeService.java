@@ -12,22 +12,22 @@ package net.osgi.jp2p.chaupal.jxta.pipe;
 
 import java.io.IOException;
 
+import net.jp2p.container.AbstractServiceContainer;
+import net.jp2p.container.AbstractServiceContainer.ServiceChange;
+import net.jp2p.container.activator.IJp2pService;
+import net.jp2p.container.component.AbstractJp2pServiceNode;
+import net.jp2p.container.component.ComponentChangedEvent;
+import net.jp2p.container.component.ComponentEventDispatcher;
+import net.jp2p.container.component.IComponentChangedListener;
+import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jxta.pipe.InputPipe;
 import net.jxta.pipe.OutputPipe;
 import net.jxta.pipe.PipeService;
 import net.jxta.protocol.PipeAdvertisement;
-import net.osgi.jp2p.activator.IJp2pService;
 import net.osgi.jp2p.chaupal.jxta.advertisement.Jp2pAdvertisementService;
-import net.osgi.jp2p.component.AbstractJp2pServiceNode;
-import net.osgi.jp2p.component.ComponentChangedEvent;
-import net.osgi.jp2p.component.ComponentEventDispatcher;
-import net.osgi.jp2p.component.IComponentChangedListener;
-import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.container.AbstractServiceContainer;
-import net.osgi.jp2p.container.AbstractServiceContainer.ServiceChange;
-import net.osgi.jp2p.jxta.pipe.PipePropertySource.PipeServiceProperties;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pWritePropertySource;
+import net.jp2p.jxta.pipe.PipePropertySource.PipeServiceProperties;
 
 public class ChaupalPipeService extends AbstractJp2pServiceNode<PipeService>{
 

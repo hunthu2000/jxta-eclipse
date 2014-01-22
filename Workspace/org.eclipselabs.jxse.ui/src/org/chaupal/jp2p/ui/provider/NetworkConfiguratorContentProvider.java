@@ -3,8 +3,8 @@ package org.chaupal.jp2p.ui.provider;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import net.jp2p.container.utils.Utils;
 import net.jxta.platform.NetworkConfigurator;
-import net.osgi.jp2p.utils.Utils;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;

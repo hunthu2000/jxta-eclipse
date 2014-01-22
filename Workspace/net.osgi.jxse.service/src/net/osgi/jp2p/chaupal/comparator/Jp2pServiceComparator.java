@@ -13,9 +13,9 @@ package net.osgi.jp2p.chaupal.comparator;
 import java.util.Comparator;
 import java.util.Date;
 
-import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.container.IJxseServiceContainer;
-import net.osgi.jp2p.jxta.utils.JxseModuleComparator;
+import net.jp2p.container.IJxseServiceContainer;
+import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.jxta.utils.JxseModuleComparator;
 
 public class Jp2pServiceComparator<T extends Object> implements
 		Comparator<T> {
@@ -32,8 +32,8 @@ public class Jp2pServiceComparator<T extends Object> implements
 		int compare =  getIndex( arg0 ) - getIndex( arg1 );
 		if( compare != 0 )
 			return compare;
-		IJp2pComponent<?> node1 = (net.osgi.jp2p.component.IJp2pComponent<?>)arg0;
-		IJp2pComponent<?> node2 = (net.osgi.jp2p.component.IJp2pComponent<?>)arg1;
+		IJp2pComponent<?> node1 = (net.jp2p.container.component.IJp2pComponent<?>)arg0;
+		IJp2pComponent<?> node2 = (net.jp2p.container.component.IJp2pComponent<?>)arg1;
 		return this.compareDate( node1.getCreateDate(), node2.getCreateDate() );
 	}
 

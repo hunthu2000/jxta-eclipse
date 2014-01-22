@@ -10,14 +10,14 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.jxta.discovery;
 
+import net.jp2p.container.builder.IContainerBuilder;
+import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.factory.ComponentBuilderEvent;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jxta.discovery.DiscoveryService;
-import net.osgi.jp2p.builder.IContainerBuilder;
-import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.factory.ComponentBuilderEvent;
-import net.osgi.jp2p.jxta.discovery.DiscoveryServiceFactory;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pPropertySource;
-import net.osgi.jp2p.properties.IJp2pWritePropertySource;
+import net.jp2p.jxta.discovery.DiscoveryServiceFactory;
 
 public class ChaupalDiscoveryServiceFactory extends DiscoveryServiceFactory {
 

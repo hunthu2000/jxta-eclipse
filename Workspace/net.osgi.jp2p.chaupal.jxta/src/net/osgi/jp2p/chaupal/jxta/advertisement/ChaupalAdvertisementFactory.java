@@ -10,30 +10,30 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.jxta.advertisement;
 
+import net.jp2p.container.builder.IContainerBuilder;
+import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.factory.AbstractComponentFactory;
+import net.jp2p.container.factory.ComponentBuilderEvent;
+import net.jp2p.container.factory.IComponentFactory;
+import net.jp2p.container.filter.AbstractComponentFactoryFilter;
+import net.jp2p.container.filter.FilterChain;
+import net.jp2p.container.filter.IComponentFactoryFilter;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.properties.IJp2pWritePropertySource;
+import net.jp2p.container.properties.IJp2pDirectives.Directives;
+import net.jp2p.container.utils.Utils;
 import net.jxta.document.Advertisement;
-import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.chaupal.jxta.IChaupalComponents.ChaupalComponents;
 import net.osgi.jp2p.chaupal.jxta.advertisement.AdvertisementServicePropertySource.AdvertisementServiceProperties;
 import net.osgi.jp2p.chaupal.jxta.discovery.ChaupalDiscoveryService;
-import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.factory.AbstractComponentFactory;
-import net.osgi.jp2p.factory.ComponentBuilderEvent;
-import net.osgi.jp2p.factory.IComponentFactory;
-import net.osgi.jp2p.filter.AbstractComponentFactoryFilter;
-import net.osgi.jp2p.filter.FilterChain;
-import net.osgi.jp2p.filter.IComponentFactoryFilter;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.osgi.jp2p.jxta.advertisement.service.AbstractJxtaAdvertisementFactory;
-import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
-import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryProperties;
-import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
-import net.osgi.jp2p.jxta.factory.JxtaFactoryUtils;
-import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pPropertySource;
-import net.osgi.jp2p.properties.IJp2pWritePropertySource;
-import net.osgi.jp2p.utils.Utils;
+import net.jp2p.jxta.advertisement.AdvertisementPropertySource;
+import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
+import net.jp2p.jxta.advertisement.service.AbstractJxtaAdvertisementFactory;
+import net.jp2p.jxta.discovery.DiscoveryPropertySource;
+import net.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryProperties;
+import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
+import net.jp2p.jxta.factory.JxtaFactoryUtils;
 
 public abstract class ChaupalAdvertisementFactory<T extends Object, U extends Advertisement> extends AbstractJxtaAdvertisementFactory<T,U>{
 	
@@ -55,7 +55,7 @@ public abstract class ChaupalAdvertisementFactory<T extends Object, U extends Ad
 	@Override
 	public void extendContainer() {
 		IContainerBuilder builder = super.getBuilder();
-		IComponentFactory<?> df = builder.getFactory(ChaupalComponents.DISCOVERY_SERVICE.toString());
+		IComponentFactory<?> df = (IComponentFactory<?>) builder.getFactory(ChaupalComponents.DISCOVERY_SERVICE.toString());
 		if( df == null ){
 			df = JxtaFactoryUtils.getDefaultFactory(builder, new String[0], super.getPropertySource(), ChaupalComponents.DISCOVERY_SERVICE.toString());
 			df.createPropertySource();

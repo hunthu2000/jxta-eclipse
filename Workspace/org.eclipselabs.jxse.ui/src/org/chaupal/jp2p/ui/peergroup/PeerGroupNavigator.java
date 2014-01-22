@@ -1,9 +1,9 @@
 package org.chaupal.jp2p.ui.peergroup;
 
+import net.jp2p.container.IJxseServiceContainer;
+import net.jp2p.container.Swarm;
 import net.jxta.peergroup.PeerGroup;
 import net.osgi.jp2p.chaupal.utils.Utils;
-import net.osgi.jp2p.container.IJxseServiceContainer;
-import net.osgi.jp2p.container.Swarm;
 
 import org.chaupal.jp2p.ui.container.Jp2pContainerNavigator;
 import org.eclipse.jface.viewers.ISelection;
@@ -69,7 +69,7 @@ public class PeerGroupNavigator extends CommonNavigator{
 		Object element = ss.getFirstElement();
 		if(!( element instanceof IJxseServiceContainer<?>))
 			return;
-		IJxseServiceContainer<?> context = ( IJxseServiceContainer<Object>)element;
+		IJxseServiceContainer<?> context = (net.jp2p.container.IJxseServiceContainer<Object>)element;
 		viewer.setInput( context.getSwarm());
 		setContentDescription( Utils.getLabel( context ));
 	}

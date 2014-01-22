@@ -1,10 +1,10 @@
 package org.chaupal.jp2p.ui.property;
 
+import net.jp2p.container.component.IJp2pComponent;
 import net.jxta.document.Advertisement;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager;
-import net.osgi.jp2p.component.IJp2pComponent;
 
 import org.chaupal.jp2p.ui.property.advertisement.AdvertisementPropertySource;
 import org.eclipse.core.runtime.IAdapterFactory;

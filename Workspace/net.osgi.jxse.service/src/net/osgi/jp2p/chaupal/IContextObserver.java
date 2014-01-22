@@ -10,8 +10,8 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal;
 
-import net.osgi.jp2p.container.IJxseServiceContainer;
-import net.osgi.jp2p.factory.IComponentFactory;
+import net.jp2p.container.IJxseServiceContainer;
+import net.jp2p.container.factory.IComponentFactory;
 
 public interface IContextObserver<T extends Object> {
 

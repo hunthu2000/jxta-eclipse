@@ -13,28 +13,28 @@ package net.osgi.jp2p.chaupal.jxta.advertisement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.jp2p.container.AbstractServiceContainer;
+import net.jp2p.container.activator.ActivatorEvent;
+import net.jp2p.container.activator.ActivatorListener;
+import net.jp2p.container.component.AbstractJp2pServiceNode;
+import net.jp2p.container.component.ComponentChangedEvent;
+import net.jp2p.container.component.ComponentEventDispatcher;
+import net.jp2p.container.component.IComponentChangedListener;
+import net.jp2p.container.component.IJp2pComponentNode;
+import net.jp2p.container.log.Jp2pLevel;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pWritePropertySource;
+import net.jp2p.container.utils.StringStyler;
+import net.jp2p.container.utils.Utils;
 import net.jxta.document.Advertisement;
-import net.osgi.jp2p.activator.ActivatorEvent;
-import net.osgi.jp2p.activator.ActivatorListener;
 import net.osgi.jp2p.chaupal.jxta.advertisement.AdvertisementServicePropertySource.AdvertisementMode;
 import net.osgi.jp2p.chaupal.jxta.advertisement.AdvertisementServicePropertySource.AdvertisementServiceProperties;
 import net.osgi.jp2p.chaupal.jxta.advertisement.AdvertisementServicePropertySource.Scope;
 import net.osgi.jp2p.chaupal.jxta.discovery.ChaupalDiscoveryService;
-import net.osgi.jp2p.component.AbstractJp2pServiceNode;
-import net.osgi.jp2p.component.ComponentChangedEvent;
-import net.osgi.jp2p.component.ComponentEventDispatcher;
-import net.osgi.jp2p.component.IComponentChangedListener;
-import net.osgi.jp2p.component.IJp2pComponentNode;
-import net.osgi.jp2p.container.AbstractServiceContainer;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
-import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryProperties;
-import net.osgi.jp2p.log.Jp2pLevel;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pWritePropertySource;
-import net.osgi.jp2p.utils.StringStyler;
-import net.osgi.jp2p.utils.Utils;
+import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
+import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
+import net.jp2p.jxta.discovery.DiscoveryPropertySource;
+import net.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryProperties;
 
 public class Jp2pAdvertisementService<T extends Advertisement> extends AbstractJp2pServiceNode<T> implements IJp2pComponentNode<T>{
 

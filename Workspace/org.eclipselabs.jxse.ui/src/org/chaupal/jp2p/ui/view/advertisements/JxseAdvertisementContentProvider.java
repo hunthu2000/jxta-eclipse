@@ -1,6 +1,6 @@
 package org.chaupal.jp2p.ui.view.advertisements;
 
-import net.osgi.jp2p.component.IJp2pComponent;
+import net.jp2p.container.component.IJp2pComponent;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;

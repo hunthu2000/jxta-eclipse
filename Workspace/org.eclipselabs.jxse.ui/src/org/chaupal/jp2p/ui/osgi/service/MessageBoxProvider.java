@@ -1,6 +1,6 @@
 package org.chaupal.jp2p.ui.osgi.service;
 
-import net.osgi.jp2p.utils.StringStyler;
+import net.jp2p.container.utils.StringStyler;
 
 import org.chaupal.jp2p.ui.log.Jp2pLog;
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;

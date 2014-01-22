@@ -10,8 +10,8 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.core;
 
+import net.jp2p.container.properties.IJp2pProperties;
 import net.osgi.jp2p.chaupal.IContextObserver;
-import net.osgi.jp2p.properties.IJp2pProperties;
 
 public interface IBuilderContext<T extends Object,U extends IJp2pProperties> {
 

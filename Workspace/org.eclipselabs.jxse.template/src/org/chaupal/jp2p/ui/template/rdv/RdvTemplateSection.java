@@ -1,12 +1,12 @@
 package org.chaupal.jp2p.ui.template.rdv;
 
+import net.jp2p.container.Jp2pContainerPropertySource;
+import net.jp2p.container.IJxseServiceContainer.ContextProperties;
+import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.osgi.jp2p.container.Jp2pContainerPropertySource;
-import net.osgi.jp2p.container.IJxseServiceContainer.ContextProperties;
-import net.osgi.jp2p.jxta.network.NetworkManagerPropertySource;
-import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
-import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
-import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
+import net.jp2p.jxta.network.NetworkManagerPropertySource;
+import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
+import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
 import org.chaupal.jp2p.ui.template.config.JxseConfigurationBundleSection;
 import org.chaupal.jp2p.ui.template.project.ContextWizardOption.TemplateOptions;

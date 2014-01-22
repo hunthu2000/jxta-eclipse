@@ -4,7 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.osgi.jp2p.utils.Utils;
+import net.jp2p.container.utils.Utils;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;

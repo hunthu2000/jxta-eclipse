@@ -13,8 +13,8 @@ package net.osgi.jp2p.chaupal.activator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.osgi.jp2p.container.Jp2pServiceContainer;
-import net.osgi.jp2p.log.Jp2pLevel;
+import net.jp2p.container.Jp2pServiceContainer;
+import net.jp2p.container.log.Jp2pLevel;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

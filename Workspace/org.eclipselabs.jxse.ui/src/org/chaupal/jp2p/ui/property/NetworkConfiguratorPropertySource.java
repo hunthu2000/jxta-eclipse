@@ -17,13 +17,13 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
+import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.utils.EnumUtils;
 import net.jxta.id.ID;
 import net.jxta.peer.PeerID;
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
-import net.osgi.jp2p.utils.EnumUtils;
+import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
 public class NetworkConfiguratorPropertySource extends AbstractJp2pUIPropertySource<NetworkConfigurator> {
 
@@ -277,6 +277,8 @@ public class NetworkConfiguratorPropertySource extends AbstractJp2pUIPropertySou
 			return configurator.getUseOnlyRelaySeedsStatus();
 		case USE_ONLY_RENDEZVOUS_SEEDS:
 			return configurator.getUseOnlyRendezvousSeedsStatus();
+		default:
+			break;
 		}
 		return super.getPropertyValue(id);
 	}
@@ -495,6 +497,8 @@ public class NetworkConfiguratorPropertySource extends AbstractJp2pUIPropertySou
 		case USE_ONLY_RENDEZVOUS_SEEDS:
 			configurator.setUseOnlyRendezvousSeeds( (boolean) value);
 			return;
+		default:
+			break;
 		}
 		super.setPropertyValue(id, value);
 	}

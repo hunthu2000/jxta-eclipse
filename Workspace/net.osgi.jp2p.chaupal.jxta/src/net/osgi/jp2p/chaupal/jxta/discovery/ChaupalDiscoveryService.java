@@ -17,25 +17,25 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
+import net.jp2p.container.AbstractServiceContainer;
+import net.jp2p.container.component.AbstractJp2pServiceNode;
+import net.jp2p.container.component.ComponentChangedEvent;
+import net.jp2p.container.component.ComponentEventDispatcher;
+import net.jp2p.container.log.Jp2pLevel;
+import net.jp2p.container.properties.AbstractJp2pPropertySource;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pWritePropertySource;
+import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jxta.discovery.DiscoveryEvent;
 import net.jxta.discovery.DiscoveryListener;
 import net.jxta.discovery.DiscoveryService;
 import net.jxta.document.Advertisement;
 import net.jxta.protocol.DiscoveryResponseMsg;
-import net.osgi.jp2p.component.AbstractJp2pServiceNode;
-import net.osgi.jp2p.component.ComponentChangedEvent;
-import net.osgi.jp2p.component.ComponentEventDispatcher;
-import net.osgi.jp2p.container.AbstractServiceContainer;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
-import net.osgi.jp2p.jxta.advertisement.IAdvertisementProvider;
-import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
-import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryMode;
-import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryProperties;
-import net.osgi.jp2p.log.Jp2pLevel;
-import net.osgi.jp2p.properties.AbstractJp2pPropertySource;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pWritePropertySource;
-import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
+import net.jp2p.jxta.advertisement.AdvertisementPropertySource;
+import net.jp2p.jxta.advertisement.IAdvertisementProvider;
+import net.jp2p.jxta.discovery.DiscoveryPropertySource;
+import net.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryMode;
+import net.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryProperties;
 
 public class ChaupalDiscoveryService extends AbstractJp2pServiceNode<DiscoveryService> implements IAdvertisementProvider{
 	

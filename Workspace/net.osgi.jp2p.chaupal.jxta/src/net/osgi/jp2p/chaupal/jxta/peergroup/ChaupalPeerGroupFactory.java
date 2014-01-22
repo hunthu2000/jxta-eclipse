@@ -10,25 +10,24 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.jxta.peergroup;
 
+import net.jp2p.container.builder.IContainerBuilder;
+import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.protocol.ModuleClassAdvertisement;
 import net.jxta.protocol.ModuleSpecAdvertisement;
 import net.jxta.protocol.PeerGroupAdvertisement;
 import net.jxta.protocol.PipeAdvertisement;
-import net.osgi.jp2p.builder.IContainerBuilder;
 import net.osgi.jp2p.chaupal.jxta.advertisement.ChaupalAdvertisementFactory;
-import net.osgi.jp2p.chaupal.jxta.advertisement.Jp2pAdvertisementService;
-import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
-import net.osgi.jp2p.jxta.advertisement.ModuleClassAdvertisementPropertySource;
-import net.osgi.jp2p.jxta.advertisement.ModuleSpecAdvertisementPropertySource;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.osgi.jp2p.jxta.peergroup.PeerGroupAdvertisementPropertySource;
-import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
-import net.osgi.jp2p.jxta.pipe.PipeAdvertisementPropertySource;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pPropertySource;
+import net.jp2p.jxta.advertisement.AdvertisementPropertySource;
+import net.jp2p.jxta.advertisement.ModuleClassAdvertisementPropertySource;
+import net.jp2p.jxta.advertisement.ModuleSpecAdvertisementPropertySource;
+import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
+import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
+import net.jp2p.jxta.peergroup.PeerGroupAdvertisementPropertySource;
+import net.jp2p.jxta.peergroup.PeerGroupPropertySource;
+import net.jp2p.jxta.pipe.PipeAdvertisementPropertySource;
 
 public class ChaupalPeerGroupFactory extends ChaupalAdvertisementFactory<PeerGroup, PeerGroupAdvertisement>{
 

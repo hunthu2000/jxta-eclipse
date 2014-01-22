@@ -17,8 +17,8 @@ package org.chaupal.jp2p.ui.template.fragment;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import net.osgi.jp2p.utils.Utils;
-import net.osgi.jp2p.utils.io.IOUtils;
+import net.jp2p.container.utils.Utils;
+import net.jp2p.container.utils.io.IOUtils;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;

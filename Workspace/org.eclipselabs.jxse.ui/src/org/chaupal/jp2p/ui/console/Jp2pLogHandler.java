@@ -6,7 +6,7 @@ import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
-import net.osgi.jp2p.log.Jp2pLevel;
+import net.jp2p.container.log.Jp2pLevel;
 
 public class Jp2pLogHandler extends Handler {
 

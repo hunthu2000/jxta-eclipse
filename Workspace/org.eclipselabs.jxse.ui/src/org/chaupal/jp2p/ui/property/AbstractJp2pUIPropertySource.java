@@ -3,12 +3,12 @@ package org.chaupal.jp2p.ui.property;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.component.IJp2pComponent.ModuleProperties;
-import net.osgi.jp2p.properties.DefaultPropertySource;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pPropertySource;
-import net.osgi.jp2p.properties.IJp2pWritePropertySource;
+import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.component.IJp2pComponent.ModuleProperties;
+import net.jp2p.container.properties.DefaultPropertySource;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.properties.IJp2pWritePropertySource;
 
 import org.chaupal.jp2p.ui.property.descriptors.AbstractControlPropertyDescriptor;
 import org.chaupal.jp2p.ui.property.descriptors.TextBoxPropertyDescriptor;

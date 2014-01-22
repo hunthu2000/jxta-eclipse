@@ -1,7 +1,7 @@
 package org.chaupal.jp2p.ui.view.advertisements;
 
+import net.jp2p.container.component.IJp2pComponent;
 import net.jxta.document.Advertisement;
-import net.osgi.jp2p.component.IJp2pComponent;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;

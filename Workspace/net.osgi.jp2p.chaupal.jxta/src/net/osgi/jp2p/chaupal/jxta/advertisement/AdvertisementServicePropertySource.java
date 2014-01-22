@@ -1,15 +1,15 @@
 package net.osgi.jp2p.chaupal.jxta.advertisement;
 
+import net.jp2p.container.properties.IJp2pDirectives;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.properties.ManagedProperty;
+import net.jp2p.container.properties.IJp2pDirectives.Directives;
+import net.jp2p.container.utils.StringStyler;
+import net.jp2p.container.utils.Utils;
 import net.jxta.peergroup.PeerGroup;
 import net.osgi.jp2p.chaupal.jxta.IChaupalComponents.ChaupalComponents;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
-import net.osgi.jp2p.properties.IJp2pDirectives;
-import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pPropertySource;
-import net.osgi.jp2p.properties.ManagedProperty;
-import net.osgi.jp2p.utils.StringStyler;
-import net.osgi.jp2p.utils.Utils;
+import net.jp2p.jxta.advertisement.AdvertisementPropertySource;
 
 public class AdvertisementServicePropertySource extends AdvertisementPropertySource {
 

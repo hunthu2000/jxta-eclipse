@@ -10,10 +10,10 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.utils;
 
-import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.container.IJxseServiceContainer;
-import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
-import net.osgi.jp2p.properties.IJp2pPropertySource;
+import net.jp2p.container.IJxseServiceContainer;
+import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.properties.IJp2pDirectives.Directives;
 
 public class Utils
 {

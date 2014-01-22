@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import net.osgi.jp2p.partial.PartialPropertySource;
-import net.osgi.jp2p.properties.IJp2pDirectives;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pPropertySource;
-import net.osgi.jp2p.properties.ManagedProperty;
-import net.osgi.jp2p.properties.PropertySourceUtils;
-import net.osgi.jp2p.utils.StringStyler;
-import net.osgi.jp2p.utils.Utils;
+import net.jp2p.container.partial.PartialPropertySource;
+import net.jp2p.container.properties.IJp2pDirectives;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.properties.ManagedProperty;
+import net.jp2p.container.properties.PropertySourceUtils;
+import net.jp2p.container.utils.StringStyler;
+import net.jp2p.container.utils.Utils;
 
 public class XmlComponentBuilder<T extends Object> {
 

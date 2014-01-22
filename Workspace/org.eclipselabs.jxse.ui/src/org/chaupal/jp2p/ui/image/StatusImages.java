@@ -1,7 +1,7 @@
 package org.chaupal.jp2p.ui.image;
 
-import net.osgi.jp2p.activator.IActivator.Status;
-import net.osgi.jp2p.utils.StringStyler;
+import net.jp2p.container.activator.IActivator.Status;
+import net.jp2p.container.utils.StringStyler;
 
 import org.chaupal.jp2p.ui.Activator;
 import org.eclipse.swt.graphics.Image;

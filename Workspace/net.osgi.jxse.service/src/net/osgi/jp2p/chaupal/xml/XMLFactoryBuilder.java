@@ -6,7 +6,6 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,53 +24,52 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import net.osgi.jp2p.builder.ComponentNode;
-import net.osgi.jp2p.builder.ICompositeBuilder;
-import net.osgi.jp2p.builder.ICompositeBuilderListener;
-import net.osgi.jp2p.builder.IContainerBuilder;
-import net.osgi.jp2p.chaupal.xml.PreferenceStore.Persistence;
-import net.osgi.jp2p.chaupal.xml.PreferenceStore.SupportedAttributes;
-import net.osgi.jp2p.container.ContainerFactory;
-import net.osgi.jp2p.container.Jp2pContainerPropertySource;
-import net.osgi.jp2p.context.ContextLoader;
-import net.osgi.jp2p.context.IJp2pContext;
-import net.osgi.jp2p.context.IJp2pContext.ContextDirectives;
-import net.osgi.jp2p.context.Jp2pContext;
-import net.osgi.jp2p.factory.IComponentFactory;
-import net.osgi.jp2p.factory.IJp2pComponents;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPreferences;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource;
-import net.osgi.jp2p.jxta.context.Jp2pContainerPreferences;
-import net.osgi.jp2p.jxta.discovery.DiscoveryPreferences;
-import net.osgi.jp2p.jxta.discovery.DiscoveryPropertySource;
-import net.osgi.jp2p.jxta.network.INetworkPreferences;
-import net.osgi.jp2p.jxta.network.NetworkManagerPreferences;
-import net.osgi.jp2p.jxta.network.NetworkManagerPropertySource;
-import net.osgi.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerProperties;
-import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationFactory;
-import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
-import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
-import net.osgi.jp2p.jxta.network.configurator.OverviewPreferences;
-import net.osgi.jp2p.jxta.peergroup.PeerGroupPreferences;
-import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
-import net.osgi.jp2p.jxta.pipe.PipePropertySource;
-import net.osgi.jp2p.jxta.registration.RegistrationPropertySource;
-import net.osgi.jp2p.jxta.seeds.SeedListPropertySource;
-import net.osgi.jp2p.partial.PartialPropertySource;
-import net.osgi.jp2p.properties.AbstractJp2pPropertySource;
-import net.osgi.jp2p.properties.IJp2pDirectives;
-import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pPropertySource;
-import net.osgi.jp2p.properties.IJp2pWritePropertySource;
-import net.osgi.jp2p.properties.ManagedProperty;
-import net.osgi.jp2p.seeds.SeedInfo;
-import net.osgi.jp2p.utils.IOUtils;
-import net.osgi.jp2p.utils.StringDirective;
-import net.osgi.jp2p.utils.StringStyler;
-import net.osgi.jp2p.utils.Utils;
+import net.jp2p.container.ContainerFactory;
+import net.jp2p.container.Jp2pContainerPropertySource;
+import net.jp2p.container.builder.ComponentNode;
+import net.jp2p.container.builder.ICompositeBuilder;
+import net.jp2p.container.builder.ICompositeBuilderListener;
+import net.jp2p.container.builder.IContainerBuilder;
+import net.jp2p.container.builder.IFactoryBuilder;
+import net.jp2p.container.context.ContextLoader;
+import net.jp2p.container.context.IJp2pContext;
+import net.jp2p.container.context.Jp2pContext;
+import net.jp2p.container.context.IJp2pContext.ContextDirectives;
+import net.jp2p.container.factory.IJp2pComponents;
+import net.jp2p.container.factory.IPropertySourceFactory;
+import net.jp2p.container.partial.PartialPropertySource;
+import net.jp2p.container.properties.AbstractJp2pPropertySource;
+import net.jp2p.container.properties.IJp2pDirectives;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.properties.IJp2pWritePropertySource;
+import net.jp2p.container.properties.ManagedProperty;
+import net.jp2p.container.properties.IJp2pDirectives.Directives;
+import net.jp2p.container.seeds.SeedInfo;
+import net.jp2p.container.utils.IOUtils;
+import net.jp2p.container.utils.StringDirective;
+import net.jp2p.container.utils.StringStyler;
+import net.jp2p.container.utils.Utils;
+import net.jp2p.jxta.advertisement.AdvertisementPreferences;
+import net.jp2p.jxta.advertisement.AdvertisementPropertySource;
+import net.jp2p.jxta.context.Jp2pContainerPreferences;
+import net.jp2p.jxta.discovery.DiscoveryPreferences;
+import net.jp2p.jxta.discovery.DiscoveryPropertySource;
+import net.jp2p.jxta.network.INetworkPreferences;
+import net.jp2p.jxta.network.NetworkManagerPreferences;
+import net.jp2p.jxta.network.NetworkManagerPropertySource;
+import net.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerProperties;
+import net.jp2p.jxta.network.configurator.NetworkConfigurationFactory;
+import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
+import net.jp2p.jxta.network.configurator.OverviewPreferences;
+import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.jp2p.jxta.peergroup.PeerGroupPreferences;
+import net.jp2p.jxta.peergroup.PeerGroupPropertySource;
+import net.jp2p.jxta.pipe.PipePropertySource;
+import net.jp2p.jxta.registration.RegistrationPropertySource;
+import net.jp2p.jxta.seeds.SeedListPropertySource;
 
-public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory> {
+public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory>, IFactoryBuilder {
 
 	protected static final String JAXP_SCHEMA_SOURCE =
 		    "http://java.sun.com/xml/jaxp/properties/schemaSource";
@@ -84,11 +82,7 @@ public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory> {
 
 	static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 	static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";	
-	
-	public static String S_DEFAULT_FOLDER = "/JP2P-INF";
-	public static String S_DEFAULT_LOCATION = S_DEFAULT_FOLDER + "/jp2p-1.0.0.xml";
-	public static String S_SCHEMA_LOCATION =  S_DEFAULT_FOLDER + "/jp2p-schema.xsd";
-	
+		
 	public enum Groups{
 		PROPERTIES,
 		DIRECTIVES,
@@ -147,6 +141,9 @@ public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory> {
 	/* (non-Javadoc)
 	 * @see net.osgi.jxta.factory.ICompositeFactory#addListener(net.osgi.jxta.factory.ICompositeFactoryListener)
 	 */
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.chaupal.xml.IFactoryBuilder#addListener(net.jp2p.container.builder.ICompositeBuilderListener)
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addListener( ICompositeBuilderListener<?> listener ){
@@ -155,6 +152,9 @@ public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory> {
 
 	/* (non-Javadoc)
 	 * @see net.osgi.jxta.factory.ICompositeFactory#removeListener(net.osgi.jxta.factory.ICompositeFactoryListener)
+	 */
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.chaupal.xml.IFactoryBuilder#removeListener(net.jp2p.container.builder.ICompositeBuilderListener)
 	 */
 	@Override
 	public void removeListener( ICompositeBuilderListener<?> listener ){
@@ -177,6 +177,9 @@ public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory> {
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.chaupal.xml.IFactoryBuilder#build()
+	 */
 	@Override
 	public ContainerFactory build() {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -240,6 +243,10 @@ public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory> {
 		return completed;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.osgi.jp2p.chaupal.xml.IFactoryBuilder#isCompleted()
+	 */
+	@Override
 	public boolean isCompleted() {
 		return completed;
 	}
@@ -288,7 +295,7 @@ class Jp2pHandler extends DefaultHandler{
 	@Override
 	public void startElement(String uri, String localName, String qName, 
 			Attributes attributes) throws SAXException {
-		IComponentFactory<?> factory = null;
+		IPropertySourceFactory<?> factory = null;
 		IJp2pComponents current;
 		if( Jp2pContext.Components.isComponent( qName )){
 			current = Jp2pContext.Components.valueOf( StringStyler.styleToEnum( qName ));
@@ -363,7 +370,7 @@ class Jp2pHandler extends DefaultHandler{
 	}
 
 	@SuppressWarnings("unchecked")
-	protected IComponentFactory<?> getFactory( String componentName, Attributes attributes, IJp2pPropertySource<?> parentSource ){
+	protected IPropertySourceFactory<?> getFactory( String componentName, Attributes attributes, IJp2pPropertySource<?> parentSource ){
 		String contextName = attributes.getValue(Directives.CONTEXT.toString().toLowerCase());
 		if( Utils.isNull( contextName )){
 			contextName = AbstractJp2pPropertySource.findFirstAncestorDirective( parentSource, Directives.CONTEXT );
@@ -379,7 +386,7 @@ class Jp2pHandler extends DefaultHandler{
 	 * @param factory
 	 * @return
 	 */
-	protected FactoryNode processFactory( Attributes attributes, FactoryNode parent, IComponentFactory<?> factory ){
+	protected FactoryNode processFactory( Attributes attributes, FactoryNode parent, IPropertySourceFactory<?> factory ){
 		IJp2pWritePropertySource<?> source = (IJp2pWritePropertySource<?>) factory.createPropertySource();
 		if( parent != null )
 			parent.getData().getPropertySource().addChild( source);
@@ -457,27 +464,27 @@ class Jp2pHandler extends DefaultHandler{
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) node.getData().getPropertySource();
 		if( source instanceof Jp2pContainerPropertySource ){
 			Jp2pContainerPreferences preferences = new Jp2pContainerPreferences( (Jp2pContainerPropertySource) source );
-			preferences.setPropertyFromString( property.getKey(), value);
+			preferences.setPropertyFromConverion( property.getKey(), value);
 			return;
 		}
 		if( source instanceof NetworkManagerPropertySource ){
 			NetworkManagerPreferences preferences = new NetworkManagerPreferences( source );
-			preferences.setPropertyFromString( (NetworkManagerProperties) property.getKey(), value);
+			preferences.setPropertyFromConverion( (NetworkManagerProperties) property.getKey(), value);
 			return;
 		}
 		if( source instanceof NetworkConfigurationPropertySource ){
 			OverviewPreferences preferences = new OverviewPreferences( source );
-			preferences.setPropertyFromString( (NetworkConfiguratorProperties) property.getKey(), value);
+			preferences.setPropertyFromConverion( (NetworkConfiguratorProperties) property.getKey(), value);
 			return;
 		}
 		if( source instanceof DiscoveryPropertySource ){
 			DiscoveryPreferences preferences = new DiscoveryPreferences( source );
-			preferences.setPropertyFromString( property.getKey(), value);
+			preferences.setPropertyFromConverion( property.getKey(), value);
 			return;
 		}
 		if( source instanceof AdvertisementPropertySource ){
 			AdvertisementPreferences preferences = new AdvertisementPreferences( source );
-			preferences.setPropertyFromString( property.getKey(), value);
+			preferences.setPropertyFromConverion( property.getKey(), value);
 			return;
 		}
 		if( source instanceof PipePropertySource ){
@@ -487,7 +494,7 @@ class Jp2pHandler extends DefaultHandler{
 		}
 		if( source instanceof PeerGroupPropertySource ){
 			PeerGroupPreferences preferences = new PeerGroupPreferences( source );
-			preferences.setPropertyFromString( property.getKey(), value);
+			preferences.setPropertyFromConverion( property.getKey(), value);
 			return;
 		}
 		if( source instanceof RegistrationPropertySource ){
@@ -498,7 +505,7 @@ class Jp2pHandler extends DefaultHandler{
 		if( source instanceof PartialPropertySource ){
 			INetworkPreferences preferences = NetworkConfigurationFactory.getPreferences((PartialPropertySource) source);
 			if( preferences != null )
-				preferences.setPropertyFromString( (NetworkConfiguratorProperties) property.getKey(), value);
+				preferences.convertTo( (NetworkConfiguratorProperties) property.getKey(), value);
 			return;
 		}
 		if( source instanceof SeedListPropertySource ){
@@ -530,15 +537,6 @@ class Jp2pHandler extends DefaultHandler{
 			e1.printStackTrace();
 		}
 		return context;
-	}
-
-	protected PreferenceStore getPreferences( String pluginId, Map<SupportedAttributes, String> attrs ){
-		if(( attrs == null ) || ( attrs.size() == 0 ))
-			return null;
-		Persistence ps = Persistence.valueOf( attrs.get( SupportedAttributes.PERSIST ));
-		if( ps == null )
-			return null;
-		return new PreferenceStore( pluginId);
 	}
 
 	@Override
@@ -589,22 +587,22 @@ class Jp2pHandler extends DefaultHandler{
 	}
 }
 
-class FactoryNode extends ComponentNode<IComponentFactory<Object>>{
+class FactoryNode extends ComponentNode<IPropertySourceFactory<Object>>{
 
 	@SuppressWarnings("unchecked")
-	protected FactoryNode(IComponentFactory<?> data, FactoryNode parent) {
-		super((IComponentFactory<Object>) data, parent);
+	protected FactoryNode(IPropertySourceFactory<?> data, FactoryNode parent) {
+		super((IPropertySourceFactory<Object>) data, parent);
 	}
 
 	@SuppressWarnings("unchecked")
-	public FactoryNode(IComponentFactory<?> data) {
-		super((IComponentFactory<Object>) data);
+	public FactoryNode(IPropertySourceFactory<?> data) {
+		super((IPropertySourceFactory<Object>) data);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public ComponentNode<?> addChild(Object data) {
-		FactoryNode child = new FactoryNode( (IComponentFactory<Object>) data, this );
+		FactoryNode child = new FactoryNode( (IPropertySourceFactory<Object>) data, this );
 		super.getChildrenAsCollection().add(child);
 		return child;
 	}

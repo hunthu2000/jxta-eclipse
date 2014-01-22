@@ -1,7 +1,7 @@
 package org.chaupal.jp2p.ui.advertisement;
 
 import net.jxta.document.Advertisement;
-import net.osgi.jp2p.jxta.advertisement.IAdvertisementProvider;
+import net.jp2p.jxta.advertisement.IAdvertisementProvider;
 
 import org.chaupal.jp2p.ui.monitor.ConnectivityViewPart;
 import org.eclipse.jface.action.IMenuManager;

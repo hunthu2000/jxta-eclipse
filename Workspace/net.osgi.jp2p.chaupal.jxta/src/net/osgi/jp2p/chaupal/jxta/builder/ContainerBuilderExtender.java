@@ -8,10 +8,10 @@ import java.util.Enumeration;
 
 import org.eclipse.core.runtime.FileLocator;
 
-import net.osgi.jp2p.builder.ContainerBuilder;
-import net.osgi.jp2p.builder.IContainerBuilder;
+import net.jp2p.container.builder.ContainerBuilder;
+import net.jp2p.container.builder.IContainerBuilder;
+import net.jp2p.container.factory.IComponentFactory;
 import net.osgi.jp2p.chaupal.jxta.builder.ContainerBuilderExtender;
-import net.osgi.jp2p.factory.IComponentFactory;
 
 public class ContainerBuilderExtender {
 

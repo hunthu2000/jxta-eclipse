@@ -1,8 +1,8 @@
 package org.chaupal.jp2p.ui.property.databinding;
 
-import net.osgi.jp2p.properties.IJp2pPropertySource;
-import net.osgi.jp2p.properties.ManagedProperty;
-import net.osgi.jp2p.properties.ManagedPropertyEvent;
+import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.properties.ManagedProperty;
+import net.jp2p.container.properties.ManagedPropertyEvent;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;

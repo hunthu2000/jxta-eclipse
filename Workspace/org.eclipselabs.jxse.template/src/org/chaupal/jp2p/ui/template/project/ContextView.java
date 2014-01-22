@@ -13,7 +13,7 @@ package org.chaupal.jp2p.ui.template.project;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.osgi.jp2p.container.Jp2pContainerPropertySource;
+import net.jp2p.container.Jp2pContainerPropertySource;
 
 import org.chaupal.jp2p.ui.container.ContainerComposite;
 import org.chaupal.jp2p.ui.template.project.ContextWizardOption.TemplateOptions;

@@ -10,11 +10,11 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.activator;
 
-import net.osgi.jp2p.activator.ISimpleActivator;
-import net.osgi.jp2p.activator.Jp2pContextStarter;
-import net.osgi.jp2p.container.Jp2pServiceContainer;
-import net.osgi.jp2p.properties.IJp2pDirectives;
-import net.osgi.jp2p.properties.IJp2pProperties;
+import net.jp2p.container.Jp2pServiceContainer;
+import net.jp2p.container.activator.ISimpleActivator;
+import net.jp2p.container.activator.Jp2pContextStarter;
+import net.jp2p.container.properties.IJp2pDirectives;
+import net.jp2p.container.properties.IJp2pProperties;
 
 public class Jp2pActivator implements ISimpleActivator {
 

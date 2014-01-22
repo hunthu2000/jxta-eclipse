@@ -1,6 +1,6 @@
 package org.chaupal.jp2p.ui.template.config;
 
-import net.osgi.jp2p.container.Jp2pContainerPropertySource;
+import net.jp2p.container.Jp2pContainerPropertySource;
 
 import org.chaupal.jp2p.ui.network.Jp2pNetworkConfiguratorComposite;
 import org.eclipse.jface.wizard.WizardPage;

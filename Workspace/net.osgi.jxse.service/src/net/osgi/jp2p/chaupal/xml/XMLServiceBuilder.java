@@ -16,18 +16,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 
-import net.osgi.jp2p.builder.ContainerBuilder;
-import net.osgi.jp2p.builder.ICompositeBuilder;
-import net.osgi.jp2p.builder.ICompositeBuilderListener;
-import net.osgi.jp2p.builder.ICompositeBuilderListener.BuilderEvents;
-import net.osgi.jp2p.builder.IContainerBuilder;
-import net.osgi.jp2p.container.ContainerFactory;
-import net.osgi.jp2p.container.Jp2pServiceContainer;
-import net.osgi.jp2p.context.ContextLoader;
-import net.osgi.jp2p.context.Jp2pContext;
-import net.osgi.jp2p.context.Jp2pContext.Components;
-import net.osgi.jp2p.factory.ComponentBuilderEvent;
-import net.osgi.jp2p.factory.IComponentFactory;
+import net.jp2p.container.ContainerFactory;
+import net.jp2p.container.Jp2pServiceContainer;
+import net.jp2p.container.builder.ContainerBuilder;
+import net.jp2p.container.builder.ICompositeBuilder;
+import net.jp2p.container.builder.ICompositeBuilderListener;
+import net.jp2p.container.builder.IContainerBuilder;
+import net.jp2p.container.builder.IFactoryBuilder;
+import net.jp2p.container.builder.ICompositeBuilderListener.BuilderEvents;
+import net.jp2p.container.context.ContextLoader;
+import net.jp2p.container.context.Jp2pContext;
+import net.jp2p.container.factory.ComponentBuilderEvent;
+import net.jp2p.container.factory.IComponentFactory;
+import net.jp2p.container.factory.IPropertySourceFactory;
 
 public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer>{
 
@@ -53,7 +54,7 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer
 	 * @throws IOException
 	 */
 	private void extendBuilders( Class<?> clss, IContainerBuilder containerBuilder ) throws IOException{
-		Enumeration<URL> enm = clss.getClassLoader().getResources( XMLFactoryBuilder.S_DEFAULT_LOCATION );
+		Enumeration<URL> enm = clss.getClassLoader().getResources( IFactoryBuilder.S_DEFAULT_LOCATION );
 		while( enm.hasMoreElements()){
 			URL url = enm.nextElement();
 			builders.add( new XMLFactoryBuilder( plugin_id, url, clss, containerBuilder, contexts ));
@@ -135,8 +136,8 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer
 	 * @param node
 	 */
 	private void extendContainer( ContainerBuilder containerBuilder){
-		IComponentFactory<?>[] factories = containerBuilder.getFactories();
-		for( IComponentFactory<?> factory: factories ){
+		IPropertySourceFactory<?>[] factories = containerBuilder.getFactories();
+		for( IPropertySourceFactory<?> factory: factories ){
 			factory.extendContainer();
 		}
 	}
@@ -148,8 +149,8 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer
 	 */
 	@SuppressWarnings({ "unchecked" })
 	private void notifyPropertyCreated( ContainerBuilder containerBuilder){
-		for( IComponentFactory<?> factory: containerBuilder.getFactories() ){
-			containerBuilder.updateRequest( new ComponentBuilderEvent<Object>((IComponentFactory<Object>) factory, BuilderEvents.PROPERTY_SOURCE_CREATED));
+		for( IPropertySourceFactory<?> factory: containerBuilder.getFactories() ){
+			containerBuilder.updateRequest( new ComponentBuilderEvent<Object>((IPropertySourceFactory<Object>) factory, BuilderEvents.PROPERTY_SOURCE_CREATED));
 		}
 	}
 

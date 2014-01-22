@@ -1,6 +1,6 @@
 package org.chaupal.jp2p.ui.container;
 
-import net.osgi.jp2p.component.IJp2pComponentNode;
+import net.jp2p.container.component.IJp2pComponentNode;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;

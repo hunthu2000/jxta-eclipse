@@ -10,9 +10,9 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.activator;
 
-import net.osgi.jp2p.builder.ICompositeBuilderListener;
+import net.jp2p.container.Jp2pServiceContainer;
+import net.jp2p.container.builder.ICompositeBuilderListener;
 import net.osgi.jp2p.chaupal.xml.XMLServiceBuilder;
-import net.osgi.jp2p.container.Jp2pServiceContainer;
 
 public class Jp2pBundleActivator extends AbstractJp2pBundleActivator {
 

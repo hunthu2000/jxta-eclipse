@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.chaupal.jp2p.ui.template.project;
 
-import net.osgi.jp2p.container.Jp2pContainerPropertySource;
+import net.jp2p.container.Jp2pContainerPropertySource;
 
 public interface IPropertySourceView {
 

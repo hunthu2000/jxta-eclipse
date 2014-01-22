@@ -2,21 +2,26 @@ package net.osgi.jp2p.chaupal.jxta.context;
 
 import org.xml.sax.Attributes;
 
-import net.osgi.jp2p.builder.IContainerBuilder;
+import net.jp2p.container.builder.IContainerBuilder;
+import net.jp2p.container.context.IJp2pContext;
+import net.jp2p.container.context.Jp2pContext;
+import net.jp2p.container.factory.IComponentFactory;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.properties.IJp2pWritePropertySource;
+import net.jp2p.container.properties.IPropertyConvertor;
+import net.jp2p.container.properties.IJp2pDirectives.Contexts;
+import net.jp2p.container.utils.StringStyler;
+import net.jp2p.container.utils.Utils;
 import net.osgi.jp2p.chaupal.jxta.advertisement.ChaupalAdvertisementFactory;
 import net.osgi.jp2p.chaupal.jxta.discovery.ChaupalDiscoveryServiceFactory;
 import net.osgi.jp2p.chaupal.jxta.pipe.ChaupalPipeFactory;
-import net.osgi.jp2p.context.IJp2pContext;
-import net.osgi.jp2p.context.Jp2pContext;
-import net.osgi.jp2p.factory.IComponentFactory;
-import net.osgi.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
-import net.osgi.jp2p.jxta.factory.JxtaFactoryUtils;
-import net.osgi.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pPropertySource;
-import net.osgi.jp2p.properties.IJp2pDirectives.Contexts;
-import net.osgi.jp2p.utils.StringStyler;
-import net.osgi.jp2p.utils.Utils;
+import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
+import net.jp2p.jxta.discovery.DiscoveryPreferences;
+import net.jp2p.jxta.factory.JxtaFactoryUtils;
+import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
+import net.jp2p.jxta.network.NetworkManagerPreferences;
+import net.jp2p.jxta.peergroup.PeerGroupPreferences;
 
 public class JxtaContext implements IJp2pContext<Object> {
 
@@ -72,6 +77,40 @@ public class JxtaContext implements IJp2pContext<Object> {
 		}
 		IComponentFactory<?> factory = JxtaFactoryUtils.getDefaultFactory(builder, attrs, parentSource, componentName);
 		return factory;
+	}
+
+	/**
+	 * Get the default factory for this container
+	 * @param parent
+	 * @param componentName
+	 * @return
+	 */
+	public static IPropertyConvertor<String, Object> getConvertor( IJp2pWritePropertySource<IJp2pProperties> source ){
+		String comp = StringStyler.styleToEnum( source.getComponentName());
+		if( !JxtaComponents.isComponent( comp ))
+			return null;
+		JxtaComponents component = JxtaComponents.valueOf(comp);
+		IPropertyConvertor<String, Object> convertor = null;
+		switch( component ){
+		case NETWORK_MANAGER:
+			convertor = new NetworkManagerPreferences( source );
+			break;
+		case NETWORK_CONFIGURATOR:
+			//convertor = new NetworkConfiguratorPreferences( source );
+			break;
+		case NET_PEERGROUP_SERVICE:
+			convertor = new NetworkManagerPreferences( source );
+			break;			
+		case DISCOVERY_SERVICE:
+			convertor = new DiscoveryPreferences( source );
+			break;			
+		case PEERGROUP_SERVICE:
+			convertor = new PeerGroupPreferences( source );
+			break;			
+		default:
+			break;
+		}
+		return convertor;
 	}
 
 }

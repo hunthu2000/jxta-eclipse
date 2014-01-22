@@ -1,7 +1,7 @@
 package org.chaupal.jp2p.ui.network;
 
-import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
-import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
+import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
+import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
 import org.chaupal.jp2p.ui.property.databinding.BooleanDataBinding;
 import org.chaupal.jp2p.ui.property.databinding.SpinnerDataBinding;
@@ -18,10 +18,11 @@ public class TcpConfigurationComposite extends AbstractProtocolConfigurationComp
 		super(parent, style);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void init( NetworkConfigurationPropertySource source ){
 		super.init( source );
 		Object value = source.getDefault( NetworkConfiguratorProperties.TCP_8ENABLED  );
-		//if( value != null)
+		if( value != null)
 			new BooleanDataBinding( NetworkConfiguratorProperties.TCP_8ENABLED, source, this.btnEnabled);
 		value = source.getDefault( NetworkConfiguratorProperties.TCP_8INCOMING_STATUS  );
 		if( value != null)

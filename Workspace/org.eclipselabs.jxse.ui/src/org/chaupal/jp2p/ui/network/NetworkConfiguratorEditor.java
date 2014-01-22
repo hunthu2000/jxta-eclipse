@@ -3,7 +3,7 @@
  */
 package org.chaupal.jp2p.ui.network;
 
-import net.osgi.jp2p.container.Jp2pContainerPropertySource;
+import net.jp2p.container.Jp2pContainerPropertySource;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;

@@ -1,29 +1,37 @@
 package net.osgi.jp2p.chaupal.jxta.context;
 
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.xml.sax.Attributes;
 
-import net.osgi.jp2p.builder.IContainerBuilder;
+import net.jp2p.container.builder.IContainerBuilder;
+import net.jp2p.container.context.IJp2pContext;
+import net.jp2p.container.context.Jp2pContext;
+import net.jp2p.container.factory.IComponentFactory;
+import net.jp2p.container.persistence.IPersistedProperties;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.properties.IJp2pDirectives.Contexts;
+import net.jp2p.container.properties.IJp2pWritePropertySource;
+import net.jp2p.container.properties.IPropertyConvertor;
+import net.jp2p.container.utils.StringStyler;
+import net.jp2p.container.utils.Utils;
 import net.osgi.jp2p.chaupal.jxta.IChaupalComponents.ChaupalComponents;
 import net.osgi.jp2p.chaupal.jxta.advertisement.ChaupalAdvertisementFactory;
 import net.osgi.jp2p.chaupal.jxta.discovery.ChaupalDiscoveryServiceFactory;
 import net.osgi.jp2p.chaupal.jxta.peergroup.ChaupalPeerGroupFactory;
+import net.osgi.jp2p.chaupal.jxta.persistence.OsgiPersistenceFactory;
 import net.osgi.jp2p.chaupal.jxta.pipe.ChaupalPipeFactory;
-import net.osgi.jp2p.chaupal.persistence.PersistedProperty;
-import net.osgi.jp2p.context.IJp2pContext;
-import net.osgi.jp2p.context.Jp2pContext;
-import net.osgi.jp2p.factory.IComponentFactory;
-import net.osgi.jp2p.jxta.discovery.DiscoveryServiceFactory;
-import net.osgi.jp2p.jxta.netpeergroup.NetPeerGroupFactory;
-import net.osgi.jp2p.jxta.peergroup.PeerGroupFactory;
-import net.osgi.jp2p.jxta.pipe.PipeServiceFactory;
-import net.osgi.jp2p.jxta.registration.RegistrationServiceFactory;
-import net.osgi.jp2p.persistence.IPersistedProperty;
-import net.osgi.jp2p.persistence.PersistenceFactory;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pPropertySource;
-import net.osgi.jp2p.properties.IJp2pDirectives.Contexts;
-import net.osgi.jp2p.utils.StringStyler;
-import net.osgi.jp2p.utils.Utils;
+import net.osgi.jp2p.chaupal.persistence.PersistedProperties;
+import net.jp2p.jxta.discovery.DiscoveryPreferences;
+import net.jp2p.jxta.discovery.DiscoveryServiceFactory;
+import net.jp2p.jxta.netpeergroup.NetPeerGroupFactory;
+import net.jp2p.jxta.network.NetworkManagerPreferences;
+import net.jp2p.jxta.peergroup.PeerGroupFactory;
+import net.jp2p.jxta.peergroup.PeerGroupPreferences;
+import net.jp2p.jxta.pipe.PipeAdvertisementPreferences;
+import net.jp2p.jxta.pipe.PipeServiceFactory;
+import net.jp2p.jxta.registration.RegistrationServiceFactory;
 
 public class ChaupalContext implements IJp2pContext<Object> {
 
@@ -78,7 +86,7 @@ public class ChaupalContext implements IJp2pContext<Object> {
 				//TODO removefactory = new ChaupalAdvertisementFactory<Advertisement>( builder, adType, parentSource );
 				break;
 			case DISCOVERY_SERVICE:
-				factory = new ChaupalDiscoveryServiceFactory( builder, parentSource );
+				factory = (IComponentFactory<?>) new ChaupalDiscoveryServiceFactory( builder, parentSource );
 				break;
 			case PIPE_SERVICE:
 				factory = new ChaupalPipeFactory( builder, parentSource );
@@ -115,8 +123,7 @@ public class ChaupalContext implements IJp2pContext<Object> {
 		IComponentFactory<?> factory = null;
 		switch( component ){
 		case PERSISTENCE_SERVICE:
-			IPersistedProperty<?> property = new PersistedProperty<Object>( null );
-			factory = new PersistenceFactory( builder, parentSource, property );
+			factory = new OsgiPersistenceFactory( builder, parentSource );
 		case NET_PEERGROUP_SERVICE:
 			factory = new NetPeerGroupFactory( builder, parentSource );
 			break;			
@@ -141,4 +148,34 @@ public class ChaupalContext implements IJp2pContext<Object> {
 		return factory;
 	}
 
+	/**
+	 * Get the default factory for this container
+	 * @param parent
+	 * @param componentName
+	 * @return
+	 */
+	public static IPropertyConvertor<String, Object> getConvertor( IJp2pWritePropertySource<IJp2pProperties> source ){
+		String comp = StringStyler.styleToEnum( source.getComponentName());
+		if( !ChaupalComponents.isComponent( comp ))
+			return JxtaContext.getConvertor(source);
+		ChaupalComponents component = ChaupalComponents.valueOf(comp);
+		IPropertyConvertor<String, Object> convertor = null;
+		switch( component ){
+		case NET_PEERGROUP_SERVICE:
+			convertor = new NetworkManagerPreferences( source );
+			break;			
+		case DISCOVERY_SERVICE:
+			convertor = new DiscoveryPreferences( source );
+			break;			
+		case PEERGROUP_SERVICE:
+			convertor = new PeerGroupPreferences( source );
+			break;			
+		case ADVERTISEMENT_SERVICE:
+			//factory = new Jp2pAdvertisementFactory<Advertisement>( builder, parentSource );
+			break;
+		default:
+			break;
+		}
+		return convertor;
+	}
 }

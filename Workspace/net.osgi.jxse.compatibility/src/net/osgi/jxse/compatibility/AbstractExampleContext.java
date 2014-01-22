@@ -12,9 +12,9 @@ package net.osgi.jxse.compatibility;
 
 import org.eclipse.core.runtime.Platform;
 
+import net.jp2p.container.AbstractServiceContainer;
+import net.jp2p.container.Jp2pContainerPropertySource;
 import net.jxta.platform.NetworkManager;
-import net.osgi.jp2p.container.AbstractServiceContainer;
-import net.osgi.jp2p.container.Jp2pContainerPropertySource;
 
 public abstract class AbstractExampleContext extends AbstractServiceContainer<NetworkManager>{
 

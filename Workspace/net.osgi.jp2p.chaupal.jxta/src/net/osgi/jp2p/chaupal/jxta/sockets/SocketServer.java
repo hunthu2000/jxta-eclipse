@@ -10,6 +10,7 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.jxta.sockets;
 
+import net.jp2p.container.utils.IOUtils;
 import net.jxta.document.AdvertisementFactory;
 import net.jxta.exception.PeerGroupException;
 import net.jxta.id.IDFactory;
@@ -19,7 +20,6 @@ import net.jxta.pipe.PipeService;
 import net.jxta.platform.NetworkManager;
 import net.jxta.protocol.PipeAdvertisement;
 import net.jxta.socket.JxtaServerSocket;
-import net.osgi.jp2p.utils.IOUtils;
 
 import java.io.DataInput;
 import java.io.DataInputStream;

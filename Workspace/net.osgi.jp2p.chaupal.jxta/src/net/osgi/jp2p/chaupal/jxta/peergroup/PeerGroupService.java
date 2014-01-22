@@ -12,17 +12,17 @@ package net.osgi.jp2p.chaupal.jxta.peergroup;
 
 import java.io.IOException;
 
+import net.jp2p.container.component.AbstractJp2pServiceNode;
+import net.jp2p.container.component.ComponentChangedEvent;
+import net.jp2p.container.component.ComponentEventDispatcher;
+import net.jp2p.container.component.IComponentChangedListener;
 import net.jxta.document.Advertisement;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.protocol.PeerGroupAdvertisement;
 import net.osgi.jp2p.chaupal.jxta.discovery.ChaupalDiscoveryService;
-import net.osgi.jp2p.component.AbstractJp2pServiceNode;
-import net.osgi.jp2p.component.ComponentChangedEvent;
-import net.osgi.jp2p.component.ComponentEventDispatcher;
-import net.osgi.jp2p.component.IComponentChangedListener;
-import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource;
-import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupDirectives;
-import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
+import net.jp2p.jxta.peergroup.PeerGroupPropertySource;
+import net.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupDirectives;
+import net.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 
 public class PeerGroupService extends AbstractJp2pServiceNode<PeerGroup>{
 

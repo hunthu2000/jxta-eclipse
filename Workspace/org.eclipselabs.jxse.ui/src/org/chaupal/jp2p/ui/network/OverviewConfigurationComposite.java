@@ -2,13 +2,13 @@ package org.chaupal.jp2p.ui.network;
 
 import java.net.URI;
 
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.validator.StringValidator;
 import net.jxta.peer.PeerID;
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.osgi.jp2p.jxta.context.Jp2pContainerPreferences;
-import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
-import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.validator.StringValidator;
+import net.jp2p.jxta.context.Jp2pContainerPreferences;
+import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
+import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 
 import org.chaupal.jp2p.ui.property.databinding.ComboDataBinding;
 import org.chaupal.jp2p.ui.property.databinding.IJp2pDatabinding;

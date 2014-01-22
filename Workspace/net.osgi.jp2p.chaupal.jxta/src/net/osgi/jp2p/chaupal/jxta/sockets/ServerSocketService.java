@@ -19,9 +19,9 @@ import java.text.MessageFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import net.jp2p.container.component.AbstractJp2pService;
+import net.jp2p.container.utils.IOUtils;
 import net.jxta.socket.JxtaServerSocket;
-import net.osgi.jp2p.component.AbstractJp2pService;
-import net.osgi.jp2p.utils.IOUtils;
 
 public class ServerSocketService extends AbstractJp2pService<JxtaServerSocket> implements Runnable{
 

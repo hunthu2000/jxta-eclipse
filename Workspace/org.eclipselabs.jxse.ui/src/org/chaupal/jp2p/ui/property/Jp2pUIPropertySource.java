@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import net.osgi.jp2p.properties.AbstractJp2pPropertySource;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pPropertySource;
-import net.osgi.jp2p.properties.ManagedProperty;
+import net.jp2p.container.properties.AbstractJp2pPropertySource;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.properties.ManagedProperty;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -31,6 +31,12 @@ public class Jp2pUIPropertySource implements IPropertySource {
 		this.defaultText = defaultText;
 		this.source = source;
 	}
+
+	
+	public String getDefaultText() {
+		return defaultText;
+	}
+
 
 	@Override
 	public Object getEditableValue() {

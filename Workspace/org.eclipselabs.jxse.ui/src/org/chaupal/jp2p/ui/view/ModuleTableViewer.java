@@ -1,6 +1,6 @@
 package org.chaupal.jp2p.ui.view;
 
-import net.osgi.jp2p.component.IJp2pComponent;
+import net.jp2p.container.component.IJp2pComponent;
 
 import org.chaupal.jp2p.ui.monitor.ConnectivityViewPart;
 import org.eclipse.jface.action.IMenuManager;

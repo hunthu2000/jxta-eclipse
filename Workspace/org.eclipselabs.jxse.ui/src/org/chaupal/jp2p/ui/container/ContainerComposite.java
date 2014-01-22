@@ -12,14 +12,14 @@ package org.chaupal.jp2p.ui.container;
 
 import java.net.URI;
 
+import net.jp2p.container.Jp2pContainerPropertySource;
+import net.jp2p.container.IJxseServiceContainer.ContextProperties;
+import net.jp2p.container.properties.IJp2pDirectives;
+import net.jp2p.container.properties.IJp2pDirectives.Directives;
+import net.jp2p.container.utils.Utils;
+import net.jp2p.container.validator.StringValidator;
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.osgi.jp2p.container.Jp2pContainerPropertySource;
-import net.osgi.jp2p.container.IJxseServiceContainer.ContextProperties;
-import net.osgi.jp2p.jxta.context.Jp2pContainerPreferences;
-import net.osgi.jp2p.properties.IJp2pDirectives;
-import net.osgi.jp2p.properties.IJp2pDirectives.Directives;
-import net.osgi.jp2p.utils.Utils;
-import net.osgi.jp2p.validator.StringValidator;
+import net.jp2p.jxta.context.Jp2pContainerPreferences;
 
 import org.chaupal.jp2p.ui.property.databinding.ComboDataBinding;
 import org.chaupal.jp2p.ui.property.databinding.SpinnerDataBinding;

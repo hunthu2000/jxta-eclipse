@@ -1,8 +1,8 @@
 package org.chaupal.jp2p.ui.provider;
 
+import net.jp2p.container.component.AbstractJp2pService;
+import net.jp2p.container.component.IJp2pComponent;
 import net.osgi.jp2p.chaupal.utils.Utils;
-import net.osgi.jp2p.component.AbstractJp2pService;
-import net.osgi.jp2p.component.IJp2pComponent;
 
 import org.chaupal.jp2p.ui.image.StatusImages;
 import org.chaupal.jp2p.ui.image.StatusImages.Images;

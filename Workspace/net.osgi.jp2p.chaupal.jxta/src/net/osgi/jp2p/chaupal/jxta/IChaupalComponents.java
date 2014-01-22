@@ -10,8 +10,8 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.jxta;
 
-import net.osgi.jp2p.factory.IJp2pComponents;
-import net.osgi.jp2p.utils.StringStyler;
+import net.jp2p.container.factory.IJp2pComponents;
+import net.jp2p.container.utils.StringStyler;
 
 public interface IChaupalComponents{
 

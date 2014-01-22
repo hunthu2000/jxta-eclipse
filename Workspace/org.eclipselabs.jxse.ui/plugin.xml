@@ -32,7 +32,7 @@
          </adapter>
       </factory>
       <factory
-            adaptableType="net.osgi.jp2p.component.IJp2pComponent"
+            adaptableType="net.jp2p.container.component.IJp2pComponent"
             class="org.chaupal.jp2p.ui.property.Jp2pComponentAdapterFactory">
          <adapter
                type="org.eclipse.ui.views.properties.IPropertySource">
@@ -122,7 +122,7 @@
          <triggerPoints>
             <or>
                <instanceof
-                     value="net.osgi.jp2p.component.IJp2pComponent">
+                     value="net.jp2p.container.component.IJp2pComponent">
                </instanceof>
             </or>
          </triggerPoints>
@@ -166,7 +166,7 @@
          <triggerPoints>
             <or>
                <instanceof
-                     value="net.osgi.jp2p.component.IJp2pComponent">
+                     value="net.jp2p.container.component.IJp2pComponent">
                </instanceof>
             </or>
          </triggerPoints>
@@ -186,7 +186,7 @@
          <triggerPoints>
             <or>
                <instanceof
-                     value="net.osgi.jp2p.container.Swarm">
+                     value="net.jp2p.container.Swarm">
                </instanceof>
             </or>
          </triggerPoints>

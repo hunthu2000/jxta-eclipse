@@ -1,6 +1,6 @@
 package org.chaupal.jp2p.ui.network;
 
-import net.osgi.jp2p.utils.Utils;
+import net.jp2p.container.utils.Utils;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;

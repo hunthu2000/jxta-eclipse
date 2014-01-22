@@ -1,9 +1,9 @@
 package org.chaupal.jp2p.ui.property.databinding;
 
-import net.osgi.jp2p.properties.IJp2pWritePropertySource;
-import net.osgi.jp2p.properties.ManagedProperty;
-import net.osgi.jp2p.properties.ManagedPropertyEvent;
-import net.osgi.jp2p.utils.Utils;
+import net.jp2p.container.properties.IJp2pWritePropertySource;
+import net.jp2p.container.properties.ManagedProperty;
+import net.jp2p.container.properties.ManagedPropertyEvent;
+import net.jp2p.container.utils.Utils;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;

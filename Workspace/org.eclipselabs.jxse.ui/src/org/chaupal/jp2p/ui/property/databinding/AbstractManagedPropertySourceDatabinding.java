@@ -3,9 +3,9 @@ package org.chaupal.jp2p.ui.property.databinding;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 
-import net.osgi.jp2p.properties.IJp2pValidator;
-import net.osgi.jp2p.properties.IManagedPropertyListener;
-import net.osgi.jp2p.properties.ManagedProperty;
+import net.jp2p.container.properties.IJp2pValidator;
+import net.jp2p.container.properties.IManagedPropertyListener;
+import net.jp2p.container.properties.ManagedProperty;
 
 public abstract class AbstractManagedPropertySourceDatabinding<T,U> implements
 		IManagedPropertyListener<T, U>, SelectionListener, IJp2pDatabinding<T, U> {

@@ -10,10 +10,10 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.core;
 
+import net.jp2p.container.Jp2pServiceContainer;
+import net.jp2p.container.IJxseServiceContainer.ContextProperties;
+import net.jp2p.container.utils.Utils;
 import net.osgi.jp2p.chaupal.activator.AbstractJp2pBundleActivator;
-import net.osgi.jp2p.container.Jp2pServiceContainer;
-import net.osgi.jp2p.container.IJxseServiceContainer.ContextProperties;
-import net.osgi.jp2p.utils.Utils;
 
 import org.eclipselabs.osgi.ds.broker.service.AbstractAttendeeProviderComponent;
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;

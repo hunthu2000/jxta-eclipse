@@ -10,19 +10,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
+import net.jp2p.container.Jp2pServiceContainer;
+import net.jp2p.container.component.ComponentChangedEvent;
+import net.jp2p.container.component.IComponentChangedListener;
+import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.component.IJp2pComponentNode;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.utils.Utils;
 import net.osgi.jp2p.chaupal.IServiceChangedListener.ServiceChange;
 import net.osgi.jp2p.chaupal.ServiceChangedEvent;
 import net.osgi.jp2p.chaupal.ServiceEventDispatcher;
 import net.osgi.jp2p.chaupal.comparator.Jp2pServiceComparator;
 import net.osgi.jp2p.chaupal.core.Jp2pDSComponent;
-import net.osgi.jp2p.component.ComponentChangedEvent;
-import net.osgi.jp2p.component.IComponentChangedListener;
-import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.component.IJp2pComponentNode;
-import net.osgi.jp2p.container.Jp2pServiceContainer;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pPropertySource;
-import net.osgi.jp2p.utils.Utils;
 
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
 import org.eclipselabs.osgi.ds.broker.service.AbstractPetitioner;

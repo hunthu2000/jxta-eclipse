@@ -1,10 +1,10 @@
 package org.chaupal.jp2p.ui.container;
 
+import net.jp2p.container.component.IJp2pComponent;
 import net.osgi.jp2p.chaupal.IServiceChangedListener;
 import net.osgi.jp2p.chaupal.ServiceChangedEvent;
 import net.osgi.jp2p.chaupal.ServiceEventDispatcher;
 import net.osgi.jp2p.chaupal.utils.Utils;
-import net.osgi.jp2p.component.IJp2pComponent;
 
 import org.chaupal.jp2p.ui.osgi.service.Jp2pServiceContainerPetitioner;
 import org.eclipselabs.osgi.ds.broker.service.IParlezListener;
@@ -113,7 +113,7 @@ public class Jp2pContainerNavigator extends CommonNavigator{
 		Object element = ss.getFirstElement();
 		if(!( element instanceof IJp2pComponent<?>))
 			return;
-		IJp2pComponent<?> component = (net.osgi.jp2p.component.IJp2pComponent<Object>)element;
+		IJp2pComponent<?> component = (net.jp2p.container.component.IJp2pComponent<Object>)element;
 		setContentDescription( Utils.getLabel(component));
 	}
 	

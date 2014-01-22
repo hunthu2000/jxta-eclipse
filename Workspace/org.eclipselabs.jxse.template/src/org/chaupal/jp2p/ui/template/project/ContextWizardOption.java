@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.chaupal.jp2p.ui.template.project;
 
-import net.osgi.jp2p.container.Jp2pContainerPropertySource;
-import net.osgi.jp2p.utils.StringStyler;
+import net.jp2p.container.Jp2pContainerPropertySource;
+import net.jp2p.container.utils.StringStyler;
 
 import org.eclipse.pde.ui.templates.TemplateOption;
 import org.eclipse.swt.widgets.Composite;

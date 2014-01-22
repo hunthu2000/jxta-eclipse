@@ -1,13 +1,13 @@
 package org.chaupal.jp2p.ui.rendezvous;
 
+import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.log.Jp2pLevel;
 import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkManager.ConfigMode;
 import net.jxta.rendezvous.RendezVousService;
 import net.jxta.rendezvous.RendezvousEvent;
 import net.jxta.rendezvous.RendezvousListener;
-import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.log.Jp2pLevel;
 
 import org.chaupal.jp2p.ui.log.Jp2pLog;
 import org.chaupal.jp2p.ui.monitor.ConnectivityViewPart;

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import net.jp2p.container.component.IJp2pComponent;
 import net.jxta.peergroup.PeerGroup;
-import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
+import net.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 
 import org.chaupal.jp2p.ui.provider.DecoratorLabelProvider;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;

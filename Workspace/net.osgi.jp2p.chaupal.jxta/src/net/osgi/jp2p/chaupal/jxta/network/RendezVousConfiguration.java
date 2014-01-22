@@ -16,8 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.jp2p.container.component.IJp2pComponent;
 import net.jxta.platform.NetworkConfigurator;
-import net.osgi.jp2p.component.IJp2pComponent;
 
 public class RendezVousConfiguration {
 

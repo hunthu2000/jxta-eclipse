@@ -12,18 +12,18 @@ package net.osgi.jp2p.chaupal.jxta.network;
 
 import java.util.logging.Logger;
 
+import net.jp2p.container.component.AbstractJp2pService;
+import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.component.Jp2pComponent;
+import net.jp2p.container.factory.AbstractComponentFactory;
+import net.jp2p.container.log.Jp2pLevel;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jxta.rendezvous.RendezVousService;
 import net.jxta.rendezvous.RendezvousEvent;
 import net.jxta.rendezvous.RendezvousListener;
 import net.osgi.jp2p.chaupal.ServiceEventDispatcher;
-import net.osgi.jp2p.component.AbstractJp2pService;
-import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.component.Jp2pComponent;
-import net.osgi.jp2p.factory.AbstractComponentFactory;
-import net.osgi.jp2p.jxta.netpeergroup.NetPeerGroupService;
-import net.osgi.jp2p.log.Jp2pLevel;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.properties.IJp2pPropertySource;
+import net.jp2p.jxta.netpeergroup.NetPeerGroupService;
 
 public class RendezVousComponent extends AbstractJp2pService<RendezVousService> implements RendezvousListener, IRendezVousComponent{
 

@@ -1,7 +1,7 @@
 package net.osgi.jp2p.chaupal.jxta.network;
 
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.utils.StringStyler;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.utils.StringStyler;
 
 public interface IRendezVousComponent {
 

@@ -22,10 +22,10 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import net.jp2p.container.component.AbstractJp2pService;
+import net.jp2p.container.utils.IOUtils;
 import net.jxta.platform.NetworkManager;
 import net.jxta.socket.JxtaSocket;
-import net.osgi.jp2p.component.AbstractJp2pService;
-import net.osgi.jp2p.utils.IOUtils;
 
 public class SocketService extends AbstractJp2pService<JxtaSocket> implements Runnable{
 

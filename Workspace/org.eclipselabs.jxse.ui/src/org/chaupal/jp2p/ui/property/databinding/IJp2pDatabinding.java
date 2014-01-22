@@ -1,6 +1,6 @@
 package org.chaupal.jp2p.ui.property.databinding;
 
-import net.osgi.jp2p.properties.IJp2pValidator;
+import net.jp2p.container.properties.IJp2pValidator;
 
 public interface IJp2pDatabinding<T, U> {
 

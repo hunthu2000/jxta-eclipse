@@ -3,8 +3,8 @@
  */
 package org.chaupal.jp2p.ui.network;
 
-import net.osgi.jp2p.container.Jp2pContainerPropertySource;
-import net.osgi.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
+import net.jp2p.container.Jp2pContainerPropertySource;
+import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;

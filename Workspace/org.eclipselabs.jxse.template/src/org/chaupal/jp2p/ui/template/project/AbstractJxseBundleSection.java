@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+import net.jp2p.container.Jp2pContainerPropertySource;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.utils.io.IOUtils;
 import net.osgi.jp2p.chaupal.xml.XmlComponentBuilder;
-import net.osgi.jp2p.container.Jp2pContainerPropertySource;
-import net.osgi.jp2p.properties.IJp2pProperties;
-import net.osgi.jp2p.utils.io.IOUtils;
 
 import org.chaupal.jp2p.ui.template.Activator;
 import org.chaupal.jp2p.ui.template.TemplateUtil;

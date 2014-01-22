@@ -15,7 +15,7 @@ package org.chaupal.jp2p.ui.template.config;
 
 import java.util.logging.Logger;
 
-import net.osgi.jp2p.container.Jp2pContainerPropertySource;
+import net.jp2p.container.Jp2pContainerPropertySource;
 
 import org.chaupal.jp2p.ui.template.project.AbstractJxseBundleSection;
 import org.chaupal.jp2p.ui.template.project.ContextWizardOption;

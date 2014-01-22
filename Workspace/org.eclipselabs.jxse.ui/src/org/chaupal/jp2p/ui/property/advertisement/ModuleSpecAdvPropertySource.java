@@ -1,9 +1,9 @@
 package org.chaupal.jp2p.ui.property.advertisement;
 
+import net.jp2p.container.utils.StringStyler;
 import net.jxta.document.Element;
 import net.jxta.platform.ModuleSpecID;
 import net.jxta.protocol.ModuleSpecAdvertisement;
-import net.osgi.jp2p.utils.StringStyler;
 
 import org.chaupal.jp2p.ui.property.AbstractJp2pUIPropertySource;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;

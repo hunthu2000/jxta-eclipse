@@ -14,13 +14,13 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.component.Jp2pComponent;
+import net.jp2p.container.utils.IOUtils;
 import net.jxta.platform.NetworkManager;
 import net.jxta.protocol.PipeAdvertisement;
 import net.jxta.socket.JxtaSocket;
-import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.component.Jp2pComponent;
-import net.osgi.jp2p.jxta.socket.SocketFactory;
-import net.osgi.jp2p.utils.IOUtils;
+import net.jp2p.jxta.socket.SocketFactory;
 
 public class JxtaSocketComponent extends Jp2pComponent<JxtaSocket> {
 

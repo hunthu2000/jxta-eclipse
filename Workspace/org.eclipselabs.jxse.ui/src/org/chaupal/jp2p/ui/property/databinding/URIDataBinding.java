@@ -2,9 +2,9 @@ package org.chaupal.jp2p.ui.property.databinding;
 
 import java.net.URI;
 
-import net.osgi.jp2p.properties.IJp2pWritePropertySource;
-import net.osgi.jp2p.properties.ManagedProperty;
-import net.osgi.jp2p.properties.ManagedPropertyEvent;
+import net.jp2p.container.properties.IJp2pWritePropertySource;
+import net.jp2p.container.properties.ManagedProperty;
+import net.jp2p.container.properties.ManagedPropertyEvent;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Text;

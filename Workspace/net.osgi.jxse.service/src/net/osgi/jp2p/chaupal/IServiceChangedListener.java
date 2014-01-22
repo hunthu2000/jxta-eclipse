@@ -10,7 +10,7 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal;
 
-import net.osgi.jp2p.utils.StringStyler;
+import net.jp2p.container.utils.StringStyler;
 
 public interface IServiceChangedListener {
 

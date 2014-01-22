@@ -1,6 +1,6 @@
 package org.chaupal.jp2p.ui.util;
 
-import net.osgi.jp2p.utils.StringStyler;
+import net.jp2p.container.utils.StringStyler;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;

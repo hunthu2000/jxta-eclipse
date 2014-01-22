@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.properties.IJp2pProperties;
 import net.osgi.jp2p.chaupal.utils.Utils;
-import net.osgi.jp2p.component.IJp2pComponent;
-import net.osgi.jp2p.properties.IJp2pProperties;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -53,11 +53,11 @@ public class Jp2pComponentUIPropertySource implements IPropertySource {
 			String[] split = attribute.split("[.]");
 			if( split.length > 1 ){
 				attribute = split[split.length - 1];
-				if( net.osgi.jp2p.utils.Utils.isNull( category) )
+				if( net.jp2p.container.utils.Utils.isNull( category) )
 					category = key.toString().replace( "." + attribute, "");
 			}
 			textDescriptor = new TextPropertyDescriptor( key, attribute);
-			if( net.osgi.jp2p.utils.Utils.isNull( category ))
+			if( net.jp2p.container.utils.Utils.isNull( category ))
 				category = S_PROPERTY_JP2P_TEXT;
 			textDescriptor.setCategory( category);
 			descriptors.add( textDescriptor);

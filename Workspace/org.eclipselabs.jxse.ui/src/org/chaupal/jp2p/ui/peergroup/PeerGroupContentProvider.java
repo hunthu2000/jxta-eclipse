@@ -1,7 +1,7 @@
 package org.chaupal.jp2p.ui.peergroup;
 
+import net.jp2p.container.Swarm;
 import net.jxta.peergroup.PeerGroup;
-import net.osgi.jp2p.container.Swarm;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
