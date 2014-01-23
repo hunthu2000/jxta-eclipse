@@ -54,7 +54,7 @@ public class OverviewPreferences extends AbstractPreferences<String, Object> imp
 			return null;
 		NetworkConfiguratorProperties id = (NetworkConfiguratorProperties) key;
 		switch( id ){
-		case MODE:
+		case CONFIG_MODE:
 			return ConfigMode.valueOf( value );
 		case STORE_HOME:
 			return  URI.create(value);
@@ -135,7 +135,7 @@ public class OverviewPreferences extends AbstractPreferences<String, Object> imp
 			return false;
 		NetworkConfiguratorProperties id = (NetworkConfiguratorProperties) key;		
 		switch( id ){
-		case MODE:
+		case CONFIG_MODE:
 			configurator.setMode((( ConfigMode )value).ordinal() );
 			break;
 		case PEER_ID:

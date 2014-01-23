@@ -20,13 +20,8 @@ import net.osgi.jp2p.chaupal.jxta.peergroup.ChaupalPeerGroupFactory;
 import net.osgi.jp2p.chaupal.jxta.persistence.OsgiPersistenceFactory;
 import net.osgi.jp2p.chaupal.jxta.pipe.ChaupalPipeFactory;
 import net.jp2p.jxta.discovery.DiscoveryPreferences;
-import net.jp2p.jxta.discovery.DiscoveryServiceFactory;
-import net.jp2p.jxta.netpeergroup.NetPeerGroupFactory;
 import net.jp2p.jxta.network.NetworkManagerPreferences;
-import net.jp2p.jxta.peergroup.PeerGroupFactory;
 import net.jp2p.jxta.peergroup.PeerGroupPreferences;
-import net.jp2p.jxta.pipe.PipeServiceFactory;
-import net.jp2p.jxta.registration.RegistrationServiceFactory;
 
 public class ChaupalContext implements IJp2pContext<Object> {
 
@@ -89,6 +84,8 @@ public class ChaupalContext implements IJp2pContext<Object> {
 			case PEERGROUP_SERVICE:
 				factory = new ChaupalPeerGroupFactory( builder, parentSource );
 				break;
+			case PERSISTENCE_SERVICE:
+				factory = new OsgiPersistenceFactory( builder, parentSource );
 			default:
 				break;
 			}
@@ -100,47 +97,6 @@ public class ChaupalContext implements IJp2pContext<Object> {
 			factory = jc.getFactory(builder, attributes, parentSource, componentName);
 		return factory;
 
-	}
-
-	/**
-	 * Get the default factory for this container
-	 * @param parent
-	 * @param componentName
-	 * @return
-	 */
-	public static IComponentFactory<?> getDefaultFactory( IContainerBuilder builder, String[] attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
-		if( Utils.isNull(componentName))
-			return null;
-		String comp = StringStyler.styleToEnum(componentName);
-		if( !ChaupalComponents.isComponent( comp ))
-			return null;
-		ChaupalComponents component = ChaupalComponents.valueOf(comp);
-		IComponentFactory<?> factory = null;
-		switch( component ){
-		case PERSISTENCE_SERVICE:
-			factory = new OsgiPersistenceFactory( builder, parentSource );
-		case NET_PEERGROUP_SERVICE:
-			factory = new NetPeerGroupFactory( builder, parentSource );
-			break;			
-		case PIPE_SERVICE:
-			factory = new PipeServiceFactory( builder, parentSource );
-			break;			
-		case REGISTRATION_SERVICE:
-			factory = new RegistrationServiceFactory( builder, parentSource );
-			break;
-		case DISCOVERY_SERVICE:
-			factory = new DiscoveryServiceFactory( builder, parentSource );
-			break;			
-		case PEERGROUP_SERVICE:
-			factory = new PeerGroupFactory( builder, parentSource );
-			break;			
-		case ADVERTISEMENT_SERVICE:
-			//factory = new Jp2pAdvertisementFactory<Advertisement>( builder, parentSource );
-			break;
-		default:
-			break;
-		}
-		return factory;
 	}
 
 	@Override
@@ -161,7 +117,7 @@ public class ChaupalContext implements IJp2pContext<Object> {
 		ChaupalComponents component = ChaupalComponents.valueOf(comp);
 		IPropertyConvertor<String, Object> convertor = null;
 		switch( component ){
-		case NET_PEERGROUP_SERVICE:
+			case NET_PEERGROUP_SERVICE:
 			convertor = new NetworkManagerPreferences( source );
 			break;			
 		case DISCOVERY_SERVICE:
@@ -176,6 +132,6 @@ public class ChaupalContext implements IJp2pContext<Object> {
 		default:
 			break;
 		}
-		return convertor;
+		return new JxtaContext().getConvertor(source);
 	}
 }

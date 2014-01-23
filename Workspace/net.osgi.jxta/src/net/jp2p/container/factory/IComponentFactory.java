@@ -11,7 +11,12 @@
 package net.jp2p.container.factory;
 
 public interface IComponentFactory<T extends Object> extends IPropertySourceFactory<T>{
-		
+	
+	/**
+	 * Some services need to start prior to the creation of properties. This can be performed here.
+	 */
+	public void earlyStart();
+	
 	/**
 	 * The completion is not necessarily the same as creating the module. This method has to 
 	 * be called separately;

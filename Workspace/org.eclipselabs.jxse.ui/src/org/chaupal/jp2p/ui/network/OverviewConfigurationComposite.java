@@ -130,10 +130,10 @@ public class OverviewConfigurationComposite extends Composite {
 			this.descriptionText.setText(( String )value );
 
 		this.combo.setItems( Jp2pContainerPreferences.getConfigModes());
-		value = source.getDefault( NetworkConfiguratorProperties.MODE );
+		value = source.getDefault( NetworkConfiguratorProperties.CONFIG_MODE );
 		ConfigMode mode = ( value == null )? ConfigMode.EDGE: (ConfigMode ) value;
 		this.combo.select( mode.ordinal() );
-		new ComboDataBinding<IJp2pProperties, ConfigMode>( NetworkConfiguratorProperties.MODE, source, combo );		
+		new ComboDataBinding<IJp2pProperties, ConfigMode>( NetworkConfiguratorProperties.CONFIG_MODE, source, combo );		
 
 		value = source.getDefault( NetworkConfiguratorProperties.PEER_ID );
 		if( value != null)

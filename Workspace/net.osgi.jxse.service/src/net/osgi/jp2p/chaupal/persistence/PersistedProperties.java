@@ -6,9 +6,11 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
+import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.persistence.AbstractPersistedProperty;
 import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.IPropertyConvertor;
 import net.jp2p.container.properties.ManagedProperty;
@@ -16,12 +18,15 @@ import net.jp2p.container.properties.ManagedProperty;
 public class PersistedProperties extends AbstractPersistedProperty<String>{
 
 	private IScopeContext scope;
-	private IPropertyConvertor<String, Object> convertor;
+	private IJp2pContext<?> context;
 	
-	public PersistedProperties( IScopeContext scope, IPropertyConvertor<String, Object> convertor ) {
-		super();
+	public PersistedProperties( IJp2pWritePropertySource<IJp2pProperties> source, IScopeContext scope ) {
+		super( source );
 		this.scope = scope;
-		this.convertor = convertor;
+	}
+
+	public void setContext(IJp2pContext<?> context) {
+		this.context = context;
 	}
 
 	/**
@@ -29,15 +34,12 @@ public class PersistedProperties extends AbstractPersistedProperty<String>{
 	 * @param id
 	 * @return
 	 */
-	public String getProperty( IJp2pProperties id ){
-		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getSource();
-		ManagedProperty<IJp2pProperties, Object> mp = source.getManagedProperty(id);
-		if( !ManagedProperty.isPersisted(mp))
-			return source.getProperty(id).toString();
+	public String getProperty( IJp2pPropertySource<IJp2pProperties> source, IJp2pProperties id ){
 		IPreferencesService service = Platform.getPreferencesService();
-		Preferences pref1 = scope.getNode( AbstractJp2pPropertySource.getBundleId(source));
+		Preferences pref1 = scope.getNode( AbstractJp2pPropertySource.getBundleId(source) + "." + AbstractJp2pPropertySource.getIdentifier(source));
 		Preferences[] nodes = new Preferences[] {pref1};
-		String defaultValue = convertor.convertFrom( mp.getKey() );
+		IPropertyConvertor<String, Object> convertor = context.getConvertor((IJp2pWritePropertySource<IJp2pProperties>) source);
+		String defaultValue = convertor.convertFrom( id );
 		String value = service.get( id.toString(), defaultValue, nodes );
 		return value;
 	}
@@ -48,12 +50,11 @@ public class PersistedProperties extends AbstractPersistedProperty<String>{
 	 * @param value
 	 * @return
 	 */
-	public boolean setProperty( IJp2pProperties id, String value ){
-		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getSource();
+	public boolean setProperty( IJp2pPropertySource<IJp2pProperties> source, IJp2pProperties id, String value ){
 		ManagedProperty<IJp2pProperties, Object> mp = source.getManagedProperty(id);
 		if( !ManagedProperty.isPersisted(mp))
 			return false;
-		Preferences pref1 = scope.getNode( AbstractJp2pPropertySource.getBundleId(source));
+		Preferences pref1 = scope.getNode( AbstractJp2pPropertySource.getBundleId(source) + "." + AbstractJp2pPropertySource.getIdentifier(source));
 		pref1.put( id.toString(), value.toString());
 		try {
 			pref1.flush();

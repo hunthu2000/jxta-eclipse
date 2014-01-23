@@ -57,7 +57,12 @@ public abstract class AbstractComponentFactory<T extends Object> extends Abstrac
 	public boolean isCompleted(){
 		return this.completed;
 	}
-	
+
+	/**
+	 * Some services need to start prior to the creation of properties. This can be performed here.
+	 */
+	public void earlyStart(){ /* DO NOTHING */};
+
 	/**
 	 * All the directives are parsed prior to creating the factory 
 	 * @param directive

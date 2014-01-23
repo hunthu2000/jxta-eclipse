@@ -121,7 +121,7 @@ public class NetworkConfiguratorPropertySource extends AbstractJp2pUIPropertySou
 				spd = ( SpinnerPropertyDescriptor )descriptor;
 				spd.setEnabled( this.isEditable(property));
 				break;				
-			case MODE:
+			case CONFIG_MODE:
 				descriptor = new ComboBoxPropertyDescriptor( property, parsed[1], EnumUtils.toString( ConfigMode.values() ));				
 				break;
 			case HTTP_8ENABLED:
@@ -164,7 +164,7 @@ public class NetworkConfiguratorPropertySource extends AbstractJp2pUIPropertySou
 			return S_NO_READ_VALUE;
 		case HOME:
 			return configurator.getHome();
-		case MODE:
+		case CONFIG_MODE:
 			return configurator.getMode();
 		case HTTP_8PUBLIC_ADDRESS:
 			return configurator.getHttpPublicAddress();
@@ -391,7 +391,7 @@ public class NetworkConfiguratorPropertySource extends AbstractJp2pUIPropertySou
 		case INFRASTRUCTURE_8NAME:
 			configurator.setInfrastructureName( (String) value);
 			return;
-		case MODE:
+		case CONFIG_MODE:
 			configurator.setMode( (int) value);
 			return;
 		case MULTICAST_8ADDRESS:

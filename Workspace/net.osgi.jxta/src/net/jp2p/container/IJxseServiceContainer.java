@@ -20,10 +20,6 @@ public interface IJxseServiceContainer<T extends Object> extends IJp2pComponentN
 	public enum ContextProperties implements IJp2pProperties{
 		BUNDLE_ID,
 		HOME_FOLDER,
-		CONFIG_MODE,
-		PORT,
-		PEER_ID,
-		RENDEZVOUZ_AUTOSTART,
 		PASS_1,
 		PASS_2;
 

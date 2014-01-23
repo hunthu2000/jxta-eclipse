@@ -5,6 +5,7 @@ import java.util.Stack;
 
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.AbstractComponentFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
@@ -21,10 +22,9 @@ import net.jp2p.container.properties.ManagedProperty;
 
 public class SimplePersistenceFactory extends AbstractComponentFactory<IManagedPropertyListener<IJp2pProperties, Object>> {
 
-	PersistenceService<String,Object> service;
 	private Stack<IPropertyEventDispatcher> stack;
 	
-	private IComponentFactoryFilter filter = new BuilderEventFilter<IJp2pComponent<IManagedPropertyListener<IJp2pProperties, Object>>>( BuilderEvents.PROPERTY_SOURCE_CREATED, this );
+	private IComponentFactoryFilter filter = new BuilderEventFilter<IJp2pComponent<IManagedPropertyListener<IJp2pProperties, Object>>>( BuilderEvents.PROPERTY_SOURCE_PREPARED, this );
 
 	
 	public SimplePersistenceFactory(IContainerBuilder builder,
@@ -39,7 +39,7 @@ public class SimplePersistenceFactory extends AbstractComponentFactory<IManagedP
 		return source;
 	}
 
-	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		if( !filter.accept(event))
@@ -53,6 +53,7 @@ public class SimplePersistenceFactory extends AbstractComponentFactory<IManagedP
 		if(!( event.getFactory().getPropertySource() instanceof IPropertyEventDispatcher))
 			return;
 		IPropertyEventDispatcher dispatcher = (IPropertyEventDispatcher) event.getFactory().getPropertySource();
+		PersistenceService<String,Object> service = (PersistenceService<String, Object>) super.getComponent();
 		if( service == null )
 			stack.push( dispatcher );
 		else
@@ -73,7 +74,7 @@ public class SimplePersistenceFactory extends AbstractComponentFactory<IManagedP
 				continue;
 			IPersistedProperties<String> properties = new PersistedProperties( (IJp2pWritePropertySource<IJp2pProperties>) source );
 			IPropertyConvertor<String, Object> convertor = new Jp2pContext().getConvertor((IJp2pWritePropertySource<IJp2pProperties>) source); 
-			properties.setProperty(id, convertor.convertFrom( id ));	
+			properties.setProperty( source, id, convertor.convertFrom( id ));	
 		}
 	}
 	
@@ -86,8 +87,8 @@ public class SimplePersistenceFactory extends AbstractComponentFactory<IManagedP
 	protected IJp2pComponent<IManagedPropertyListener<IJp2pProperties, Object>> onCreateComponent(
 			IJp2pPropertySource<IJp2pProperties> source) {
 		IPersistedProperties<String> properties = new PersistedProperties( (IJp2pWritePropertySource<IJp2pProperties>) source );
-		IPropertyConvertor<String, Object> convertor = new Jp2pContext().getConvertor((IJp2pWritePropertySource<IJp2pProperties>) source); 
-		service = new PersistenceService<String,Object>( (IJp2pWritePropertySource<IJp2pProperties>) source, properties, convertor );
+		IJp2pContext<?> context = new Jp2pContext(); 
+		PersistenceService<String,Object> service = new PersistenceService<String,Object>( (IJp2pWritePropertySource<IJp2pProperties>) source, properties, context );
 		while( stack.size() > 0)
 			service.addDispatcher( stack.pop() );
 		service.start();

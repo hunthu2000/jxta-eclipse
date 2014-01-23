@@ -41,14 +41,23 @@ public interface IPropertySourceFactory<T extends Object> extends ICompositeBuil
 	public IJp2pPropertySource<IJp2pProperties> getPropertySource();
 
 	/**
+	 * Step 1:
 	 * Get the property source that is used for the factor
 	 * @return
 	 */
 	public IJp2pPropertySource<IJp2pProperties> createPropertySource();
 	
 	/**
+	 * Step 2:
 	 * This method is called after the property sources have been created,
 	 * to allow other factories to be added as well.
 	 */
 	public void extendContainer();
+	
+	/**
+	 * Step 3:
+	 * Parse the properties
+	 */
+	public void parseProperties();
+
 }

@@ -19,6 +19,7 @@ public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropert
 	public enum NetworkConfiguratorProperties implements IJp2pProperties{
 		DESCRIPTION,
 		HOME,
+		CONFIG_MODE,
 		HTTP_8ENABLED,
 		HTTP_8INCOMING_STATUS,
 		HTTP_8INTERFACE_ADDRESS,
@@ -40,7 +41,6 @@ public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropert
 		INFRASTRUCTURE_8NAME,
 		INFRASTRUCTURE_8DESCRIPTION,
 		INFRASTRUCTURE_8ID,
-		MODE,
 		MULTICAST_8ENABLED,
 		MULTICAST_8ADDRESS,
 		MULTICAST_8INTERFACE,
@@ -106,7 +106,6 @@ public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropert
 				super.setProperty(nmp, value, true);
 			}
 		}
-		super.setProperty( NetworkConfiguratorProperties.TCP_8PORT, source.getTcpPort());
 		super.setProperty( NetworkConfiguratorProperties.TCP_8ENABLED, true );
 		super.setProperty( NetworkConfiguratorProperties.HTTP_8ENABLED, true );
 	}
@@ -136,8 +135,6 @@ public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropert
 		switch( context ){
 		case NAME:
 			return NetworkManagerProperties.INSTANCE_NAME;
-		case MODE:
-			return NetworkManagerProperties.MODE;
 		case HOME:
 			return NetworkManagerProperties.INSTANCE_HOME;
 		case PEER_ID:
@@ -161,8 +158,6 @@ public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropert
 		switch( id ){
 		case INSTANCE_NAME:
 			return NetworkConfiguratorProperties.NAME;			
-		case MODE:
-			return NetworkConfiguratorProperties.MODE;
 		case INSTANCE_HOME:
 			return NetworkConfiguratorProperties.STORE_HOME;
 		case PEER_ID:

@@ -27,9 +27,23 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 		INFRASTRUCTURE_ID,
 		INSTANCE_HOME,
 		INSTANCE_NAME,
-		MODE,
+		CONFIG_MODE,
 		PEER_ID;
 	
+		/**
+		 * Returns true if the given property is valid for this enumeration
+		 * @param property
+		 * @return
+		 */
+		public static boolean isValidProperty( IJp2pProperties property ){
+			if( property == null )
+				return false;
+			for( NetworkManagerProperties prop: values() ){
+				if( prop.equals( property ))
+					return true;
+			}
+			return false;
+		}
 		@Override
 		public String toString() {
 			return StringStyler.prettyString( super.toString() );
@@ -71,9 +85,23 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 	}
 
 	private void fill( Jp2pContainerPropertySource parent ){
-		Iterator<IJp2pProperties> iterator = parent.propertyIterator();
+		//Get the name from the various options
+		String name = (String) super.getProperty( NetworkManagerProperties.INSTANCE_NAME );
+		if( Utils.isNull( name )){
+			name=  parent.getDirective( Directives.NAME );
+			if( Utils.isNull( name )){
+				name = Jp2pContainerPropertySource.getIdentifier(parent);
+			}else{
+				this.setDirective( Directives.NAME, name );
+			}
+		}	
+		super.setProperty(NetworkManagerProperties.INSTANCE_NAME, name);
+		
+		//Determine the properties and directives to take over from the parent 
 		this.setDirective( Directives.AUTO_START, parent.getDirective( Directives.AUTO_START ));
 		this.setDirective( Directives.CLEAR, parent.getDirective( Directives.CLEAR ));
+		Iterator<IJp2pProperties> iterator = parent.propertyIterator();
+
 		while( iterator.hasNext() ){
 			IJp2pProperties cp =  iterator.next();
 			IJp2pProperties nmp = convertFrom( cp );
@@ -84,10 +112,7 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 				retval = ProjectFolderUtils.getParsedUserDir((String) retval, getBundleId( this ));
 			super.setProperty(nmp, retval, true);
 		}
-		String name=  parent.getDirective( Directives.NAME );
-		super.setProperty(NetworkManagerProperties.INSTANCE_NAME, name);
 	}
-
 	
 	@Override
 	public boolean setDirective(IJp2pDirectives id, String value) {
@@ -105,19 +130,6 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 	public Object getDefault( IJp2pProperties id) {
 		Jp2pContainerPropertySource source = (Jp2pContainerPropertySource) super.getParent();
 		return source.getDefault( convertTo( id ));
-	}
-
-	/**
-	 * Convenience method to transport the TCP port, although it is not strictly a property of the
-	 * network manager 
-	 * @return
-	 */
-	public int getTcpPort(){
-		Jp2pContainerPropertySource source = (Jp2pContainerPropertySource) super.getParent();
-		Object port = source.getProperty( ContextProperties.PORT );
-		if( port == null )
-			return 0;
-		return ( Integer )port;
 	}
 	
 	@Override
@@ -137,12 +149,8 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 			return context;
 		ContextProperties key = (ContextProperties) context;
 		switch( key ){
-		case CONFIG_MODE:
-			return NetworkManagerProperties.MODE;
 		case HOME_FOLDER:
 			return NetworkManagerProperties.INSTANCE_HOME;
-		case PEER_ID:
-			return NetworkManagerProperties.PEER_ID;
 		default:
 			break;
 		}
@@ -160,12 +168,8 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 			return null;
 		NetworkManagerProperties props = (NetworkManagerProperties) id;
 		switch( props ){
-		case MODE:
-			return ContextProperties.CONFIG_MODE;
 		case INSTANCE_HOME:
 			return ContextProperties.HOME_FOLDER;
-		case PEER_ID:
-			return ContextProperties.PEER_ID;
 		default:
 			break;
 		}

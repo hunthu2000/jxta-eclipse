@@ -63,13 +63,13 @@ public class DiscoveryPropertySource extends AbstractJp2pWritePropertySource
 	}
 
 	protected void fillDefaultValues( IJp2pPropertySource<IJp2pProperties> parent) {
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.MODE, DiscoveryMode.COUNT, false ));
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.COUNT, DEFAULT_COUNT, false ));
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.WAIT_TIME, DEFAULT_WAIT_TIME, false ));
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.PEER_ID, null, false ));
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.ATTRIBUTE, S_NAME, false ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, DiscoveryProperties.MODE, DiscoveryMode.COUNT, false ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, DiscoveryProperties.COUNT, DEFAULT_COUNT, false ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, DiscoveryProperties.WAIT_TIME, DEFAULT_WAIT_TIME, false ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, DiscoveryProperties.PEER_ID, null, false ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, DiscoveryProperties.ATTRIBUTE, S_NAME, false ));
 		AdvertisementTypes type = AdvertisementTypes.convertFrom( parent.getDirective( AdvertisementDirectives.TYPE ));
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.ADVERTISEMENT_TYPE, type, false ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, DiscoveryProperties.ADVERTISEMENT_TYPE, type, false ));
 		String wildcard = "*";
 		switch( type ){
 		case PEER:
@@ -81,10 +81,10 @@ public class DiscoveryPropertySource extends AbstractJp2pWritePropertySource
 		default:
 			break;
 		}
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.WILDCARD, wildcard, false ));
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.THRESHOLD, DEFAULT_THRESHOLD, false ));
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.COUNTER, 0, S_RUNTIME, false ));
-		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( DiscoveryProperties.FOUND, 0, S_RUNTIME, false ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, DiscoveryProperties.WILDCARD, wildcard, false ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, DiscoveryProperties.THRESHOLD, DEFAULT_THRESHOLD, false ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, DiscoveryProperties.COUNTER, 0, S_RUNTIME, false ));
+		this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, DiscoveryProperties.FOUND, 0, S_RUNTIME, false ));
 	}
 
 	@Override

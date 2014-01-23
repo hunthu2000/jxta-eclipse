@@ -111,10 +111,10 @@ public class AdvertisementServicePropertySource extends AdvertisementPropertySou
 		super.setDirective(Directives.BLOCK_CREATION, Boolean.FALSE.toString());
 		super.setDirective(AdvertisementDirectives.TYPE, parent.getDirective( AdvertisementDirectives.TYPE ));
 		super.setDirective(AdvertisementDirectives.PEERGROUP, parent.getDirective( AdvertisementDirectives.PEERGROUP ));
-		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementServiceProperties.LIFE_TIME, PeerGroup.DEFAULT_LIFETIME ));
-		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementServiceProperties.EXPIRATION, PeerGroup.DEFAULT_EXPIRATION ));	
-		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementServiceProperties.MODE, AdvertisementMode.DISCOVERY_AND_PUBLISH, true ));
-		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( AdvertisementServiceProperties.SCOPE, Scope.REMOTE ));
+		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, AdvertisementServiceProperties.LIFE_TIME, PeerGroup.DEFAULT_LIFETIME ));
+		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, AdvertisementServiceProperties.EXPIRATION, PeerGroup.DEFAULT_EXPIRATION ));	
+		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, AdvertisementServiceProperties.MODE, AdvertisementMode.DISCOVERY_AND_PUBLISH, true ));
+		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, AdvertisementServiceProperties.SCOPE, Scope.REMOTE ));
 	}
 	
 	@Override

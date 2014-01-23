@@ -55,7 +55,7 @@ public class PeerGroupAdvertisementPropertySource extends AdvertisementPropertyS
 			name = (String) super.getParent().getProperty( ModuleImplProperties.CODE );
 		}
 		if(!Utils.isNull( name )){
-			this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( ModuleImplProperties.CODE, name ));
+			this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, ModuleImplProperties.CODE, name ));
 		}
 	}
 

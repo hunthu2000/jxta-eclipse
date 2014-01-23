@@ -18,15 +18,13 @@ import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.ManagedProperty;
-import net.jp2p.jxta.network.INetworkManagerPreferences;
 import net.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.jxta.id.IDFactory;
 import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
 import net.jxta.platform.NetworkManager.ConfigMode;
 
-public class NetworkManagerPreferences extends AbstractPreferences<String, Object> implements INetworkManagerPreferences
-{
+public class NetworkManagerPreferences extends AbstractPreferences<String, Object>{
 	public NetworkManagerPreferences( IJp2pWritePropertySource<IJp2pProperties> source )
 	{
 		super( source );
@@ -38,27 +36,26 @@ public class NetworkManagerPreferences extends AbstractPreferences<String, Objec
 	/* (non-Javadoc)
 	 * @see net.osgi.jxse.network.INetworkManagerPropertySource#getConfigMode()
 	 */
-	@Override
 	public ConfigMode getConfigMode( ){
 		IJp2pPropertySource<IJp2pProperties> source = super.getSource();
-		return ( ConfigMode ) source.getProperty( NetworkManagerProperties.MODE );
+		return ( ConfigMode ) source.getProperty( NetworkManagerProperties.CONFIG_MODE );
 	}
 
 	/* (non-Javadoc)
 	 * @see net.osgi.jxse.network.INetworkManagerPropertySource#setConfigMode(net.jxta.platform.NetworkManager.ConfigMode)
 	 */
-	@Override
 	public void setConfigMode( ConfigMode mode ){
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getSource();
-		source.setProperty( NetworkManagerProperties.MODE, mode );
+		source.setProperty( NetworkManagerProperties.CONFIG_MODE, mode );
 	}
 
 	/* (non-Javadoc)
 	 * @see net.osgi.jxse.network.INetworkManagerPropertySource#setConfigMode(java.lang.String)
 	 */
-	@Override
-	public void setConfigMode( String mode ){
-		this.setConfigMode( ConfigMode.valueOf(mode ));
+	public ConfigMode setConfigMode( String mstr ){
+		ConfigMode mode = ConfigMode.valueOf(mstr );
+		this.setConfigMode(mode );
+		return mode;
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +64,6 @@ public class NetworkManagerPreferences extends AbstractPreferences<String, Objec
 	/* (non-Javadoc)
 	 * @see net.osgi.jxse.network.INetworkManagerPropertySource#getHomeFolder()
 	 */
-	@Override
 	public URI getHomeFolder( ) throws URISyntaxException{
 		IJp2pPropertySource<IJp2pProperties> source = super.getSource();
 		return (URI)source.getProperty( NetworkManagerProperties.INSTANCE_HOME );
@@ -76,7 +72,6 @@ public class NetworkManagerPreferences extends AbstractPreferences<String, Objec
 	/* (non-Javadoc)
 	 * @see net.osgi.jxse.network.INetworkManagerPropertySource#setHomeFolder(java.net.URI)
 	 */
-	@Override
 	public void setHomeFolder( URI homeFolder ){
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getSource();
 		source.setProperty( NetworkManagerProperties.INSTANCE_HOME, homeFolder );
@@ -85,7 +80,6 @@ public class NetworkManagerPreferences extends AbstractPreferences<String, Objec
 	/* (non-Javadoc)
 	 * @see net.osgi.jxse.network.INetworkManagerPropertySource#setHomeFolder(java.lang.String)
 	 */
-	@Override
 	public void setHomeFolder( String homeFolder ){
 		String folder = homeFolder;
 		String[] split = homeFolder.split("[$]");
@@ -102,7 +96,6 @@ public class NetworkManagerPreferences extends AbstractPreferences<String, Objec
 	/* (non-Javadoc)
 	 * @see net.osgi.jxse.network.INetworkManagerPropertySource#getPeerID()
 	 */
-	@Override
 	public PeerID getPeerID() throws URISyntaxException{
 		NetworkManagerPropertySource source = (NetworkManagerPropertySource) super.getSource();
 		String name = NetworkManagerPropertySource.getIdentifier( source );
@@ -116,7 +109,6 @@ public class NetworkManagerPreferences extends AbstractPreferences<String, Objec
 	/* (non-Javadoc)
 	 * @see net.osgi.jxse.network.INetworkManagerPropertySource#setPeerID(net.jxta.peer.PeerID)
 	 */
-	@Override
 	public void setPeerID( PeerID peerID ){
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getSource();
 		source.setProperty( NetworkManagerProperties.PEER_ID, peerID.toString() );
@@ -125,7 +117,6 @@ public class NetworkManagerPreferences extends AbstractPreferences<String, Objec
 	/* (non-Javadoc)
 	 * @see net.osgi.jxse.network.INetworkManagerPropertySource#getInstanceName()
 	 */
-	@Override
 	public String getInstanceName(){
 		IJp2pPropertySource<IJp2pProperties> source = super.getSource();
 		return (String) source.getProperty( NetworkManagerProperties.INSTANCE_NAME );
@@ -134,7 +125,6 @@ public class NetworkManagerPreferences extends AbstractPreferences<String, Objec
 	/* (non-Javadoc)
 	 * @see net.osgi.jxse.network.INetworkManagerPropertySource#setInstanceName(java.lang.String)
 	 */
-	@Override
 	public void setInstanceName( String name ){
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getSource();
 		source.setProperty( NetworkManagerProperties.INSTANCE_NAME, name );
@@ -169,23 +159,21 @@ public class NetworkManagerPreferences extends AbstractPreferences<String, Objec
 		case INFRASTRUCTURE_ID:
 			return value;
 		case PEER_ID:
-			URI uri;
+			URI uri = null;
 			try {
 				uri = new URI( value );
 				return (PeerID) IDFactory.fromURI( uri );
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
-			break;
+			return uri;
 		case INSTANCE_HOME:
 			this.setHomeFolder(value);
 			return true;
-		case MODE:
-			this.setConfigMode( ConfigMode.valueOf(value));
-			return true;
+		case CONFIG_MODE:
+			return this.setConfigMode( value );
 		default:
 			return false;
 		}
-		return null;
 	}
 }

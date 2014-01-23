@@ -16,6 +16,7 @@ import net.jp2p.container.utils.StringStyler;
 public interface ICompositeBuilderListener<T extends Object> {
 
 	public enum BuilderEvents{
+		PROPERTY_SOURCE_PREPARED,
 		PROPERTY_SOURCE_CREATED,
 		COMPONENT_PREPARED,
 		COMPONENT_CREATED,

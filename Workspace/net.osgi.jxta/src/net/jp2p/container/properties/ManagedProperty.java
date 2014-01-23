@@ -23,6 +23,7 @@ public class ManagedProperty<T, U extends Object> {
 		}
 	}
 	
+	private IJp2pPropertySource<T> source;
 	private T id;
 	private U value, defaultValue;
 	private Map<String, String> attributes;
@@ -33,12 +34,13 @@ public class ManagedProperty<T, U extends Object> {
 	private String category;
 	private Collection<IManagedPropertyListener<T,U>> listeners;
 
-	public ManagedProperty( T id ) {
-		this( id, null, S_DEFAULT_CATEGORY );
+	public ManagedProperty( IJp2pPropertySource<T> source, T id ) {
+		this( source, id, null, S_DEFAULT_CATEGORY );
 	}
 	
-	public ManagedProperty( T id, U value, boolean derived, boolean readOnly, String category ) {
+	public ManagedProperty( IJp2pPropertySource<T> source, T id, U value, boolean derived, boolean readOnly, String category ) {
 		super();
+		this.source = source;
 		this.id = id;
 		this.readOnly = readOnly;
 		this.category = category;
@@ -50,23 +52,12 @@ public class ManagedProperty<T, U extends Object> {
 		this.dirty = false;
 	}
 
-	public ManagedProperty( T id, U value ) {
-		this( id, value, false, true,  S_DEFAULT_CATEGORY );
+	public ManagedProperty( IJp2pPropertySource<T> source, T id, U value ) {
+		this( source, id, value, false, true,  S_DEFAULT_CATEGORY );
 	}
 
-	public ManagedProperty( T id, U value, String category ) {
-		this( id, value, false, true, category );
-	}
-
-	/**
-	 * Create a managed property with the given id and value. If derives is true, it means that the property
-	 * is managed by another one.
-	 * @param id
-	 * @param value
-	 * @param derived
-	 */
-	public ManagedProperty( T id, U value, boolean derived ) {
-		this( id, value, derived, true, S_DEFAULT_CATEGORY );
+	public ManagedProperty( IJp2pPropertySource<T> source, T id, U value, String category ) {
+		this( source, id, value, false, true, category );
 	}
 
 	/**
@@ -76,11 +67,26 @@ public class ManagedProperty<T, U extends Object> {
 	 * @param value
 	 * @param derived
 	 */
-	public ManagedProperty( T id, U value, String category, boolean derived ) {
-		this( id, value, derived );
+	public ManagedProperty( IJp2pPropertySource<T> source, T id, U value, boolean derived ) {
+		this( source, id, value, derived, true, S_DEFAULT_CATEGORY );
+	}
+
+	/**
+	 * Create a managed property with the given id and value. If derives is true, it means that the property
+	 * is managed by another one.
+	 * @param id
+	 * @param value
+	 * @param derived
+	 */
+	public ManagedProperty( IJp2pPropertySource<T> source, T id, U value, String category, boolean derived ) {
+		this( source, id, value, derived );
 		this.category = category;
 	}
-	
+
+	public IJp2pPropertySource<T> getSource() {
+		return source;
+	}
+
 	/**
 	 * Reset the property. This means that the default value beocmes the value and the 'dirty' bit is made false
 	 */
@@ -180,7 +186,7 @@ public class ManagedProperty<T, U extends Object> {
 		return this.setValue(value, PropertyEvents.VALUE_CHANGED );
 	}
 	
-	protected boolean setValue(U value, PropertyEvents event) {
+	public boolean setValue(U value, PropertyEvents event) {
 		this.dirty = (this.value == null ) || ( !this.value.equals( value ));
 		if( !this.dirty )
 			return false;
@@ -246,7 +252,7 @@ public class ManagedProperty<T, U extends Object> {
 		if( property == null )
 			return false;
 		String str = property.getAttribute( ManagedProperty.Attributes.PERSIST.name() );
-		if( !Utils.isNull(str))
+		if( Utils.isNull(str))
 			return false;
 		return Boolean.parseBoolean( property.getAttribute( Attributes.PERSIST.name() ));
 	}
@@ -260,7 +266,7 @@ public class ManagedProperty<T, U extends Object> {
 		if( property == null )
 			return false;
 		String str = property.getAttribute( ManagedProperty.Attributes.CREATE.name().toLowerCase() );
-		if( !Utils.isNull(str))
+		if( Utils.isNull(str))
 			return false;
 		return Boolean.parseBoolean( property.getAttribute( Attributes.CREATE.name().toLowerCase() ));
 

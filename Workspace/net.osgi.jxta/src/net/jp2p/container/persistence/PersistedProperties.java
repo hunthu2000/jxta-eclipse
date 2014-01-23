@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Properties;
 
 import net.jp2p.container.Jp2pContainerPropertySource;
+import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
@@ -27,14 +28,19 @@ public class PersistedProperties extends
 
 	
 	@Override
-	public String getProperty(IJp2pProperties id) {
+	public void setContext(IJp2pContext<?> context) {
+		// TODO Auto-generated method stub		
+	}
+
+
+	@Override
+	public String getProperty(IJp2pPropertySource<IJp2pProperties> source, IJp2pProperties id) {
 		Properties properties = loadProperties( super.getSource() );
 		return (String) properties.getProperty( id.toString() );
 	}
 
 	@Override
-	public boolean setProperty(IJp2pProperties id, String value) {
-		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getSource();
+	public boolean setProperty( IJp2pPropertySource<IJp2pProperties> source, IJp2pProperties id, String value) {
 		Properties properties = loadProperties( super.getSource() );
 		properties.setProperty(id.toString(), value);
 		return saveProperties(source, properties);
@@ -48,13 +54,18 @@ public class PersistedProperties extends
 	 */
 	protected static Properties loadProperties( IJp2pPropertySource<IJp2pProperties> source ){
 		String bundle_id = (String) AbstractJp2pPropertySource.getBundleId( source );
-		String str = ProjectFolderUtils.getParsedUserDir( Jp2pContainerPropertySource.DEF_HOME_FOLDER + File.separator + S_PROPERTIES, bundle_id ).getPath();
+		String str = ProjectFolderUtils.getParsedUserDir( Jp2pContainerPropertySource.DEF_HOME_FOLDER + "/" + S_PROPERTIES, bundle_id ).getPath();
 		File file = new File( str );
-		FileReader reader;
 		Properties properties = new Properties();
+		FileReader reader = null;
 		try {
+			if( !file.exists() ){
+				file.mkdirs();
+				file.createNewFile();
+			}
+
 			reader = new FileReader( file );
-		} catch (FileNotFoundException e1) {
+		} catch (Exception e1) {
 			e1.printStackTrace();
 			return properties;
 		}

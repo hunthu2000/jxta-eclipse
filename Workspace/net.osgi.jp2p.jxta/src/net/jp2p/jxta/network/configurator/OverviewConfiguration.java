@@ -91,7 +91,7 @@ public class OverviewConfiguration {
 		NetworkConfigurationPropertySource source = (NetworkConfigurationPropertySource) factory.getPropertySource();
 		URI uri = null;
 		switch( property ){
-		case MODE:
+		case CONFIG_MODE:
 			source.setProperty( property, ConfigMode.valueOf( value ));
 			retval = true;
 			break;
@@ -125,7 +125,7 @@ public class OverviewConfiguration {
 	 */
 	public static void fillConfigurator( NetworkConfigurator configurator, NetworkConfiguratorProperties property, Object value ){
 		switch( property ){
-		case MODE:
+		case CONFIG_MODE:
 			configurator.setMode(( int ) value );
 			break;
 		case PEER_ID:

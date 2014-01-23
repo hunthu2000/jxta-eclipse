@@ -34,6 +34,8 @@ import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
+import net.jp2p.container.properties.IManagedPropertyListener.PropertyEvents;
+import net.jp2p.container.properties.ManagedProperty;
 import net.jp2p.jxta.factory.JxtaFactoryUtils;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jp2p.jxta.network.NetworkManagerPreferences;
@@ -41,6 +43,9 @@ import net.jp2p.jxta.network.NetworkManagerPropertySource;
 import net.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerDirectives;
 import net.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.jp2p.jxta.peergroup.PeerGroupPropertySource;
+import net.jxta.id.IDFactory;
+import net.jxta.peer.PeerID;
+import net.jxta.peergroup.PeerGroupID;
 import net.jxta.platform.NetworkManager;
 
 public class NetworkManagerFactory extends AbstractFilterFactory<NetworkManager>{
@@ -75,6 +80,25 @@ public class NetworkManagerFactory extends AbstractFilterFactory<NetworkManager>
 		PeerGroupPropertySource npps = (PeerGroupPropertySource) JxtaFactoryUtils.getOrCreateChildFactory( builder, new String[0], super.getParentSource(), JxtaComponents.NET_PEERGROUP_SERVICE.toString(), true ).getPropertySource();
 		npps.setDirective( Directives.AUTO_START, this.getPropertySource().getDirective( Directives.AUTO_START ));
 		super.extendContainer();
+	}
+
+	
+	@Override
+	protected void onParseProperty( ManagedProperty<IJp2pProperties, Object> property) {
+		if(( !ManagedProperty.isCreated(property)) || ( !NetworkManagerProperties.isValidProperty(property.getKey())))
+			return;
+		NetworkManagerProperties id = (NetworkManagerProperties) property.getKey();
+		switch( id ){
+		case PEER_ID:
+			String name = NetworkManagerPropertySource.getIdentifier( super.getPropertySource() );
+			PeerID peerid = IDFactory.newPeerID( PeerGroupID.defaultNetPeerGroupID, name.getBytes() );
+			property.setValue( peerid, PropertyEvents.DEFAULT_VALUE_SET );
+			property.reset();
+			break;
+		default:
+			break;
+		}
+		super.onParseProperty(property);
 	}
 
 	@Override

@@ -10,11 +10,14 @@
  *******************************************************************************/
 package net.jp2p.container.factory;
 
+import java.util.Iterator;
+
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.properties.IJp2pDirectives;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.properties.ManagedProperty;
 
 public abstract class AbstractPropertySourceFactory<T extends Object> implements IPropertySourceFactory<IJp2pComponent<T>>{
 
@@ -64,8 +67,24 @@ public abstract class AbstractPropertySourceFactory<T extends Object> implements
 	 * This method is called after the property sources have been created,
 	 * to allow other factories to be added as well.
 	 */
+	@Override
 	public void extendContainer(){ /* DO NOTHING */}
 
+	/**
+	 * Parse the properties
+	 */
+	public void parseProperties(){
+		Iterator<IJp2pProperties> iterator = source.propertyIterator();
+		while( iterator.hasNext()){
+			this.onParseProperty( source.getManagedProperty( iterator.next()));
+		}
+	}
+	protected void onParseProperty( ManagedProperty<IJp2pProperties, Object> property ){/* DO NOTHING */}
+	
+	/**
+	 * Get the builder
+	 * @return
+	 */
 	protected IContainerBuilder getBuilder() {
 		return container;
 	}
@@ -90,8 +109,10 @@ public abstract class AbstractPropertySourceFactory<T extends Object> implements
 	
 	@Override
 	public IJp2pPropertySource<IJp2pProperties> createPropertySource() {
-		if( this.source == null )
+		if( this.source == null ){
 			this.source = this.onCreatePropertySource();
+			this.updateState( BuilderEvents.PROPERTY_SOURCE_PREPARED );
+		}
 		return source;
 	}
 

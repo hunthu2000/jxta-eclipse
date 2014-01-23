@@ -12,20 +12,13 @@ package net.jp2p.jxta.context;
 
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import net.jp2p.container.IJxseServiceContainer.ContextProperties;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.properties.AbstractJp2pWritePropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.utils.ProjectFolderUtils;
-import net.jp2p.container.utils.Utils;
 import net.jp2p.container.validator.ClassValidator;
-import net.jp2p.container.validator.RangeValidator;
-import net.jxta.id.IDFactory;
-import net.jxta.peer.PeerID;
-import net.jxta.peergroup.PeerGroupID;
-import net.jxta.platform.NetworkManager.ConfigMode;
 
 public class Jp2pContainerPropertySource extends AbstractJp2pWritePropertySource{
 
@@ -38,13 +31,9 @@ public class Jp2pContainerPropertySource extends AbstractJp2pWritePropertySource
 	public Jp2pContainerPropertySource( String bundleId) {
 		super( bundleId, Jp2pContext.Components.JP2P_CONTAINER.toString() );
 		this.setProperty( ContextProperties.BUNDLE_ID, bundleId, 
-				new ClassValidator( ContextProperties.CONFIG_MODE, String.class ), false );
-		this.setProperty( ContextProperties.CONFIG_MODE, ConfigMode.EDGE, 
-				new ClassValidator( ContextProperties.CONFIG_MODE, ConfigMode.class ), false);
+				new ClassValidator( ContextProperties.BUNDLE_ID, String.class ), false );
 		this.setProperty( ContextProperties.HOME_FOLDER, ProjectFolderUtils.getParsedUserDir(DEF_HOME_FOLDER, bundleId),
 				new ClassValidator( ContextProperties.HOME_FOLDER, URI.class ), false);
-		this.setProperty( ContextProperties.PORT, DEF_PORT,
-				new RangeValidator( ContextProperties.PORT, 65535 ), false);
 	}
 
 	/**
@@ -72,25 +61,8 @@ public class Jp2pContainerPropertySource extends AbstractJp2pWritePropertySource
 			str = ProjectFolderUtils.getParsedUserDir( DEF_HOME_FOLDER, bundle_id ).getPath();
 			File file = new File( str );
 			return file.toURI();
-		case CONFIG_MODE:
-			return ConfigMode.EDGE;
-		case RENDEZVOUZ_AUTOSTART:
-			return true;
-		case PEER_ID:
-			str = getIdentifier( this );
-			if( Utils.isNull(str))
-				return null;
-			PeerID pgId = IDFactory.newPeerID( PeerGroupID.defaultNetPeerGroupID, ( str.getBytes() ));
-			try {
-				return (PeerID) IDFactory.fromURI( pgId.toURI() );
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			}
-			break;
 		case BUNDLE_ID:
 			return (String) super.getProperty( ContextProperties.BUNDLE_ID );
-		case PORT:
-			return DEF_PORT;
 		default:
 			break;
 		}

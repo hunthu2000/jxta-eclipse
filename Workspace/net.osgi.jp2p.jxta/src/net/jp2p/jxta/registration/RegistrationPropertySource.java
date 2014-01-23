@@ -52,11 +52,11 @@ public class RegistrationPropertySource extends AbstractJp2pWritePropertySource
 	}
 
 	protected void fillDefaultValues() {
-		this.setManagedProperty( new ManagedProperty< IJp2pProperties, Object>( RegistrationProperties.WAIT_TIME, 60000, true ));
-		this.setManagedProperty( new ManagedProperty< IJp2pProperties, Object>( RegistrationProperties.PEER_ID, null, true ));
-		this.setManagedProperty( new ManagedProperty< IJp2pProperties, Object>( RegistrationProperties.ATTRIBUTE, null, true ));
-		this.setManagedProperty( new ManagedProperty< IJp2pProperties, Object>( RegistrationProperties.WILDCARD, null, true ));
-		this.setManagedProperty( new ManagedProperty< IJp2pProperties, Object>( RegistrationProperties.THRESHOLD, 1, true ));
+		this.setManagedProperty( new ManagedProperty< IJp2pProperties, Object>( this, RegistrationProperties.WAIT_TIME, 60000, true ));
+		this.setManagedProperty( new ManagedProperty< IJp2pProperties, Object>( this, RegistrationProperties.PEER_ID, null, true ));
+		this.setManagedProperty( new ManagedProperty< IJp2pProperties, Object>( this, RegistrationProperties.ATTRIBUTE, null, true ));
+		this.setManagedProperty( new ManagedProperty< IJp2pProperties, Object>( this, RegistrationProperties.WILDCARD, null, true ));
+		this.setManagedProperty( new ManagedProperty< IJp2pProperties, Object>( this, RegistrationProperties.THRESHOLD, 1, true ));
 	}
 
 	@Override

@@ -20,7 +20,6 @@ import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pProperties.Jp2pProperties;
 import net.jp2p.container.utils.ProjectFolderUtils;
 import net.jp2p.container.validator.ClassValidator;
-import net.jp2p.container.validator.RangeValidator;
 
 public class Jp2pContainerPropertySource extends AbstractJp2pWritePropertySource{
 
@@ -36,8 +35,6 @@ public class Jp2pContainerPropertySource extends AbstractJp2pWritePropertySource
 				new ClassValidator( Jp2pProperties.BUNDLE_ID, String.class ), false );
 		this.setProperty( ContextProperties.HOME_FOLDER, ProjectFolderUtils.getParsedUserDir(DEF_HOME_FOLDER, bundleId),
 				new ClassValidator( ContextProperties.HOME_FOLDER, URI.class ), false);
-		this.setProperty( ContextProperties.PORT, DEF_PORT,
-				new RangeValidator( ContextProperties.PORT, 65535 ), false);
 	}
 
 	/**
@@ -65,12 +62,8 @@ public class Jp2pContainerPropertySource extends AbstractJp2pWritePropertySource
 			str = ProjectFolderUtils.getParsedUserDir( DEF_HOME_FOLDER, bundle_id ).getPath();
 			File file = new File( str );
 			return file.toURI();
-		case RENDEZVOUZ_AUTOSTART:
-			return true;
 		case BUNDLE_ID:
 			return (String) super.getProperty( ContextProperties.BUNDLE_ID );
-		case PORT:
-			return DEF_PORT;
 		default:
 			break;
 		}

@@ -32,7 +32,7 @@ extends AbstractJp2pPropertySource implements IJp2pWritePropertySource<IJp2pProp
 	public ManagedProperty<IJp2pProperties,Object> getOrCreateManagedProperty(IJp2pProperties id, Object value, boolean derived ) {
 		ManagedProperty<IJp2pProperties,Object> select = super.getManagedProperty(id);
 		if( select == null ){
-			select = new ManagedProperty<IJp2pProperties, Object>( id, value, derived );
+			select = new ManagedProperty<IJp2pProperties, Object>( this, id, value, derived );
 			super.setManagedProperty( select );
 		}
 		return select;

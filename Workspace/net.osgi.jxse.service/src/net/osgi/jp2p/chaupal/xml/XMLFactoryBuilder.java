@@ -18,7 +18,6 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
@@ -39,13 +38,11 @@ import net.jp2p.container.context.IJp2pContext.ContextDirectives;
 import net.jp2p.container.factory.IJp2pComponents;
 import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.partial.PartialPropertySource;
-import net.jp2p.container.persistence.IPersistedProperties;
 import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pDirectives;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
-import net.jp2p.container.properties.IPropertyConvertor;
 import net.jp2p.container.properties.ManagedProperty;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jp2p.container.seeds.SeedInfo;
@@ -71,7 +68,6 @@ import net.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.jp2p.jxta.pipe.PipePropertySource;
 import net.jp2p.jxta.registration.RegistrationPropertySource;
 import net.jp2p.jxta.seeds.SeedListPropertySource;
-import net.osgi.jp2p.chaupal.persistence.PersistedProperties;
 
 public class XMLFactoryBuilder implements ICompositeBuilder<ContainerFactory>, IFactoryBuilder {
 
@@ -277,7 +273,6 @@ class Jp2pHandler extends DefaultHandler{
 	private String bundleId;
 	private Class<?> clss;
 	private Stack<String> stack;
-	private IJp2pContext<?> context;
 
 	private static Logger logger = Logger.getLogger( XMLFactoryBuilder.class.getName() );
 
@@ -318,6 +313,7 @@ class Jp2pHandler extends DefaultHandler{
 					contexts.addContext( context );
 				return;
 			default:
+				factory = this.getFactory( qName, attributes, node.getData().getPropertySource());
 				break;
 			}
 		}
@@ -439,13 +435,6 @@ class Jp2pHandler extends DefaultHandler{
 
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-		if(( this.property != null ) && ( ManagedProperty.isPersisted(property)) && ( ManagedProperty.isCreated(property))){
-			IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) node.getData().getPropertySource();
-			IPropertyConvertor<String,Object> convertor = context.getConvertor(source);
-			IPersistedProperties<String> pp = new PersistedProperties( ConfigurationScope.INSTANCE, convertor );
-			pp.setProperty(property.getKey(), convertor.convertFrom( property.getKey()));
-		}
-
 		if( !stack.peek().equals( qName ))
 			return;
 		node = (FactoryNode) node.getParent();

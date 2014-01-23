@@ -26,7 +26,9 @@ import net.jp2p.container.builder.IFactoryBuilder;
 import net.jp2p.container.builder.ICompositeBuilderListener.BuilderEvents;
 import net.jp2p.container.context.ContextLoader;
 import net.jp2p.container.context.Jp2pContext;
+import net.jp2p.container.factory.AbstractComponentFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
+import net.jp2p.container.factory.IComponentFactory;
 import net.jp2p.container.factory.IPropertySourceFactory;
 
 public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer>{
@@ -131,13 +133,27 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer
 
 	/**
 	 * Notify that the property sources have been created after parsing the XML
-	 * file. This allows for more fine-grained tuning of the property sources
+	 * file. This allows for more fine-grained tuning of the property sources.
+	 * Factories can add additional resource if they need it, and properties can be filled in,
+	 * which are corresponded with other factories.
+	 * The extension consists of three steps:
+	 * 
+	 * Step 1: perform the early start
+	 * Step 2: Extend the properties with others
+	 * Step 3: parse the properties
 	 * @param node
 	 */
 	private void extendContainer( ContainerBuilder containerBuilder){
 		IPropertySourceFactory<?>[] factories = containerBuilder.getFactories();
 		for( IPropertySourceFactory<?> factory: factories ){
+			if( factory instanceof IComponentFactory<?>)
+				((AbstractComponentFactory<?>) factory).earlyStart();
+		}
+		for( IPropertySourceFactory<?> factory: factories ){
 			factory.extendContainer();
+		}
+		for( IPropertySourceFactory<?> factory: factories ){
+			factory.parseProperties();
 		}
 	}
 

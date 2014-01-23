@@ -37,7 +37,7 @@ public class NetworkManagerPropertySource extends AbstractJp2pUIPropertySource<N
 			case CONFIG_PERSISTENT:
 				descriptor = new CheckBoxPropertyDescriptor( property, parsed[1] );
 				break;
-			case MODE:
+			case CONFIG_MODE:
 				descriptor = new ComboBoxPropertyDescriptor( property, parsed[1], EnumUtils.toString( ConfigMode.values() ));
 				break;
 			case INSTANCE_NAME:
@@ -72,7 +72,7 @@ public class NetworkManagerPropertySource extends AbstractJp2pUIPropertySource<N
 			return manager.getInstanceHome();
 		case INSTANCE_NAME:
 			return manager.getInstanceName();
-		case MODE:
+		case CONFIG_MODE:
 			return manager.getMode().ordinal();
 		case PEER_ID:
 			return manager.getPeerID();
@@ -113,7 +113,7 @@ public class NetworkManagerPropertySource extends AbstractJp2pUIPropertySource<N
 			if(!( manager.getInstanceName().equals( value )))
 			  manager.setInstanceName( (String) value );
 			return;
-		case MODE:
+		case CONFIG_MODE:
 			if(!( manager.getMode().equals( value )))
 				try {
 					manager.setMode( ConfigMode.values()[(int)value ]);

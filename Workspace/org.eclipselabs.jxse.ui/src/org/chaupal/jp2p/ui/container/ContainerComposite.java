@@ -18,11 +18,7 @@ import net.jp2p.container.properties.IJp2pDirectives;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jp2p.container.utils.Utils;
 import net.jp2p.container.validator.StringValidator;
-import net.jxta.platform.NetworkManager.ConfigMode;
-import net.jp2p.jxta.context.Jp2pContainerPreferences;
 
-import org.chaupal.jp2p.ui.property.databinding.ComboDataBinding;
-import org.chaupal.jp2p.ui.property.databinding.SpinnerDataBinding;
 import org.chaupal.jp2p.ui.property.databinding.StringDataBinding;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -226,17 +222,6 @@ public class ContainerComposite extends Composite {
 		sdb = new StringDataBinding<Directives>( Directives.NAME, properties, this.text_identifier );  
 		sdb.setValidator( new StringValidator<ContextProperties>( ContextProperties.BUNDLE_ID, StringValidator.S_NAME_REGEX ));
 
-		obj = properties.getProperty( ContextProperties.CONFIG_MODE );
-		ConfigMode mode = ConfigMode.EDGE;
-		if( obj != null )
-			mode = ( ConfigMode )obj;
-		this.combo.setItems( Jp2pContainerPreferences.getConfigModes());
-		this.combo.select(mode.ordinal());
-		new ComboDataBinding( ContextProperties.CONFIG_MODE, properties, combo);  
-		
-		new SpinnerDataBinding<ContextProperties>( ContextProperties.PORT, properties, this.spinner, Jp2pContainerPropertySource.DEF_MIN_PORT, Jp2pContainerPropertySource.DEF_MAX_PORT );
-
-		obj = properties.getProperty( ContextProperties.PEER_ID );
 		//TODO CP: this.btnAutoStart.setSelection((boolean) properties.getDefaultDirectives( IJxseDirectives.Directives.AUTO_START ));
 		//TODO CP: this.btnPersist.setSelection((boolean) properties.getDefaultDirectives( IJxseDirectives.Directives.PEER_ID_PERSIST ));
 		//TODO CP: obj = properties.getDirective( IJxseDirectives.Directives.PEER_ID_CREATE );
@@ -255,10 +240,6 @@ public class ContainerComposite extends Composite {
 		if( !source.setProperty( ContextProperties.HOME_FOLDER, URI.create( this.text_home_folder.getText() )))
 			return false;
 		if( !source.setProperty( ContextProperties.BUNDLE_ID, this.lbl_plugin_id.getText() ))
-			return false;
-		if( !source.setProperty( ContextProperties.CONFIG_MODE, this.combo.getText() ))
-			return false;
-		if( !source.setProperty( ContextProperties.PORT, this.spinner.getText() ))
 			return false;
 		if( !source.setProperty( ContextProperties.PASS_1, this.text_pass1.getText() ))
 			return false;

@@ -26,7 +26,6 @@ public class ContainerBuilder implements IContainerBuilder{
 		factories = new ArrayList<ICompositeBuilderListener<?>>();
 	}
 
-
 	/* (non-Javadoc)
 	 * @see net.osgi.jp2p.builder.IContainerBuilder#addFactory(net.osgi.jp2p.factory.IComponentFactory)
 	 */

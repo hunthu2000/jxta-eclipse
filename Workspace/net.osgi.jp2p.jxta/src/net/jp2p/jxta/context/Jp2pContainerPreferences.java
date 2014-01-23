@@ -21,7 +21,6 @@ import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.utils.ProjectFolderUtils;
 import net.jp2p.container.utils.Utils;
-import net.jxta.id.IDFactory;
 import net.jxta.platform.NetworkManager.ConfigMode;
 
 public class Jp2pContainerPreferences extends AbstractPreferences<String, Object>
@@ -29,40 +28,6 @@ public class Jp2pContainerPreferences extends AbstractPreferences<String, Object
 	public Jp2pContainerPreferences( Jp2pContainerPropertySource source )
 	{
 		super( source );
-	}
-
-
-	/* (non-Javadoc)
-	 * @see net.osgi.jxta.preferences.IJxtaPreferences#getRendezVousAutostart()
-	 */
-	public boolean getRendezVousAutostart( ){
-		IJp2pPropertySource<IJp2pProperties> source = super.getSource();
-		Object retval = source.getProperty( ContextProperties.RENDEZVOUZ_AUTOSTART );
-		if( retval == null )
-			return false;
-		return Boolean.parseBoolean(( String )retval);
-	}
-
-	public void setRendezVousAutostart( boolean autostart ){
-		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getSource();
-		source.setProperty( ContextProperties.RENDEZVOUZ_AUTOSTART, autostart );
-	}
-
-	/* (non-Javadoc)
-	 * @see net.osgi.jxta.preferences.IJxtaPreferences#getConfigMode()
-	 */
-	public ConfigMode getConfigMode( ){
-		IJp2pPropertySource<IJp2pProperties> source = super.getSource();
-		return ConfigMode.valueOf( (String)source.getProperty( ContextProperties.CONFIG_MODE ));
-	}
-
-	public void setConfigMode( ConfigMode mode ){
-		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getSource();
-		source.setProperty( ContextProperties.CONFIG_MODE, mode );
-	}
-
-	public void setConfigMode( String mode ){
-		this.setConfigMode( ConfigMode.valueOf(mode ));
 	}
 
 	/* (non-Javadoc)
@@ -95,21 +60,10 @@ public class Jp2pContainerPreferences extends AbstractPreferences<String, Object
 		}
 		ContextProperties id = (ContextProperties) props;
 		switch( id ){
-		case CONFIG_MODE:
-			return ConfigMode.valueOf( value );
 		case HOME_FOLDER:
 			Jp2pContainerPropertySource source = (Jp2pContainerPropertySource) super.getSource();
 			String bundleId = source.getBundleId();
 			return ProjectFolderUtils.getParsedUserDir(value, bundleId );
-		case PEER_ID:
-			URI uri = URI.create(value);
-			try {
-				return IDFactory.fromURI( uri );
-			} catch (URISyntaxException e) {
-				throw new RuntimeException( e );
-			}
-		case PORT:
-			return Integer.parseInt(value);
 		default:
 			return value;
 		}

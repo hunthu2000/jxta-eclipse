@@ -49,7 +49,7 @@ public class ModuleClassAdvertisementPropertySource extends AdvertisementPropert
 		super.fillDefaultValues(parent);
 		String name = super.getParent().getDirective( Directives.NAME );
 		if(!Utils.isNull( name )){
-			this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( ModuleImplProperties.CODE, name ));
+			this.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, ModuleImplProperties.CODE, name ));
 		}
 		String description = (String) super.getParent().getProperty( ModuleImplProperties.DESCRIPTION );
 		if(!Utils.isNull( description )){
