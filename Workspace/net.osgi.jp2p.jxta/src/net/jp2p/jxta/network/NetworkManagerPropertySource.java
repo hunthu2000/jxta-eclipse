@@ -44,6 +44,7 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 			}
 			return false;
 		}
+
 		@Override
 		public String toString() {
 			return StringStyler.prettyString( super.toString() );

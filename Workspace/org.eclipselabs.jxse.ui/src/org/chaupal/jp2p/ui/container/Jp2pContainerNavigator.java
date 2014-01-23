@@ -11,6 +11,7 @@ import org.eclipselabs.osgi.ds.broker.service.IParlezListener;
 import org.eclipselabs.osgi.ds.broker.service.ParlezEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISelectionListener;
@@ -101,6 +102,7 @@ public class Jp2pContainerNavigator extends CommonNavigator{
 	protected CommonViewer createCommonViewer(Composite aParent) {
 		this.viewer = super.createCommonViewer(aParent);
 		this.viewer.setSorter( new Jp2pServiceViewerSorter() );
+		this.viewer.setAutoExpandLevel( TreeViewer.ALL_LEVELS );
 		return viewer;
 	}
 
@@ -127,7 +129,7 @@ public class Jp2pContainerNavigator extends CommonNavigator{
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				if( Display.getDefault().isDisposed() )
+				if( propertyPage.getSite().getShell().isDisposed() )
 					return;
 				
 				if( propertyPage != null )

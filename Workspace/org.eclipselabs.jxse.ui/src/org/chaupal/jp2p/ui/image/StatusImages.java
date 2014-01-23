@@ -10,6 +10,7 @@ public class StatusImages extends AbstractImages{
 
 	public static final String S_ICON_PATH = "/resources/";
 
+	public static final String S_DISABLED_ICON  = "component-disabled.png";
 	public static final String S_IDLE_ICON  = "idle.png";
 	public static final String S_AVAILABLE_ICON  = "available.png";
 	public static final String S_INITIALISING_ICON  = "initialising.png";
@@ -52,6 +53,7 @@ public class StatusImages extends AbstractImages{
 	
 	@Override
 	public void initialise(){
+		setImage( S_DISABLED_ICON );
 		setImage( S_IDLE_ICON );
 		setImage( S_AVAILABLE_ICON );
 		setImage( S_INITIALISING_ICON );
@@ -75,6 +77,8 @@ public class StatusImages extends AbstractImages{
 	 */
 	public Image getImage( Status desc ){
 		switch( desc ){
+		case DISABLED:
+			return getImageFromName( S_DISABLED_ICON );			
 		case IDLE:
 			return getImageFromName( S_IDLE_ICON );
 		case INITIALISING:

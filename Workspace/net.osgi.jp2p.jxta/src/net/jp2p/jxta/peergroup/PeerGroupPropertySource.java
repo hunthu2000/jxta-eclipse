@@ -23,7 +23,22 @@ public class PeerGroupPropertySource extends AdvertisementPropertySource
 		STORE_HOME,
 		PEER_NAME,
 		PEERGROUP_ID;
-	
+
+		/**
+		 * Returns true if the given property is valid for this enumeration
+		 * @param property
+		 * @return
+		 */
+		public static boolean isValidProperty( IJp2pProperties property ){
+			if( property == null )
+				return false;
+			for( PeerGroupProperties prop: values() ){
+				if( prop.equals( property ))
+					return true;
+			}
+			return false;
+		}
+
 		@Override
 		public String toString() {
 			return StringStyler.prettyString( super.toString() );

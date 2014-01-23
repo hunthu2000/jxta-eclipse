@@ -19,6 +19,8 @@ import net.jp2p.container.factory.IComponentFactory;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
+import net.jp2p.container.properties.ManagedProperty;
+import net.jp2p.container.properties.IManagedPropertyListener.PropertyEvents;
 import net.jp2p.container.utils.Utils;
 import net.jp2p.jxta.advertisement.AdvertisementPropertySource;
 import net.jp2p.jxta.advertisement.ModuleClassAdvertisementPropertySource;
@@ -28,12 +30,14 @@ import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementType
 import net.jp2p.jxta.discovery.DiscoveryPropertySource;
 import net.jp2p.jxta.factory.AbstractPeerGroupDependencyFactory;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
+import net.jp2p.jxta.network.NetworkManagerPropertySource;
 import net.jp2p.jxta.peergroup.PeerGroupFactory;
 import net.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupDirectives;
 import net.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 import net.jp2p.jxta.pipe.PipeAdvertisementPropertySource;
 import net.jxta.id.IDFactory;
+import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.peergroup.PeerGroupID;
 import net.jxta.protocol.ModuleClassAdvertisement;
@@ -58,43 +62,22 @@ public class PeerGroupFactory extends AbstractPeerGroupDependencyFactory<PeerGro
 		return new PeerGroupPropertySource( super.getParentSource());
 	}
 
-	/**
-	 * Create a peergroup from an implementation advertisement
-	 * @param source
-	 * @return
-	 * @throws Exception
-	 */
-	@SuppressWarnings("deprecation")
-	public PeerGroup createPeerGroupFromModuleImpl( IJp2pPropertySource<IJp2pProperties> source ) throws Exception{
-		ModuleImplAdvertisement miad = ModuleImplAdvertisementPropertySource.createModuleImplAdvertisement(null, super.getPeerGroup() );
-		PeerGroupID id = null;
-		String name = null;
-		String description=  null;
-		if( source != null ){
-			super.getPeerGroup().getDiscoveryService().publish(miad);
-			id = (PeerGroupID)IDFactory.fromURI( (URI) source.getProperty( PeerGroupProperties.GROUP_ID ));
-			name = (String) source.getProperty( PeerGroupProperties.NAME ); 
-			description = (String) source.getProperty( PeerGroupProperties.DESCRIPTION );
+	@Override
+	protected void onParseProperty( ManagedProperty<IJp2pProperties, Object> property) {
+		if(( !ManagedProperty.isCreated(property)) || ( !PeerGroupProperties.isValidProperty(property.getKey())))
+			return;
+		PeerGroupProperties id = (PeerGroupProperties) property.getKey();
+		switch( id ){
+		case PEERGROUP_ID:
+			String name = NetworkManagerPropertySource.getIdentifier( super.getPropertySource() );
+			PeerID peerid = IDFactory.newPeerID( PeerGroupID.defaultNetPeerGroupID, name.getBytes() );
+			property.setValue( peerid, PropertyEvents.DEFAULT_VALUE_SET );
+			property.reset();
+			break;
+		default:
+			break;
 		}
-		PeerGroup peergroup = super.getPeerGroup().newGroup( id, miad, name, description);
-		return peergroup;
-	}
-
-	/**
-	 * Create a peergroup from an implementation advertisement
-	 * @param source
-	 * @return
-	 * @throws Exception
-	 */
-	public PeerGroup createPeerGroupFromPeerAds( ModuleSpecAdvertisementPropertySource msps, ModuleClassAdvertisementPropertySource mcps, PipeAdvertisementPropertySource paps, PeerGroupAdvertisementPropertySource pgps ) throws Exception{
-		ModuleClassAdvertisement mcad = ModuleClassAdvertisementPropertySource.createModuleClassAdvertisement(mcps );
-		super.getPeerGroup().getDiscoveryService().publish( mcad );
-		PipeAdvertisement pipeAdv = PipeAdvertisementPropertySource.createPipeAdvertisement(paps, super.getPeerGroup() );
-		ModuleSpecAdvertisement msad = ModuleSpecAdvertisementPropertySource.createModuleSpecAdvertisement(msps, mcad, pipeAdv);
-		super.getPeerGroup().getDiscoveryService().publish( msad );
-		PeerGroupAdvertisement pgad = PeerGroupAdvertisementPropertySource.createPeerGroupAdvertisement( pgps, msad);
-		PeerGroup peergroup = super.getPeerGroup().newGroup( pgad );
-		return peergroup;
+		super.onParseProperty(property);
 	}
 
 	@Override
@@ -110,7 +93,7 @@ public class PeerGroupFactory extends AbstractPeerGroupDependencyFactory<PeerGro
 
 		IJp2pComponent<PeerGroup> component = null;
 		try {
-			PeerGroup peergroup = this.createPeerGroupFromModuleImpl( super.getPropertySource() );
+			PeerGroup peergroup = createPeerGroupFromModuleImpl( super.getPeerGroup(), super.getPropertySource() );
 			PeerGroupAdvertisement pgadv = peergroup.getPeerGroupAdvertisement();
 			IJp2pWritePropertySource<IJp2pProperties> ws = (IJp2pWritePropertySource<IJp2pProperties>) super.getPropertySource();
 			component = new Jp2pComponent<PeerGroup>( super.getPropertySource(), peergroup );
@@ -124,6 +107,45 @@ public class PeerGroupFactory extends AbstractPeerGroupDependencyFactory<PeerGro
 		return component;
 	}
 
+	/**
+	 * Create a peergroup from an implementation advertisement
+	 * @param source
+	 * @return
+	 * @throws Exception
+	 */
+	public static PeerGroup createPeerGroupFromModuleImpl( PeerGroup parent, IJp2pPropertySource<IJp2pProperties> source ) throws Exception{
+		ModuleImplAdvertisement miad = ModuleImplAdvertisementPropertySource.createModuleImplAdvertisement(null, parent );
+		PeerGroupID id = (PeerGroupID)source.getProperty( PeerGroupProperties.PEERGROUP_ID );
+		boolean publish = PeerGroupPropertySource.getBoolean( source, PeerGroupDirectives.PUBLISH );
+		String name = null;
+		String description=  null;
+		if( source != null ){
+			parent.getDiscoveryService().publish(miad);
+			id = (PeerGroupID)IDFactory.fromURI( (URI) source.getProperty( PeerGroupProperties.GROUP_ID ));
+			name = (String) source.getProperty( PeerGroupProperties.NAME ); 
+			description = (String) source.getProperty( PeerGroupProperties.DESCRIPTION );
+		}
+		PeerGroup peergroup = parent.newGroup( id, miad, name, description, publish);
+		return peergroup;
+	}
+
+
+	/**
+	 * Create a peergroup from an implementation advertisement
+	 * @param source
+	 * @return
+	 * @throws Exception
+	 */
+	public static PeerGroup createPeerGroupFromPeerAds( PeerGroup parent, ModuleSpecAdvertisementPropertySource msps, ModuleClassAdvertisementPropertySource mcps, PipeAdvertisementPropertySource paps, PeerGroupAdvertisementPropertySource pgps ) throws Exception{
+		ModuleClassAdvertisement mcad = ModuleClassAdvertisementPropertySource.createModuleClassAdvertisement(mcps );
+		parent.getDiscoveryService().publish( mcad );
+		PipeAdvertisement pipeAdv = PipeAdvertisementPropertySource.createPipeAdvertisement(paps, parent );
+		ModuleSpecAdvertisement msad = ModuleSpecAdvertisementPropertySource.createModuleSpecAdvertisement(msps, mcad, pipeAdv);
+		parent.getDiscoveryService().publish( msad );
+		PeerGroupAdvertisement pgad = PeerGroupAdvertisementPropertySource.createPeerGroupAdvertisement( pgps, msad);
+		PeerGroup peergroup = parent.newGroup( pgad );
+		return peergroup;
+	}
 	
 	/**
 	 * Extract the peergroup from the given factory, or return null if no peergroup is present 

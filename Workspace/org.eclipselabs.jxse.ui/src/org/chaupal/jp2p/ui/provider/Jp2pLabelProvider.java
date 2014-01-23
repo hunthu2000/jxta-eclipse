@@ -1,5 +1,6 @@
 package org.chaupal.jp2p.ui.provider;
 
+import net.jp2p.container.activator.IActivator.Status;
 import net.jp2p.container.component.AbstractJp2pService;
 import net.jp2p.container.component.IJp2pComponent;
 import net.osgi.jp2p.chaupal.utils.Utils;
@@ -20,6 +21,8 @@ public class Jp2pLabelProvider extends LabelProvider{
 		StatusImages images = new StatusImages();
 		if( component instanceof AbstractJp2pService ){
 			AbstractJp2pService<?> service = (AbstractJp2pService<Object> )component;
+			if( service.getModule() == null )
+				return images.getImage( Status.DISABLED );
 			return images.getImage( service.getStatus() );
 		}
 		return images.getImage( Images.COMPONENT );

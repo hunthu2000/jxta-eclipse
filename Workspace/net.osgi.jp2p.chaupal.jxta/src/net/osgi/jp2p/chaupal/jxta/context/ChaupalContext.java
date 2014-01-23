@@ -132,6 +132,8 @@ public class ChaupalContext implements IJp2pContext<Object> {
 		default:
 			break;
 		}
+		if( convertor != null )
+			return convertor;
 		return new JxtaContext().getConvertor(source);
 	}
 }

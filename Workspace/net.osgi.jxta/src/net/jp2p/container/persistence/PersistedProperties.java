@@ -25,13 +25,17 @@ public class PersistedProperties extends
 	public PersistedProperties(IJp2pWritePropertySource<IJp2pProperties> source) {
 		super(source);
 	}
-
 	
 	@Override
 	public void setContext(IJp2pContext<?> context) {
 		// TODO Auto-generated method stub		
 	}
 
+	@Override
+	public void clear(IJp2pPropertySource<IJp2pProperties> source) {
+		File file = getPropertyFile(source);
+		file.delete();
+	}
 
 	@Override
 	public String getProperty(IJp2pPropertySource<IJp2pProperties> source, IJp2pProperties id) {
@@ -53,9 +57,7 @@ public class PersistedProperties extends
 	 * @throws FileNotFoundException
 	 */
 	protected static Properties loadProperties( IJp2pPropertySource<IJp2pProperties> source ){
-		String bundle_id = (String) AbstractJp2pPropertySource.getBundleId( source );
-		String str = ProjectFolderUtils.getParsedUserDir( Jp2pContainerPropertySource.DEF_HOME_FOLDER + "/" + S_PROPERTIES, bundle_id ).getPath();
-		File file = new File( str );
+		File file = getPropertyFile(source);
 		Properties properties = new Properties();
 		FileReader reader = null;
 		try {
@@ -87,9 +89,7 @@ public class PersistedProperties extends
 	 * @throws FileNotFoundException
 	 */
 	protected static boolean saveProperties( IJp2pPropertySource<IJp2pProperties> source, Properties properties ){
-		String bundle_id = (String) AbstractJp2pPropertySource.getBundleId( source );
-		String str = ProjectFolderUtils.getParsedUserDir( Jp2pContainerPropertySource.DEF_HOME_FOLDER + File.separator + S_PROPERTIES, bundle_id ).getPath();
-		File file = new File( str );
+		File file = getPropertyFile(source);
 		FileWriter writer = null;
 		try {
 			writer = new FileWriter( file );
@@ -104,4 +104,14 @@ public class PersistedProperties extends
 		return false;
 	}
 
+	/**
+	 * Get the property file
+	 * @param source
+	 * @return
+	 */
+	protected static final File getPropertyFile( IJp2pPropertySource<IJp2pProperties> source ){
+		String bundle_id = (String) AbstractJp2pPropertySource.getBundleId( source );
+		String str = ProjectFolderUtils.getParsedUserDir( Jp2pContainerPropertySource.DEF_HOME_FOLDER + File.separator + S_PROPERTIES, bundle_id ).getPath();
+		return new File( str );
+	}
 }

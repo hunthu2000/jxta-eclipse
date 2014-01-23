@@ -40,8 +40,22 @@ public class PeerGroupService extends AbstractJp2pServiceNode<PeerGroup>{
 		this.pgad = pgad;
 	}
 
+	public PeerGroupService( PeerGroupPropertySource source, PeerGroup peergroup ){
+		super( source, peergroup );
+		this.parent = peergroup.getParentGroup();
+	}
+	
 	@Override
 	public boolean start() {
+		if( super.getModule() == null )
+			this.startDiscovery();
+		return super.start();
+	}
+
+	/**
+	 * Start discovery of the peer group advertisement
+	 */
+	protected void startDiscovery(){
 		ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 		this.listener = new IComponentChangedListener(){
 
@@ -70,10 +84,8 @@ public class PeerGroupService extends AbstractJp2pServiceNode<PeerGroup>{
 			}
 
 		};
-		dispatcher.addServiceChangeListener(listener);;
-		return super.start();
+		dispatcher.addServiceChangeListener(listener);;		
 	}
-	
 	/**
 	 * Create the final component
 	 * @param advertisement
@@ -88,6 +100,7 @@ public class PeerGroupService extends AbstractJp2pServiceNode<PeerGroup>{
 			PeerGroup peergroup = parent.newGroup(advertisement);
 			if( publish ){
 				peergroup.publishGroup(name, description);
+				peergroup.startApp( new String[0]);
 				return peergroup;
 			}
 		} catch ( Exception e) {
@@ -112,6 +125,9 @@ public class PeerGroupService extends AbstractJp2pServiceNode<PeerGroup>{
 	
 	@Override
 	protected void deactivate() {
+		PeerGroup peergroup = super.getModule();
+		if( peergroup != null )
+			peergroup.stopApp();
 		ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 		if( this.listener != null )
 			dispatcher.removeServiceChangeListener(listener);				

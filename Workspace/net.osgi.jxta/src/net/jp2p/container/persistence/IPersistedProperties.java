@@ -6,7 +6,18 @@ import net.jp2p.container.properties.IJp2pPropertySource;
 
 public interface IPersistedProperties<T extends Object> {
 
+	/**
+	 * set the context for this property
+	 * @param context
+	 */
 	public void setContext( IJp2pContext<?> context );
+	
+	/**
+	 * Clear the property
+	 * @param source
+	 */
+	public void clear( IJp2pPropertySource<IJp2pProperties> source );
+	
 	/**
 	 * Get the persisted property with the given id, if it exists
 	 * @param id

@@ -92,6 +92,6 @@ public class ContainerFactory extends AbstractComponentFactory<Jp2pStartupServic
 		startup = Jp2pContext.getDefaultFactory( builder, this.getPropertySource(), comp);
 		IJp2pWritePropertySource<IJp2pProperties> props = (IJp2pWritePropertySource<IJp2pProperties>) startup.createPropertySource();
 		props.setDirective( Directives.AUTO_START, Boolean.TRUE.toString());
-		builder.addFactory((IComponentFactory<Object>) startup);
+		builder.addFactory((IPropertySourceFactory<Object>) startup);
 	}
 }

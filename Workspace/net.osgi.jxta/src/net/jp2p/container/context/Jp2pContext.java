@@ -57,7 +57,7 @@ public class Jp2pContext implements IJp2pContext<Object> {
 
 	@Override
 	public String getName() {
-		return Contexts.CHAUPAL.toString();
+		return Contexts.JP2P.toString();
 	}
 
 	/**

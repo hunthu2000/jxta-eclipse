@@ -14,7 +14,11 @@ import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.properties.ManagedProperty;
+import net.jp2p.container.properties.IManagedPropertyListener.PropertyEvents;
+import net.jxta.id.IDFactory;
 import net.jxta.peergroup.PeerGroup;
+import net.jxta.peergroup.PeerGroupID;
 import net.jxta.protocol.ModuleClassAdvertisement;
 import net.jxta.protocol.ModuleSpecAdvertisement;
 import net.jxta.protocol.PeerGroupAdvertisement;
@@ -25,8 +29,11 @@ import net.jp2p.jxta.advertisement.ModuleClassAdvertisementPropertySource;
 import net.jp2p.jxta.advertisement.ModuleSpecAdvertisementPropertySource;
 import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
+import net.jp2p.jxta.network.NetworkManagerPropertySource;
 import net.jp2p.jxta.peergroup.PeerGroupAdvertisementPropertySource;
+import net.jp2p.jxta.peergroup.PeerGroupFactory;
 import net.jp2p.jxta.peergroup.PeerGroupPropertySource;
+import net.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 import net.jp2p.jxta.pipe.PipeAdvertisementPropertySource;
 
 public class ChaupalPeerGroupFactory extends ChaupalAdvertisementFactory<PeerGroup, PeerGroupAdvertisement>{
@@ -41,20 +48,23 @@ public class ChaupalPeerGroupFactory extends ChaupalAdvertisementFactory<PeerGro
 		source.setDirective( AdvertisementDirectives.TYPE, AdvertisementTypes.PEERGROUP.toString());
 		return source;
 	}
-	
-	/**
-	 * Create a peergroup from an implementation advertisement
-	 * @param source
-	 * @return
-	 * @throws Exception
-	 */
-	public PeerGroupAdvertisement createPeerGroupAdsFromPeerAds( ModuleSpecAdvertisementPropertySource msps, ModuleClassAdvertisementPropertySource mcps, PeerGroupPropertySource paps, PeerGroupAdvertisementPropertySource pgps ) throws Exception{
-		ModuleClassAdvertisement mcad = ModuleClassAdvertisementPropertySource.createModuleClassAdvertisement(mcps );
-		super.getPeerGroup().getDiscoveryService().publish( mcad );
-		PipeAdvertisement pipeAdv = PipeAdvertisementPropertySource.createPipeAdvertisement(paps, super.getPeerGroup() );
-		ModuleSpecAdvertisement msad = ModuleSpecAdvertisementPropertySource.createModuleSpecAdvertisement(msps, mcad, pipeAdv);
-		super.getPeerGroup().getDiscoveryService().publish( msad );
-		return PeerGroupAdvertisementPropertySource.createPeerGroupAdvertisement( pgps, msad);
+
+	@Override
+	protected void onParseProperty( ManagedProperty<IJp2pProperties, Object> property) {
+		if(( !ManagedProperty.isCreated(property)) || ( !PeerGroupProperties.isValidProperty(property.getKey())))
+			return;
+		PeerGroupProperties id = (PeerGroupProperties) property.getKey();
+		switch( id ){
+		case PEERGROUP_ID:
+			String name = NetworkManagerPropertySource.getIdentifier( super.getPropertySource() );
+			PeerGroupID pgid = IDFactory.newPeerGroupID( PeerGroupID.defaultNetPeerGroupID, name.getBytes() );
+			property.setValue( pgid, PropertyEvents.DEFAULT_VALUE_SET );
+			property.reset();
+			break;
+		default:
+			break;
+		}
+		super.onParseProperty(property);
 	}
 
 	@Override
@@ -63,7 +73,7 @@ public class ChaupalPeerGroupFactory extends ChaupalAdvertisementFactory<PeerGro
 		ModuleSpecAdvertisementPropertySource msps = (ModuleSpecAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(source, AdvertisementTypes.MODULE_SPEC );
 		ModuleClassAdvertisementPropertySource mcps = (ModuleClassAdvertisementPropertySource) AdvertisementPropertySource.findAdvertisementDescendant(msps, AdvertisementTypes.MODULE_CLASS );
 		try {
-			return createPeerGroupAdsFromPeerAds(msps, mcps, (PeerGroupPropertySource) super.getPropertySource(), pgps);
+			return createPeerGroupAdsFromPeerAds( super.getPeerGroup(), msps, mcps, (PeerGroupPropertySource) super.getPropertySource(), pgps);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -72,6 +82,30 @@ public class ChaupalPeerGroupFactory extends ChaupalAdvertisementFactory<PeerGro
 
 	@Override
 	protected IJp2pComponent<PeerGroup> createComponent( PeerGroupAdvertisement advertisement) {
-		return new PeerGroupService( (PeerGroupPropertySource) super.getPropertySource(), advertisement, super.getPeerGroup(), super.getDiscoveryService() );
+		try {
+			PeerGroup peergroup = PeerGroupFactory.createPeerGroupFromModuleImpl(super.getPeerGroup(), super.getPropertySource());
+			return new PeerGroupService( (PeerGroupPropertySource) super.getPropertySource(), peergroup );
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+		//return new PeerGroupService( (PeerGroupPropertySource) super.getPropertySource(), advertisement, super.getPeerGroup(), super.getDiscoveryService() );
 	}
+
+	/**
+	 * Create a peergroup from an implementation advertisement
+	 * @param source
+	 * @return
+	 * @throws Exception
+	 */
+	public static PeerGroupAdvertisement createPeerGroupAdsFromPeerAds( PeerGroup parent, ModuleSpecAdvertisementPropertySource msps, ModuleClassAdvertisementPropertySource mcps, PeerGroupPropertySource paps, PeerGroupAdvertisementPropertySource pgps ) throws Exception{
+		ModuleClassAdvertisement mcad = ModuleClassAdvertisementPropertySource.createModuleClassAdvertisement(mcps );
+		parent.getDiscoveryService().publish( mcad );
+		PipeAdvertisement pipeAdv = PipeAdvertisementPropertySource.createPipeAdvertisement(paps, parent );
+		ModuleSpecAdvertisement msad = ModuleSpecAdvertisementPropertySource.createModuleSpecAdvertisement(msps, mcad, pipeAdv);
+		parent.getDiscoveryService().publish( msad );
+		return PeerGroupAdvertisementPropertySource.createPeerGroupAdvertisement( pgps, msad);
+	}
+
+
 }

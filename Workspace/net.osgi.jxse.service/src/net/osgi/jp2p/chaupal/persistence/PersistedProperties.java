@@ -30,6 +30,19 @@ public class PersistedProperties extends AbstractPersistedProperty<String>{
 	}
 
 	/**
+	 * Clear the property
+	 * @param source
+	 */
+	public void clear( IJp2pPropertySource<IJp2pProperties> source ){
+		Preferences pref1 = scope.getNode( AbstractJp2pPropertySource.getBundleId(source) + "." + AbstractJp2pPropertySource.getIdentifier(source));
+		try {
+			pref1.clear();
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * Get the persisted property with the given id, if it exists
 	 * @param id
 	 * @return
