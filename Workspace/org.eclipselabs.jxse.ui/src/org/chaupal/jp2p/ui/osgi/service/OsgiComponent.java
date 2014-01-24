@@ -12,7 +12,8 @@ public class OsgiComponent extends AbstractAttendeeProviderComponent {
 
 	@Override
 	protected void finalise() {
-		MessageBoxProvider.getInstance().finalise();
+		 Jp2pServiceContainerPetitioner.getInstance().finalise();
+		MessageBoxProvider.getInstance().finalise();	
 		super.finalise();
 	}
 }

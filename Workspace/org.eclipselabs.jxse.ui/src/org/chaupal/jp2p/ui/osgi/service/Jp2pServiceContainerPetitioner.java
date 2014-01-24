@@ -9,23 +9,26 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import net.jp2p.container.AbstractServiceContainer;
 import net.jp2p.container.Jp2pServiceContainer;
 import net.jp2p.container.component.ComponentChangedEvent;
 import net.jp2p.container.component.IComponentChangedListener;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.IJp2pComponentNode;
-import net.jp2p.container.properties.DefaultPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.utils.Utils;
 import net.osgi.jp2p.chaupal.IServiceChangedListener.ServiceChange;
-import net.osgi.jp2p.chaupal.Activator;
 import net.osgi.jp2p.chaupal.ServiceChangedEvent;
 import net.osgi.jp2p.chaupal.ServiceEventDispatcher;
 import net.osgi.jp2p.chaupal.comparator.Jp2pServiceComparator;
 import net.osgi.jp2p.chaupal.core.Jp2pDSComponent;
 
+import org.chaupal.jp2p.ui.log.Jp2pLog;
+import org.chaupal.jp2p.ui.osgi.service.PetitionPropertySource.PetitionerProperties;
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
 import org.eclipselabs.osgi.ds.broker.service.AbstractPetitioner;
 import org.eclipselabs.osgi.ds.broker.service.ParlezEvent;
@@ -33,14 +36,16 @@ import org.eclipselabs.osgi.ds.broker.service.ParlezEvent;
 public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, String, Jp2pServiceContainer>
 	implements IJp2pComponentNode<Collection<Jp2pServiceContainer>>
 {
-	public static final String S_JP2P = "Jp2p";
-
+	public static final String S_WRN_THREAD_INTERRUPTED = "The thread is interrupted. Probably stopping service";
+	
 	private static Jp2pServiceContainerPetitioner attendee = new Jp2pServiceContainerPetitioner();
 	
 	private List<IJp2pComponent<?>> children;
 
 	private ServiceEventDispatcher dispatcher = ServiceEventDispatcher.getInstance();	
 	private IComponentChangedListener listener;
+	private RefreshRunnable refresher;
+	private PetitionPropertySource source;
 	
 	private Date date;
 	
@@ -48,11 +53,14 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 		super( new ResourcePalaver());
 		children = new ArrayList<IJp2pComponent<?>>();
 		this.date = Calendar.getInstance().getTime();
+		source = new PetitionPropertySource();
+		refresher = new RefreshRunnable( source );
 		this.listener = new IComponentChangedListener() {
 			
 			@Override
 			public void notifyServiceChanged(ComponentChangedEvent event) {
 				dispatcher.serviceChanged( new ServiceChangedEvent( this, ServiceChange.COMPONENT_EVENT ));
+				refresher.start();
 			}
 		};
 	}
@@ -64,7 +72,7 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 	
 	@Override
 	public IJp2pPropertySource<IJp2pProperties> getPropertySource() {
-		return new DefaultPropertySource( Activator.PLUGIN_ID, this.getClass().getName());
+		return source;
 	}
 
 	public Jp2pServiceContainer getJp2pContainer( String identifier ) {
@@ -145,14 +153,19 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 
 	@Override
 	public Iterator<IJp2pProperties> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return source.propertyIterator();
 	}
 
 	@Override
 	public String getCategory(Object key) {
-		// TODO Auto-generated method stub
-		return null;
+		return PetitionPropertySource.S_JP2P;
+	}
+
+	public void finalise(){
+		for( IJp2pComponent<?> container: this.children ){
+			((AbstractServiceContainer<?>) container).getDispatcher().removeServiceChangeListener( listener );
+		}
+		this.refresher.stop();
 	}
 }
 
@@ -216,4 +229,47 @@ class ResourcePalaver extends AbstractPalaver<String>{
 			return ( retval );
 		return token.equals(this.providedToken );
 	}	
+}
+
+class RefreshRunnable implements Runnable{
+
+	private ExecutorService service;
+	private PetitionPropertySource source;
+	
+	public RefreshRunnable( PetitionPropertySource source) {
+		super();
+		this.source = source;
+	}
+
+	/**
+	 * Start the runnable thread
+	 */
+	synchronized void start(){
+		if( service != null )
+			return;
+		service = Executors.newCachedThreadPool();
+		service.execute(this);	
+	}
+	
+	/**
+	 * Stop the service
+	 */
+	public void stop(){
+		Thread.currentThread().interrupt();
+	}
+	
+	@Override
+	public void run() {
+		ServiceEventDispatcher dispatcher = ServiceEventDispatcher.getInstance();
+		dispatcher.serviceChanged( new ServiceChangedEvent(this, ServiceChange.REFRESH ));
+		try{
+			Thread.sleep((long) this.source.getProperty( PetitionerProperties.REFRESH_TIME ));
+		}
+		catch( InterruptedException ex ){
+			Jp2pLog.logWarning( Jp2pServiceContainerPetitioner.S_WRN_THREAD_INTERRUPTED );
+		}
+		service = null;
+	}
+
+
 }

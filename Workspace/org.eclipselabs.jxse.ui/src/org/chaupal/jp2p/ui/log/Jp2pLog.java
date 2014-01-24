@@ -16,6 +16,14 @@ public class Jp2pLog {
 	}
 
 	/**
+	 * Log a warning message
+	 * @param message
+	 */
+	public static void logWarning( String message ){
+		log( IStatus.WARNING, IStatus.OK, message );
+	}
+
+	/**
 	 * Log an error message
 	 * @param message
 	 */
@@ -36,7 +44,7 @@ public class Jp2pLog {
 	 * Log an error message
 	 * @param message
 	 */
-	public static void logJxta( LogRecord record ){
+	public static void logJp2p( LogRecord record ){
 		log( IStatus.INFO, IStatus.OK, record.getMessage() );
 	}
 

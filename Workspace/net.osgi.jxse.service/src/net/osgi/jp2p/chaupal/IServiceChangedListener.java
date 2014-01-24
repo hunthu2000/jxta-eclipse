@@ -18,7 +18,8 @@ public interface IServiceChangedListener {
 		CHILD_ADDED,
 		CHILD_REMOVED,
 		STATUS_CHANGE,
-		COMPONENT_EVENT;
+		COMPONENT_EVENT,
+		REFRESH;
 
 		@Override
 		public String toString() {

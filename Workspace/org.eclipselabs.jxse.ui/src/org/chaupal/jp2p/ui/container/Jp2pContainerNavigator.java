@@ -52,7 +52,8 @@ public class Jp2pContainerNavigator extends CommonNavigator{
 
 			@Override
 			public void notifyServiceChanged(ServiceChangedEvent event) {
-				navigator.refresh();
+				if( ServiceChange.REFRESH.equals( event.getChange()))
+					navigator.refresh();
 			}
 			
 		});

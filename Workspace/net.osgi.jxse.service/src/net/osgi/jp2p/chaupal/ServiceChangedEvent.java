@@ -24,7 +24,7 @@ public class ServiceChangedEvent extends EventObject {
 		this.change = change;
 	}
 
-	protected ServiceChange getChange() {
+	public ServiceChange getChange() {
 		return change;
 	}
 }

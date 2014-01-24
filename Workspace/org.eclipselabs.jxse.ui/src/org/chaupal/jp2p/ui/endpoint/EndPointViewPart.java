@@ -372,7 +372,7 @@ public class EndPointViewPart extends ViewPart{
     			Color color = ColorUtils.getSWTColor( Display.getDefault(), SupportedColors.COLOR_CYAN );//coding.get( peerGroup ));
     			parameters[1] = color;
     			record.setParameters(parameters);
-    			Jp2pLog.logJxta( record );
+    			Jp2pLog.logJp2p( record );
     		}
     	});
     }
