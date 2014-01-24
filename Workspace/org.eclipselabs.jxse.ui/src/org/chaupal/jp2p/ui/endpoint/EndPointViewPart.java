@@ -2,13 +2,13 @@ package org.chaupal.jp2p.ui.endpoint;
 
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.log.Jp2pLevel;
+import net.jxta.endpoint.EndpointAddress;
+import net.jxta.endpoint.EndpointListener;
 import net.jxta.endpoint.EndpointService;
+import net.jxta.endpoint.Message;
 import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkManager.ConfigMode;
-import net.jxta.rendezvous.RendezVousService;
-import net.jxta.rendezvous.RendezvousEvent;
-import net.jxta.rendezvous.RendezvousListener;
 
 import org.chaupal.jp2p.ui.log.Jp2pLog;
 import org.chaupal.jp2p.ui.monitor.ConnectivityViewPart;
@@ -56,17 +56,18 @@ import org.eclipse.swt.custom.StyledText;
 
 public class EndPointViewPart extends ViewPart{
 
-	public static final String ID = "net.equinox.jxta.ui.endpoint.EndPointViewPart"; //$NON-NLS-1$
+	public static final String ID = "org.chaupal.jp2p.ui.endpoint.EndPointViewPart"; //$NON-NLS-1$
 	public static final String S_ENDPOINT_VIEWER = "End Point Viewer";
+	public static final String S_ENDPOINT = "EndPoint";
 
 	private Button aliveRadioButton;
 	
-   private RdvEventMonitor rdvMonitor;
+    private EndpointService service;
+    private EndPointEventMonitor monitor;
     
     private Future<?> theMonitorFuture = null;
 	public static final ScheduledExecutorService theExecutor = Executors.newScheduledThreadPool(5);
 
-	private RendezVousService rdvService;
 	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 	private boolean isrunning;
 
@@ -75,7 +76,7 @@ public class EndPointViewPart extends ViewPart{
 		@Override
 		public void run() {
 			isrunning = true;
-			if( rdvService != null )
+			if( service != null )
 	            refresh();
 		}
 	};
@@ -223,13 +224,14 @@ public class EndPointViewPart extends ViewPart{
         	 return;
          
          // Registering as rendezvous event listener
-         if( this.rdvMonitor != null )
-         	inGroup.getRendezVousService().removeListener(this.rdvMonitor );
-         this.rdvMonitor = new RdvEventMonitor(this);
-         inGroup.getRendezVousService().addListener(this.rdvMonitor);
+         if( this.service != null )
+         	inGroup.getEndpointService().removeIncomingMessageListener( S_ENDPOINT, S_ENDPOINT_VIEWER );
+         this.service = peerGroup.getEndpointService();
+         this.monitor = new EndPointEventMonitor( peerGroup, this);
+         service.addIncomingMessageListener( this.monitor , S_ENDPOINT, S_ENDPOINT_VIEWER );
 
         // Starting the monitor
-        logJxta( peerGroup, "Starting to monitor the peergroup " + peerGroup.getPeerGroupName() );
+        logJxta( peerGroup, "Starting to monitor the end point service of " + peerGroup.getPeerGroupName() );
     }
 
 	/**
@@ -295,8 +297,6 @@ public class EndPointViewPart extends ViewPart{
 
                     //statusPanel.updateEdges( StrItems );
                     setInput( ConfigMode.RELAY, strItems );
-
-                	logJxta( peerGroup, "Endpoint service started");
                 }
             }
          });			
@@ -304,7 +304,7 @@ public class EndPointViewPart extends ViewPart{
 
     private void IsConnectedToRelayCheckBoxActionPerformed( SelectionEvent evt) {//GEN-FIRST:event_IsConnectedToRelayCheckBoxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_IsConnectedToRelayCheckBoxActionPerformed
+    }
 
     private synchronized void stopMonitorTask() {
 
@@ -317,49 +317,8 @@ public class EndPointViewPart extends ViewPart{
     protected void finalize() {
         stopMonitorTask();
     }
-
-    public class RdvEventMonitor implements RendezvousListener {
-
-        public RdvEventMonitor( EndPointViewPart inCM) {
-        }
-
-        @Override
-		public void rendezvousEvent(RendezvousEvent event) {
-            if ( event == null ) return;
-            String Log = null;
-
-            if ( event.getType() == RendezvousEvent.RDVCONNECT ) {
-                Log = "Connection to RDV";
-            } else if ( event.getType() == RendezvousEvent.RDVRECONNECT ) {
-                Log = "Reconnection to RDV";
-            } else if ( event.getType() == RendezvousEvent.CLIENTCONNECT ) {
-                Log = "EDGE client connection";
-            } else if ( event.getType() == RendezvousEvent.CLIENTRECONNECT ) {
-                Log = "EDGE client reconnection";
-            } else if ( event.getType() == RendezvousEvent.RDVDISCONNECT ) {
-                Log = "Disconnection from RDV";
-            } else if ( event.getType() == RendezvousEvent.RDVFAILED ) {
-                Log = "Connection to RDV failed";
-            } else if ( event.getType() == RendezvousEvent.CLIENTDISCONNECT ) {
-                Log = "EDGE client disconnection from RDV";
-            } else if ( event.getType() == RendezvousEvent.CLIENTFAILED ) {
-                Log = "EDGE client connection to RDV failed";
-            } else if ( event.getType() == RendezvousEvent.BECAMERDV ) {
-                Log = "This peer became RDV";
-            } else if ( event.getType() == RendezvousEvent.BECAMEEDGE ) {
-                Log = "This peer became EDGE";
-            }
-
-            String TempPID = event.getPeer();
-            if ( TempPID != null ) Log = Log + "\n  " + TempPID;
-
-            // Adding the entry
-            logJxta( peerGroup, Log );
-
-        }
-    }
     
-    private void logJxta( final PeerGroup peerGroup, final String message ){
+    static void logJxta( final PeerGroup peerGroup, final String message ){
     	if( Display.getDefault().isDisposed() )
     		return;
     	Display.getDefault().asyncExec(new Runnable() {
@@ -375,5 +334,28 @@ public class EndPointViewPart extends ViewPart{
     			Jp2pLog.logJp2p( record );
     		}
     	});
+    }
+    
+}
+
+class EndPointEventMonitor implements EndpointListener {
+	
+	private PeerGroup peergroup;
+	private EndPointViewPart viewpart;
+	
+    public EndPointEventMonitor( PeerGroup peergroup, EndPointViewPart viewpart) {
+    	this.peergroup = peergroup;
+    	this.viewpart = viewpart;
+    }
+
+    
+    @Override
+	public void processIncomingMessage(Message message,
+			EndpointAddress srcAddr, EndpointAddress dstAddr) {
+        if ( message == null ) return;
+
+        // Adding the entry
+        EndPointViewPart.logJxta( peergroup, message.toString() );
+        viewpart.refresh();
     }
 }

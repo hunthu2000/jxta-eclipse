@@ -13,6 +13,8 @@ package net.jp2p.jxta.network.configurator;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,15 +22,13 @@ import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.Jp2pComponent;
 import net.jp2p.container.context.Jp2pContext;
-import net.jp2p.container.factory.AbstractComponentFactory;
+import net.jp2p.container.factory.AbstractDependencyFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
 import net.jp2p.container.factory.IComponentFactory;
 import net.jp2p.container.partial.PartialPropertySource;
-import net.jp2p.container.properties.IJp2pDirectives;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
-import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jp2p.container.utils.StringStyler;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jp2p.jxta.network.INetworkPreferences;
@@ -46,14 +46,12 @@ import net.jp2p.jxta.seeds.SeedListPropertySource;
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager;
 
-public class NetworkConfigurationFactory extends
-		AbstractComponentFactory<NetworkConfigurator> {
+public class NetworkConfigurationFactory extends AbstractDependencyFactory<NetworkConfigurator, IJp2pComponent<NetworkManager>> {
 
-	private NetworkManager manager;
-
+	private Collection<SeedListPropertySource> seedlists;
+	
 	public NetworkConfigurationFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource) {
 		super( container, parentSource );
-		super.setCanCreate(this.manager != null );
 	}
 
 	@Override
@@ -64,16 +62,45 @@ public class NetworkConfigurationFactory extends
 	@Override
 	protected NetworkConfigurationPropertySource onCreatePropertySource() {
 		NetworkConfigurationPropertySource source = new NetworkConfigurationPropertySource( (NetworkManagerPropertySource) super.getParentSource() );
+		seedlists = new ArrayList<SeedListPropertySource>();
 		SeedListPropertySource slps = new SeedListPropertySource( source, source.getClass() );
 		if( slps.hasSeeds() )
-			source.addChild(slps);
+			seedlists.add(slps);
 		return source;
+	}
+	
+	@Override
+	protected boolean isCorrectFactory(IComponentFactory<?> factory) {
+		if(!( factory.getComponent() instanceof IJp2pComponent ))
+			return false;
+		IJp2pComponent<?> component = (IJp2pComponent<?>) factory.getComponent();
+		return ( component.getModule() instanceof NetworkManager);
+	}
+
+	@Override
+	public void notifyChange(ComponentBuilderEvent<Object> event) {
+		String name = StringStyler.styleToEnum( event.getFactory().getComponentName() );
+		if( !JxtaComponents.isComponent(name ))
+			return;
+		switch( event.getBuilderEvent() ){
+		case PROPERTY_SOURCE_CREATED:
+			if( !isComponentFactory( JxtaComponents.SEED_LIST, event.getFactory() ))
+				return;
+			if( !NetworkConfigurationPropertySource.isChild(super.getPropertySource(), event.getFactory().getPropertySource()))
+				return;
+			seedlists.add( (SeedListPropertySource) event.getFactory().getPropertySource() );
+			break;
+		default:
+			break;
+		}
+		super.notifyChange(event);
 	}
 
 	@Override
 	protected IJp2pComponent<NetworkConfigurator> onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties) {
 		NetworkConfigurator configurator = null;
 		try {
+			NetworkManager manager = super.getDependency().getModule();
 			configurator = manager.getConfigurator();
 			URI home = (URI) super.getPropertySource().getProperty( NetworkConfiguratorProperties.HOME );
 			if( home != null )
@@ -81,12 +108,8 @@ public class NetworkConfigurationFactory extends
 			this.fillConfigurator(configurator);
 			configurator.clearRelaySeeds();
 			configurator.clearRendezvousSeeds();
-			SeedListFactory slf = (SeedListFactory) super.getBuilder().getFactory( JxtaComponents.SEED_LIST.toString() );
-			if( slf != null ){
-				slf.createPropertySource();
-				slf.setConfigurator(configurator);
-				slf.createComponent();
-			}
+			for( SeedListPropertySource source: this.seedlists )
+				SeedListFactory.fillSeeds(configurator, source);
 			configurator.save();
 		} catch (IOException e) {
 			Logger log = Logger.getLogger( this.getClass().getName() );
@@ -116,62 +139,6 @@ public class NetworkConfigurationFactory extends
 		preferences.fillConfigurator(configurator);
 		for( IJp2pPropertySource<?> child: super.getPropertySource().getChildren() )
 			this.fillPartialConfigurator( configurator, (IJp2pPropertySource<NetworkConfiguratorProperties>) child);
-	}
-
-	@Override
-	protected void onParseDirectiveAfterCreation(IJp2pDirectives directive,
-			Object value) {
-		if(!( directive instanceof Directives ))
-			return;
-		Directives dir = ( Directives )directive;
-		switch( dir )
-		{
-		default:
-			break;
-		}	
-	}
-	
-	@Override
-	public boolean complete() {
-		boolean retval = super.complete();
-		for( IJp2pPropertySource<?> source: getPropertySource().getChildren() ){
-			if( source instanceof SeedListPropertySource ){
-				SeedListFactory slf = new SeedListFactory( super.getBuilder(), (SeedListPropertySource) source );
-				retval &= slf.complete();
-			}
-		}
-		super.setCompleted(retval);
-		return retval;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void notifyChange(ComponentBuilderEvent<Object> event) {
-		String name = StringStyler.styleToEnum( event.getFactory().getComponentName() );
-		if( !JxtaComponents.isComponent(name ))
-			return;
-		JxtaComponents component = JxtaComponents.valueOf(name);
-		switch( event.getBuilderEvent() ){
-		case PROPERTY_SOURCE_CREATED:
-			switch( component){
-			case SEED_LIST:
-				SeedListPropertySource source = (SeedListPropertySource) event.getFactory().getPropertySource();
-				source.setDirective( Directives.BLOCK_CREATION, Boolean.TRUE.toString());
-				break;
-			default:
-				break;
-			}
-			break;
-		case COMPONENT_CREATED:
-			if( !isComponentFactory( JxtaComponents.NETWORK_MANAGER, event.getFactory() ))
-				return;
-			this.manager = ((IJp2pComponent<NetworkManager>) ((IComponentFactory<?>) event.getFactory()).getComponent()).getModule();
-			super.setCanCreate(this.manager != null );
-			createComponent();
-			break;
-		default:
-			break;
-		}
 	}
 
 	/**

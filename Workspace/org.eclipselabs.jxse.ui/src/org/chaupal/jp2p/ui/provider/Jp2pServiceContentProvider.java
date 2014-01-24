@@ -12,12 +12,12 @@ import net.jp2p.container.properties.DefaultPropertySource;
 import net.jxta.platform.NetworkConfigurator;
 import net.osgi.jp2p.chaupal.comparator.Jp2pServiceComparator;
 
+import org.chaupal.jp2p.ui.Activator;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 public class Jp2pServiceContentProvider implements ITreeContentProvider {
 
-	public static final String S_BUNDLE_ID = "org.chaupal.jp2p.ui";
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 	}
@@ -114,7 +114,7 @@ public class Jp2pServiceContentProvider implements ITreeContentProvider {
 			return element;
 		if( element instanceof IJp2pComponentNode )
 			return element;
-		if(!( element instanceof IJp2pComponent<?> ))
+		if( element instanceof IJp2pComponent<?> )
 			return getComponent( element );
 		IJp2pComponent<?> component = (IJp2pComponent<?> )element;
 		return getComponent( component.getModule() );
@@ -129,7 +129,7 @@ public class Jp2pServiceContentProvider implements ITreeContentProvider {
 	public static IJp2pComponent<?> getComponent( Object module ){
 		if( module instanceof IJp2pComponent )
 			return (IJp2pComponent<?>) module;
-		return new Jp2pComponent( new DefaultPropertySource( S_BUNDLE_ID, module.toString() ), module );
+		return new Jp2pComponent( new DefaultPropertySource( Activator.BUNDLE_ID, module.toString() ), module );
 	}
 
 	public static Object[] getDecoratedChildren( IJp2pComponent<?> component ) {

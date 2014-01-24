@@ -6,6 +6,7 @@ import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.IComponentFactory;
+import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pDirectives.Contexts;
@@ -64,8 +65,8 @@ public class ChaupalContext implements IJp2pContext<Object> {
 	 * @return
 	 */
 	@Override
-	public IComponentFactory<?> getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
-		IComponentFactory<?> factory = null;
+	public IPropertySourceFactory<?> getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+		IPropertySourceFactory<?> factory = null;
 		String str = StringStyler.styleToEnum( componentName );
 		if(ChaupalComponents.isComponent(str)){
 			ChaupalComponents comp = ChaupalComponents.valueOf(str );

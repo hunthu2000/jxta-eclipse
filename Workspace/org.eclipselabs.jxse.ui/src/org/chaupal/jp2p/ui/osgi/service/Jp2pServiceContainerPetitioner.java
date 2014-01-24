@@ -1,12 +1,10 @@
+
 package org.chaupal.jp2p.ui.osgi.service;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -47,12 +45,9 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 	private RefreshRunnable refresher;
 	private PetitionPropertySource source;
 	
-	private Date date;
-	
 	private Jp2pServiceContainerPetitioner() {
 		super( new ResourcePalaver());
 		children = new ArrayList<IJp2pComponent<?>>();
-		this.date = Calendar.getInstance().getTime();
 		source = new PetitionPropertySource();
 		refresher = new RefreshRunnable( source );
 		this.listener = new IComponentChangedListener() {
@@ -95,10 +90,12 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 	}
 
 	/**
-	 * Get the create date
+	 * Get a String label for this component. This can be used for display options and 
+	 * is not meant to identify the component;
+	 * @return
 	 */
-	public Date getCreateDate(){
-		return (Date) this.date;
+	public String getComponentLabel(){
+		return this.source.getComponentName();
 	}
 
 	@Override
@@ -106,12 +103,6 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 		return true;
 	}
 
-	@Override
-	public Object getProperty(Object key) {
-		return null;
-	}
-
-	
 	@Override
 	public void setMatched( boolean choice ) {
 		super.setMatched(choice);
@@ -149,16 +140,6 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 	@Override
 	public boolean hasChildren() {
 		return !this.children.isEmpty();
-	}
-
-	@Override
-	public Iterator<IJp2pProperties> iterator() {
-		return source.propertyIterator();
-	}
-
-	@Override
-	public String getCategory(Object key) {
-		return PetitionPropertySource.S_JP2P;
 	}
 
 	public void finalise(){

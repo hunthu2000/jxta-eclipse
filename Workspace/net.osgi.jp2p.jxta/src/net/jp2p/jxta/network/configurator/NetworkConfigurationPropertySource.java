@@ -14,8 +14,6 @@ public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropert
 	implements IJp2pWritePropertySource<IJp2pProperties>
 
 {
-	public static String S_NETWORK_CONFIGURATOR = "NetworkConfigurator";
-	
 	public enum NetworkConfiguratorProperties implements IJp2pProperties{
 		DESCRIPTION,
 		HOME,
@@ -82,7 +80,22 @@ public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropert
 		public String toString() {
 			return StringStyler.prettyString( super.toString() );
 		}	
-		
+
+		/**
+		 * Returns true if the given property is valid for this enumeration
+		 * @param property
+		 * @return
+		 */
+		public static boolean isValidProperty( IJp2pProperties property ){
+			if( property == null )
+				return false;
+			for( NetworkConfiguratorProperties prop: values() ){
+				if( prop.equals( property ))
+					return true;
+			}
+			return false;
+		}
+
 		public static NetworkConfiguratorProperties convertTo( String str ){
 			String enumStr = StringStyler.styleToEnum( str );
 			return valueOf( enumStr );
@@ -90,7 +103,7 @@ public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropert
 	}
 
 	public NetworkConfigurationPropertySource( NetworkManagerPropertySource nmps ) {
-		super( S_NETWORK_CONFIGURATOR, nmps );
+		super( JxtaComponents.NETWORK_CONFIGURATOR.toString(), nmps );
 		this.fill();
 	}
 
@@ -110,11 +123,6 @@ public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropert
 		super.setProperty( NetworkConfiguratorProperties.HTTP_8ENABLED, true );
 	}
 
-	@Override
-	public String getComponentName() {
-		return JxtaComponents.NETWORK_CONFIGURATOR.toString();
-	}
-	
 	@Override
 	public NetworkConfiguratorProperties getIdFromString(String key) {
 		return NetworkConfiguratorProperties.valueOf( key );

@@ -246,7 +246,7 @@ public class RendezvousServiceViewPart extends ViewPart{
          this.rdvService.addListener(this.rdvMonitor);
 
         // Starting the monitor
-        logJxta( peergroup, "Starting to monitor the peergroup " + peergroup.getPeerGroupName() );
+        logJxta( peergroup, "Starting to monitor the rendezvous service of peergroup " + peergroup.getPeerGroupName() );
 	}
 
 	/**
@@ -297,12 +297,6 @@ public class RendezvousServiceViewPart extends ViewPart{
             		StrItems.add(items.get(i).toString());
             	setInput( ConfigMode.RENDEZVOUS, StrItems );
             	items = rdvService.getLocalEdgeView();
-            	// Sorting Peer IDs
-            	StrItems = new ArrayList<String>();
-            	for (int i=0;i<items.size();i++) 
-            		StrItems.add(items.get(i).toString());
-            	//statusPanel.updateRDVs( StrItems );
-            	setInput( ConfigMode.EDGE, StrItems );
             	styledText.setText( rdvService.getImplAdvertisement().toString());
             //} else {
             //	logJxta( peerGroup, "Rendezvous service is NULL");

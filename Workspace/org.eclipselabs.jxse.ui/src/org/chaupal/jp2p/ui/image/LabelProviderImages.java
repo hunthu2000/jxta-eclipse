@@ -33,7 +33,7 @@ public class LabelProviderImages extends AbstractImages{
 	private static LabelProviderImages images = new LabelProviderImages();
 	
 	public LabelProviderImages() {
-		super( S_ICON_PATH, Activator.PLUGIN_ID );
+		super( S_ICON_PATH, Activator.BUNDLE_ID );
 	}
 
 	/**

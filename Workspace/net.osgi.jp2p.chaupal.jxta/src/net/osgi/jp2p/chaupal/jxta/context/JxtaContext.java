@@ -6,6 +6,7 @@ import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.IComponentFactory;
+import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
@@ -63,7 +64,7 @@ public class JxtaContext implements IJp2pContext<Object> {
 	 * @return
 	 */
 	@Override
-	public IComponentFactory<?> getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+	public IPropertySourceFactory<?> getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
 		JxtaComponents component = JxtaComponents.valueOf( StringStyler.styleToEnum(componentName));
 		String[] attrs;
 		switch( component ){
@@ -75,7 +76,7 @@ public class JxtaContext implements IJp2pContext<Object> {
 		default:
 			attrs = new String[0];
 		}
-		IComponentFactory<?> factory = JxtaFactoryUtils.getDefaultFactory(builder, attrs, parentSource, componentName);
+		IPropertySourceFactory<?> factory = JxtaFactoryUtils.getDefaultFactory(builder, attrs, parentSource, componentName);
 		return factory;
 	}
 

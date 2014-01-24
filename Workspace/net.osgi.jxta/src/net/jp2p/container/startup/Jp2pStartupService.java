@@ -12,8 +12,6 @@ package net.jp2p.container.startup;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
 import net.jp2p.container.activator.AbstractActivator;
@@ -130,32 +128,17 @@ public class Jp2pStartupService extends AbstractActivator implements IJp2pServic
 		return this.source.getId();
 	}
 
-	@Override
-	public Date getCreateDate() {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Get a String label for this component. This can be used for display options and 
+	 * is not meant to identify the component;
+	 * @return
+	 */
+	public String getComponentLabel(){
+		return this.source.getComponentName();
 	}
-
-	@Override
-	public Object getProperty(Object key) {
-		return this.source.getProperty((IJp2pProperties) key);
-	}
-
 
 	@Override
 	public IContainerBuilder getModule() {
 		return this.container;
 	}
-
-
-	@Override
-	public Iterator<IJp2pProperties> iterator() {
-		return this.source.propertyIterator();
-	}
-
-	@Override
-	public String getCategory(Object key) {
-		return this.source.getCategory( (IJp2pProperties) key);
-	}
-	
 }

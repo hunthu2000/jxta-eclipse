@@ -24,6 +24,7 @@ import net.jp2p.container.component.ComponentEventDispatcher;
 import net.jp2p.container.log.Jp2pLevel;
 import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jxta.discovery.DiscoveryEvent;
@@ -52,7 +53,13 @@ public class ChaupalDiscoveryService extends AbstractJp2pServiceNode<DiscoverySe
 		this.service = this;
 		executor = Executors.newSingleThreadExecutor();
 	}
-		
+	
+	@Override
+	public String getComponentLabel() {
+		return super.getComponentLabel() + "( " + this.size + " )";
+	}
+
+
 	@Override
 	public synchronized Advertisement[] getAdvertisements() {
 		Collection<Advertisement> advertisements = discovery( false );
@@ -66,11 +73,12 @@ public class ChaupalDiscoveryService extends AbstractJp2pServiceNode<DiscoverySe
 		DiscoveryService discovery = super.getModule();
 		Collection<Advertisement> advertisements = new ArrayList<Advertisement>();
 		try {
-			String peerId = ( String )this.getProperty( DiscoveryProperties.PEER_ID );
-			String attribute = ( String )this.getProperty( DiscoveryProperties.ATTRIBUTE );
-			String wildcard = ( String )this.getProperty( DiscoveryProperties.WILDCARD );
-			int threshold = ( Integer )this.getProperty( DiscoveryProperties.THRESHOLD );
-			int adType = AdvertisementPropertySource.AdvertisementTypes.convertForDiscovery(( AdvertisementPropertySource.AdvertisementTypes) this.getProperty( DiscoveryProperties.ADVERTISEMENT_TYPE ));
+			IJp2pPropertySource<IJp2pProperties> source = super.getPropertySource();
+			String peerId = ( String )source.getProperty( DiscoveryProperties.PEER_ID );
+			String attribute = ( String )source.getProperty( DiscoveryProperties.ATTRIBUTE );
+			String wildcard = ( String )source.getProperty( DiscoveryProperties.WILDCARD );
+			int threshold = ( Integer )source.getProperty( DiscoveryProperties.THRESHOLD );
+			int adType = AdvertisementPropertySource.AdvertisementTypes.convertForDiscovery(( AdvertisementPropertySource.AdvertisementTypes) source.getProperty( DiscoveryProperties.ADVERTISEMENT_TYPE ));
 			Enumeration<Advertisement> enm= discovery.getLocalAdvertisements( adType, attribute, wildcard );
 			while( enm.hasMoreElements()){
 				advertisements.add(enm.nextElement());
@@ -107,8 +115,9 @@ public class ChaupalDiscoveryService extends AbstractJp2pServiceNode<DiscoverySe
 	 * @return
 	 */
 	protected int getCount(){
-		int count = ( Integer )getProperty( DiscoveryProperties.COUNT );
-		DiscoveryMode mode = (DiscoveryMode) getProperty( DiscoveryProperties.MODE );
+		IJp2pPropertySource<IJp2pProperties> source = super.getPropertySource();
+		int count = ( Integer )source.getProperty( DiscoveryProperties.COUNT );
+		DiscoveryMode mode = (DiscoveryMode) source.getProperty( DiscoveryProperties.MODE );
 		switch( mode ){
 		case CONTINUOUS:
 			return -1;
@@ -161,7 +170,7 @@ public class ChaupalDiscoveryService extends AbstractJp2pServiceNode<DiscoverySe
 		this.runnable = new Runnable(){
 			@Override
 			public void run() {
-				int wait_time = ( Integer )getProperty( DiscoveryProperties.WAIT_TIME );
+				int wait_time = ( Integer )source.getProperty( DiscoveryProperties.WAIT_TIME );
 				int count = getCount();
 				IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>)getPropertySource();
 				source.getOrCreateManagedProperty( DiscoveryProperties.COUNTER, AbstractJp2pPropertySource.S_RUNTIME, false );

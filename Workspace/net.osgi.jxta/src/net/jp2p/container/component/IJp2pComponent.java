@@ -10,9 +10,6 @@
  *******************************************************************************/
 package net.jp2p.container.component;
 
-import java.util.Date;
-import java.util.Iterator;
-
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.utils.StringStyler;
@@ -34,7 +31,12 @@ public interface IJp2pComponent<T extends Object>{
 	 */
 	public String getId();
 	
-	public Date getCreateDate();
+	/**
+	 * Get a String label for this component. This can be used for display options and 
+	 * is not meant to identify the component;
+	 * @return
+	 */
+	public String getComponentLabel();
 	
 	/**
 	 * Get the property source of this component
@@ -43,28 +45,8 @@ public interface IJp2pComponent<T extends Object>{
 	public IJp2pPropertySource<IJp2pProperties> getPropertySource();
 	
 	/**
-	 * Get a property for the service component
-	 * @param key
-	 * @return
-	 */
-	public Object getProperty( Object key );
-
-	/**
-	 * Get the category for the given key
-	 * @param key
-	 * @return
-	 */
-	public String getCategory( Object key );
-
-	/**
 	 * Get the module that is contained in the component
 	 * @return
 	 */
 	public T getModule();
-	
-	/**
-	 * Get an iterator for the supported properties
-	 * @return
-	 */
-	public Iterator<IJp2pProperties> iterator(); 
 }

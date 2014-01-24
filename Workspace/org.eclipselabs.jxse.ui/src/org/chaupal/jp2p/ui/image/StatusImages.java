@@ -40,7 +40,7 @@ public class StatusImages extends AbstractImages{
 	private static StatusImages images = new StatusImages();
 	
 	public StatusImages() {
-		super( S_ICON_PATH, Activator.PLUGIN_ID );
+		super( S_ICON_PATH, Activator.BUNDLE_ID );
 	}
 
 	/**

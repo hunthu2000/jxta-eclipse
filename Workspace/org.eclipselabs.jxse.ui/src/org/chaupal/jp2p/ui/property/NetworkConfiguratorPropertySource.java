@@ -18,6 +18,7 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.utils.EnumUtils;
 import net.jxta.id.ID;
 import net.jxta.peer.PeerID;
@@ -158,6 +159,8 @@ public class NetworkConfiguratorPropertySource extends AbstractJp2pUIPropertySou
 	@Override
 	public Object getPropertyValue(Object id) {
 		NetworkConfigurator configurator = super.getModule();
+		if( !NetworkConfiguratorProperties.isValidProperty( (IJp2pProperties) id ))
+			return null;
 		NetworkConfiguratorProperties property = ( NetworkConfiguratorProperties )id;
 		switch( property ){
 		case DESCRIPTION:

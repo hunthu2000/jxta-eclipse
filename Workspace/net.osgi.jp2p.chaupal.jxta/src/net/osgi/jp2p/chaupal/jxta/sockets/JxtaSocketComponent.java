@@ -50,7 +50,7 @@ public class JxtaSocketComponent extends Jp2pComponent<JxtaSocket> {
 		JxtaSocket socket = null;
 		 IJp2pComponent<NetworkManager> manager = (IJp2pComponent<NetworkManager> )super.getParent();
 		try {
-			return new JxtaSocket( manager.getModule().getNetPeerGroup(), null, pipeAd.getModule(), ( int )super.getProperty( SocketFactory.Properties.TIME_OUT ));
+			return new JxtaSocket( manager.getModule().getNetPeerGroup(), null, pipeAd.getModule(), ( int )super.getPropertySource().getProperty( SocketFactory.Properties.TIME_OUT ));
 		} catch (Exception e) {
 			Logger log = Logger.getLogger( this.getClass().getName() );
 			log.log( Level.SEVERE, e.getMessage() );

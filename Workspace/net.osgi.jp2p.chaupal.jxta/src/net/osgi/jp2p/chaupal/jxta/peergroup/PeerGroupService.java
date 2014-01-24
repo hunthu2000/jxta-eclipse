@@ -119,10 +119,6 @@ public class PeerGroupService extends AbstractJp2pServiceNode<PeerGroup>{
 			return;
 	}
 
-	public Object getProperty( PeerGroupProperties key ){
-		return super.getProperty(key);
-	}
-	
 	@Override
 	protected void deactivate() {
 		PeerGroup peergroup = super.getModule();

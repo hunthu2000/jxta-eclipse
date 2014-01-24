@@ -33,13 +33,6 @@ public class Jp2pLabelProvider extends LabelProvider{
 		if(!( element instanceof IJp2pComponent<?>))
 			return super.getText(element);
 		IJp2pComponent<?> component = (IJp2pComponent<?> )element;
-		String text = Utils.getLabel(component); 
-		//if( component instanceof ChaupalDiscoveryService )
-		//{
-		//	ChaupalDiscoveryService service = ( ChaupalDiscoveryService )component;
-		//	if( service.getSize() > 0 )
-		//		text += "(" + service.getSize() + ")";
-		//}
-		return text;
+		return Utils.getLabel(component); 
 	}	
 }

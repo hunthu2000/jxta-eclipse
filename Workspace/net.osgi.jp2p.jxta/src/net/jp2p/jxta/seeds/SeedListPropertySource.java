@@ -16,6 +16,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import net.jp2p.container.properties.AbstractJp2pWritePropertySource;
+import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.seeds.SeedInfo;
@@ -25,7 +26,7 @@ import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 
 public class SeedListPropertySource extends AbstractJp2pWritePropertySource {
 
-	protected static final String S_SEEDS = "/JXSE-INF/seeds.txt";
+	protected static final String S_SEEDS = "/JP2P-INF/seeds.txt";
 
 	private boolean hasSeeds;
 	private Class<?> clss;
@@ -39,6 +40,7 @@ public class SeedListPropertySource extends AbstractJp2pWritePropertySource {
 		this.hasSeeds = false;
 		this.clss = clss;
 		this.fillProperties( clss );
+		super.setDirective( Directives.BLOCK_CREATION, Boolean.FALSE.toString());
 	}
 	
 	protected void fillProperties( Class<?> clss ){

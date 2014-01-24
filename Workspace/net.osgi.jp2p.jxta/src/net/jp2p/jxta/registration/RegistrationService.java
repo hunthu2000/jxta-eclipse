@@ -10,9 +10,7 @@
  *******************************************************************************/
 package net.jp2p.jxta.registration;
 
-import java.util.Date;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
@@ -23,9 +21,6 @@ import net.jp2p.container.log.Jp2pLevel;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
-import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
-import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryMode;
 import net.jp2p.jxta.registration.RegistrationService;
 import net.jp2p.jxta.registration.RegistrationPropertySource.RegistrationProperties;
 import net.jxta.discovery.DiscoveryEvent;
@@ -44,6 +39,14 @@ public class RegistrationService extends AbstractActivator implements IJp2pServi
 		executor = Executors.newSingleThreadExecutor();
 	}
 
+	/**
+	 * Get a String label for this component. This can be used for display options and 
+	 * is not meant to identify the component;
+	 * @return
+	 */
+	public String getComponentLabel(){
+		return this.source.getComponentName();
+	}
 	
 	@Override
 	public IJp2pPropertySource<IJp2pProperties> getPropertySource() {
@@ -57,12 +60,12 @@ public class RegistrationService extends AbstractActivator implements IJp2pServi
 	 */
 	protected void discovery() {
 		try {
-			String peerId = ( String )this.getProperty( RegistrationProperties.PEER_ID );
-			String attribute = ( String )this.getProperty( RegistrationProperties.ATTRIBUTE );
-			String wildcard = ( String )this.getProperty( RegistrationProperties.WILDCARD );
-			int threshold = ( Integer )this.getProperty( RegistrationProperties.THRESHOLD );
+			//String peerId = ( String )this.getProperty( RegistrationProperties.PEER_ID );
+			//String attribute = ( String )this.getProperty( RegistrationProperties.ATTRIBUTE );
+			//String wildcard = ( String )this.getProperty( RegistrationProperties.WILDCARD );
+			//int threshold = ( Integer )this.getProperty( RegistrationProperties.THRESHOLD );
 
-			String adType = AdvertisementTypes.convert(( AdvertisementTypes) this.getProperty( null /*DiscoveryProperties.ADVERTISEMENT_TYPE*/ ));
+			//String adType = AdvertisementTypes.convert(( AdvertisementTypes) this.getProperty( null /*DiscoveryProperties.ADVERTISEMENT_TYPE*/ ));
 			//discovery.getLocalAdvertisements( Integer.parseInt( adType ), attribute, wildcard );
 			//discovery.getRemoteAdvertisements( peerId,  Integer.parseInt( adType ), attribute, wildcard, threshold, null);
 
@@ -75,7 +78,7 @@ public class RegistrationService extends AbstractActivator implements IJp2pServi
 	 * The activities performed in an active state. By defalt this is discovery
 	 */
 	protected void onActiveState(){
-		DiscoveryMode mode = ( DiscoveryMode )this.getProperty( RegistrationProperties.DISCOVERY_MODE );
+		//DiscoveryMode mode = ( DiscoveryMode )this.getProperty( RegistrationProperties.DISCOVERY_MODE );
 		//if(!( mode.equals( AdvertisementMode.PUBLISH )))
 		 // this.discovery();		
 	}
@@ -90,7 +93,7 @@ public class RegistrationService extends AbstractActivator implements IJp2pServi
 
 	@Override
 	public void run() {
-		int wait_time = ( Integer )this.getProperty( RegistrationProperties.WAIT_TIME );
+		int wait_time = ( Integer )this.getPropertySource().getProperty( RegistrationProperties.WAIT_TIME );
 		while ( super.isActive()) {
 			this.onActiveState();
 			try {
@@ -131,20 +134,6 @@ public class RegistrationService extends AbstractActivator implements IJp2pServi
 	}
 
 	@Override
-	public Date getCreateDate() {
-		return null;//this.source.getProperty();
-	}
-
-	@Override
-	public Object getProperty(Object id) {
-		return this.source.getProperty((RegistrationProperties) id);
-	}
-
-	protected void putProperty(Object id, Object value) {
-		this.source.setProperty((RegistrationProperties) id, value);
-	}
-
-	@Override
 	public RegistrationService getModule() {
 		return null;//this.service;
 	}
@@ -156,17 +145,5 @@ public class RegistrationService extends AbstractActivator implements IJp2pServi
 
 	@Override
 	protected void onFinalising() {
-	}
-
-	@Override
-	public Iterator<IJp2pProperties> iterator() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getCategory(Object key) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

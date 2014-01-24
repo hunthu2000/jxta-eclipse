@@ -1,7 +1,6 @@
 package net.jp2p.jxta.factory;
 
 import net.jp2p.container.builder.IContainerBuilder;
-import net.jp2p.container.factory.IComponentFactory;
 import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.partial.PartialFactory;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -28,14 +27,14 @@ public class JxtaFactoryUtils {
 	 * @param componentName
 	 * @return
 	 */
-	public static IComponentFactory<?> getDefaultFactory( IContainerBuilder builder, String[] attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+	public static IPropertySourceFactory<?> getDefaultFactory( IContainerBuilder builder, String[] attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
 		if( Utils.isNull(componentName))
 			return null;
 		String comp = StringStyler.styleToEnum(componentName);
 		if( !JxtaComponents.isComponent( comp ))
 			return null;
 		JxtaComponents component = JxtaComponents.valueOf(comp);
-		IComponentFactory<?> factory = null;
+		IPropertySourceFactory<?> factory = null;
 		switch( component ){
 		case NETWORK_MANAGER:
 			factory = new NetworkManagerFactory( builder, parentSource  );
@@ -89,7 +88,7 @@ public class JxtaFactoryUtils {
 		IJp2pPropertySource<?> child = source.getChild( componentName ); 
 		if( child != null )
 			return builder.getFactory(child );
-		IComponentFactory<?> factory = getDefaultFactory(builder, attributes, source, componentName );
+		IPropertySourceFactory<?> factory = getDefaultFactory(builder, attributes, source, componentName );
 		if( createSource )
 			factory.createPropertySource();
 		builder.addFactory( factory );

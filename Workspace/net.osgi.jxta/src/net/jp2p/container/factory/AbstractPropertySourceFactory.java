@@ -14,7 +14,6 @@ import java.util.Iterator;
 
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
-import net.jp2p.container.properties.IJp2pDirectives;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.ManagedProperty;
@@ -124,27 +123,6 @@ public abstract class AbstractPropertySourceFactory<T extends Object> implements
 	protected void setCanCreate(boolean canCreate) {
 		this.canCreate = canCreate;
 	}
-
-	/**
-	 * All the directives are parsed prior to creating the factory 
-	 * @param directive
-	 * @param value
-	 */
-	protected void onParseDirectivePriorToCreation( IJp2pDirectives directive, Object value ){/* DO NOTHING*/}
-	
-	/**
-	 * All the directives are parsed after the factory is created 
-	 * @param directive
-	 * @param value
-	 */
-	protected void onParseDirectiveAfterCreation( IJp2pDirectives directive, Object value ){/* DO NOTHING*/}
-	
-	/**
-	 * Actions needed to create the component
-	 * @param properties
-	 * @return
-	 */
-	protected abstract IJp2pComponent<T> onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties);
 	
 	/**
 	 * Allow an update of the 

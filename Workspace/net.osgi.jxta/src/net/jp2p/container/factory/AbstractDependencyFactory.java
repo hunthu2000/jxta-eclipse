@@ -10,7 +10,7 @@
  *******************************************************************************/
 package net.jp2p.container.factory;
 
-import net.jp2p.container.builder.ContainerBuilder;
+import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.factory.AbstractComponentFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
 import net.jp2p.container.factory.IComponentFactory;
@@ -22,7 +22,7 @@ public abstract class AbstractDependencyFactory<T extends Object, U extends Obje
 
 	private U dependency;
 
-	public AbstractDependencyFactory( ContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
+	public AbstractDependencyFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
 		super( container, parent );
 	}
 

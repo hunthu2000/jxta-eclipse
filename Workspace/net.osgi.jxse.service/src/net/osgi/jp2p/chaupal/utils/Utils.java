@@ -19,7 +19,7 @@ public class Utils
 {
 
 	/**
-	 * Get the label of a JP2P service compoent
+	 * Get the label of a JP2P service component
 	 * @param component
 	 * @return
 	 */
@@ -30,15 +30,15 @@ public class Utils
 		}
 		if(( component == null ) || ( component.getPropertySource() == null ))
 			return "NULL";
-		if( !net.jp2p.container.utils.Utils.isNull( component.getPropertySource().getComponentName()))
-			return component.getPropertySource().getComponentName();
+		if( !net.jp2p.container.utils.Utils.isNull( component.getComponentLabel() ))
+			return component.getComponentLabel();
 		if( component.getModule() == null )
 			return component.getClass().getSimpleName();
 		return component.getModule().getClass().getSimpleName();
 	}
 
 	/**
-	 * Get the label of a JP2P service compoent
+	 * Get the label of a JP2P service component
 	 * @param component
 	 * @return
 	 */

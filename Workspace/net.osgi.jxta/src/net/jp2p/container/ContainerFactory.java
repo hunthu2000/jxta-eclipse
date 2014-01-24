@@ -14,7 +14,6 @@ import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.AbstractComponentFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
-import net.jp2p.container.factory.IComponentFactory;
 import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;

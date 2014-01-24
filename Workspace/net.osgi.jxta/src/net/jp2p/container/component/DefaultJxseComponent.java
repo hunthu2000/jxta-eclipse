@@ -12,7 +12,6 @@ package net.jp2p.container.component;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 
 import net.jp2p.container.factory.IComponentFactory;
 import net.jp2p.container.properties.DefaultPropertySource;
@@ -53,6 +52,15 @@ public class DefaultJxseComponent<T extends Object> implements IJp2pComponent<T>
 	}
 
 	/**
+	 * Get a String label for this component. This can be used for display options and 
+	 * is not meant to identify the component;
+	 * @return
+	 */
+	public String getComponentLabel(){
+		return this.source.getComponentName();
+	}
+
+	/**
 	 * Get the create date
 	 */
 	public Date getCreateDate(){
@@ -77,11 +85,6 @@ public class DefaultJxseComponent<T extends Object> implements IJp2pComponent<T>
 		this.module = module;
 	}
 	
-	@Override
-	public Object getProperty(Object key) {
-		return source.getProperty( (IJp2pProperties) key);
-	}
-
 	/**
 	 * Get the category for the given key
 	 * @param key
@@ -93,11 +96,5 @@ public class DefaultJxseComponent<T extends Object> implements IJp2pComponent<T>
 
 	protected void putProperty( IJp2pProperties key, Object value ){
 		source.getOrCreateManagedProperty( key, value, false);
-	}
-
-	
-	@Override
-	public Iterator<IJp2pProperties> iterator() {
-		return this.source.propertyIterator();
 	}
 }

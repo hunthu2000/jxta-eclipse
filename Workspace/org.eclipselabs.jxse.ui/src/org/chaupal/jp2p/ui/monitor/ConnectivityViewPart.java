@@ -72,7 +72,6 @@ public class ConnectivityViewPart extends ViewPart{
 	private Text relayIDTextField;
 	
 	private TableViewer tableViewer;
-	private TableViewer tableViewer_1;
 
     private PeerGroup peerGroup = null;
     private RdvEventMonitor rdvMonitor;
@@ -81,7 +80,6 @@ public class ConnectivityViewPart extends ViewPart{
 	public static final ScheduledExecutorService theExecutor = Executors.newScheduledThreadPool(5);
 
 	private Table table;
-	private Table table_1;
 	private Composite composite_1;
 	private SashForm sashForm_1;
 	
@@ -220,14 +218,6 @@ public class ConnectivityViewPart extends ViewPart{
 		Composite composite_4 = new Composite(composite_1, SWT.NONE);
 		composite_4.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		tableViewer_1 = new TableViewer(composite_4, SWT.BORDER | SWT.FULL_SELECTION);
-		createColumn("Edges", tableViewer_1);
-		tableViewer_1.setColumnProperties(new String[] {"Relays"});
-		table_1 = tableViewer_1.getTable();
-		table_1.setHeaderVisible(true);
-		table_1.setLinesVisible(true);
-		tableViewer_1.setContentProvider(ArrayContentProvider.getInstance());
-		
 		Composite composite_3 = new Composite(composite_1, SWT.NONE);
 		composite_3.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
@@ -266,14 +256,8 @@ public class ConnectivityViewPart extends ViewPart{
 	    return viewerColumn;
 	}
 	
-	public void setInput( ConfigMode mode, List<String> values ){
-		switch( mode){
-		case EDGE:
-			tableViewer_1.setInput( values );
-		default: 
-			tableViewer.setInput(values);
-		}
-
+	void setInput( ConfigMode mode, List<String> values ){
+		tableViewer.setInput(values);
 	}
 	
     // Resetting frame value
@@ -427,7 +411,6 @@ public class ConnectivityViewPart extends ViewPart{
                     for (int i=0;i<Items.size();i++) 
                         StrItems.add(Items.get(i).toString());
 
-                    //statusPanel.updateEdges( StrItems );
                     setInput( ConfigMode.EDGE, StrItems );
 
                 } else {

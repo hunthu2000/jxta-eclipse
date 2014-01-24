@@ -12,23 +12,19 @@ package net.jp2p.jxta.seeds;
 
 import java.util.Iterator;
 
+import net.jp2p.container.builder.ContainerBuilder;
 import net.jp2p.container.builder.IContainerBuilder;
-import net.jp2p.container.component.IJp2pComponent;
-import net.jp2p.container.factory.AbstractComponentFactory;
+import net.jp2p.container.factory.AbstractPropertySourceFactory;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
-import net.jp2p.container.properties.IJp2pWritePropertySource;
-import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jp2p.container.seeds.SeedInfo;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jxta.platform.NetworkConfigurator;
 
-public class SeedListFactory extends AbstractComponentFactory<String> implements ISeedListFactory{
+public class SeedListFactory extends AbstractPropertySourceFactory<String>{
 
-	private NetworkConfigurator configurator;
-	
 	public SeedListFactory( IContainerBuilder container,  IJp2pPropertySource<IJp2pProperties> parent ) {
-		super( container, parent);
+		super( (ContainerBuilder) container, parent);
 	}
 
 	@Override
@@ -41,25 +37,12 @@ public class SeedListFactory extends AbstractComponentFactory<String> implements
 		return new SeedListPropertySource( super.getParentSource() );
 	}
 
-	public void addSeed( IJp2pProperties name, String value ){
-		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getPropertySource();
-		source.setProperty( name, value);
-	}
-	
-	@Override
-	public void setConfigurator(NetworkConfigurator configurator) {
-		this.configurator = configurator;
-		super.setCanCreate(this.configurator != null );
-	}
-
-	@Override
-	public IJp2pComponent<String> createComponent() {
-		return super.createComponent();
-	}
-
-	@Override
-	protected IJp2pComponent<String> onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties) {
-		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getPropertySource();
+	/**
+	 * Fill the configurator with the seeds
+	 * @param configurator
+	 * @param source
+	 */
+	public static void fillSeeds( NetworkConfigurator configurator, SeedListPropertySource source) {
 		Iterator<IJp2pProperties> iterator = source.propertyIterator();
 		while( iterator.hasNext() ){
 			IJp2pProperties key = iterator.next();
@@ -74,14 +57,5 @@ public class SeedListFactory extends AbstractComponentFactory<String> implements
 				configurator.addRelaySeedingURI( seedInfo.getUri() );						
 			}
 		}
-		return null;
-	}
-
-	@Override
-	public boolean isCompleted() {
-		if( super.getPropertySource() == null )
-			return false;
-		SeedListPropertySource source = (SeedListPropertySource) super.getPropertySource();
-		return SeedListPropertySource.getBoolean(source, Directives.BLOCK_CREATION);
 	}
 }

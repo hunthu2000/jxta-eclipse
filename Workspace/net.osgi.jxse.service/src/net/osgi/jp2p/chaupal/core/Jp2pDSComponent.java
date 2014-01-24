@@ -48,10 +48,10 @@ public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
 	private final void setActivator(AbstractJp2pBundleActivator activator) {
 		try{
 			Jp2pServiceContainer container = activator.getServiceContainer();
-			String pass = (String) container.getProperty( ContextProperties.PASS_1);
+			String pass = (String) container.getPropertySource().getProperty( ContextProperties.PASS_1);
 			if( !Utils.isNull( pass ))
 				this.introduction = pass;
-			pass = (String) container.getProperty( ContextProperties.PASS_2);
+			pass = (String) container.getPropertySource().getProperty( ContextProperties.PASS_2);
 			if( !Utils.isNull( pass ))
 				this.token = pass;
 			provider = new Jp2pContainerProvider( introduction, token );

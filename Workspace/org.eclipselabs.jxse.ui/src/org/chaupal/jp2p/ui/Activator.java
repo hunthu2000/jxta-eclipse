@@ -8,7 +8,7 @@ import org.osgi.util.tracker.ServiceTracker;
 
 public class Activator implements BundleActivator {
 
-	public static final String PLUGIN_ID = "org.chaupal.jp2p.ui";
+	public static final String BUNDLE_ID = "org.chaupal.jp2p.ui";
 	
 	private static Activator plugin;
 	private ServiceTracker<BundleContext,LogService> logServiceTracker;

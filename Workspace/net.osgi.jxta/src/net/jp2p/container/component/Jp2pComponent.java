@@ -10,10 +10,6 @@
  *******************************************************************************/
 package net.jp2p.container.component;
 
-import java.util.Date;
-import java.util.Iterator;
-
-import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.DefaultPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
@@ -58,11 +54,12 @@ public class Jp2pComponent<T extends Object> implements IJp2pComponent<T>, Compa
 	}
 
 	/**
-	 * Get the create date
+	 * Get a String label for this component. This can be used for display options and 
+	 * is not meant to identify the component;
+	 * @return
 	 */
-	@Override
-	public Date getCreateDate(){
-		return (Date) this.source.getProperty(ModuleProperties.CREATE_DATE);
+	public String getComponentLabel(){
+		return this.source.getComponentName();
 	}
 
 	/**
@@ -93,11 +90,6 @@ public class Jp2pComponent<T extends Object> implements IJp2pComponent<T>, Compa
 		return this.module;
 	}
 
-	@Override
-	public Object getProperty(Object key) {
-		return AbstractJp2pPropertySource.getExtendedProperty(source, (IJp2pProperties) key);
-	}
-
 	/**
 	 * Get the category for the given key
 	 * @param key
@@ -120,10 +112,5 @@ public class Jp2pComponent<T extends Object> implements IJp2pComponent<T>, Compa
 	@Override
 	public int compareTo(IJp2pComponent<?> o) {
 		return Integer.MAX_VALUE;
-	}
-
-	@Override
-	public Iterator<IJp2pProperties> iterator() {
-		return AbstractJp2pPropertySource.getExtendedIterator(source);
 	}
 }

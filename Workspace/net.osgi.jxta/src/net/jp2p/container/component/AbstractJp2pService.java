@@ -12,14 +12,11 @@ package net.jp2p.container.component;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 
 import net.jp2p.container.AbstractServiceContainer;
 import net.jp2p.container.activator.AbstractActivator;
-import net.jp2p.container.activator.IActivator;
 import net.jp2p.container.activator.IJp2pService;
 import net.jp2p.container.factory.IComponentFactory;
-import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.DefaultPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
@@ -63,6 +60,15 @@ implements IJp2pService<T>{
 	 */
 	public String getId(){
 		return (String) this.source.getId();
+	}
+
+	/**
+	 * Get a String label for this component. This can be used for display options and 
+	 * is not meant to identify the component;
+	 * @return
+	 */
+	public String getComponentLabel(){
+		return this.source.getComponentName();
 	}
 
 	/**
@@ -116,13 +122,6 @@ implements IJp2pService<T>{
 		this.module = module;
 	}
 	
-	@Override
-	public Object getProperty(Object key) {
-		if( key.toString().equals( IActivator.S_STATUS ))
-			return super.getStatus();
-		return AbstractJp2pPropertySource.getExtendedProperty(source, (IJp2pProperties) key);
-	}
-
 	protected void putProperty( IJp2pProperties key, Object value ){
 		String[] split = key.toString().split("[.]");
 		StringProperty id = new StringProperty( split[ split.length - 1]);
@@ -139,11 +138,6 @@ implements IJp2pService<T>{
 		return this.source.getCategory(( IJp2pProperties )key );
 	}
 	
-	@Override
-	public Iterator<IJp2pProperties> iterator() {
-		return AbstractJp2pPropertySource.getExtendedIterator(source);
-	}
-
 	@Override
 	protected void notifyListeners(Status previous, Status status) {
 		super.notifyListeners(previous, status);

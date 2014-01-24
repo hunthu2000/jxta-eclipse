@@ -44,7 +44,7 @@ public class RendezVousComponent extends AbstractJp2pService<RendezVousService> 
 	@Override
 	public Object getProperty( RendezVousServiceProperties key) {
 		if( super.getModule() == null )
-			return super.getProperty(key);
+			return super.getPropertySource().getProperty(key);
 		RendezVousService service = super.getModule();
 		switch( key ){
 		case STATUS:
@@ -56,7 +56,7 @@ public class RendezVousComponent extends AbstractJp2pService<RendezVousService> 
 		case RENDEZVOUS_STATUS:
 			return service.getRendezVousStatus();
 		default:
-			return super.getProperty(key);
+			return super.getPropertySource().getProperty(key);
 		}
 	}
 

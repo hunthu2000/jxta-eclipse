@@ -69,7 +69,7 @@ public class Jp2pComponentUIPropertySource implements IPropertySource {
 	public Object getPropertyValue(Object id) {
 		if (id.equals( S_PROPERTY_JXTA_COMPONENT_ID))
 			return Utils.getLabel( this.component );
-		return this.component.getProperty( id );
+		return this.component.getPropertySource().getProperty( (IJp2pProperties) id );
 	}
 
 	@Override

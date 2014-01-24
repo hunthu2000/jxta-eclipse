@@ -15,6 +15,7 @@ import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.factory.AbstractComponentFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
 import net.jp2p.container.factory.IComponentFactory;
+import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.filter.AbstractComponentFactoryFilter;
 import net.jp2p.container.filter.FilterChain;
 import net.jp2p.container.filter.IComponentFactoryFilter;
@@ -55,7 +56,7 @@ public abstract class ChaupalAdvertisementFactory<T extends Object, U extends Ad
 	@Override
 	public void extendContainer() {
 		IContainerBuilder builder = super.getBuilder();
-		IComponentFactory<?> df = (IComponentFactory<?>) builder.getFactory(ChaupalComponents.DISCOVERY_SERVICE.toString());
+		IPropertySourceFactory<?> df = builder.getFactory(ChaupalComponents.DISCOVERY_SERVICE.toString());
 		if( df == null ){
 			df = JxtaFactoryUtils.getDefaultFactory(builder, new String[0], super.getPropertySource(), ChaupalComponents.DISCOVERY_SERVICE.toString());
 			df.createPropertySource();

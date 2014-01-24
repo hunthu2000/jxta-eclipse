@@ -10,12 +10,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 public class CollectionPropertySource implements IPropertySource {
 
-	public static final String S_PROPERTY_JXTA_COMPONENT_ID = "org.condast.jxta.service.component";
-	public static final String S_PROPERTY_JXTA_COMPONENT_TEXT_ID = "org.condast.jxta.service.component.text";
-
-	public static final String S_PROPERTY_JXTA_TEXT = "JXTA";
-	public static final String S_PROPERTY_JTTA_SERVICE_COMPONENT_TEXT = "ServiceComponent";
-	public static final String S_PROPERTY_TEXT = "Properties";
+	public static final String S_PROPERTY_JP2P_COMPONENT_TEXT_ID = "org.chaupal.jp2p.component.text";
 
 	private String defaultText;
 	private List<Object> source;
@@ -63,7 +58,7 @@ public class CollectionPropertySource implements IPropertySource {
 
 	@Override
 	public boolean isPropertySet(Object id) {
-		if (id.equals( S_PROPERTY_JXTA_COMPONENT_TEXT_ID )) {
+		if (id.equals( S_PROPERTY_JP2P_COMPONENT_TEXT_ID )) {
 			String curName = (String)getPropertyValue(id);
 			return !curName.equals( this.defaultText );
 		}

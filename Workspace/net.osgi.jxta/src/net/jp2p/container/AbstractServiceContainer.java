@@ -12,8 +12,6 @@ package net.jp2p.container;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
 
 import net.jp2p.container.Jp2pContainerPropertySource;
 import net.jp2p.container.Swarm;
@@ -23,7 +21,6 @@ import net.jp2p.container.component.ComponentChangedEvent;
 import net.jp2p.container.component.ComponentEventDispatcher;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.factory.IComponentFactory;
-import net.jp2p.container.properties.AbstractJp2pWritePropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
@@ -79,6 +76,15 @@ implements	IJxseServiceContainer<T>{
 	}
 
 	/**
+	 * Get a String label for this component. This can be used for display options and 
+	 * is not meant to identify the component;
+	 * @return
+	 */
+	public String getComponentLabel(){
+		return this.source.getComponentName();
+	}
+
+	/**
 	 * Get the dispatcher for this container
 	 * @return
 	 */
@@ -99,31 +105,12 @@ implements	IJxseServiceContainer<T>{
 		return swarm;
 	}
 
-	/**
-	 * Get the create date
-	 */
-	@Override
-	public Date getCreateDate(){
-		return (Date) this.source.getProperty( ModuleProperties.CREATE_DATE);
-	}
-
 	public void clearModules(){
 		children.clear();
 	}
 
 	protected void setProperties(IJp2pWritePropertySource<IJp2pProperties> properties) {
 		this.source = properties;
-	}
-
-	@Override
-	public Object getProperty(Object key) {
-		return this.source.getProperty( (IJp2pProperties) key );
-	}
-
-	protected void putProperty(Object key, Object value) {
-		if( value == null )
-			return;
-		((AbstractJp2pWritePropertySource) this.source).setProperty( (IJp2pProperties) key, value);
 	}
 
 	/**
@@ -197,11 +184,6 @@ implements	IJxseServiceContainer<T>{
 			if( component.getModule().equals( module ))
 				context.getChildren().remove(component);
 		}
-	}
-
-	@Override
-	public Iterator<IJp2pProperties> iterator(){
-		return this.source.propertyIterator();
 	}
 
 	@Override

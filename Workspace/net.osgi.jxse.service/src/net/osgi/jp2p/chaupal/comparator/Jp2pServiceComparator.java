@@ -15,6 +15,7 @@ import java.util.Date;
 
 import net.jp2p.container.IJxseServiceContainer;
 import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.properties.IJp2pProperties.Jp2pProperties;
 import net.jp2p.jxta.utils.JxseModuleComparator;
 
 public class Jp2pServiceComparator<T extends Object> implements
@@ -33,8 +34,10 @@ public class Jp2pServiceComparator<T extends Object> implements
 		if( compare != 0 )
 			return compare;
 		IJp2pComponent<?> node1 = (net.jp2p.container.component.IJp2pComponent<?>)arg0;
+		Date date1 = (Date) node1.getPropertySource().getProperty( Jp2pProperties.CREATE_DATE );
 		IJp2pComponent<?> node2 = (net.jp2p.container.component.IJp2pComponent<?>)arg1;
-		return this.compareDate( node1.getCreateDate(), node2.getCreateDate() );
+		Date date2 = (Date) node2.getPropertySource().getProperty( Jp2pProperties.CREATE_DATE );
+		return this.compareDate( date1, date2 );
 	}
 
 	/**
