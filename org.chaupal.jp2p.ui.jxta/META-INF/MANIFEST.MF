@@ -44,6 +44,8 @@ Import-Package: net.jp2p.container,
  org.chaupal.jp2p.ui.celleditors,
  org.chaupal.jp2p.ui.console,
  org.chaupal.jp2p.ui.container,
+ org.chaupal.jp2p.ui.log,
+ org.chaupal.jp2p.ui.osgi,
  org.chaupal.jp2p.ui.property,
  org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.e4.ui.model.application.ui.basic,
@@ -61,7 +63,5 @@ Import-Package: net.jp2p.container,
  org.osgi.util.tracker;version="1.5.1"
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/attendees.xml
-Export-Package: org.chaupal.jp2p.ui.jxta.container,
- org.chaupal.jp2p.ui.jxta.log,
- org.chaupal.jp2p.ui.jxta.network,
+Export-Package: org.chaupal.jp2p.ui.jxta.network,
  org.chaupal.jp2p.ui.jxta.property

@@ -9,7 +9,7 @@ import org.chaupal.jp2p.ui.jxta.image.StatusImages.Images;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-public class Jp2pPeerGroupLabelProvider extends LabelProvider{
+public class PeerGroupLabelProvider extends LabelProvider{
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -27,7 +27,6 @@ public class Jp2pPeerGroupLabelProvider extends LabelProvider{
 	@SuppressWarnings("unchecked")
 	@Override
 	public String getText(Object element) {
-		StatusImages images = new StatusImages();
 		if(!( element instanceof SimpleNode ))
 			return super.getText(element);
 		SimpleNode<PeerGroup, PeerGroup> node = (SimpleNode<PeerGroup, PeerGroup>) element;

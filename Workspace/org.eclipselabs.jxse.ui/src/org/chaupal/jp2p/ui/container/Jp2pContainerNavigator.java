@@ -1,4 +1,4 @@
-package org.chaupal.jp2p.ui.jxta.container;
+package org.chaupal.jp2p.ui.container;
 
 import net.jp2p.container.component.IJp2pComponent;
 import net.osgi.jp2p.chaupal.IServiceChangedListener;
@@ -6,8 +6,7 @@ import net.osgi.jp2p.chaupal.ServiceChangedEvent;
 import net.osgi.jp2p.chaupal.ServiceEventDispatcher;
 import net.osgi.jp2p.chaupal.utils.Utils;
 
-import org.chaupal.jp2p.ui.container.Jp2pServiceViewerSorter;
-import org.chaupal.jp2p.ui.jxta.osgi.service.Jp2pServiceContainerPetitioner;
+import org.chaupal.jp2p.ui.osgi.Jp2pServiceContainerPetitioner;
 import org.eclipselabs.osgi.ds.broker.service.IParlezListener;
 import org.eclipselabs.osgi.ds.broker.service.ParlezEvent;
 import org.eclipse.jface.viewers.ISelection;
@@ -75,7 +74,7 @@ public class Jp2pContainerNavigator extends CommonNavigator{
 			}
 			
 		});
-		petitioner.petition("peergroups");
+		petitioner.petition("containers");
 		return petitioner;
 	}
 

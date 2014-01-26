@@ -1,4 +1,4 @@
-package org.chaupal.jp2p.ui.jxta.osgi.service;
+package org.chaupal.jp2p.ui.osgi;
 
 import net.jp2p.container.properties.AbstractJp2pWritePropertySource;
 import net.jp2p.container.properties.IJp2pProperties;

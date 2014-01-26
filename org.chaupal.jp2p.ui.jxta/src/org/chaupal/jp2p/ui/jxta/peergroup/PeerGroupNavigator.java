@@ -4,9 +4,13 @@ import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.utils.SimpleNode;
 import net.jp2p.jxta.peergroup.PeerGroupFactory;
 import net.jxta.peergroup.PeerGroup;
+import net.osgi.jp2p.chaupal.IServiceChangedListener;
+import net.osgi.jp2p.chaupal.ServiceChangedEvent;
+import net.osgi.jp2p.chaupal.ServiceEventDispatcher;
 import net.osgi.jp2p.chaupal.utils.Utils;
 
-import org.chaupal.jp2p.ui.jxta.container.Jp2pContainerNavigator;
+import org.chaupal.jp2p.ui.container.Jp2pContainerNavigator;
+import org.chaupal.jp2p.ui.jxta.osgi.service.PeerGroupPetitioner;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
@@ -15,6 +19,8 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.navigator.CommonViewer;
+import org.eclipselabs.osgi.ds.broker.service.IParlezListener;
+import org.eclipselabs.osgi.ds.broker.service.ParlezEvent;
 
 public class PeerGroupNavigator extends CommonNavigator{
 
@@ -22,7 +28,10 @@ public class PeerGroupNavigator extends CommonNavigator{
 	
 	private CommonViewer viewer;
 	private PeerGroup peergroup;
-	
+	private PeerGroupPetitioner petitioner;
+	private ServiceEventDispatcher dispatcher;
+	private PeerGroupNavigator navigator;
+
 	private ISelectionListener listener = new ISelectionListener() {
 		@Override
 		public void selectionChanged(IWorkbenchPart sourcepart, ISelection selection) {
@@ -35,6 +44,16 @@ public class PeerGroupNavigator extends CommonNavigator{
 
 	public PeerGroupNavigator() {
 		super();
+		navigator = this;
+		dispatcher = ServiceEventDispatcher.getInstance();
+		dispatcher.addServiceChangeListener( new IServiceChangedListener(){
+
+			@Override
+			public void notifyServiceChanged(ServiceChangedEvent event) {
+				if( ServiceChange.REFRESH.equals( event.getChange()))
+					navigator.refresh();
+			}		
+		});
 	}
 
 	/**
@@ -43,9 +62,17 @@ public class PeerGroupNavigator extends CommonNavigator{
 	 */
 	@Override
 	protected Object getInitialInput() {
-        if( peergroup == null )
-        	return null;
-		return null;//peergroup.getPeerGroups();
+        petitioner = PeerGroupPetitioner.getInstance();
+		petitioner.addParlezListener( new IParlezListener(){
+
+			@Override
+			public void notifyChange(ParlezEvent<?> event) {
+				navigator.refresh();
+			}
+			
+		});
+		petitioner.petition("containers");
+		return petitioner.createPeerGroupTree();
 	}
 
 	@Override

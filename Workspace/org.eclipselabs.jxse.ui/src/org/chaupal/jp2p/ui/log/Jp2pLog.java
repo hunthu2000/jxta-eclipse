@@ -1,8 +1,8 @@
-package org.chaupal.jp2p.ui.jxta.log;
+package org.chaupal.jp2p.ui.log;
 
 import java.util.logging.LogRecord;
 
-import org.chaupal.jp2p.ui.jxta.Activator;
+import org.chaupal.jp2p.ui.Activator;
 import org.eclipse.core.runtime.IStatus;
 
 public class Jp2pLog {

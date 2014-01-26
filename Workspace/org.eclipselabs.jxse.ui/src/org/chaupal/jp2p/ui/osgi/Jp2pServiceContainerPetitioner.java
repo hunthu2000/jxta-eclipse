@@ -1,5 +1,5 @@
 
-package org.chaupal.jp2p.ui.jxta.osgi.service;
+package org.chaupal.jp2p.ui.osgi;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,8 +25,8 @@ import net.osgi.jp2p.chaupal.ServiceEventDispatcher;
 import net.osgi.jp2p.chaupal.comparator.Jp2pServiceComparator;
 import net.osgi.jp2p.chaupal.core.Jp2pDSComponent;
 
-import org.chaupal.jp2p.ui.jxta.log.Jp2pLog;
-import org.chaupal.jp2p.ui.jxta.osgi.service.PetitionPropertySource.PetitionerProperties;
+import org.chaupal.jp2p.ui.log.Jp2pLog;
+import org.chaupal.jp2p.ui.osgi.PetitionPropertySource.PetitionerProperties;
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
 import org.eclipselabs.osgi.ds.broker.service.AbstractPetitioner;
 import org.eclipselabs.osgi.ds.broker.service.ParlezEvent;
@@ -104,11 +104,6 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 	}
 
 	@Override
-	public void setMatched( boolean choice ) {
-		super.setMatched(choice);
-	}
-
-	@Override
 	public Collection<Jp2pContainer> getModule() {
 		return super.getCollection();
 	}
@@ -149,109 +144,107 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 		}
 		this.refresher.stop();
 	}
-}
 
-/**
- * The palaver contains the conditions for attendees to create an assembly. In this case, the attendees must
- * pass a string identifier (the package id) and provide a token that is equal
- * @author Kees
- *
- */
-class ResourcePalaver extends AbstractPalaver<String>{
+	/**
+	 * The palaver contains the conditions for attendees to create an assembly. In this case, the attendees must
+	 * pass a string identifier (the package id) and provide a token that is equal
+	 * @author Kees
+	 *
+	 */
+	private static class ResourcePalaver extends AbstractPalaver<String>{
 
-	private static final String S_JP2P_INF = "/JP2P-INF/token.txt";
-	
-	private String providedToken;
-
-	protected ResourcePalaver() {
-		super( getProvidedInfo()[0]);
-		this.providedToken = getProvidedInfo()[1];
-	}
-
-	private static final String[] getProvidedInfo(){
-		Class<?> clss = ResourcePalaver.class;
-		String[] info = { Jp2pDSComponent.S_IJP2P_CONTAINER_PACKAGE_ID, Jp2pDSComponent.S_IP2P_TOKEN} ;
-		URL url = clss.getResource(S_JP2P_INF );
-		if( url == null )
-			return info;
-		Scanner scanner = null;
-		try{
-			scanner = new Scanner( clss.getResourceAsStream( S_JP2P_INF ));
-			String str = scanner.nextLine();
-			if( !Utils.isNull(str))
-				info[0] = str;
-			str = scanner.nextLine();
-			if( !Utils.isNull(str))
-				info[1] = str;
-			return info;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		finally{
-			if( scanner != null )
-				scanner.close();
-		}
-		return null;
+		private static final String S_JP2P_INF = "/JP2P-INF/token.txt";
 		
-	}
-	
-	@Override
-	public String giveToken() {
-		if( this.providedToken == null )
-			return  Jp2pDSComponent.S_IP2P_TOKEN;
-		return this.providedToken;	
-	}
+		private String providedToken;
 
-	@Override
-	public boolean confirm(Object token) {
-		if( token == null )
-			return false;
-		boolean retval = token.equals( Jp2pDSComponent.S_IP2P_TOKEN ); 
-		if( retval )
-			return ( retval );
-		return token.equals(this.providedToken );
-	}	
-}
-
-class RefreshRunnable implements Runnable{
-
-	private ExecutorService service;
-	private PetitionPropertySource source;
-	
-	public RefreshRunnable( PetitionPropertySource source) {
-		super();
-		this.source = source;
-	}
-
-	/**
-	 * Start the runnable thread
-	 */
-	synchronized void start(){
-		if( service != null )
-			return;
-		service = Executors.newCachedThreadPool();
-		service.execute(this);	
-	}
-	
-	/**
-	 * Stop the service
-	 */
-	public void stop(){
-		Thread.currentThread().interrupt();
-	}
-	
-	@Override
-	public void run() {
-		ServiceEventDispatcher dispatcher = ServiceEventDispatcher.getInstance();
-		dispatcher.serviceChanged( new ServiceChangedEvent(this, ServiceChange.REFRESH ));
-		try{
-			Thread.sleep((long) this.source.getProperty( PetitionerProperties.REFRESH_TIME ));
+		protected ResourcePalaver() {
+			super( getProvidedInfo()[0]);
+			this.providedToken = getProvidedInfo()[1];
 		}
-		catch( InterruptedException ex ){
-			Jp2pLog.logWarning( Jp2pServiceContainerPetitioner.S_WRN_THREAD_INTERRUPTED );
+
+		private static final String[] getProvidedInfo(){
+			Class<?> clss = ResourcePalaver.class;
+			String[] info = { Jp2pDSComponent.S_IJP2P_CONTAINER_PACKAGE_ID, Jp2pDSComponent.S_IP2P_TOKEN} ;
+			URL url = clss.getResource(S_JP2P_INF );
+			if( url == null )
+				return info;
+			Scanner scanner = null;
+			try{
+				scanner = new Scanner( clss.getResourceAsStream( S_JP2P_INF ));
+				String str = scanner.nextLine();
+				if( !Utils.isNull(str))
+					info[0] = str;
+				str = scanner.nextLine();
+				if( !Utils.isNull(str))
+					info[1] = str;
+				return info;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			finally{
+				if( scanner != null )
+					scanner.close();
+			}
+			return null;
+			
 		}
-		service = null;
+		
+		@Override
+		public String giveToken() {
+			if( this.providedToken == null )
+				return  Jp2pDSComponent.S_IP2P_TOKEN;
+			return this.providedToken;	
+		}
+
+		@Override
+		public boolean confirm(Object token) {
+			if( token == null )
+				return false;
+			boolean retval = token.equals( Jp2pDSComponent.S_IP2P_TOKEN ); 
+			if( retval )
+				return ( retval );
+			return token.equals(this.providedToken );
+		}	
 	}
 
+	private class RefreshRunnable implements Runnable{
 
+		private ExecutorService service;
+		private PetitionPropertySource source;
+		
+		public RefreshRunnable( PetitionPropertySource source) {
+			super();
+			this.source = source;
+		}
+
+		/**
+		 * Start the runnable thread
+		 */
+		synchronized void start(){
+			if( service != null )
+				return;
+			service = Executors.newCachedThreadPool();
+			service.execute(this);	
+		}
+		
+		/**
+		 * Stop the service
+		 */
+		public void stop(){
+			Thread.currentThread().interrupt();
+		}
+		
+		@Override
+		public void run() {
+			ServiceEventDispatcher dispatcher = ServiceEventDispatcher.getInstance();
+			dispatcher.serviceChanged( new ServiceChangedEvent(this, ServiceChange.REFRESH ));
+			try{
+				Thread.sleep((long) this.source.getProperty( PetitionerProperties.REFRESH_TIME ));
+			}
+			catch( InterruptedException ex ){
+				Jp2pLog.logWarning( Jp2pServiceContainerPetitioner.S_WRN_THREAD_INTERRUPTED );
+			}
+			service = null;
+		}
+	}
 }

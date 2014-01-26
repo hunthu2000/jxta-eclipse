@@ -6,15 +6,13 @@ public class OsgiComponent extends AbstractAttendeeProviderComponent {
 
 	@Override
 	protected void initialise() {
-		super.addAttendee( Jp2pServiceContainerPetitioner.getInstance() );
-		super.addAttendee( MessageBoxProvider.getInstance() );
 		super.addAttendee( PropertySourceProvider.getInstance() );
+		super.addAttendee( PeerGroupPetitioner.getInstance() );
 	}
 
 	@Override
 	protected void finalise() {
-		 Jp2pServiceContainerPetitioner.getInstance().finalise();
-		MessageBoxProvider.getInstance().finalise();	
+		PeerGroupPetitioner.getInstance().finalise();
 		super.finalise();
 	}
 }

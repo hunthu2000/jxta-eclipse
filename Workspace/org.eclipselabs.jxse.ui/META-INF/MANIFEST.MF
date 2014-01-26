@@ -54,6 +54,8 @@ Import-Package: net.jp2p.container,
 Export-Package: org.chaupal.jp2p.ui.celleditors,
  org.chaupal.jp2p.ui.console,
  org.chaupal.jp2p.ui.container,
+ org.chaupal.jp2p.ui.log,
+ org.chaupal.jp2p.ui.osgi,
  org.chaupal.jp2p.ui.property
 Require-Bundle: org.eclipse.ui;bundle-version="3.105.0"
 Service-Component: OSGI-INF/attendees.xml

@@ -1,8 +1,8 @@
-package org.chaupal.jp2p.ui.jxta.osgi.service;
+package org.chaupal.jp2p.ui.osgi;
 
 import net.jp2p.container.utils.StringStyler;
 
-import org.chaupal.jp2p.ui.jxta.log.Jp2pLog;
+import org.chaupal.jp2p.ui.log.Jp2pLog;
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
 import org.eclipselabs.osgi.ds.broker.service.AbstractProvider;
 import org.eclipse.jface.window.Window;

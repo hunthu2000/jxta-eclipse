@@ -2,7 +2,6 @@ package org.chaupal.jp2p.ui.jxta.peergroup;
 
 import net.jp2p.container.utils.IDescendant;
 import net.jp2p.container.utils.ILeaf;
-import net.jxta.peergroup.PeerGroup;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
