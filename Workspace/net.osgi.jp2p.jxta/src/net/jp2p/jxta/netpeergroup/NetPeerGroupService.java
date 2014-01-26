@@ -20,8 +20,6 @@ import net.jxta.platform.NetworkManager;
 
 public class NetPeerGroupService extends AbstractJp2pService<PeerGroup>{
 
-	public static final String S_NETPEERGROUP_SERVICE = "Jxse Net Peergroup Service";
-
 	private NetworkManager manager;
 
 	public NetPeerGroupService( NetPeerGroupFactory factory, NetworkManager manager ) {

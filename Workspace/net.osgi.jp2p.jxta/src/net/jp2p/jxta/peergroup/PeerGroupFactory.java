@@ -11,9 +11,12 @@
 package net.jp2p.jxta.peergroup;
 
 import java.net.URI;
+import java.util.Stack;
 
+import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.component.IJp2pComponentNode;
 import net.jp2p.container.component.Jp2pComponent;
 import net.jp2p.container.factory.IComponentFactory;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -21,6 +24,7 @@ import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.ManagedProperty;
 import net.jp2p.container.properties.IManagedPropertyListener.PropertyEvents;
+import net.jp2p.container.utils.SimpleNode;
 import net.jp2p.container.utils.Utils;
 import net.jp2p.jxta.advertisement.AdvertisementPropertySource;
 import net.jp2p.jxta.advertisement.ModuleClassAdvertisementPropertySource;
@@ -200,5 +204,48 @@ public class PeerGroupFactory extends AbstractPeerGroupDependencyFactory<PeerGro
 			return PeerGroupPropertySource.S_NET_PEER_GROUP;
 		else
 			return peergroup;
-	}		
+	}
+	
+	/**
+	 * Create the peergroup structure 
+	 * @param container
+	 * @return
+	 */
+	public static SimpleNode<PeerGroup,PeerGroup> createPeerGroupTree( IJp2pContainer<?> container){
+		Stack<SimpleNode<PeerGroup, PeerGroup>> stack = new Stack<SimpleNode<PeerGroup, PeerGroup>>();
+		findPeerGroups(container, stack);
+		for( SimpleNode<PeerGroup, PeerGroup> node: stack ){
+			if( PeerGroupPropertySource.S_NET_PEER_GROUP.equals( node.getData().getPeerGroupName()))
+				return node;
+		}
+		return null;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private final static void findPeerGroups( IJp2pComponent<?> component, Stack<SimpleNode<PeerGroup, PeerGroup>> stack){
+		if( component.getModule() instanceof PeerGroup ){
+			PeerGroup peergroup = (PeerGroup) component.getModule();
+			if( stack.contains( peergroup ))
+				return;
+			SimpleNode sn = new SimpleNode<PeerGroup, PeerGroup>( peergroup );
+			for( SimpleNode<PeerGroup, PeerGroup> node: stack ){
+				if( node.getData().equals( peergroup.getParentGroup())){
+					node.addChild(sn);
+					continue;
+				}
+				PeerGroup parent = node.getData().getParentGroup();
+				if( parent == null )
+					continue;
+				if( parent.equals( peergroup ))
+					sn.addChild(node);						
+			}
+			stack.push(sn);
+			if(!( component instanceof IJp2pComponentNode<?>) )
+				return;
+			IJp2pComponentNode<?> node = (IJp2pComponentNode<?>) component;
+			for( IJp2pComponent<?> child: node.getChildren() )
+				findPeerGroups(child, stack);
+		}
+	}
+
 }

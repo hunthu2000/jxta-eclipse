@@ -7,6 +7,8 @@ import java.util.Map;
 
 import net.jp2p.container.factory.ComponentBuilderEvent;
 import net.jp2p.container.factory.IComponentFactory;
+import net.jp2p.container.factory.filter.AbstractComponentFactoryFilter;
+import net.jp2p.container.factory.filter.IComponentFactoryFilter;
 
 public class FilterChain<T extends Object> extends AbstractComponentFactoryFilter<T> {
 

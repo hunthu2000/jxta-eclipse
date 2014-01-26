@@ -16,9 +16,10 @@ import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.ManagedProperty;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
+import net.jp2p.container.utils.ILeaf;
 import net.jp2p.container.utils.StringProperty;
 
-public class Jp2pComponent<T extends Object> implements IJp2pComponent<T>, Comparable< IJp2pComponent<?>>{
+public class Jp2pComponent<T extends Object> implements IJp2pComponent<T>, ILeaf<IJp2pComponent<?>>, Comparable< IJp2pComponent<?>>{
 
 	public static final String S_DEFAULT_PROPERTY = "Default";
 	private T module;

@@ -10,12 +10,12 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal;
 
-import net.jp2p.container.IJxseServiceContainer;
+import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.factory.IComponentFactory;
 
 public interface IContextObserver<T extends Object> {
 
-	public void buildStarted( IJxseServiceContainer<T> context );
+	public void buildStarted( IJp2pContainer<T> context );
 	
 	/**
 	 * Observes the creation of a factory in a context 
@@ -29,6 +29,6 @@ public interface IContextObserver<T extends Object> {
 	 */
 	public void componentCreated( Object component );
 
-	public void buildCompleted( IJxseServiceContainer<T> context );
+	public void buildCompleted( IJp2pContainer<T> context );
 
 }

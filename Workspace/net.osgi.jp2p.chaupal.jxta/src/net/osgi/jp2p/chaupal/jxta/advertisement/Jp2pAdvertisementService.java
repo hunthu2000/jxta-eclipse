@@ -13,7 +13,7 @@ package net.osgi.jp2p.chaupal.jxta.advertisement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.jp2p.container.AbstractServiceContainer;
+import net.jp2p.container.AbstractJp2pContainer;
 import net.jp2p.container.activator.ActivatorEvent;
 import net.jp2p.container.activator.ActivatorListener;
 import net.jp2p.container.component.AbstractJp2pServiceNode;
@@ -74,7 +74,7 @@ public class Jp2pAdvertisementService<T extends Advertisement> extends AbstractJ
 				break;
 			}
 			ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
-			dispatcher.serviceChanged( new ComponentChangedEvent( service, AbstractServiceContainer.ServiceChange.COMPONENT_EVENT ));			
+			dispatcher.serviceChanged( new ComponentChangedEvent( service, AbstractJp2pContainer.ServiceChange.COMPONENT_EVENT ));			
 		} catch (Exception e) {
 			log.log( Level.SEVERE, e.getMessage() );
 			e.printStackTrace();
@@ -116,7 +116,7 @@ public class Jp2pAdvertisementService<T extends Advertisement> extends AbstractJ
 				@Override
 				public void notifyServiceChanged(ComponentChangedEvent event) {
 					if( event.getSource().equals( discovery )){
-						if( event.getChange().equals( AbstractServiceContainer.ServiceChange.COMPONENT_EVENT )){
+						if( event.getChange().equals( AbstractJp2pContainer.ServiceChange.COMPONENT_EVENT )){
 							Advertisement[] advertisements = discovery.getAdvertisements();
 							if(( advertisements == null ) || ( advertisements.length == 0 ))
 								return;

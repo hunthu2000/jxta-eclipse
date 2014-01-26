@@ -11,7 +11,7 @@
 package net.jp2p.container.startup;
 
 import net.jp2p.container.Jp2pContainerPropertySource;
-import net.jp2p.container.IJxseServiceContainer.ContextProperties;
+import net.jp2p.container.IJp2pContainer.ContainerProperties;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.properties.AbstractJp2pWritePropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -37,14 +37,14 @@ public class Jp2pStartupPropertySource extends AbstractJp2pWritePropertySource{
 
 	@Override
 	public IJp2pProperties getIdFromString(String key) {
-		return ContextProperties.valueOf( key );
+		return ContainerProperties.valueOf( key );
 	}
 
 	@Override
 	public Object getDefault( IJp2pProperties id) {
-		if(!( id instanceof ContextProperties ))
+		if(!( id instanceof ContainerProperties ))
 			return null;
-		ContextProperties cp = (ContextProperties )id;
+		ContainerProperties cp = (ContainerProperties )id;
 		switch( cp ){
 		default:
 			break;

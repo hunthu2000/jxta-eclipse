@@ -10,24 +10,6 @@
  *******************************************************************************/
 package net.jp2p.container.component;
 
-import java.util.Collection;
+import net.jp2p.container.utils.INode;
 
-public interface IJp2pComponentNode<T extends Object> extends IJp2pComponent<T>{
-	
-	/**
-	 * Return true if the component is a root
-	 * @return
-	 */
-	public boolean isRoot();
-	
-	public void addChild( IJp2pComponent<?> child );
-	public void removeChild( IJp2pComponent<?> child );
-
-	/**
-	 * Get the parent of the component
-	 * @return
-	 */
-	public Collection<IJp2pComponent<?>> getChildren();
-	
-	public boolean hasChildren();
-}
+public interface IJp2pComponentNode<T extends Object> extends IJp2pComponent<T>, INode<IJp2pComponent<T>, IJp2pComponent<?>>{}

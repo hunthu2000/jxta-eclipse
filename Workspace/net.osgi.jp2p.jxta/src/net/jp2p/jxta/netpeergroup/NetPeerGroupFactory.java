@@ -13,8 +13,8 @@ package net.jp2p.jxta.netpeergroup;
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.factory.AbstractComponentDependencyFactory;
-import net.jp2p.container.filter.ComponentFilter;
-import net.jp2p.container.filter.IComponentFactoryFilter;
+import net.jp2p.container.factory.filter.ComponentCreateFilter;
+import net.jp2p.container.factory.filter.IComponentFactoryFilter;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
@@ -37,12 +37,12 @@ public class NetPeerGroupFactory extends AbstractComponentDependencyFactory<Peer
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	protected IComponentFactoryFilter createFilter() {
-		return new ComponentFilter( BuilderEvents.FACTORY_COMPLETED, JxtaComponents.NETWORK_MANAGER.toString(), this );
+		return new ComponentCreateFilter( BuilderEvents.FACTORY_COMPLETED, JxtaComponents.NETWORK_MANAGER.toString(), this );
 	}
 
 	@Override
 	public PeerGroupPropertySource onCreatePropertySource() {
-		PeerGroupPropertySource source = new PeerGroupPropertySource( PeerGroupPropertySource.S_NET_PEER_GROUP, super.getParentSource());
+		PeerGroupPropertySource source = new PeerGroupPropertySource( JxtaComponents.NET_PEERGROUP_SERVICE.toString(), super.getParentSource());
 		return source;
 	}
 	

@@ -18,7 +18,7 @@ public class SpinnerCellEditor extends AbstractControlCellEditor {
 	/**
 	 * Default CheckboxCellEditor style
 	 */
-	private static final int defaultStyle = SWT.NONE;
+	protected static final int defaultStyle = SWT.NONE;
 
 	/**
 	 * Creates a new checkbox cell editor with no control
@@ -62,6 +62,11 @@ public class SpinnerCellEditor extends AbstractControlCellEditor {
 			return;
 		this.spinner.setMinimum( minValue );
 		this.spinner.setMaximum( maxValue );
+	}
+
+	
+	protected Spinner getSpinner() {
+		return spinner;
 	}
 
 	/**

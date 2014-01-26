@@ -19,7 +19,7 @@ public class Jp2pServiceContentProvider implements ITreeContentProvider {
 		if( decorator.getChildren() == null )
 			return null;
 		//Collections.sort( decorator.getChildren(), new JxtaServiceComparator< IJxtaServiceNode<?>>());
-		return decorator.getChildren().toArray();
+		return decorator.getChildren();
 	}
 
 	@Override

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.utils;
 
-import net.jp2p.container.IJxseServiceContainer;
+import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
@@ -24,8 +24,8 @@ public class Utils
 	 * @return
 	 */
 	public static String getLabel( IJp2pComponent<?> component) {
-		if( component instanceof IJxseServiceContainer ){
-			IJxseServiceContainer<?> container = (IJxseServiceContainer<?> )component;
+		if( component instanceof IJp2pContainer ){
+			IJp2pContainer<?> container = (IJp2pContainer<?> )component;
 			return container.getIdentifier();			
 		}
 		if(( component == null ) || ( component.getPropertySource() == null ))

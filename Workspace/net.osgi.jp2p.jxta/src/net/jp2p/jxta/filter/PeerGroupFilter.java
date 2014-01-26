@@ -4,7 +4,7 @@ import net.jp2p.container.builder.ICompositeBuilderListener.BuilderEvents;
 import net.jp2p.container.factory.AbstractComponentFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
 import net.jp2p.container.factory.IComponentFactory;
-import net.jp2p.container.filter.AbstractComponentFactoryFilter;
+import net.jp2p.container.factory.filter.AbstractComponentFactoryFilter;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.utils.Utils;
 import net.jp2p.jxta.discovery.DiscoveryPropertySource;

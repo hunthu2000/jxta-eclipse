@@ -1,28 +1,26 @@
 package net.jp2p.container.filter;
 
-import net.jp2p.container.builder.ICompositeBuilderListener.BuilderEvents;
-import net.jp2p.container.factory.IComponentFactory;
+import net.jp2p.container.component.IJp2pComponent;
 
-public class ComponentFilter<T, U extends Object> extends
-		AbstractComponentFilter<T, U> {
+
+public class ComponentFilter<T extends Object> implements IFilter<IJp2pComponent<T>> {
 
 	private String componentName;
+	private boolean accepted;
 	
-	public ComponentFilter(BuilderEvents event, String componentName, IComponentFactory<T> factory ) {
-		super(event, factory);
+	public ComponentFilter( String componentName ) {
 		this.componentName = componentName;
+		this.accepted = false;
 	}
-
+	
+	@Override
+	public boolean accept(IJp2pComponent<T> compoent ) {
+		accepted = this.componentName.equals( compoent.getPropertySource().getComponentName() );
+		return accepted;
+	}
 
 	@Override
-	public U getComponent() {
-		return super.getComponent();
+	public boolean hasAccepted() {
+		return accepted;
 	}
-
-
-	@Override
-	protected boolean checkComponent(IComponentFactory<U> factory) {
-		return ( componentName.equals( factory.getComponentName()));
-	}
-
 }

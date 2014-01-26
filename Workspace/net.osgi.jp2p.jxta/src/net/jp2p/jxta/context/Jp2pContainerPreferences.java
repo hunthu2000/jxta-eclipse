@@ -14,7 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import net.jp2p.container.Jp2pContainerPropertySource;
-import net.jp2p.container.IJxseServiceContainer.ContextProperties;
+import net.jp2p.container.IJp2pContainer.ContainerProperties;
 import net.jp2p.container.persistence.AbstractPreferences;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
@@ -35,12 +35,12 @@ public class Jp2pContainerPreferences extends AbstractPreferences<String, Object
 	 */
 	public URI getHomeFolder( ) throws URISyntaxException{
 		IJp2pPropertySource<IJp2pProperties> source = super.getSource();
-		return (URI) source.getProperty( ContextProperties.HOME_FOLDER );
+		return (URI) source.getProperty( ContainerProperties.HOME_FOLDER );
 	}
 
 	public void setHomeFolder( URI homeFolder ){
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getSource();
-		source.setProperty( ContextProperties.HOME_FOLDER, homeFolder );
+		source.setProperty( ContainerProperties.HOME_FOLDER, homeFolder );
 	}
 	
 	@Override
@@ -55,10 +55,10 @@ public class Jp2pContainerPreferences extends AbstractPreferences<String, Object
 	public Object convertTo( IJp2pProperties props, String value ){
 		if(( props == null ) || ( Utils.isNull(value )))
 			return false;
-		if( !( props instanceof ContextProperties )){
+		if( !( props instanceof ContainerProperties )){
 			return value;
 		}
-		ContextProperties id = (ContextProperties) props;
+		ContainerProperties id = (ContainerProperties) props;
 		switch( id ){
 		case HOME_FOLDER:
 			Jp2pContainerPropertySource source = (Jp2pContainerPropertySource) super.getSource();

@@ -13,7 +13,7 @@ package net.osgi.jp2p.chaupal.activator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.jp2p.container.Jp2pServiceContainer;
+import net.jp2p.container.Jp2pContainer;
 import net.jp2p.container.log.Jp2pLevel;
 
 import org.osgi.framework.BundleActivator;
@@ -35,7 +35,7 @@ public abstract class AbstractJp2pBundleActivator implements BundleActivator {
 	 * Create the context
 	 * @return
 	 */
-	protected abstract Jp2pServiceContainer createContainer();
+	protected abstract Jp2pContainer createContainer();
 	
 	/*
 	 * (non-Javadoc)
@@ -81,7 +81,7 @@ public abstract class AbstractJp2pBundleActivator implements BundleActivator {
 		logServiceTracker = null;
 	}
 
-	public Jp2pServiceContainer getServiceContainer(){
+	public Jp2pContainer getServiceContainer(){
 		return jxtaActivator.getServiceContext();
 	}
 }

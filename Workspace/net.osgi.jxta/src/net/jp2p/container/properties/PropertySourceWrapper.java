@@ -123,5 +123,15 @@ public class PropertySourceWrapper< T extends Object> implements IJp2pPropertySo
 	@Override
 	public void removeChild(IJp2pPropertySource<?> child) {
 		this.removeChild(child);
+	}
+
+	@Override
+	public boolean isRoot() {
+		return this.source.isRoot();
+	}
+
+	@Override
+	public boolean hasChildren() {
+		return this.source.hasChildren();
 	}	
 }

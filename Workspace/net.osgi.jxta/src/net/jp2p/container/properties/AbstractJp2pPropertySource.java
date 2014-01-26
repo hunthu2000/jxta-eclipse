@@ -202,6 +202,16 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 	}
 
 	@Override
+	public boolean isRoot() {
+		return ( this.parent == null );
+	}
+
+	@Override
+	public boolean hasChildren() {
+		return !this.children.isEmpty();
+	}
+
+	@Override
 	public IJp2pPropertySource<?>[] getChildren() {
 		return this.children.toArray(new IJp2pPropertySource[children.size()]);
 	}

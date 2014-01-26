@@ -12,7 +12,7 @@ package net.jp2p.container.component;
 
 import java.util.EventObject;
 
-import net.jp2p.container.AbstractServiceContainer.ServiceChange;
+import net.jp2p.container.AbstractJp2pContainer.ServiceChange;
 
 public class ComponentChangedEvent extends EventObject {
 	private static final long serialVersionUID = 1L;

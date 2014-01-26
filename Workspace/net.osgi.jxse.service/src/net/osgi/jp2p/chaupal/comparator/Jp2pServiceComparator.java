@@ -13,7 +13,7 @@ package net.osgi.jp2p.chaupal.comparator;
 import java.util.Comparator;
 import java.util.Date;
 
-import net.jp2p.container.IJxseServiceContainer;
+import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.properties.IJp2pProperties.Jp2pProperties;
 import net.jp2p.jxta.utils.JxseModuleComparator;
@@ -50,7 +50,7 @@ public class Jp2pServiceComparator<T extends Object> implements
 		if( obj == null )
 			return -1;
 		int index = 0;
-		if( obj instanceof IJxseServiceContainer )
+		if( obj instanceof IJp2pContainer )
 			return index;
 		index++;
 		if(!( obj instanceof IJp2pComponent<?>)){

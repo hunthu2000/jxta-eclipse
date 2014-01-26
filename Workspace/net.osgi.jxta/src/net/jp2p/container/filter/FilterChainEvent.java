@@ -13,6 +13,7 @@ package net.jp2p.container.filter;
 import java.util.EventObject;
 
 import net.jp2p.container.factory.IComponentFactory;
+import net.jp2p.container.factory.filter.IComponentFactoryFilter;
 
 public class FilterChainEvent extends EventObject {
 	private static final long serialVersionUID = 1L;

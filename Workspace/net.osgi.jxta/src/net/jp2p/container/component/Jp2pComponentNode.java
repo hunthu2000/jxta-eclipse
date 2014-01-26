@@ -13,7 +13,7 @@ package net.jp2p.container.component;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.jp2p.container.AbstractServiceContainer;
+import net.jp2p.container.AbstractJp2pContainer;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 
@@ -28,20 +28,21 @@ public class Jp2pComponentNode<T extends Object> extends Jp2pComponent<T> implem
 	}
 
 	@Override
-	public void addChild( IJp2pComponent<?> child ){
+	public boolean addChild( IJp2pComponent<?> child ){
 		this.children.add( child );
-		dispatcher.serviceChanged( new ComponentChangedEvent( this, AbstractServiceContainer.ServiceChange.CHILD_ADDED ));
+		dispatcher.serviceChanged( new ComponentChangedEvent( this, AbstractJp2pContainer.ServiceChange.CHILD_ADDED ));
+		return true;
 	}
 
 	@Override
 	public void removeChild( IJp2pComponent<?> child ){
 		this.children.remove( child );
-		dispatcher.serviceChanged( new ComponentChangedEvent( this, AbstractServiceContainer.ServiceChange.CHILD_REMOVED ));
+		dispatcher.serviceChanged( new ComponentChangedEvent( this, AbstractJp2pContainer.ServiceChange.CHILD_REMOVED ));
 	}
 
 	@Override
-	public Collection<IJp2pComponent<?>> getChildren(){
-		return this.children;
+	public IJp2pComponent<?>[] getChildren(){
+		return this.children.toArray( new IJp2pComponent<?>[this.children.size()] );
 	}
 
 	@Override
@@ -72,10 +73,9 @@ public class Jp2pComponentNode<T extends Object> extends Jp2pComponent<T> implem
 	 * @param module
 	 */
 	public static void removeModule( IJp2pComponentNode<?> node, Object module ){
-		Collection<IJp2pComponent<?>> temp = new ArrayList<IJp2pComponent<?>>( node.getChildren() );
-		for( IJp2pComponent<?> component: temp ){
+		for( IJp2pComponent<?> component: node.getChildren() ){
 			if( component.getModule().equals( module ))
-				node.getChildren().remove(component);
+				node.removeChild(component);
 		}
 	}
 }

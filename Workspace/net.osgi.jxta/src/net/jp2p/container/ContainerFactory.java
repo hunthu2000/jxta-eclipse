@@ -49,13 +49,13 @@ public class ContainerFactory extends AbstractComponentFactory<Jp2pStartupServic
 
 	
 	@Override
-	public Jp2pServiceContainer createComponent() {
-		return (Jp2pServiceContainer) super.createComponent();
+	public Jp2pContainer createComponent() {
+		return (Jp2pContainer) super.createComponent();
 	}
 
 	@Override
-	protected Jp2pServiceContainer onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties) {
-		Jp2pServiceContainer context = new Jp2pServiceContainer( super.getPropertySource() );
+	protected Jp2pContainer onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties) {
+		Jp2pContainer context = new Jp2pContainer( super.getPropertySource() );
 		return context;
 	}
 

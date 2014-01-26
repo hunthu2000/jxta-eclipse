@@ -13,7 +13,7 @@ package org.chaupal.jp2p.ui.container;
 import java.net.URI;
 
 import net.jp2p.container.Jp2pContainerPropertySource;
-import net.jp2p.container.IJxseServiceContainer.ContextProperties;
+import net.jp2p.container.IJp2pContainer.ContainerProperties;
 import net.jp2p.container.properties.IJp2pDirectives;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jp2p.container.utils.Utils;
@@ -109,7 +109,7 @@ public class ContainerComposite extends Composite {
 		text_home_folder.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				source.setProperty( ContextProperties.HOME_FOLDER, (( Text )e.item ).getText() );
+				source.setProperty( ContainerProperties.HOME_FOLDER, (( Text )e.item ).getText() );
 			}
 		});
 		text_home_folder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -179,7 +179,7 @@ public class ContainerComposite extends Composite {
 		text_pass1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				source.setProperty( ContextProperties.PASS_1, (( Text )e.item ).getText() );
+				source.setProperty( ContainerProperties.PASS_1, (( Text )e.item ).getText() );
 			}
 		});
 		text_pass1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -192,7 +192,7 @@ public class ContainerComposite extends Composite {
 		text_pass2.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				source.setProperty( ContextProperties.PASS_1, (( Text )e.item ).getText() );
+				source.setProperty( ContainerProperties.PASS_1, (( Text )e.item ).getText() );
 			}
 		});
 		text_pass2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -206,21 +206,21 @@ public class ContainerComposite extends Composite {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void init( Jp2pContainerPropertySource properties ){
 		this.source = properties;
-		Object obj = properties.getProperty( ContextProperties.HOME_FOLDER );
+		Object obj = properties.getProperty( ContainerProperties.HOME_FOLDER );
 		if( obj != null )
 			this.text_home_folder.setText( obj.toString() );
 		
-		obj = properties.getProperty( ContextProperties.BUNDLE_ID );
+		obj = properties.getProperty( ContainerProperties.BUNDLE_ID );
 		if( obj != null ){
 			this.lbl_plugin_id.setText( " " + obj.toString() );
 			this.text_id.setText( obj.toString() + S_JP2P_CONTAINER);
 		}
-		StringDataBinding sdb = new StringDataBinding<ContextProperties>( ContextProperties.BUNDLE_ID, properties, this.text_id );  
-		sdb.setValidator( new StringValidator<ContextProperties>( ContextProperties.BUNDLE_ID, StringValidator.S_BUNDLE_ID_REGEX ));
+		StringDataBinding sdb = new StringDataBinding<ContainerProperties>( ContainerProperties.BUNDLE_ID, properties, this.text_id );  
+		sdb.setValidator( new StringValidator<ContainerProperties>( ContainerProperties.BUNDLE_ID, StringValidator.S_BUNDLE_ID_REGEX ));
 
 		obj = Jp2pContainerPropertySource.getIdentifier( source);
 		sdb = new StringDataBinding<Directives>( Directives.NAME, properties, this.text_identifier );  
-		sdb.setValidator( new StringValidator<ContextProperties>( ContextProperties.BUNDLE_ID, StringValidator.S_NAME_REGEX ));
+		sdb.setValidator( new StringValidator<ContainerProperties>( ContainerProperties.BUNDLE_ID, StringValidator.S_NAME_REGEX ));
 
 		//TODO CP: this.btnAutoStart.setSelection((boolean) properties.getDefaultDirectives( IJxseDirectives.Directives.AUTO_START ));
 		//TODO CP: this.btnPersist.setSelection((boolean) properties.getDefaultDirectives( IJxseDirectives.Directives.PEER_ID_PERSIST ));
@@ -237,13 +237,13 @@ public class ContainerComposite extends Composite {
 		if( Utils.isNull( this.text_id.getText()))
 			return false;
 		source.setDirective( Directives.ID, text_id.getText() );
-		if( !source.setProperty( ContextProperties.HOME_FOLDER, URI.create( this.text_home_folder.getText() )))
+		if( !source.setProperty( ContainerProperties.HOME_FOLDER, URI.create( this.text_home_folder.getText() )))
 			return false;
-		if( !source.setProperty( ContextProperties.BUNDLE_ID, this.lbl_plugin_id.getText() ))
+		if( !source.setProperty( ContainerProperties.BUNDLE_ID, this.lbl_plugin_id.getText() ))
 			return false;
-		if( !source.setProperty( ContextProperties.PASS_1, this.text_pass1.getText() ))
+		if( !source.setProperty( ContainerProperties.PASS_1, this.text_pass1.getText() ))
 			return false;
-		if( !source.setProperty( ContextProperties.PASS_2, this.text_pass2.getText() ))
+		if( !source.setProperty( ContainerProperties.PASS_2, this.text_pass2.getText() ))
 			return false;
 		if( !source.setDirective( IJp2pDirectives.Directives.AUTO_START, Boolean.toString( this.btnAutoStart.getSelection() )))
 			return false;

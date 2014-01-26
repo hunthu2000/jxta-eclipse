@@ -3,7 +3,7 @@ package net.jp2p.jxta.network;
 import java.util.Iterator;
 
 import net.jp2p.container.Jp2pContainerPropertySource;
-import net.jp2p.container.IJxseServiceContainer.ContextProperties;
+import net.jp2p.container.IJp2pContainer.ContainerProperties;
 import net.jp2p.container.properties.AbstractJp2pWritePropertySource;
 import net.jp2p.container.properties.IJp2pDirectives;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -146,9 +146,9 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 	 * @return
 	 */
 	public IJp2pProperties convertFrom( IJp2pProperties context ){
-		if(!( context instanceof ContextProperties ))
+		if(!( context instanceof ContainerProperties ))
 			return context;
-		ContextProperties key = (ContextProperties) context;
+		ContainerProperties key = (ContainerProperties) context;
 		switch( key ){
 		case HOME_FOLDER:
 			return NetworkManagerProperties.INSTANCE_HOME;
@@ -164,13 +164,13 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 	 * @param context
 	 * @return
 	 */
-	public ContextProperties convertTo( IJp2pProperties id ){
+	public ContainerProperties convertTo( IJp2pProperties id ){
 		if(!( id instanceof IJp2pProperties ))
 			return null;
 		NetworkManagerProperties props = (NetworkManagerProperties) id;
 		switch( props ){
 		case INSTANCE_HOME:
-			return ContextProperties.HOME_FOLDER;
+			return ContainerProperties.HOME_FOLDER;
 		default:
 			break;
 		}

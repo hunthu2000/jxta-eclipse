@@ -10,8 +10,8 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.core;
 
-import net.jp2p.container.Jp2pServiceContainer;
-import net.jp2p.container.IJxseServiceContainer.ContextProperties;
+import net.jp2p.container.Jp2pContainer;
+import net.jp2p.container.IJp2pContainer.ContainerProperties;
 import net.jp2p.container.utils.Utils;
 import net.osgi.jp2p.chaupal.activator.AbstractJp2pBundleActivator;
 
@@ -41,17 +41,17 @@ public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
 		this.setActivator(activator);
 	}
 
-	protected Jp2pServiceContainer getContainer() {
+	protected Jp2pContainer getContainer() {
 		return provider.getContainer();
 	}
 
 	private final void setActivator(AbstractJp2pBundleActivator activator) {
 		try{
-			Jp2pServiceContainer container = activator.getServiceContainer();
-			String pass = (String) container.getPropertySource().getProperty( ContextProperties.PASS_1);
+			Jp2pContainer container = activator.getServiceContainer();
+			String pass = (String) container.getPropertySource().getProperty( ContainerProperties.PASS_1);
 			if( !Utils.isNull( pass ))
 				this.introduction = pass;
-			pass = (String) container.getPropertySource().getProperty( ContextProperties.PASS_2);
+			pass = (String) container.getPropertySource().getProperty( ContainerProperties.PASS_2);
 			if( !Utils.isNull( pass ))
 				this.token = pass;
 			provider = new Jp2pContainerProvider( introduction, token );
@@ -73,9 +73,9 @@ public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
  * @author Kees
  *
  */
-class Jp2pContainerProvider extends AbstractProvider<String, Object, Jp2pServiceContainer> {
+class Jp2pContainerProvider extends AbstractProvider<String, Object, Jp2pContainer> {
 
-	private Jp2pServiceContainer  container;
+	private Jp2pContainer  container;
 	
 	Jp2pContainerProvider() {
 		super( new Palaver());
@@ -89,7 +89,7 @@ class Jp2pContainerProvider extends AbstractProvider<String, Object, Jp2pService
 	 * Get the container
 	 * @return
 	 */
-	Jp2pServiceContainer getContainer() {
+	Jp2pContainer getContainer() {
 		return container;
 	}
 
@@ -97,7 +97,7 @@ class Jp2pContainerProvider extends AbstractProvider<String, Object, Jp2pService
 	 * Add a container and 
 	 * @param container
 	 */
-	public void setContainer(Jp2pServiceContainer  container) {
+	public void setContainer(Jp2pContainer  container) {
 		if( container == null )
 			throw new NullPointerException();
 		this.container = container;

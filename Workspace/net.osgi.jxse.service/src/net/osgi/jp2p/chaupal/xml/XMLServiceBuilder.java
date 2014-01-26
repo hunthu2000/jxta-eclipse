@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 
 import net.jp2p.container.ContainerFactory;
-import net.jp2p.container.Jp2pServiceContainer;
+import net.jp2p.container.Jp2pContainer;
 import net.jp2p.container.builder.ContainerBuilder;
 import net.jp2p.container.builder.ICompositeBuilder;
 import net.jp2p.container.builder.ICompositeBuilderListener;
@@ -31,7 +31,7 @@ import net.jp2p.container.factory.ComponentBuilderEvent;
 import net.jp2p.container.factory.IComponentFactory;
 import net.jp2p.container.factory.IPropertySourceFactory;
 
-public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer>{
+public class XMLServiceBuilder implements ICompositeBuilder<Jp2pContainer>{
 
 	private String plugin_id;
 	private Class<?> clss;
@@ -63,7 +63,7 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pServiceContainer
 	}
 	
 	@Override
-	public Jp2pServiceContainer build() {
+	public Jp2pContainer build() {
 		
 		//Object obj;
 		//try {

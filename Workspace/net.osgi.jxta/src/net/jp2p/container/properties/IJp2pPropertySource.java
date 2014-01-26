@@ -12,18 +12,14 @@ package net.jp2p.container.properties;
 
 import java.util.Iterator;
 
-public interface IJp2pPropertySource< T extends Object> {
+import net.jp2p.container.utils.IDescendant;
+
+public interface IJp2pPropertySource< T extends Object> extends IDescendant<T, IJp2pPropertySource<?>>{
 
 	public static final String JP2P_SETTINGS = "jp2p.settings";
 	public static final String S_USER_HOME = "user.home";
 	public static final String S_JP2P = "JP2P";
 
-	/**
-	 * Returns the parent, or null of the property source is a root
-	 * @return
-	 */
-	public IJp2pPropertySource<?> getParent();
-	
 	/**
 	 * Get the id from a string representation
 	 * @param key

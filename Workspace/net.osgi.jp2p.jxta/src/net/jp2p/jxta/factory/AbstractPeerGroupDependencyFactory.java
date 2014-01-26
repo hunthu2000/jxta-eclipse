@@ -13,7 +13,7 @@ package net.jp2p.jxta.factory;
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.factory.AbstractComponentDependencyFactory;
-import net.jp2p.container.filter.IComponentFactoryFilter;
+import net.jp2p.container.factory.filter.IComponentFactoryFilter;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.jxta.filter.PeerGroupFilter;
