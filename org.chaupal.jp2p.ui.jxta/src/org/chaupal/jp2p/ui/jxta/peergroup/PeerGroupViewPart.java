@@ -1,16 +1,25 @@
 package org.chaupal.jp2p.ui.jxta.peergroup;
 
+import java.util.Map;
+import java.util.Properties;
+import java.util.Stack;
+
 import net.jp2p.container.utils.INode;
 import net.jp2p.container.utils.SimpleNode;
+import net.jp2p.container.utils.StringStyler;
+import net.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
+import net.jxta.document.Advertisement;
 import net.jxta.peergroup.PeerGroup;
 
+import org.chaupal.jp2p.ui.jxta.advertisement.AdvertisementComposite;
 import org.chaupal.jp2p.ui.jxta.view.AbstractJp2pServiceViewPart;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -18,32 +27,31 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.layout.GridData;
 
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.swt.layout.FillLayout;
 
 public class PeerGroupViewPart extends AbstractJp2pServiceViewPart<INode<PeerGroup,PeerGroup>>{
 
 	public static final String ID = "org.chaupal.jp2p.ui.peergroup.view"; //$NON-NLS-1$
 	public static final String S_PEERGROUP_VIEWER = "Peergroup Viewer";
 
-	private Button aliveRadioButton;
+	static enum PeerGroupColumns{
+		NAME,
+		VALUE;
+
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString() );
+		}
+	}
 	
  	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
-
-	private Button isConnectedToRelayCheckBox;
-	private Text relayIDTextField;
 	
 	private TableViewer tableViewer;
 	private StyledText styledText;
@@ -53,30 +61,34 @@ public class PeerGroupViewPart extends AbstractJp2pServiceViewPart<INode<PeerGro
  	private Composite composite;
  	private Tree tree;
  	private TreeViewer treeViewer;
+ 	private PeerGroupViewPart viewpart; 
 
 	private ISelectionListener listener = new ISelectionListener() {
 		@SuppressWarnings("unchecked")
 		@Override
 		public void selectionChanged(IWorkbenchPart sourcepart, ISelection selection) {
-			if (!( sourcepart.equals( this )))
+			if (!( sourcepart.equals( viewpart )))
 				return;
-			if(!( selection instanceof IStructuredSelection))
+			if(!( selection instanceof TreeSelection))
 				return;
 			
-			IStructuredSelection ss = (IStructuredSelection) selection;
+			TreeSelection ss = (TreeSelection) selection;
 			Object element = ss.getFirstElement();
 			
 			//We check for service decorators coming from the service navigator
 			if(!( element instanceof SimpleNode<?,?>))
 				return;
 			SimpleNode<PeerGroup,PeerGroup> node = (SimpleNode<PeerGroup, PeerGroup> )element;
-			setInput( node.getData() );
+			setInput( node );
 		}
 	};
+	private Composite composite_1;
+	private AdvertisementComposite adv_comp;
 
 
 	public PeerGroupViewPart() {
 		super( S_PEERGROUP_VIEWER );
+		this.viewpart = this;
 	}
 
 
@@ -87,66 +99,111 @@ public class PeerGroupViewPart extends AbstractJp2pServiceViewPart<INode<PeerGro
 		toolkit.adapt(sashForm_1);
 		toolkit.paintBordersFor(sashForm_1);
 
-		composite = new Composite(sashForm_1, SWT.NONE);
+		composite = new Composite(sashForm_1, SWT.BORDER);
 		toolkit.adapt(composite);
 		toolkit.paintBordersFor(composite);
 		composite.setLayout(new TreeColumnLayout());
 
-		treeViewer = new TreeViewer(composite, SWT.BORDER);
+		treeViewer = new TreeViewer(composite, SWT.NONE );
 		treeViewer.setAutoExpandLevel( TreeViewer.ALL_LEVELS);
 		treeViewer.setContentProvider( new PeerGroupContentProvider());
 		treeViewer.setLabelProvider( new PeerGroupLabelProvider());
 		tree = treeViewer.getTree();
 		tree.setHeaderVisible(true);
 		toolkit.paintBordersFor(tree);
-		SashForm sashForm = new SashForm(sashForm_1, SWT.VERTICAL);
+		
+		composite_1 = new Composite(sashForm_1, SWT.NONE);
+		toolkit.adapt(composite_1);
+		toolkit.paintBordersFor(composite_1);
+		composite_1.setLayout(new FillLayout(SWT.HORIZONTAL));
+		SashForm sashForm = new SashForm(composite_1, SWT.VERTICAL);
 		Composite composite_2 = new Composite(sashForm, SWT.NONE);
-		composite_2.setLayout(new GridLayout(2, false));
-
-		aliveRadioButton = new Button(composite_2, SWT.RADIO);
-		aliveRadioButton.setBounds(0, 0, 90, 16);
-		aliveRadioButton.setText("Alive");
-
-		isConnectedToRelayCheckBox = new Button(composite_2, SWT.RADIO);
-		isConnectedToRelayCheckBox.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				IsConnectedToRelayCheckBoxActionPerformed( e );
-			}
-		});
-		isConnectedToRelayCheckBox.setText("is connected to Relay");
-		Label lblRelayId = new Label(composite_2, SWT.NONE);
-		lblRelayId.setText("Relay ID");
-
-		relayIDTextField = new Text(composite_2, SWT.BORDER);
-		relayIDTextField.setEditable(false);
-		relayIDTextField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		composite_2.setLayout(new FillLayout(SWT.HORIZONTAL));
 
 		Composite tableComposite = new Composite(composite_2, SWT.NONE);
-		tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		TableColumnLayout tableColumnLayout = new TableColumnLayout();
 		tableComposite.setLayout(tableColumnLayout);
 
-		tableViewer = new TableViewer(tableComposite, SWT.BORDER | SWT.FULL_SELECTION);
-		TableViewerColumn column = createColumn("Edges", tableViewer);
-		tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(100, 200, true)); 		
-		tableViewer.setColumnProperties(new String[] {"Relays"});
+		tableViewer = new TableViewer(tableComposite, SWT.FULL_SELECTION);
+		TableViewerColumn column = createColumn( PeerGroupColumns.NAME.toString(), tableViewer);
+		tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(30, 50, true)); 		
+		column = createColumn(PeerGroupColumns.VALUE.toString(), tableViewer);
+		tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(70, 200, true)); 		
+		
 		table = tableViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
+		
+		adv_comp = new AdvertisementComposite(sashForm, SWT.NONE);
 
 		styledText = new StyledText(sashForm, SWT.BORDER);
 		toolkit.adapt(styledText);
 		toolkit.paintBordersFor(styledText);
 
-		sashForm.setWeights(new int[] {3, 1});
-		sashForm_1.setWeights(new int[] {1, 1});
+		sashForm.setWeights(new int[] {3, 2, 1});
 		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(listener);
+		getSite().setSelectionProvider( this.treeViewer );
+		sashForm_1.setWeights(new int[] {30, 70});
 	}
 
-	public void setInput( PeerGroup peergroup ){
-		tableViewer.setInput( peergroup );
+	@Override
+	protected TableViewerColumn createColumn( final String name, TableViewer viewer ){
+		TableViewerColumn col = createTableViewerColumn( viewer, name, 100, 0 );
+		col.setLabelProvider(new ColumnLabelProvider() {
+
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public String getText(Object element) {
+				if(!( element instanceof Map.Entry ))
+					return super.getText(element);
+				Map.Entry<String, String> entry = ( Map.Entry<String, String> )element;
+				PeerGroupColumns column = PeerGroupColumns.valueOf( StringStyler.styleToEnum( name ));
+				switch( column ){
+				case NAME:
+					return entry.getKey();
+				default:
+					return entry.getValue();					
+				}
+			}
+		});		
+		return col;
+	}
+
+	public void setInput( SimpleNode<PeerGroup, PeerGroup> node ){
+		PeerGroup peergroup = node.getData();
+		Properties props = new Properties();
+		for( PeerGroupProperties pgp: PeerGroupProperties.values() ){
+			switch( pgp ){
+			case NAME:
+				props.setProperty( pgp.toString(), peergroup.getPeerGroupName() );
+				break;
+			case GROUP_ID:
+				props.setProperty( pgp.toString(), peergroup.getPeerGroupID().toString());
+				break;
+			case PEER_ID:
+				props.setProperty( pgp.toString(), peergroup.getPeerID().toString() );
+				break;
+			case PEERGROUP_ID:
+				props.setProperty( pgp.toString(), peergroup.getPeerGroupID().toString());
+				break;
+			case PEER_NAME:
+				props.setProperty( pgp.toString(), peergroup.getPeerName());
+				break;
+			case STORE_HOME:
+				props.setProperty( pgp.toString(), peergroup.getStoreHome().getPath() );
+				break;
+			default:
+				break;					
+			}
+		}
+		tableViewer.setInput( props.entrySet() );
+		Stack<Advertisement> stack = new Stack<Advertisement>();
+		stack.push( peergroup.getImplAdvertisement() );
+		stack.push( peergroup.getPeerAdvertisement() );
+		stack.push( peergroup.getPeerGroupAdvertisement() );
+		adv_comp.setInput(stack.toArray( new Advertisement[ stack.size()]));
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -172,9 +229,6 @@ public class PeerGroupViewPart extends AbstractJp2pServiceViewPart<INode<PeerGro
 
 	@Override
 	protected void onRefresh() {
-		if( aliveRadioButton.isDisposed() )
-			return;
-		aliveRadioButton.setSelection( super.isRunning() );
 		PeerGroup peergroup = super.getPeerGroup();
 		String msg = peergroup.getPeerName();
 		if( peergroup.getPeerID() != null )
@@ -185,9 +239,5 @@ public class PeerGroupViewPart extends AbstractJp2pServiceViewPart<INode<PeerGro
 	@Override
 	protected void onFinalize() {
         stopMonitorTask();
-	}
-
-	private void IsConnectedToRelayCheckBoxActionPerformed( SelectionEvent evt) {//GEN-FIRST:event_IsConnectedToRelayCheckBoxActionPerformed
-		// TODO add your handling code here:
 	}
 }

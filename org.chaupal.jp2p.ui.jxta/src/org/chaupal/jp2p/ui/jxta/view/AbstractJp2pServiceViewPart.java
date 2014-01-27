@@ -110,7 +110,7 @@ public abstract class AbstractJp2pServiceViewPart<T extends Object> extends View
 		return col;
 	}
 
-	private TableViewerColumn createTableViewerColumn( TableViewer viewer, String title, int bound, final int colNumber) {
+	protected TableViewerColumn createTableViewerColumn( TableViewer viewer, String title, int bound, final int colNumber) {
 	    final TableViewerColumn viewerColumn = new TableViewerColumn(viewer,  SWT.NONE);
 	    TableColumn column = viewerColumn.getColumn();
 	    column.setText(title);

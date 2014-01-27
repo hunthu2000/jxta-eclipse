@@ -27,7 +27,6 @@ public class PeerGroupNavigator extends CommonNavigator{
 	public static final String PATH_ID = "org.eclipselabs.jxse.ui.context.peergroups";
 	
 	private CommonViewer viewer;
-	private PeerGroup peergroup;
 	private PeerGroupPetitioner petitioner;
 	private ServiceEventDispatcher dispatcher;
 	private PeerGroupNavigator navigator;
@@ -100,7 +99,6 @@ public class PeerGroupNavigator extends CommonNavigator{
 		IJp2pContainer<?> container = (net.jp2p.container.IJp2pContainer<Object>)element;
 		SimpleNode<PeerGroup, PeerGroup> node = PeerGroupFactory.createPeerGroupTree( container );
 		if( node != null ){
-			this.peergroup = node.getData();
 			viewer.setInput( node );
 		}
 		setContentDescription( Utils.getLabel( container ));
