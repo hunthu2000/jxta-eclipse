@@ -25,6 +25,7 @@ public interface IJp2pContainer<T extends Object> extends IJp2pComponentNode<T>,
 	public enum ContainerProperties implements IJp2pProperties{
 		BUNDLE_ID,
 		HOME_FOLDER,
+		PERSIST,
 		PASS_1,
 		PASS_2;
 
@@ -34,6 +35,22 @@ public interface IJp2pContainer<T extends Object> extends IJp2pComponentNode<T>,
 		}
 	}
 
+	/**
+	 * 
+	 * The options for persistence
+	 * @author Kees
+	 *
+	 */
+	public enum PersistenceOptions{
+		JAVA,
+		OSGI;
+
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString() );
+		}
+	}
+	
 	/**
 	 * The identifier of the container
 	 * @return

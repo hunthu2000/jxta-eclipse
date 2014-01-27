@@ -7,6 +7,8 @@ import java.util.Stack;
 import net.jp2p.container.utils.INode;
 import net.jp2p.container.utils.SimpleNode;
 import net.jp2p.container.utils.StringStyler;
+import net.jp2p.jxta.advertisement.IAdvertisementProvider;
+import net.jp2p.jxta.peergroup.PeerGroupNode;
 import net.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 import net.jxta.document.Advertisement;
 import net.jxta.peergroup.PeerGroup;
@@ -18,6 +20,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.swt.SWT;
@@ -69,17 +72,24 @@ public class PeerGroupViewPart extends AbstractJp2pServiceViewPart<INode<PeerGro
 		public void selectionChanged(IWorkbenchPart sourcepart, ISelection selection) {
 			if (!( sourcepart.equals( viewpart )))
 				return;
-			if(!( selection instanceof TreeSelection))
+			if( selection instanceof TreeSelection){
+				TreeSelection ss = (TreeSelection) selection;
+				Object element = ss.getFirstElement();
+
+				//We check for service decorators coming from the service navigator
+				if(!( element instanceof SimpleNode<?,?>))
+					return;
+				SimpleNode<PeerGroup,PeerGroup> node = (SimpleNode<PeerGroup, PeerGroup> )element;
+				setInput( node );
 				return;
-			
-			TreeSelection ss = (TreeSelection) selection;
-			Object element = ss.getFirstElement();
-			
-			//We check for service decorators coming from the service navigator
-			if(!( element instanceof SimpleNode<?,?>))
-				return;
-			SimpleNode<PeerGroup,PeerGroup> node = (SimpleNode<PeerGroup, PeerGroup> )element;
-			setInput( node );
+			}
+			if( selection instanceof StructuredSelection){
+				StructuredSelection ss = (StructuredSelection) selection;
+				Object element = ss.getFirstElement();
+				if(( element == null ) || (!( element instanceof Advertisement )))
+					return;
+				styledText.setText( element.toString() );
+			}
 		}
 	};
 	private Composite composite_1;
@@ -209,14 +219,14 @@ public class PeerGroupViewPart extends AbstractJp2pServiceViewPart<INode<PeerGro
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected INode<PeerGroup,PeerGroup> onSetService(PeerGroup peergroup) {
-		SimpleNode<PeerGroup,PeerGroup> leaf = new SimpleNode<PeerGroup, PeerGroup>( peergroup );
+		PeerGroupNode leaf = new PeerGroupNode( peergroup );
 		PeerGroup current = peergroup;
 		SimpleNode node = leaf;
 		while( current.getParentGroup() != null ){
 			current = current.getParentGroup();
-			node = new SimpleNode<PeerGroup, PeerGroup>( current );
+			node = new PeerGroupNode( current );
 			node.addChild( leaf );
-			leaf = node;
+			leaf = (PeerGroupNode) node;
 		}
 		this.treeViewer.setInput(node);
 		return node;

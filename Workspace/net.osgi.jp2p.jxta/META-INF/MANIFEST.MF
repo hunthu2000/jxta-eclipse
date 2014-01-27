@@ -35,6 +35,7 @@ Import-Package: net.jp2p.container,
  net.jxta.platform,
  net.jxta.protocol,
  net.jxta.rendezvous,
+ net.jxta.service,
  net.jxta.socket
 Export-Package: net.jp2p.jxta.advertisement,
  net.jp2p.jxta.advertisement.service,

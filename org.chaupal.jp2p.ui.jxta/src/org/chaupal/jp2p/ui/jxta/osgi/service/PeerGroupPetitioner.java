@@ -14,14 +14,13 @@ import net.jp2p.container.component.ComponentChangedEvent;
 import net.jp2p.container.component.IComponentChangedListener;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.utils.ILeaf;
-import net.jp2p.container.utils.SimpleNode;
 import net.jp2p.container.utils.Utils;
-import net.jxta.peergroup.PeerGroup;
 import net.osgi.jp2p.chaupal.IServiceChangedListener.ServiceChange;
 import net.osgi.jp2p.chaupal.ServiceChangedEvent;
 import net.osgi.jp2p.chaupal.ServiceEventDispatcher;
 import net.osgi.jp2p.chaupal.core.Jp2pDSComponent;
 import net.jp2p.jxta.peergroup.PeerGroupFactory;
+import net.jp2p.jxta.peergroup.PeerGroupNode;
 
 import org.chaupal.jp2p.ui.log.Jp2pLog;
 import org.chaupal.jp2p.ui.osgi.PetitionPropertySource;
@@ -71,8 +70,8 @@ public class PeerGroupPetitioner extends AbstractPetitioner<String, String, Jp2p
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public SimpleNode<PeerGroup,PeerGroup> createPeerGroupTree(){
-		SimpleNode<PeerGroup, PeerGroup> root = new SimpleNode<PeerGroup, PeerGroup >( null ); 
+	public PeerGroupNode createPeerGroupTree(){
+		PeerGroupNode root = new PeerGroupNode( null ); 
 		for( Jp2pContainer container: super.getCollection() ){
 			root.addChild(( ILeaf) PeerGroupFactory.createPeerGroupTree( container ));
 		}

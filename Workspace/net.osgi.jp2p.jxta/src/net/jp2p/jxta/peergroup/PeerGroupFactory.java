@@ -211,10 +211,10 @@ public class PeerGroupFactory extends AbstractPeerGroupDependencyFactory<PeerGro
 	 * @param container
 	 * @return
 	 */
-	public static SimpleNode<PeerGroup,PeerGroup> createPeerGroupTree( IJp2pContainer<?> container){
-		Stack<SimpleNode<PeerGroup, PeerGroup>> stack = new Stack<SimpleNode<PeerGroup, PeerGroup>>();
+	public static PeerGroupNode createPeerGroupTree( IJp2pContainer<?> container){
+		Stack<PeerGroupNode> stack = new Stack<PeerGroupNode>();
 		findPeerGroups(container, stack);
-		for( SimpleNode<PeerGroup, PeerGroup> node: stack ){
+		for( PeerGroupNode node: stack ){
 			if( PeerGroupPropertySource.S_NET_PEER_GROUP.equals( node.getData().getPeerGroupName()))
 				return node;
 		}
@@ -222,12 +222,12 @@ public class PeerGroupFactory extends AbstractPeerGroupDependencyFactory<PeerGro
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private final static void findPeerGroups( IJp2pComponent<?> component, Stack<SimpleNode<PeerGroup, PeerGroup>> stack){
+	private final static void findPeerGroups( IJp2pComponent<?> component, Stack<PeerGroupNode> stack){
 		if( component.getModule() instanceof PeerGroup ){
 			PeerGroup peergroup = (PeerGroup) component.getModule();
 			if( stack.contains( peergroup ))
 				return;
-			SimpleNode sn = new SimpleNode<PeerGroup, PeerGroup>( peergroup );
+			SimpleNode sn = new PeerGroupNode( peergroup );
 			for( SimpleNode<PeerGroup, PeerGroup> node: stack ){
 				if( node.getData().equals( peergroup.getParentGroup())){
 					node.addChild(sn);
@@ -239,7 +239,7 @@ public class PeerGroupFactory extends AbstractPeerGroupDependencyFactory<PeerGro
 				if( parent.equals( peergroup ))
 					sn.addChild(node);						
 			}
-			stack.push(sn);
+			stack.push((PeerGroupNode) sn);
 			if(!( component instanceof IJp2pComponentNode<?>) )
 				return;
 			IJp2pComponentNode<?> node = (IJp2pComponentNode<?>) component;
