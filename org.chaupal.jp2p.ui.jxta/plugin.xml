@@ -211,7 +211,7 @@
                id="org.eclipse.ui.views.PropertySheet"
                minimized="false"
                relationship="bottom"
-               relative="org.eclipse.jxse.ui.context.view"
+               relative="org.chaupal.jp2p.ui.context.view"
                visible="true">
          </view>
          <view

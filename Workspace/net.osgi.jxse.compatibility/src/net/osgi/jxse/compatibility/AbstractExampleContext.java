@@ -26,6 +26,8 @@ import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.utils.Utils;
 import net.jp2p.jxta.network.NetworkManagerPropertyFacade;
 import net.jp2p.jxta.network.configurator.NetworkConfiguratorPropertyFacade;
+import net.jp2p.jxta.peergroup.PeerGroupPropertyFacade;
+import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.platform.NetworkManager;
 
@@ -102,6 +104,8 @@ public abstract class AbstractExampleContext extends AbstractJp2pContainer<Netwo
 			properties = new NetworkManagerPropertyFacade( bundleId, (NetworkManager) module );
 		}else if( module instanceof NetworkConfigurator ){
 			properties =  new NetworkConfiguratorPropertyFacade( bundleId, (NetworkConfigurator)module );
+		}else if( module instanceof PeerGroup ){
+			properties =  new PeerGroupPropertyFacade( bundleId, (PeerGroup)module );
 		}else{
 			properties = new DefaultPropertySource( bundleId, module.getClass().getSimpleName());
 		}
