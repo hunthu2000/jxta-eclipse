@@ -13,7 +13,7 @@ package net.osgi.jp2p.chaupal.activator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.jp2p.container.Jp2pContainer;
+import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.log.Jp2pLevel;
 
 import org.osgi.framework.BundleActivator;
@@ -21,13 +21,13 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
 
-public abstract class AbstractJp2pBundleActivator implements BundleActivator {
+public abstract class AbstractJp2pBundleActivator<T extends Object> implements BundleActivator {
 
 	private static final String S_MSG_NOT_A_JP2P_BUNDLE = "\n\nThis bundle is not a valid JP2P Bundle. A JP2P-INF directory is required!\n\n";
 	private static final String S_JP2P_INF = "/JP2P-INF";
 	private static final String S_MSG_LOG = "Logging at JXSE LEVEL!!!!";
 	
-	private Jp2pActivator jxtaActivator;
+	private Jp2pActivator<T> jp2pActivator;
 	private ServiceTracker<BundleContext,LogService> logServiceTracker;
 	private LogService logService;
 		
@@ -35,7 +35,7 @@ public abstract class AbstractJp2pBundleActivator implements BundleActivator {
 	 * Create the context
 	 * @return
 	 */
-	protected abstract Jp2pContainer createContainer();
+	protected abstract IJp2pContainer<T> createContainer();
 	
 	/*
 	 * (non-Javadoc)
@@ -60,9 +60,9 @@ public abstract class AbstractJp2pBundleActivator implements BundleActivator {
 		if(logService != null)
 			logService.log(LogService.LOG_INFO, "Logging service started");
 
-		jxtaActivator = new Jp2pActivator();
-		jxtaActivator.setJxtaContext( this.createContainer() );
-		jxtaActivator.start();
+		jp2pActivator = new Jp2pActivator<T>();
+		jp2pActivator.setJxtaContext( this.createContainer() );
+		jp2pActivator.start();
 	}
 
 	/*
@@ -71,8 +71,8 @@ public abstract class AbstractJp2pBundleActivator implements BundleActivator {
 	 */
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		if( jxtaActivator != null )
-			jxtaActivator.stop();
+		if( jp2pActivator != null )
+			jp2pActivator.stop();
 		if(logService != null)
 			logService.log(LogService.LOG_INFO, "Logging service Stopped");
 		
@@ -81,7 +81,7 @@ public abstract class AbstractJp2pBundleActivator implements BundleActivator {
 		logServiceTracker = null;
 	}
 
-	public Jp2pContainer getServiceContainer(){
-		return jxtaActivator.getServiceContext();
+	public IJp2pContainer<?> getServiceContainer(){
+		return jp2pActivator.getServiceContext();
 	}
 }

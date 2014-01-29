@@ -11,6 +11,7 @@
 package net.jp2p.container;
 
 import net.jp2p.container.activator.IJp2pService;
+import net.jp2p.container.component.ComponentEventDispatcher;
 import net.jp2p.container.component.IJp2pComponentNode;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.utils.StringStyler;
@@ -56,4 +57,10 @@ public interface IJp2pContainer<T extends Object> extends IJp2pComponentNode<T>,
 	 * @return
 	 */
 	public String getIdentifier();
+	
+	/**
+	 * Get the dispatcher for this container
+	 * @return
+	 */
+	public ComponentEventDispatcher getDispatcher();
 }

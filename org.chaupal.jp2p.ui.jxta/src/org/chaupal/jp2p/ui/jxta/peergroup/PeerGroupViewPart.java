@@ -13,7 +13,7 @@ import net.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 import net.jxta.document.Advertisement;
 import net.jxta.peergroup.PeerGroup;
 
-import org.chaupal.jp2p.ui.jxta.advertisement.AdvertisementComposite;
+//import org.chaupal.jp2p.ui.jxta.advertisement.AdvertisementComposite;
 import org.chaupal.jp2p.ui.jxta.view.AbstractJp2pServiceViewPart;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -93,7 +93,7 @@ public class PeerGroupViewPart extends AbstractJp2pServiceViewPart<INode<PeerGro
 		}
 	};
 	private Composite composite_1;
-	private AdvertisementComposite adv_comp;
+	//private AdvertisementComposite adv_comp;
 
 
 	public PeerGroupViewPart() {
@@ -145,13 +145,13 @@ public class PeerGroupViewPart extends AbstractJp2pServiceViewPart<INode<PeerGro
 		table.setLinesVisible(true);
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		
-		adv_comp = new AdvertisementComposite(sashForm, SWT.NONE);
+		//adv_comp = new AdvertisementComposite(sashForm, SWT.NONE);
 
 		styledText = new StyledText(sashForm, SWT.BORDER);
 		toolkit.adapt(styledText);
 		toolkit.paintBordersFor(styledText);
 
-		sashForm.setWeights(new int[] {3, 2, 1});
+		sashForm.setWeights(new int[] {3, 2});
 		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(listener);
 		getSite().setSelectionProvider( this.treeViewer );
 		sashForm_1.setWeights(new int[] {30, 70});
@@ -213,7 +213,7 @@ public class PeerGroupViewPart extends AbstractJp2pServiceViewPart<INode<PeerGro
 		stack.push( peergroup.getImplAdvertisement() );
 		stack.push( peergroup.getPeerAdvertisement() );
 		stack.push( peergroup.getPeerGroupAdvertisement() );
-		adv_comp.setInput(stack.toArray( new Advertisement[ stack.size()]));
+		//adv_comp.setInput(stack.toArray( new Advertisement[ stack.size()]));
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })

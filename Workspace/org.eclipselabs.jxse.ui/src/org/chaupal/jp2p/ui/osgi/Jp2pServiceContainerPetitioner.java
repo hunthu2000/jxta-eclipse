@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.jp2p.container.AbstractJp2pContainer;
-import net.jp2p.container.Jp2pContainer;
+import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.component.ComponentChangedEvent;
 import net.jp2p.container.component.IComponentChangedListener;
 import net.jp2p.container.component.IJp2pComponent;
@@ -31,8 +31,8 @@ import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
 import org.eclipselabs.osgi.ds.broker.service.AbstractPetitioner;
 import org.eclipselabs.osgi.ds.broker.service.ParlezEvent;
 
-public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, String, Jp2pContainer>
-	implements IJp2pComponentNode<Collection<Jp2pContainer>>
+public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, String, IJp2pContainer<?>>
+	implements IJp2pComponentNode<Collection<IJp2pContainer<?>>>
 {
 	public static final String S_WRN_THREAD_INTERRUPTED = "The thread is interrupted. Probably stopping service";
 	
@@ -70,15 +70,15 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 		return source;
 	}
 
-	public Jp2pContainer getJp2pContainer( String identifier ) {
-		for( Jp2pContainer container: super.getCollection() )
+	public IJp2pContainer<?> getJp2pContainer( String identifier ) {
+		for( IJp2pContainer<?> container: super.getCollection() )
 			if( container.getIdentifier().equals( identifier ))
 				return container;
 		return null;
 	}
 
 	@Override
-	protected void onDataReceived( ParlezEvent<Jp2pContainer> event ) {
+	protected void onDataReceived( ParlezEvent<IJp2pContainer<?>> event ) {
 		  super.onDataReceived( event );
 		  this.addChild( event.getData());
 		  System.out.println("Container added: " + event.getData().getIdentifier( ));
@@ -104,7 +104,7 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 	}
 
 	@Override
-	public Collection<Jp2pContainer> getModule() {
+	public Collection<IJp2pContainer<?>> getModule() {
 		return super.getCollection();
 	}
 
@@ -118,7 +118,7 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 		if( children.contains( child ))
 			return false;
 		children.add( child );
-		Jp2pContainer container = (Jp2pContainer) child;
+		IJp2pContainer<?> container = (IJp2pContainer<?>) child;
 		container.getDispatcher().addServiceChangeListener( listener );
 		Collections.sort( children, new Jp2pServiceComparator<Object>());
 		dispatcher.serviceChanged( new ServiceChangedEvent( this, ServiceChange.CHILD_ADDED ));
@@ -128,7 +128,7 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 	@Override
 	public void removeChild(IJp2pComponent<?> child) {
 		children.remove( child );
-		Jp2pContainer container = (Jp2pContainer) child;
+		IJp2pContainer<?> container = (IJp2pContainer<?>) child;
 		container.getDispatcher().removeServiceChangeListener( listener );
 		dispatcher.serviceChanged( new ServiceChangedEvent( this, ServiceChange.CHILD_REMOVED ));
 	}

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.core;
 
-import net.jp2p.container.Jp2pContainer;
+import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.IJp2pContainer.ContainerProperties;
 import net.jp2p.container.utils.Utils;
 import net.osgi.jp2p.chaupal.activator.AbstractJp2pBundleActivator;
@@ -20,7 +20,7 @@ import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
 import org.eclipselabs.osgi.ds.broker.service.AbstractProvider;
 
 
-public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
+public class Jp2pDSComponent<T extends Object> extends AbstractAttendeeProviderComponent {
 
 	public static final String S_IJP2P_CONTAINER_PACKAGE_ID = "org.osgi.jxse.service.core";
 	public static final String S_IP2P_TOKEN = "org.osgi.jxse.token";
@@ -31,23 +31,23 @@ public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
 
 	protected Jp2pDSComponent() {}
 
-	protected Jp2pDSComponent( AbstractJp2pBundleActivator activator ) {
+	protected Jp2pDSComponent( AbstractJp2pBundleActivator<T> activator ) {
 		this( S_IJP2P_CONTAINER_PACKAGE_ID, S_IP2P_TOKEN, activator);
 	}
 
-	protected Jp2pDSComponent( String introduction, String token, AbstractJp2pBundleActivator activator ) {
+	protected Jp2pDSComponent( String introduction, String token, AbstractJp2pBundleActivator<T> activator ) {
 		this.token = token;
 		this.introduction = introduction;
 		this.setActivator(activator);
 	}
 
-	protected Jp2pContainer getContainer() {
+	protected IJp2pContainer<?> getContainer() {
 		return provider.getContainer();
 	}
 
-	private final void setActivator(AbstractJp2pBundleActivator activator) {
+	private final void setActivator(AbstractJp2pBundleActivator<T> activator) {
 		try{
-			Jp2pContainer container = activator.getServiceContainer();
+			IJp2pContainer<?> container = (IJp2pContainer<?>) activator.getServiceContainer();
 			String pass = (String) container.getPropertySource().getProperty( ContainerProperties.PASS_1);
 			if( !Utils.isNull( pass ))
 				this.introduction = pass;
@@ -73,9 +73,9 @@ public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
  * @author Kees
  *
  */
-class Jp2pContainerProvider extends AbstractProvider<String, Object, Jp2pContainer> {
+class Jp2pContainerProvider extends AbstractProvider<String, Object, IJp2pContainer<?>> {
 
-	private Jp2pContainer  container;
+	private IJp2pContainer<?>  container;
 	
 	Jp2pContainerProvider() {
 		super( new Palaver());
@@ -89,7 +89,7 @@ class Jp2pContainerProvider extends AbstractProvider<String, Object, Jp2pContain
 	 * Get the container
 	 * @return
 	 */
-	Jp2pContainer getContainer() {
+	IJp2pContainer<?> getContainer() {
 		return container;
 	}
 
@@ -97,7 +97,7 @@ class Jp2pContainerProvider extends AbstractProvider<String, Object, Jp2pContain
 	 * Add a container and 
 	 * @param container
 	 */
-	public void setContainer(Jp2pContainer  container) {
+	public void setContainer( IJp2pContainer<?>  container) {
 		if( container == null )
 			throw new NullPointerException();
 		this.container = container;

@@ -19,12 +19,14 @@ import net.jp2p.container.activator.IActivator;
 import net.jp2p.container.component.ComponentChangedEvent;
 import net.jp2p.container.component.ComponentEventDispatcher;
 import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.component.IJp2pComponentNode;
 import net.jp2p.container.factory.IComponentFactory;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jp2p.container.utils.StringStyler;
+import net.jp2p.container.utils.Utils;
 
 public class AbstractJp2pContainer<T extends Object> extends AbstractActivator 
 implements	IJp2pContainer<T>{
@@ -50,6 +52,8 @@ implements	IJp2pContainer<T>{
 	
 	//Takes care of all the messaging through the container
 	private ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
+	
+	private T module;
 	
 	protected AbstractJp2pContainer( String bundleId, String identifier) {
 		this( (IJp2pPropertySource<IJp2pProperties>) new Jp2pContainerPropertySource( bundleId ));
@@ -178,9 +182,36 @@ implements	IJp2pContainer<T>{
 		}
 	}
 
+	
+	protected void setModule(T module) {
+		this.module = module;
+	}
+
 	@Override
 	public T getModule() {
-		// TODO Auto-generated method stub
+		return module;
+	}
+	
+	/**
+	 * Find the component with the given name 
+	 * @param componentName
+	 * @param root
+	 * @return
+	 */
+	public static IJp2pComponent<?> findComponent( String componentName, IJp2pComponent<?> root ){
+		if( Utils.isNull( componentName ))
+			return null;
+		if( componentName.equals( root.getPropertySource().getComponentName()))
+			return root;
+		if(!( root instanceof IJp2pComponentNode ))
+			return null;
+		IJp2pComponentNode<?> node = ( IJp2pComponentNode<?>) root;
+		IJp2pComponentNode<?> result;
+		for( IJp2pComponent<?> child: node.getChildren() ){
+			result = (IJp2pComponentNode<?>) findComponent(componentName, child);
+			if( result != null )
+				return result;
+		}
 		return null;
 	}
 }

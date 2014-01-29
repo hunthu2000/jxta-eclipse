@@ -13,16 +13,14 @@ package net.jp2p.container.activator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import net.jp2p.container.Jp2pContainer;
-import net.jp2p.container.properties.IJp2pDirectives;
-import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.IJp2pContainer;
 
 /**
  * Starts the JXTA service container
  * @author keesp
  *
  */
-public class Jp2pContextStarter<T extends Jp2pContainer, V extends IJp2pProperties, W extends IJp2pDirectives> implements Runnable{
+public class Jp2pContextStarter<T extends IJp2pContainer<?>> implements Runnable{
 
 	private T activator;
 	

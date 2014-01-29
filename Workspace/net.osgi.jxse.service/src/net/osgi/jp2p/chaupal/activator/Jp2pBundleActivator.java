@@ -10,11 +10,13 @@
  *******************************************************************************/
 package net.osgi.jp2p.chaupal.activator;
 
+import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.Jp2pContainer;
 import net.jp2p.container.builder.ICompositeBuilderListener;
+import net.jp2p.container.startup.Jp2pStartupService;
 import net.osgi.jp2p.chaupal.xml.XMLServiceBuilder;
 
-public class Jp2pBundleActivator extends AbstractJp2pBundleActivator {
+public class Jp2pBundleActivator extends AbstractJp2pBundleActivator<Jp2pStartupService> {
 
 	private String bundle_id;
 	private ICompositeBuilderListener<?> observer;
@@ -33,7 +35,7 @@ public class Jp2pBundleActivator extends AbstractJp2pBundleActivator {
 	}
 
 	@Override
-	protected Jp2pContainer createContainer() {
+	protected IJp2pContainer<Jp2pStartupService> createContainer() {
 		XMLServiceBuilder builder = new XMLServiceBuilder( bundle_id, this.getClass() );
 		if( observer != null )
 			builder.addListener(observer);

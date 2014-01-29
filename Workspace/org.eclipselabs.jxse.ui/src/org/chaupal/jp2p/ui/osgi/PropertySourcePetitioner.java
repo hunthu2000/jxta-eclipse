@@ -3,6 +3,7 @@ package org.chaupal.jp2p.ui.osgi;
 
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.utils.Utils;
 
 import org.chaupal.jp2p.ui.property.IJp2pPropertySourceProvider;
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
@@ -27,8 +28,10 @@ public class PropertySourcePetitioner extends AbstractPetitioner<String, IJp2pCo
 	 * @return
 	 */
 	public IJp2pPropertySourceProvider<IJp2pProperties> getPropertyDescriptorProvider( String componentName ) {
+		if( Utils.isNull( componentName ))
+			return null;
 		for( IJp2pPropertySourceProvider<IJp2pProperties> provider: super.getCollection() ){
-			if( provider.getComponentName().equals( componentName ))
+			if( componentName.equals( provider.getComponentName()))
 					return provider;
 		}
 		return null;
