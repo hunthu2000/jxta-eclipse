@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JXTA Compatibility for Equinox
 Bundle-SymbolicName: net.osgi.jxse.compatibility
-Bundle-Version: 1.0.0.v20130819
+Bundle-Version: 1.0.1.v20140129
 Bundle-Activator: net.osgi.jxse.compatibility.Activator
 Bundle-Vendor: Condast
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

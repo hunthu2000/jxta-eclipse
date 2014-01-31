@@ -20,14 +20,14 @@ import net.jp2p.container.IJp2pContainer;
  * @author keesp
  *
  */
-public class Jp2pContextStarter<T extends IJp2pContainer<?>> implements Runnable{
+public class Jp2pContainerStarter<T extends IJp2pContainer<?>> implements Runnable{
 
 	private T activator;
 	
 	private ExecutorService executor;
 
 	
-	public Jp2pContextStarter( T activator ) {
+	public Jp2pContainerStarter( T activator ) {
 		super();
 		this.activator = activator;
 		executor = Executors.newSingleThreadExecutor();

@@ -35,7 +35,7 @@ public class ComponentEventDispatcher {
 		this.listeners.remove( listener );
 	}
 	
-	public void serviceChanged( ComponentChangedEvent event ){
+	public synchronized void serviceChanged( ComponentChangedEvent event ){
 		for( IComponentChangedListener listener: this.listeners )
 			listener.notifyServiceChanged(event);
 	}

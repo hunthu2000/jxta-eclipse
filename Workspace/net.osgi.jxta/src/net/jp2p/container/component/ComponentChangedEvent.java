@@ -27,4 +27,9 @@ public class ComponentChangedEvent extends EventObject {
 	public ServiceChange getChange() {
 		return change;
 	}
+
+	@Override
+	public String toString() {
+		return change.toString() + "=>" + getSource().toString();
+	}	
 }

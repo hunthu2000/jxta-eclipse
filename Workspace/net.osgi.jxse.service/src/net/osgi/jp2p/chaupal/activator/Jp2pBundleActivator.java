@@ -12,36 +12,38 @@ package net.osgi.jp2p.chaupal.activator;
 
 import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.Jp2pContainer;
-import net.jp2p.container.builder.ICompositeBuilderListener;
+import net.jp2p.container.component.ComponentEventDispatcher;
+import net.jp2p.container.component.IComponentChangedListener;
 import net.jp2p.container.startup.Jp2pStartupService;
 import net.osgi.jp2p.chaupal.xml.XMLServiceBuilder;
 
 public class Jp2pBundleActivator extends AbstractJp2pBundleActivator<Jp2pStartupService> {
 
 	private String bundle_id;
-	private ICompositeBuilderListener<?> observer;
+	private IComponentChangedListener observer;
 	
 	
 	public Jp2pBundleActivator(String bundle_id) {
 		this.bundle_id = bundle_id;
 	}
 
-	public ICompositeBuilderListener<?> getObserver() {
+	public IComponentChangedListener getObserver() {
 		return observer;
 	}
 
-	public void setObserver(ICompositeBuilderListener<?> observer) {
+	public void setObserver(IComponentChangedListener observer) {
 		this.observer = observer;
 	}
 
 	@Override
 	protected IJp2pContainer<Jp2pStartupService> createContainer() {
 		XMLServiceBuilder builder = new XMLServiceBuilder( bundle_id, this.getClass() );
+		ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 		if( observer != null )
-			builder.addListener(observer);
+			dispatcher.addServiceChangeListener(observer);
 		Jp2pContainer container = builder.build();
 		if( observer != null )
-			builder.removeListener(observer);
+			dispatcher.removeServiceChangeListener(observer);
 		return container;
 	}
 }

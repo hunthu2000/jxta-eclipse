@@ -12,12 +12,12 @@ package net.osgi.jp2p.chaupal.activator;
 
 import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.activator.ISimpleActivator;
-import net.jp2p.container.activator.Jp2pContextStarter;
+import net.jp2p.container.activator.Jp2pContainerStarter;
 
 public class Jp2pActivator<T extends Object> implements ISimpleActivator {
 
 	private IJp2pContainer<T> container;
-	private Jp2pContextStarter<IJp2pContainer<T>> starter;
+	private Jp2pContainerStarter<IJp2pContainer<T>> starter;
 	
 	private boolean active;
 		
@@ -36,7 +36,7 @@ public class Jp2pActivator<T extends Object> implements ISimpleActivator {
 	@Override
 	public boolean start(){
 		try{
-			starter = new Jp2pContextStarter<IJp2pContainer<T>>( container );
+			starter = new Jp2pContainerStarter<IJp2pContainer<T>>( container );
 			starter.createContext();
 			this.active = true;
 		}
