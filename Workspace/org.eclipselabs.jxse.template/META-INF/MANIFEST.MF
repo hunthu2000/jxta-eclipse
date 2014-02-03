@@ -25,5 +25,4 @@ Import-Package: net.jp2p.container,
  net.jp2p.jxta.network.configurator,
  net.jxta.platform,
  net.osgi.jp2p.chaupal.xml,
- org.chaupal.jp2p.ui.container,
- org.chaupal.jp2p.ui.jxta.network
+ org.chaupal.jp2p.ui.container

@@ -20,7 +20,7 @@ import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
 import org.eclipselabs.osgi.ds.broker.service.AbstractProvider;
 
 
-public class Jp2pDSComponent<T extends Object> extends AbstractAttendeeProviderComponent {
+public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
 
 	public static final String S_IJP2P_CONTAINER_PACKAGE_ID = "org.osgi.jxse.service.core";
 	public static final String S_IP2P_TOKEN = "org.osgi.jxse.token";
@@ -31,11 +31,11 @@ public class Jp2pDSComponent<T extends Object> extends AbstractAttendeeProviderC
 
 	protected Jp2pDSComponent() {}
 
-	protected Jp2pDSComponent( AbstractJp2pBundleActivator<T> activator ) {
+	protected Jp2pDSComponent( AbstractJp2pBundleActivator<?> activator ) {
 		this( S_IJP2P_CONTAINER_PACKAGE_ID, S_IP2P_TOKEN, activator);
 	}
 
-	protected Jp2pDSComponent( String introduction, String token, AbstractJp2pBundleActivator<T> activator ) {
+	protected Jp2pDSComponent( String introduction, String token, AbstractJp2pBundleActivator<?> activator ) {
 		this.token = token;
 		this.introduction = introduction;
 		this.setActivator(activator);
@@ -45,7 +45,7 @@ public class Jp2pDSComponent<T extends Object> extends AbstractAttendeeProviderC
 		return provider.getContainer();
 	}
 
-	private final void setActivator(AbstractJp2pBundleActivator<T> activator) {
+	private final void setActivator(AbstractJp2pBundleActivator<?> activator) {
 		try{
 			IJp2pContainer<?> container = (IJp2pContainer<?>) activator.getServiceContainer();
 			String pass = (String) container.getPropertySource().getProperty( ContainerProperties.PASS_1);
@@ -101,7 +101,7 @@ class Jp2pContainerProvider extends AbstractProvider<String, Object, IJp2pContai
 		if( container == null )
 			throw new NullPointerException();
 		this.container = container;
-		super.setIdentifier( container.getIdentifier());
+		super.setIdentifier( container.getId() );
 		super.provide(container);
 	}
 
@@ -112,41 +112,41 @@ class Jp2pContainerProvider extends AbstractProvider<String, Object, IJp2pContai
 		if( this.container != null )
 			super.provide(container);
 	}	
-}
 
-/**
- * The palaver contains the conditions for attendees to create an assembly. In this case, the attendees must
- * pass a string identifier (the package id) and provide a token that is equal
- * @author Kees
- *
- */
-class Palaver extends AbstractPalaver<String>{
+	/**
+	 * The palaver contains the conditions for attendees to create an assembly. In this case, the attendees must
+	 * pass a string identifier (the package id) and provide a token that is equal
+	 * @author Kees
+	 *
+	 */
+	private static class Palaver extends AbstractPalaver<String>{
 
-	private String providedToken;
-	
-	protected Palaver() {
-		super( Jp2pDSComponent.S_IJP2P_CONTAINER_PACKAGE_ID);
+		private String providedToken;
+
+		protected Palaver() {
+			super( Jp2pDSComponent.S_IJP2P_CONTAINER_PACKAGE_ID);
+		}
+
+		protected Palaver( String introduction, String token ) {
+			super(  introduction );
+			this.providedToken = token;
+		}
+
+		@Override
+		public String giveToken() {
+			if( providedToken == null )
+				return Jp2pDSComponent.S_IP2P_TOKEN;
+			return providedToken;
+		}
+
+		@Override
+		public boolean confirm(Object token) {
+			boolean retval = false;
+			if( providedToken == null )
+				retval = Jp2pDSComponent.S_IP2P_TOKEN .equals( token );
+			else
+				retval = providedToken.equals(token);
+			return retval;
+		}	
 	}
-
-	protected Palaver( String introduction, String token ) {
-		super(  introduction );
-		this.providedToken = token;
-	}
-
-	@Override
-	public String giveToken() {
-		if( providedToken == null )
-			return Jp2pDSComponent.S_IP2P_TOKEN;
-		return providedToken;
-	}
-
-	@Override
-	public boolean confirm(Object token) {
-		boolean retval = false;
-		if( providedToken == null )
-			retval = Jp2pDSComponent.S_IP2P_TOKEN .equals( token );
-		else
-			retval = providedToken.equals(token);
-		return retval;
-	}	
 }

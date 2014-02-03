@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <relativePath>../net.chaupal.core.build/pom.xml</relativePath>
+    <groupId>net.chaupal.core.build</groupId>
+    <artifactId>net.chaupal.core.build</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>net.chaupal.container</artifactId>
+  <packaging>eclipse-plugin</packaging>
+  <groupId>net.chaupal.core.build</groupId>
+</project> 

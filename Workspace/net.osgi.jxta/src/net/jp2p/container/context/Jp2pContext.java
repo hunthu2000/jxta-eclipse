@@ -20,6 +20,7 @@ import net.jp2p.container.properties.SimplePropertyConvertor;
 import net.jp2p.container.startup.StartupServiceFactory;
 import net.jp2p.container.utils.StringStyler;
 import net.jp2p.container.utils.Utils;
+import net.jp2p.container.xml.IJp2pHandler;
 
 public class Jp2pContext implements IJp2pContext<Object> {
 
@@ -69,6 +70,14 @@ public class Jp2pContext implements IJp2pContext<Object> {
 		if( !Utils.isNull( contextName ) && !isContextNameEqual(Contexts.JP2P.toString(), contextName ))
 			return false;
 		return Components.isComponent( componentName );
+	}
+
+	/**
+	 * Get the handler for this context
+	 * @return
+	 */
+	public IJp2pHandler getHandler(){
+		return null;
 	}
 
 	/**
