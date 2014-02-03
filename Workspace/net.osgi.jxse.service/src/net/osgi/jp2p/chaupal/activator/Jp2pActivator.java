@@ -25,7 +25,7 @@ public class Jp2pActivator<T extends Object> implements ISimpleActivator {
 		active = false;
 	}
 
-	void setJxtaContext( IJp2pContainer<T> jxtaContext) {
+	public void setJxtaContext( IJp2pContainer<T> jxtaContext) {
 		this.container = jxtaContext;
 	}
 

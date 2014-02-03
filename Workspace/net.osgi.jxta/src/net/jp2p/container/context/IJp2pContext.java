@@ -10,6 +10,7 @@ import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.IPropertyConvertor;
 import net.jp2p.container.utils.StringStyler;
+import net.jp2p.container.xml.IJp2pHandler;
 
 public interface IJp2pContext<T extends Object> {
 
@@ -54,6 +55,12 @@ public interface IJp2pContext<T extends Object> {
 			Attributes attributes,
 			IJp2pPropertySource<IJp2pProperties> parentSource,
 			String componentName);
+	
+	/**
+	 * Get the handler for this context
+	 * @return
+	 */
+	public IJp2pHandler getHandler();
 	
 	/**
 	 * Get the default factory for this container

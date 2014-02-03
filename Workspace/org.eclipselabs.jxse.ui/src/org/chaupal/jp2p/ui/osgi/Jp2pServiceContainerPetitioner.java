@@ -64,7 +64,6 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 		return attendee;
 	}
 
-	
 	@Override
 	public IJp2pPropertySource<IJp2pProperties> getPropertySource() {
 		return source;

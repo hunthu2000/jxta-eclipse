@@ -14,6 +14,7 @@ import net.jp2p.container.properties.IPropertyConvertor;
 import net.jp2p.container.properties.IJp2pDirectives.Contexts;
 import net.jp2p.container.utils.StringStyler;
 import net.jp2p.container.utils.Utils;
+import net.jp2p.container.xml.IJp2pHandler;
 import net.osgi.jp2p.chaupal.jxta.advertisement.ChaupalAdvertisementFactory;
 import net.osgi.jp2p.chaupal.jxta.discovery.ChaupalDiscoveryServiceFactory;
 import net.osgi.jp2p.chaupal.jxta.pipe.ChaupalPipeFactory;
@@ -117,6 +118,12 @@ public class JxtaContext implements IJp2pContext<Object> {
 			break;
 		}
 		return convertor;
+	}
+
+	@Override
+	public IJp2pHandler getHandler() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

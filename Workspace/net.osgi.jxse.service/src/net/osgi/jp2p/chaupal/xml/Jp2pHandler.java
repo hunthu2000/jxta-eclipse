@@ -169,7 +169,7 @@ class Jp2pHandler extends DefaultHandler{
 			return;
 		}
 		if( Groups.isGroup( qName )){
-			logger.info(" Group value: " + qName );
+			stack.push( qName );
 			return;
 		}else{
 			try{
@@ -249,7 +249,8 @@ class Jp2pHandler extends DefaultHandler{
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if( !stack.peek().equals( qName ))
 			return;
-		node = (FactoryNode) node.getParent();
+		if(!Groups.isGroup(qName ))
+			node = (FactoryNode) node.getParent();
 		this.property = null;
 		this.stack.pop();
 	}

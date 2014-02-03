@@ -22,4 +22,5 @@ Export-Package: net.jp2p.container,
  net.jp2p.container.startup,
  net.jp2p.container.utils,
  net.jp2p.container.utils.io,
- net.jp2p.container.validator
+ net.jp2p.container.validator,
+ net.jp2p.container.xml
