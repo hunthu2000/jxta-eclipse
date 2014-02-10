@@ -25,7 +25,8 @@ public interface IChaupalComponents{
 		PIPE_SERVICE,
 		JXSE_SOCKET,
 		JXSE_SERVER_SOCKET,
-		ADVERTISEMENT_SERVICE;
+		ADVERTISEMENT_SERVICE,
+		HTTP_SERVICE;
 
 		@Override
 		public String toString() {

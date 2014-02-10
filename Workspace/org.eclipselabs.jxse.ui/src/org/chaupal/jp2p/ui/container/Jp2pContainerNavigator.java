@@ -130,7 +130,7 @@ public class Jp2pContainerNavigator extends CommonNavigator{
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				if( propertyPage.getSite().getShell().isDisposed() )
+				if(( propertyPage == null ) || ( propertyPage.getSite().getShell().isDisposed() ))
 					return;
 				
 				if( propertyPage != null )

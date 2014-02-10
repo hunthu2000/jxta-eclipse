@@ -18,6 +18,7 @@ import net.jp2p.container.xml.IJp2pHandler;
 import net.osgi.jp2p.chaupal.jxta.IChaupalComponents.ChaupalComponents;
 import net.osgi.jp2p.chaupal.jxta.advertisement.ChaupalAdvertisementFactory;
 import net.osgi.jp2p.chaupal.jxta.discovery.ChaupalDiscoveryServiceFactory;
+import net.osgi.jp2p.chaupal.jxta.network.http.HttpServiceFactory;
 import net.osgi.jp2p.chaupal.jxta.peergroup.ChaupalPeerGroupFactory;
 import net.osgi.jp2p.chaupal.jxta.persistence.OsgiPersistenceFactory;
 import net.osgi.jp2p.chaupal.jxta.pipe.ChaupalPipeFactory;
@@ -88,6 +89,10 @@ public class ChaupalContext implements IJp2pContext<Object> {
 				break;
 			case PERSISTENCE_SERVICE:
 				factory = new OsgiPersistenceFactory( builder, parentSource );
+				break;
+			case HTTP_SERVICE:
+				factory = new HttpServiceFactory( builder, parentSource );
+				break;
 			default:
 				break;
 			}

@@ -79,6 +79,8 @@ public class Jp2pServiceContainerPetitioner extends AbstractPetitioner<String, S
 	@Override
 	protected void onDataReceived( ParlezEvent<IJp2pContainer<?>> event ) {
 		  super.onDataReceived( event );
+		  if(!( event.getData() instanceof IJp2pComponent ))
+			  return;
 		  this.addChild( event.getData());
 		  System.out.println("Container added: " + event.getData().getIdentifier( ));
 	}

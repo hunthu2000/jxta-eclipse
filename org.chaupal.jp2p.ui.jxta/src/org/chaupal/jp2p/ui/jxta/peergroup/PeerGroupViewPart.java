@@ -7,7 +7,6 @@ import java.util.Stack;
 import net.jp2p.container.utils.INode;
 import net.jp2p.container.utils.SimpleNode;
 import net.jp2p.container.utils.StringStyler;
-import net.jp2p.jxta.advertisement.IAdvertisementProvider;
 import net.jp2p.jxta.peergroup.PeerGroupNode;
 import net.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupProperties;
 import net.jxta.document.Advertisement;
@@ -104,8 +103,10 @@ public class PeerGroupViewPart extends AbstractJp2pServiceViewPart<INode<PeerGro
 
 	@Override
 	protected void onCreatePartControl(Composite parent) {		
+		Composite container = new Composite(parent, SWT.BORDER);
+		container.setLayout(new FillLayout(SWT.HORIZONTAL));
 
-		sashForm_1 = new SashForm(parent, SWT.NONE);
+		sashForm_1 = new SashForm(container, SWT.NONE);
 		toolkit.adapt(sashForm_1);
 		toolkit.paintBordersFor(sashForm_1);
 
@@ -154,7 +155,7 @@ public class PeerGroupViewPart extends AbstractJp2pServiceViewPart<INode<PeerGro
 		sashForm.setWeights(new int[] {3, 2});
 		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(listener);
 		getSite().setSelectionProvider( this.treeViewer );
-		sashForm_1.setWeights(new int[] {30, 70});
+		sashForm_1.setWeights(new int[] {2, 3});
 	}
 
 	@Override

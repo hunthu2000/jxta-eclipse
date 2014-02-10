@@ -40,6 +40,7 @@ Import-Package: net.jp2p.container,
  net.jp2p.jxta.seeds,
  net.jp2p.jxta.socket,
  net.jp2p.jxta.utils,
+ net.jxse.module,
  org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.core.runtime.preferences;version="3.3.0",
  org.eclipse.osgi.framework.eventmgr;version="1.2.0",
@@ -50,3 +51,4 @@ Import-Package: net.jp2p.container,
  org.osgi.service.prefs;version="1.1.1",
  org.osgi.util.tracker;version="1.5.1"
 Bundle-ActivationPolicy: lazy
+Bundle-Activator: net.osgi.jp2p.chaupal.Activator
