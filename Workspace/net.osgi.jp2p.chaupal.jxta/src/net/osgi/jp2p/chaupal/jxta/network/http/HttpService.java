@@ -13,7 +13,7 @@ package net.osgi.jp2p.chaupal.jxta.network.http;
 import net.jp2p.container.component.AbstractJp2pService;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
-import net.jxse.module.IJp2pServiceListener;
+import net.jxse.osgi.module.IJp2pServiceListener;
 import net.jxta.platform.Module;
 import net.osgi.jp2p.chaupal.Activator;
 import net.osgi.jp2p.chaupal.jxta.IChaupalComponents.ChaupalComponents;

@@ -1,20 +1,18 @@
 package net.osgi.jp2p.chaupal;
 
-import net.jxse.module.IJp2pServiceListener;
+import net.jxse.osgi.module.IJp2pServiceListener;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
-import org.osgi.util.tracker.ServiceTracker;
 
 public class Activator implements BundleActivator {
 
 	public static final String BUNDLE_ID = "org.chaupal.jp2p.ui";
 	
 	private static Activator plugin;
-	private ServiceTracker<BundleContext,LogService> logServiceTracker;
-	private static LogService logService;
+	private static Jp2pLogService logService;
 	
 	private static IJp2pServiceListener service;
 	
@@ -24,27 +22,14 @@ public class Activator implements BundleActivator {
 		
 		ServiceReference<?> serviceReference = context.getServiceReference(IJp2pServiceListener.class.getName());
 		service = (IJp2pServiceListener) context.getService(serviceReference); 
-		
-		// create a tracker and track the log service
-		logServiceTracker = 
-			new ServiceTracker<BundleContext,LogService>(context, LogService.class.getName(), null);
-		logServiceTracker.open();
-		
-		// grab the service
-		logService = logServiceTracker.getService();
-
-		if(logService != null)
-			logService.log(LogService.LOG_INFO, "Logging service started");
+		logService = new Jp2pLogService( context );
+		logService.open();
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		if(logService != null)
-			logService.log(LogService.LOG_INFO, "Logging service Stopped");
-		
-		// close the service tracker
-		logServiceTracker.close();
-		logServiceTracker = null;
+		logService.close();
+		logService = null;
 		plugin = null;
 	}	
 	
@@ -53,7 +38,7 @@ public class Activator implements BundleActivator {
 	}
 
 	public static LogService getLog(){
-		return logService;
+		return logService.getLogService();
 	}
 	
 	public static Activator getDefault(){
