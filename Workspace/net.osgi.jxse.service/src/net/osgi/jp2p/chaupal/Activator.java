@@ -1,6 +1,7 @@
 package net.osgi.jp2p.chaupal;
 
-import net.jxse.osgi.module.IJp2pServiceListener;
+import net.osgi.jp2p.chaupal.module.IServiceListenerContainer;
+import net.osgi.jp2p.chaupal.module.ServiceListenerContainer;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -14,27 +15,33 @@ public class Activator implements BundleActivator {
 	private static Activator plugin;
 	private static Jp2pLogService logService;
 	
-	private static IJp2pServiceListener service;
+	private static IServiceListenerContainer serviceListeners; 
 	
+
 	@Override
 	public void start(BundleContext context) throws Exception {
 		plugin = this;
-		
-		ServiceReference<?> serviceReference = context.getServiceReference(IJp2pServiceListener.class.getName());
-		service = (IJp2pServiceListener) context.getService(serviceReference); 
+		serviceListeners = ServiceListenerContainer.getInstance();
+		context.registerService( IServiceListenerContainer.class, serviceListeners, null );
 		logService = new Jp2pLogService( context );
 		logService.open();
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		ServiceReference<?> reference = context.getServiceReference(IServiceListenerContainer.class);
+		context.ungetService(reference); 
+		
+		serviceListeners.clear();
+		serviceListeners = null;
+		
 		logService.close();
 		logService = null;
 		plugin = null;
 	}	
 	
-	public static IJp2pServiceListener getService() {
-		return service;
+	public static IServiceListenerContainer getServiceListenerContainer() {
+		return serviceListeners;
 	}
 
 	public static LogService getLog(){

@@ -1,22 +1,22 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Jetty Server for JXTA
-Bundle-SymbolicName: org.mortbay.jetty
-Bundle-Version: 4.2.5.v20130817
-Bundle-Activator: org.mortbay.jetty.Activator
-Bundle-Vendor: Condast
+Bundle-Name: Jxta Http Servlet Module
+Bundle-SymbolicName: net.jxta.endpoint.servlethttp
+Bundle-Version: 1.0.0.v20140203
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: javax.servlet;version="2.6.0",
  javax.servlet.http;version="2.6.0",
+ net.jxse.module,
+ net.jxse.osgi.module,
  net.jxse.osgi.service,
  net.jxta.document,
  net.jxta.endpoint,
  net.jxta.exception,
  net.jxta.id,
  net.jxta.impl.endpoint,
- net.jxta.impl.endpoint.servlethttp,
  net.jxta.impl.endpoint.transportMeter,
  net.jxta.impl.meter,
+ net.jxta.impl.peergroup,
  net.jxta.impl.protocol,
  net.jxta.impl.util,
  net.jxta.impl.util.threads,
@@ -25,14 +25,10 @@ Import-Package: javax.servlet;version="2.6.0",
  net.jxta.peergroup,
  net.jxta.platform,
  net.jxta.protocol,
+ net.osgi.jp2p.chaupal.module,
  org.eclipselabs.osgi.ds.broker.service,
- org.osgi.framework;version="1.3.0"
-Bundle-ActivationPolicy: lazy
+ org.osgi.framework
 Service-Component: OSGI-INF/attendees.xml
-Bundle-ClassPath: .,
- lib/org.mortbay.jetty.jar
-Export-Package: org.mortbay.http,
- org.mortbay.http.handler,
- org.mortbay.jetty,
- org.mortbay.jetty.servlet,
- org.mortbay.util
+Bundle-Vendor: Condast
+Bundle-Activator: net.jp2p.endpoint.servlethttp.Activator
+Bundle-ActivationPolicy: lazy

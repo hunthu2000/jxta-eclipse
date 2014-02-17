@@ -17,8 +17,11 @@ import net.jxse.osgi.module.IJp2pServiceListener;
 import net.jxta.platform.Module;
 import net.osgi.jp2p.chaupal.Activator;
 import net.osgi.jp2p.chaupal.jxta.IChaupalComponents.ChaupalComponents;
+import net.osgi.jp2p.chaupal.module.IServiceListenerContainer;
 
 public class HttpService extends AbstractJp2pService<Module>{
+	
+	private IJp2pServiceListener listener;
 
 	public HttpService( HttpServiceFactory factory ) {
 		super(( IJp2pWritePropertySource<IJp2pProperties> ) factory.getPropertySource(), null );
@@ -26,14 +29,14 @@ public class HttpService extends AbstractJp2pService<Module>{
 
 	@Override
 	public void activate() {
-		IJp2pServiceListener listener = Activator.getService();
-		listener.requestService( ChaupalComponents.HTTP_SERVICE.toString() );
+		IServiceListenerContainer container = Activator.getServiceListenerContainer();
+		listener = container.getListener( ChaupalComponents.HTTP_SERVICE.toString() );
 		super.activate();
 	}
 
 	@Override
 	protected void deactivate() {
-		IJp2pServiceListener listener = Activator.getService();
-		listener.removeService( ChaupalComponents.HTTP_SERVICE.toString() );
+		IServiceListenerContainer container = Activator.getServiceListenerContainer();
+		container.removeListener( listener );
 	}
 }

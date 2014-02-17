@@ -15,6 +15,10 @@ import java.util.logging.Logger;
 
 import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.log.Jp2pLevel;
+import net.jxse.module.IServiceListenerContainer;
+import net.jxse.platform.JxtaModuleContainer;
+import net.jxta.platform.Module;
+import net.jxta.platform.ModuleSpecID;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -37,6 +41,8 @@ public abstract class AbstractJp2pBundleActivator<T extends Object> implements B
 	 */
 	protected abstract IJp2pContainer<T> createContainer();
 	
+	protected IServiceListenerContainer<Module, ModuleSpecID> moduleContainer;
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
@@ -45,6 +51,8 @@ public abstract class AbstractJp2pBundleActivator<T extends Object> implements B
 	public void start(BundleContext bundleContext) throws Exception {
 		if(this.getClass().getResource( S_JP2P_INF ) == null )
 			Logger.getLogger( this.getClass().getName() ).warning( S_MSG_NOT_A_JP2P_BUNDLE);
+		
+		moduleContainer = JxtaModuleContainer.getInstance();
 		
 		Level level = Jp2pLevel.getJxtaLevel();
 		Logger log = Logger.getLogger( this.getClass().getName() );
@@ -71,6 +79,9 @@ public abstract class AbstractJp2pBundleActivator<T extends Object> implements B
 	 */
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
+		moduleContainer = JxtaModuleContainer.getInstance();
+		moduleContainer.clear();
+		
 		if( jp2pActivator != null )
 			jp2pActivator.stop();
 		if(logService != null)
