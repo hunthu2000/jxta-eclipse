@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.log.Jp2pLevel;
-import net.jxse.module.IServiceListenerContainer;
+import net.jxse.module.IModuleContainer;
 import net.jxse.platform.JxtaModuleContainer;
 import net.jxta.platform.Module;
 import net.jxta.platform.ModuleSpecID;
@@ -41,7 +41,7 @@ public abstract class AbstractJp2pBundleActivator<T extends Object> implements B
 	 */
 	protected abstract IJp2pContainer<T> createContainer();
 	
-	protected IServiceListenerContainer<Module, ModuleSpecID> moduleContainer;
+	protected IModuleContainer<Module, ModuleSpecID> moduleContainer;
 	
 	/*
 	 * (non-Javadoc)

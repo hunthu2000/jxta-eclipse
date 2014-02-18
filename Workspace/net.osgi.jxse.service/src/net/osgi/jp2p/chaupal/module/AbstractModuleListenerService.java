@@ -46,13 +46,14 @@ public abstract class AbstractModuleListenerService {
 				ServiceReference<?> sr = ev.getServiceReference();
 				switch(ev.getType()) {
 				case ServiceEvent.REGISTERED:
-				{
 					try {
 						register(sr);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				}
+					break;
+				default:
+					break;
 				}
 			}
 		};
@@ -76,17 +77,10 @@ public abstract class AbstractModuleListenerService {
 	 * @param sr
 	 */
 	private void register(ServiceReference<?> sr) {
-		IServiceListenerContainer container = (IServiceListenerContainer) bc.getService(sr);
-		if (container == null) {
-			Activator.getLog().log( LogService.LOG_WARNING, "No JXTA module container");
-			return;
-		}
-
 		try {
 			listener  = this.createServiceListener();
 			if( listener == null )
 				throw new NullPointerException( S_ERR_NO_LISTENER_PROVIDED);
-			container.addListener( listener );
 		} catch (Exception e) {
 			Activator.getLog().log( LogService.LOG_WARNING,"Failed to register resource", e);
 		}

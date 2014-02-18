@@ -6,9 +6,11 @@ Bundle-Version: 1.0.0.v20140203
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: javax.servlet;version="2.6.0",
  javax.servlet.http;version="2.6.0",
+ net.jp2p.container.properties,
  net.jxse.module,
  net.jxse.osgi.module,
  net.jxse.osgi.service,
+ net.jxse.platform,
  net.jxta.document,
  net.jxta.endpoint,
  net.jxta.exception,

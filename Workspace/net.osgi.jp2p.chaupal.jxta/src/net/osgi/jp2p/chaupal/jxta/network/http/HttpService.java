@@ -29,14 +29,14 @@ public class HttpService extends AbstractJp2pService<Module>{
 
 	@Override
 	public void activate() {
-		IServiceListenerContainer container = Activator.getServiceListenerContainer();
-		listener = container.getListener( ChaupalComponents.HTTP_SERVICE.toString() );
+		//IServiceListenerContainer container = Activator.getServiceListenerContainer();
+		//listener = container.getListener( ChaupalComponents.HTTP_SERVICE.toString() );
 		super.activate();
 	}
 
 	@Override
 	protected void deactivate() {
-		IServiceListenerContainer container = Activator.getServiceListenerContainer();
-		container.removeListener( listener );
+		//IServiceListenerContainer container = Activator.getServiceListenerContainer();
+		//container.removeListener( listener );
 	}
 }

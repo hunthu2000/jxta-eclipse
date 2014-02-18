@@ -5,8 +5,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jxse.module.AbstractModuleFactory;
-import net.jxse.module.IJxtaModuleFactory;
-import net.jxse.module.JxtaModuleDescriptor;
+import net.jxse.platform.IJxtaModuleFactory;
+import net.jxse.platform.JxtaModuleDescriptor;
 import net.jxta.document.Advertisement;
 import net.jxta.document.AdvertisementFactory;
 import net.jxta.document.MimeMediaType;
@@ -23,6 +23,7 @@ import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.Module;
 import net.jxta.platform.ModuleClassID;
 import net.jxta.platform.ModuleSpecID;
+import net.jxta.protocol.ModuleImplAdvertisement;
 import net.jxta.protocol.TransportAdvertisement;
 
 public class ModuleFactory extends AbstractModuleFactory<Module, ModuleSpecID> implements IJxtaModuleFactory {
@@ -53,6 +54,12 @@ public class ModuleFactory extends AbstractModuleFactory<Module, ModuleSpecID> i
 
 	@Override
 	public ModuleSpecID getModuleSpecID() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ModuleImplAdvertisement getModuleImplAdvertisement() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -18,7 +18,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
 
 public class UpdateHandler {
 	// repository location needs to be adjusted for your 
@@ -32,9 +31,8 @@ public class UpdateHandler {
 	 * @param agent
 	 * @param monitor
 	 */
-	public static void execute(final IProvisioningAgent agent, IProgressMonitor monitor) {
-		final IWorkbench workbench = PlatformUI.getWorkbench();
-		final Shell parent = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+	public static void execute(  final IWorkbench workbench, final Display display, final IProvisioningAgent agent, IProgressMonitor monitor) {
+		final Shell parent = workbench.getDisplay().getActiveShell();
 		Job j = new Job("Update Job") {
 			private boolean doInstall = false;
 
