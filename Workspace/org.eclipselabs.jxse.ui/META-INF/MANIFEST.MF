@@ -61,7 +61,8 @@ Export-Package: org.chaupal.jp2p.ui.celleditors,
  org.chaupal.jp2p.ui.log,
  org.chaupal.jp2p.ui.osgi,
  org.chaupal.jp2p.ui.p2,
- org.chaupal.jp2p.ui.property
+ org.chaupal.jp2p.ui.property,
+ org.chaupal.jp2p.ui.tray
 Require-Bundle: org.eclipse.ui;bundle-version="3.105.0"
 Service-Component: OSGI-INF/attendees.xml
 Bundle-Activator: org.chaupal.jp2p.ui.Activator
