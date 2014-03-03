@@ -8,6 +8,10 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import net.jp2p.chaupal.ServiceChangedEvent;
+import net.jp2p.chaupal.ServiceEventDispatcher;
+import net.jp2p.chaupal.IServiceChangedListener.ServiceChange;
+import net.jp2p.chaupal.core.Jp2pDSComponent;
 import net.jp2p.container.AbstractJp2pContainer;
 import net.jp2p.container.Jp2pContainer;
 import net.jp2p.container.component.ComponentChangedEvent;
@@ -15,10 +19,6 @@ import net.jp2p.container.component.IComponentChangedListener;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.utils.ILeaf;
 import net.jp2p.container.utils.Utils;
-import net.osgi.jp2p.chaupal.IServiceChangedListener.ServiceChange;
-import net.osgi.jp2p.chaupal.ServiceChangedEvent;
-import net.osgi.jp2p.chaupal.ServiceEventDispatcher;
-import net.osgi.jp2p.chaupal.core.Jp2pDSComponent;
 import net.jp2p.jxta.peergroup.PeerGroupFactory;
 import net.jp2p.jxta.peergroup.PeerGroupNode;
 

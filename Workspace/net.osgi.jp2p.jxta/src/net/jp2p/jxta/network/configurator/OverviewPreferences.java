@@ -26,8 +26,8 @@ import net.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.jxta.id.IDFactory;
 import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
-import net.jxta.platform.NetworkConfigurator;
-import net.jxta.platform.NetworkManager.ConfigMode;
+import net.jxta.compatibility.platform.NetworkConfigurator;
+import net.jxta.compatibility.platform.NetworkManager.ConfigMode;
 
 public class OverviewPreferences extends AbstractPreferences<String, Object> implements INetworkPreferences{
 

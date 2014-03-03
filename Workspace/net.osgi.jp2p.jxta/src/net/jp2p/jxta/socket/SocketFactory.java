@@ -20,7 +20,7 @@ import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.jxta.socket.ISocketFactory;
 import net.jp2p.jxta.socket.SocketPipeAdvertisementFactory;
-import net.jxta.platform.NetworkManager;
+import net.jxta.compatibility.platform.NetworkManager;
 import net.jxta.protocol.PipeAdvertisement;
 import net.jxta.socket.JxtaSocket;
 

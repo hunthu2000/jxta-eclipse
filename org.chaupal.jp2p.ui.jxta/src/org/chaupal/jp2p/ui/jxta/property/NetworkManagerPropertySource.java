@@ -10,8 +10,8 @@ import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.utils.EnumUtils;
 import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
-import net.jxta.platform.NetworkManager;
-import net.jxta.platform.NetworkManager.ConfigMode;
+import net.jxta.compatibility.platform.NetworkManager;
+import net.jxta.compatibility.platform.NetworkManager.ConfigMode;
 import net.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerProperties;
 
 import org.chaupal.jp2p.ui.jxta.property.descriptors.CheckBoxPropertyDescriptor;

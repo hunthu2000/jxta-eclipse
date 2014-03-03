@@ -6,7 +6,7 @@ import net.jxta.endpoint.EndpointService;
 import net.jxta.endpoint.Message;
 import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroup;
-import net.jxta.platform.NetworkManager.ConfigMode;
+import net.jxta.compatibility.platform.NetworkManager.ConfigMode;
 
 import org.chaupal.jp2p.ui.jxta.view.AbstractJp2pServiceViewPart;
 import org.eclipse.jface.layout.TableColumnLayout;

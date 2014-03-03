@@ -5,7 +5,7 @@ import net.jp2p.container.log.Jp2pLevel;
 import net.jxta.endpoint.EndpointService;
 import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroup;
-import net.jxta.platform.NetworkManager.ConfigMode;
+import net.jxta.compatibility.platform.NetworkManager.ConfigMode;
 import net.jxta.rendezvous.RendezVousService;
 import net.jxta.rendezvous.RendezvousEvent;
 import net.jxta.rendezvous.RendezvousListener;

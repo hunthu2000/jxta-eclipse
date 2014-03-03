@@ -19,7 +19,7 @@ import net.jp2p.container.partial.PartialPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.jxta.network.INetworkPreferences;
 import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
-import net.jxta.platform.NetworkConfigurator;
+import net.jxta.compatibility.platform.NetworkConfigurator;
 
 public class SecurityPreferences implements INetworkPreferences{
 

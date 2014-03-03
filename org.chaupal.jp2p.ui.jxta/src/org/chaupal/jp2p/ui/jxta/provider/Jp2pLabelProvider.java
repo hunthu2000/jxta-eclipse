@@ -1,9 +1,9 @@
 package org.chaupal.jp2p.ui.jxta.provider;
 
+import net.jp2p.chaupal.utils.Utils;
 import net.jp2p.container.activator.IActivator.Status;
 import net.jp2p.container.component.AbstractJp2pService;
 import net.jp2p.container.component.IJp2pComponent;
-import net.osgi.jp2p.chaupal.utils.Utils;
 
 import org.chaupal.jp2p.ui.jxta.image.StatusImages;
 import org.chaupal.jp2p.ui.jxta.image.StatusImages.Images;

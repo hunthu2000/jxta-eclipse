@@ -1,9 +1,9 @@
 package org.chaupal.jp2p.ui.osgi;
 
+import net.jp2p.chaupal.Activator;
 import net.jp2p.container.properties.AbstractJp2pWritePropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.utils.StringStyler;
-import net.osgi.jp2p.chaupal.Activator;
 
 public class PetitionPropertySource extends AbstractJp2pWritePropertySource
 {

@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.jp2p.chaupal.comparator.Jp2pServiceComparator;
 import net.jp2p.container.activator.IJp2pService;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.IJp2pComponentNode;
 import net.jp2p.container.component.Jp2pComponent;
 import net.jp2p.container.properties.DefaultPropertySource;
-import net.jxta.platform.NetworkConfigurator;
-import net.osgi.jp2p.chaupal.comparator.Jp2pServiceComparator;
+import net.jxta.compatibility.platform.NetworkConfigurator;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;

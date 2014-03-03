@@ -14,6 +14,7 @@ import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jp2p.jxta.netpeergroup.NetPeerGroupFactory;
 import net.jp2p.jxta.network.NetworkManagerFactory;
 import net.jp2p.jxta.network.configurator.NetworkConfigurationFactory;
+import net.jp2p.jxta.network.configurator.partial.PartialNetworkConfigFactory;
 import net.jp2p.jxta.peergroup.PeerGroupFactory;
 import net.jp2p.jxta.pipe.PipeServiceFactory;
 import net.jp2p.jxta.registration.RegistrationServiceFactory;
@@ -50,7 +51,7 @@ public class JxtaFactoryUtils {
 		case HTTP2:
 		case MULTICAST:
 		case SECURITY:
-			factory = new PartialFactory<Object>( builder, componentName, parentSource );
+			factory = new PartialNetworkConfigFactory<Object>( builder, componentName, parentSource );
 			break;
 		case NET_PEERGROUP_SERVICE:
 			factory = new NetPeerGroupFactory( builder, parentSource );

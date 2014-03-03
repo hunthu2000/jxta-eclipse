@@ -5,8 +5,8 @@ import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.utils.StringStyler;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jxta.peergroup.PeerGroup;
-import net.jxta.platform.NetworkConfigurator;
-import net.jxta.platform.NetworkManager;
+import net.jxta.compatibility.platform.NetworkConfigurator;
+import net.jxta.compatibility.platform.NetworkManager;
 
 import org.chaupal.jp2p.ui.property.IJp2pPropertySourceProvider;
 import org.chaupal.jp2p.ui.jxta.property.NetworkConfiguratorPropertySource;

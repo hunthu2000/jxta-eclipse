@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import net.jp2p.container.utils.Utils;
-import net.jxta.platform.NetworkConfigurator;
+import net.jxta.compatibility.platform.NetworkConfigurator;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;

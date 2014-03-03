@@ -46,7 +46,7 @@ import net.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.jxta.id.IDFactory;
 import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
-import net.jxta.platform.NetworkManager;
+import net.jxta.compatibility.platform.NetworkManager;
 
 public class NetworkManagerFactory extends AbstractFilterFactory<NetworkManager>{
 		

@@ -1,8 +1,8 @@
 package org.chaupal.jp2p.ui.image;
 
+import net.jp2p.chaupal.Activator;
 import net.jp2p.container.activator.IActivator.Status;
 import net.jp2p.container.utils.StringStyler;
-import net.osgi.jp2p.chaupal.Activator;
 
 import org.eclipse.swt.graphics.Image;
 
@@ -39,7 +39,7 @@ public class StatusImages extends AbstractImages{
 	
 	private static StatusImages images = new StatusImages();
 	
-	public StatusImages() {
+	private StatusImages() {
 		super( S_ICON_PATH, Activator.BUNDLE_ID );
 	}
 

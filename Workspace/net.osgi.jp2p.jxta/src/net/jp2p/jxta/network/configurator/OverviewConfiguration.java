@@ -17,8 +17,8 @@ import net.jp2p.jxta.network.configurator.NetworkConfigurationFactory;
 import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
 import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.jxta.peer.PeerID;
-import net.jxta.platform.NetworkConfigurator;
-import net.jxta.platform.NetworkManager.ConfigMode;
+import net.jxta.compatibility.platform.NetworkConfigurator;
+import net.jxta.compatibility.platform.NetworkManager.ConfigMode;
 
 public class OverviewConfiguration {
 

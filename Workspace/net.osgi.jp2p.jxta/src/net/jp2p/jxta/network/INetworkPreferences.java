@@ -1,7 +1,7 @@
 package net.jp2p.jxta.network;
 
 import net.jp2p.container.properties.IJp2pProperties;
-import net.jxta.platform.NetworkConfigurator;
+import net.jxta.compatibility.platform.NetworkConfigurator;
 
 public interface INetworkPreferences {
 

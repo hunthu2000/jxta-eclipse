@@ -7,7 +7,7 @@ import java.util.Iterator;
 import net.jp2p.container.properties.AbstractPropertyFacade;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerProperties;
-import net.jxta.platform.NetworkManager;
+import net.jxta.compatibility.platform.NetworkManager;
 
 public class NetworkManagerPropertyFacade extends AbstractPropertyFacade<NetworkManager> {
 

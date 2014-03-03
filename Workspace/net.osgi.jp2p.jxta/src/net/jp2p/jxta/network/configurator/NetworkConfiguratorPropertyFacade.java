@@ -8,7 +8,7 @@ import net.jp2p.container.properties.AbstractPropertyFacade;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerProperties;
 import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
-import net.jxta.platform.NetworkConfigurator;
+import net.jxta.compatibility.platform.NetworkConfigurator;
 
 public class NetworkConfiguratorPropertyFacade extends AbstractPropertyFacade<NetworkConfigurator> {
 

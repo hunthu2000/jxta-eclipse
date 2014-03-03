@@ -7,7 +7,6 @@ import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.factory.IJp2pComponents;
 import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.log.LoggerFactory;
-import net.jp2p.container.partial.PartialFactory;
 import net.jp2p.container.persistence.SimplePersistenceFactory;
 import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -29,11 +28,6 @@ public class Jp2pContext implements IJp2pContext<Object> {
 		CONTEXT,
 		STARTUP_SERVICE,
 		PERSISTENCE_SERVICE,
-		SECURITY,
-		TCP,
-		HTTP,
-		HTTP2,
-		MULTICAST,
 		LOGGER_SERVICE;
 	
 		@Override
@@ -167,13 +161,6 @@ public class Jp2pContext implements IJp2pContext<Object> {
 			break;
 		case PERSISTENCE_SERVICE:
 			factory = new SimplePersistenceFactory(builder, parentSource);
-			break;
-		case TCP:
-		case HTTP:
-		case HTTP2:
-		case MULTICAST:
-		case SECURITY:
-			factory = new PartialFactory<Object>( builder, componentName, parentSource );
 			break;
 		case LOGGER_SERVICE:
 			factory = new LoggerFactory( builder, parentSource );

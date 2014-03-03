@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <jp2p-container>
-  <context class="net.osgi.jp2p.chaupal.jxta.context.JxtaContext"/>
-  <context class="net.osgi.jp2p.chaupal.jxta.context.ChaupalContext"/>
+  <context class="net.jp2p.chaupal.jxta.context.JxtaContext"/>
+  <context class="net.jp2p.chaupal.jxta.context.ChaupalContext"/>
 </jp2p-container>

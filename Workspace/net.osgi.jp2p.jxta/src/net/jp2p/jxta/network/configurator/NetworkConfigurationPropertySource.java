@@ -9,6 +9,7 @@ import net.jp2p.container.utils.StringStyler;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jp2p.jxta.network.NetworkManagerPropertySource;
 import net.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerProperties;
+import net.jxta.compatibility.platform.NetworkManager.ConfigMode;
 
 public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropertySource
 	implements IJp2pWritePropertySource<IJp2pProperties>
@@ -175,4 +176,19 @@ public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropert
 		}
 		return null;
 	}
+
+	/**
+	 * Get the config modes as string
+	 * @return
+	 */
+	public static final String[] getConfigModes(){
+		ConfigMode[] modes = ConfigMode.values();
+		String[] results = new String[ modes.length];
+		for( int i=0; i<modes.length; i++ ){
+			ConfigMode mode = modes[i];
+			results[i] = mode.toString();
+		}
+		return results;
+	}
+
 }

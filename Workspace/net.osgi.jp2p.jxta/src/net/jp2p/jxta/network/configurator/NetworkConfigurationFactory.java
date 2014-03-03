@@ -43,8 +43,8 @@ import net.jp2p.jxta.network.security.SecurityPreferences;
 import net.jp2p.jxta.network.tcp.TcpPreferences;
 import net.jp2p.jxta.seeds.SeedListFactory;
 import net.jp2p.jxta.seeds.SeedListPropertySource;
-import net.jxta.platform.NetworkConfigurator;
-import net.jxta.platform.NetworkManager;
+import net.jxta.compatibility.platform.NetworkConfigurator;
+import net.jxta.compatibility.platform.NetworkManager;
 
 public class NetworkConfigurationFactory extends AbstractDependencyFactory<NetworkConfigurator, IJp2pComponent<NetworkManager>> {
 
@@ -147,7 +147,7 @@ public class NetworkConfigurationFactory extends AbstractDependencyFactory<Netwo
 	 * @return
 	 */
 	public static INetworkPreferences getPreferences( PartialPropertySource source ){
-		Jp2pContext.Components component = Jp2pContext.Components.valueOf( StringStyler.styleToEnum( source.getComponentName()));
+		JxtaComponents component = JxtaComponents.valueOf( StringStyler.styleToEnum( source.getComponentName()));
 		switch( component ){
 		case TCP:
 			return new TcpPreferences( source );

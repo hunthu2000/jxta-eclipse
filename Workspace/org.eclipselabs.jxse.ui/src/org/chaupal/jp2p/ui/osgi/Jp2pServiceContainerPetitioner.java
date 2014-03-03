@@ -10,6 +10,11 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import net.jp2p.chaupal.ServiceChangedEvent;
+import net.jp2p.chaupal.ServiceEventDispatcher;
+import net.jp2p.chaupal.IServiceChangedListener.ServiceChange;
+import net.jp2p.chaupal.comparator.Jp2pServiceComparator;
+import net.jp2p.chaupal.core.Jp2pDSComponent;
 import net.jp2p.container.AbstractJp2pContainer;
 import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.component.ComponentChangedEvent;
@@ -19,11 +24,6 @@ import net.jp2p.container.component.IJp2pComponentNode;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.utils.Utils;
-import net.osgi.jp2p.chaupal.IServiceChangedListener.ServiceChange;
-import net.osgi.jp2p.chaupal.ServiceChangedEvent;
-import net.osgi.jp2p.chaupal.ServiceEventDispatcher;
-import net.osgi.jp2p.chaupal.comparator.Jp2pServiceComparator;
-import net.osgi.jp2p.chaupal.core.Jp2pDSComponent;
 
 import org.chaupal.jp2p.ui.log.Jp2pLog;
 import org.chaupal.jp2p.ui.osgi.PetitionPropertySource.PetitionerProperties;
