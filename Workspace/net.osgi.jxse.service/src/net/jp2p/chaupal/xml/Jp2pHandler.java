@@ -5,6 +5,8 @@ import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.jp2p.chaupal.Activator;
+import net.jp2p.chaupal.context.ContextService;
 import net.jp2p.container.ContainerFactory;
 import net.jp2p.container.Jp2pContainerPropertySource;
 import net.jp2p.container.builder.ComponentNode;
@@ -120,7 +122,7 @@ class Jp2pHandler extends DefaultHandler{
 				break;
 			case CONTEXT:
 				String className = attributes.getValue( ContextDirectives.CLASS.toString().toLowerCase() );
-				IJp2pContext<?> context = this.loadContext( className );
+				IJp2pContext context = this.loadContext( className );
 				if( context != null )
 					contexts.addContext( context );
 				return;
@@ -188,7 +190,9 @@ class Jp2pHandler extends DefaultHandler{
 		if( Utils.isNull( contextName )){
 			contextName = AbstractJp2pPropertySource.findFirstAncestorDirective( parentSource, Directives.CONTEXT );
 		}
-		IJp2pContext<?> context = this.contexts.getContextForComponent( contextName, componentName);
+		IJp2pContext context = getContext( contextName );;
+		if( context == null )
+			context = this.contexts.getContextForComponent( contextName, componentName);
 		return context.getFactory( this.container, attributes, (IJp2pPropertySource<IJp2pProperties>) parentSource, componentName);
 	}
 	
@@ -213,7 +217,7 @@ class Jp2pHandler extends DefaultHandler{
 					source.setDirective( directive, attributes.getValue(i));
 				}
 			}
-		}
+		}		
 		container.addFactory( factory );
 		if( node == null )
 			return new FactoryNode( factory );
@@ -221,6 +225,21 @@ class Jp2pHandler extends DefaultHandler{
 			return (FactoryNode) node.addChild(factory);	
 	}
 
+	/**
+	 * Get the context, or try to load it if none was found
+	 * @param source
+	 * @return
+	 */
+	protected IJp2pContext getContext( String contextName ){
+		if( Utils.isNull( contextName ))
+			return null;
+		IJp2pContext context = this.contexts.getContext(contextName);
+		if( context != null )
+			return context;
+		ContextService cs = Activator.getContextService();
+		return cs.getContext(contextName);
+	}
+	
 	/**
 	 * Create the property
 	 * @param qName
@@ -277,7 +296,7 @@ class Jp2pHandler extends DefaultHandler{
 		IJp2pProperties id = property.getKey();
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) node.getData().getPropertySource();
 		String contextName = source.getDirective( Directives.CONTEXT );
-		IJp2pContext<?> context = contexts.getContext(contextName);
+		IJp2pContext context = contexts.getContext(contextName);
 		if( source instanceof Jp2pContainerPropertySource ){
 			Jp2pContainerPreferences preferences = new Jp2pContainerPreferences( (Jp2pContainerPropertySource) source );
 			preferences.setPropertyFromConverion( property.getKey(), value);
@@ -340,14 +359,14 @@ class Jp2pHandler extends DefaultHandler{
 	 * @param className
 	 * @return
 	 */
-	protected IJp2pContext<?> loadContext( String className ){
+	protected IJp2pContext loadContext( String className ){
 		if( Utils.isNull( className ))
 			return null;
 		Class<?> clss;
-		IJp2pContext<?> context = null;
+		IJp2pContext context = null;
 		try {
 			clss = this.getClass().getClassLoader().loadClass( className );
-			context = (IJp2pContext<?>) clss.newInstance();
+			context = (IJp2pContext) clss.newInstance();
 			System.out.println("URL found: " + ( clss != null ));
 		}
 		catch ( Exception e1) {
@@ -402,25 +421,25 @@ class Jp2pHandler extends DefaultHandler{
 			return false;
 		return Boolean.parseBoolean( attr );
 	}
-}
 
-class FactoryNode extends ComponentNode<IPropertySourceFactory<Object>>{
+	private class FactoryNode extends ComponentNode<IPropertySourceFactory<Object>>{
 
-	@SuppressWarnings("unchecked")
-	protected FactoryNode(IPropertySourceFactory<?> data, FactoryNode parent) {
-		super((IPropertySourceFactory<Object>) data, parent);
+		@SuppressWarnings("unchecked")
+		protected FactoryNode(IPropertySourceFactory<?> data, FactoryNode parent) {
+			super((IPropertySourceFactory<Object>) data, parent);
+		}
+
+		@SuppressWarnings("unchecked")
+		public FactoryNode(IPropertySourceFactory<?> data) {
+			super((IPropertySourceFactory<Object>) data);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public ComponentNode<?> addChild(Object data) {
+			FactoryNode child = new FactoryNode( (IPropertySourceFactory<Object>) data, this );
+			super.getChildrenAsCollection().add(child);
+			return child;
+		}	
 	}
-
-	@SuppressWarnings("unchecked")
-	public FactoryNode(IPropertySourceFactory<?> data) {
-		super((IPropertySourceFactory<Object>) data);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public ComponentNode<?> addChild(Object data) {
-		FactoryNode child = new FactoryNode( (IPropertySourceFactory<Object>) data, this );
-		super.getChildrenAsCollection().add(child);
-		return child;
-	}	
 }

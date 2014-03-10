@@ -18,14 +18,14 @@ import net.jp2p.container.properties.ManagedProperty;
 public class PersistedProperties extends AbstractPersistedProperty<String>{
 
 	private IScopeContext scope;
-	private IJp2pContext<?> context;
+	private IJp2pContext context;
 	
 	public PersistedProperties( IJp2pWritePropertySource<IJp2pProperties> source, IScopeContext scope ) {
 		super( source );
 		this.scope = scope;
 	}
 
-	public void setContext(IJp2pContext<?> context) {
+	public void setContext(IJp2pContext context) {
 		this.context = context;
 	}
 

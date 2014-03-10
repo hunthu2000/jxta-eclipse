@@ -26,7 +26,7 @@ import net.jp2p.jxta.discovery.DiscoveryPreferences;
 import net.jp2p.jxta.network.NetworkManagerPreferences;
 import net.jp2p.jxta.peergroup.PeerGroupPreferences;
 
-public class ChaupalContext implements IJp2pContext<Object> {
+public class ChaupalContext implements IJp2pContext {
 
 	@Override
 	public String getName() {

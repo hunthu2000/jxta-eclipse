@@ -2,7 +2,6 @@ package net.jp2p.jxta.factory;
 
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.factory.IPropertySourceFactory;
-import net.jp2p.container.partial.PartialFactory;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.utils.StringStyler;

@@ -27,7 +27,7 @@ public class PersistedProperties extends
 	}
 	
 	@Override
-	public void setContext(IJp2pContext<?> context) {
+	public void setContext(IJp2pContext context) {
 		// TODO Auto-generated method stub		
 	}
 

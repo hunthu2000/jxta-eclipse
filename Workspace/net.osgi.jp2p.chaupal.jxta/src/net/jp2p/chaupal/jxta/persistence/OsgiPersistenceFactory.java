@@ -25,7 +25,7 @@ public class OsgiPersistenceFactory extends SimplePersistenceFactory{
 	@Override
 	protected IJp2pComponent<IManagedPropertyListener<IJp2pProperties, Object>> onCreateComponent(
 			IJp2pPropertySource<IJp2pProperties> source) {
-		IJp2pContext<?> context = new ChaupalContext();
+		IJp2pContext context = new ChaupalContext();
 		IPersistedProperties<String> properties = new PersistedProperties( (IJp2pWritePropertySource<IJp2pProperties>) super.getPropertySource(), ConfigurationScope.INSTANCE );
 		PersistenceService<String,Object> service = new PersistenceService<String,Object>( (IJp2pWritePropertySource<IJp2pProperties>) source, properties, context );
 		service.start();

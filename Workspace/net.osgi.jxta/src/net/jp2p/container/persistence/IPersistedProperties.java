@@ -10,7 +10,7 @@ public interface IPersistedProperties<T extends Object> {
 	 * set the context for this property
 	 * @param context
 	 */
-	public void setContext( IJp2pContext<?> context );
+	public void setContext( IJp2pContext context );
 	
 	/**
 	 * Clear the property

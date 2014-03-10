@@ -20,7 +20,7 @@ public class PersistenceService<T,U extends Object> extends AbstractJp2pService<
 	
 	private Collection<IPropertyEventDispatcher> dispatchers;
 	
-	public PersistenceService(final IJp2pWritePropertySource<IJp2pProperties> source, IPersistedProperties<T> props, final IJp2pContext<?> context ){
+	public PersistenceService(final IJp2pWritePropertySource<IJp2pProperties> source, IPersistedProperties<T> props, final IJp2pContext context ){
 		super(source, null );
 		this.properties = props;
 		dispatchers = new ArrayList<IPropertyEventDispatcher>();

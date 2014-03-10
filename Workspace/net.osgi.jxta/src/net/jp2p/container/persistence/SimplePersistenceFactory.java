@@ -87,7 +87,7 @@ public class SimplePersistenceFactory extends AbstractComponentFactory<IManagedP
 	protected IJp2pComponent<IManagedPropertyListener<IJp2pProperties, Object>> onCreateComponent(
 			IJp2pPropertySource<IJp2pProperties> source) {
 		IPersistedProperties<String> properties = new PersistedProperties( (IJp2pWritePropertySource<IJp2pProperties>) source );
-		IJp2pContext<?> context = new Jp2pContext(); 
+		IJp2pContext context = new Jp2pContext(); 
 		PersistenceService<String,Object> service = new PersistenceService<String,Object>( (IJp2pWritePropertySource<IJp2pProperties>) source, properties, context );
 		while( stack.size() > 0)
 			service.addDispatcher( stack.pop() );

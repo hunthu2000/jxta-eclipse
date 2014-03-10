@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jp2p-container>
+  <context name="http" class="net.jp2p.endpoint.service.context.HttpContext"/>
+</jp2p-container>

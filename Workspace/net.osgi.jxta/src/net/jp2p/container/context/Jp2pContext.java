@@ -21,7 +21,7 @@ import net.jp2p.container.utils.StringStyler;
 import net.jp2p.container.utils.Utils;
 import net.jp2p.container.xml.IJp2pHandler;
 
-public class Jp2pContext implements IJp2pContext<Object> {
+public class Jp2pContext implements IJp2pContext {
 
 	public static enum Components implements IJp2pComponents{
 		JP2P_CONTAINER,

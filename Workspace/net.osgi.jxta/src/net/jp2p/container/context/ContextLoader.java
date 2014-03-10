@@ -7,17 +7,17 @@ import net.jp2p.container.utils.Utils;
 
 public class ContextLoader {
 
-	private Collection<IJp2pContext<?>> contexts;
+	private Collection<IJp2pContext> contexts;
 	
 	public ContextLoader() {
-		contexts = new ArrayList<IJp2pContext<?>>();
+		contexts = new ArrayList<IJp2pContext>();
 	}
 
-	public void addContext( IJp2pContext<?> context ){
+	public void addContext( IJp2pContext context ){
 		this.contexts.add( context );
 	}
 
-	public void removeContext( IJp2pContext<?> context ){
+	public void removeContext( IJp2pContext context ){
 		this.contexts.remove( context );
 	}
 
@@ -26,14 +26,14 @@ public class ContextLoader {
 	 * @param contextName
 	 * @return
 	 */
-	public IJp2pContext<?> getContext( String contextName ){
-		for( IJp2pContext<?> context: this.contexts ){
+	public IJp2pContext getContext( String contextName ){
+		for( IJp2pContext context: this.contexts ){
 			if( Utils.isNull( contextName ))
 				continue;
 			if( context.getName().toLowerCase().equals( contextName.toLowerCase() ))
 				return context;
 		}
-		return new Jp2pContext();
+		return null;
 	}
 
 	/**
@@ -41,11 +41,11 @@ public class ContextLoader {
 	 * @param contextName
 	 * @return
 	 */
-	public IJp2pContext<?> getContextForComponent( String contextName, String componentName ){
+	public IJp2pContext getContextForComponent( String contextName, String componentName ){
 		if( Utils.isNull( componentName ))
 			return new Jp2pContext();
 		
-		for( IJp2pContext<?> context: this.contexts ){
+		for( IJp2pContext context: this.contexts ){
 			if(context.isValidComponentName(contextName, componentName))
 				return context;
 		}

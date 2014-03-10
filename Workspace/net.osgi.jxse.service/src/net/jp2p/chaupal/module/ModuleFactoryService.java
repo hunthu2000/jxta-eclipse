@@ -1,7 +1,8 @@
-package net.jp2p.chaupal;
+package net.jp2p.chaupal.module;
 
 import java.util.Collection;
 
+import net.jp2p.chaupal.Activator;
 import net.jxse.module.IModuleFactory;
 import net.jxse.platform.IJxtaModuleLoader;
 import net.jxse.platform.IJxtaModuleFactory;

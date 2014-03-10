@@ -33,7 +33,7 @@ import net.jxta.impl.peergroup.CompatibilityUtils;
 import net.jxta.impl.peergroup.MultiLoader;
 import net.jxta.platform.IJxtaLoader;
 
-public class JxtaContext implements IJp2pContext<Object> {
+public class JxtaContext implements IJp2pContext {
 
     /**
      * Default compatibility equater instance.
