@@ -1,5 +1,6 @@
 package net.jp2p.chaupal.xml;
 
+import java.lang.reflect.Constructor;
 import java.text.MessageFormat;
 import java.util.Stack;
 import java.util.logging.Level;
@@ -16,6 +17,7 @@ import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.context.Jp2pContainerPreferences;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.context.IJp2pContext.ContextDirectives;
+import net.jp2p.container.factory.IComponentFactory;
 import net.jp2p.container.factory.IJp2pComponents;
 import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.partial.PartialPropertySource;
@@ -55,6 +57,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 class Jp2pHandler extends DefaultHandler{
 
+	public static final int MAX_COUNT = 200;
+	
 	public enum Groups{
 		PROPERTIES,
 		DIRECTIVES,
@@ -106,6 +110,7 @@ class Jp2pHandler extends DefaultHandler{
 		return root;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void startElement(String uri, String localName, String qName, 
 			Attributes attributes) throws SAXException {
@@ -134,14 +139,6 @@ class Jp2pHandler extends DefaultHandler{
 		if( factory == null ){
 			factory = this.getFactory( qName, attributes, node.getData().getPropertySource());
 		}
-		/*		if( factory == null ) || IJxtaComponents.JxtaComponents.isComponent( qName )){
-		current = IJxtaComponents.JxtaComponents.valueOf( StringStyler.styleToEnum( qName ));
-		String[] attrs = new String[1];
-		attrs[0] = attributes.getValue(AdvertisementDirectives.TYPE.toString().toLowerCase());
-		factory = JxtaFactoryUtils.getDefaultFactory(container, attrs, node.getData().getPropertySource(), current.toString());
-		node = this.processFactory(attributes, node, factory);
-		return;
-	}*/
 		if( factory != null ){
 			node = this.processFactory(attributes, node, factory);
 			this.stack.push( qName );
@@ -161,8 +158,8 @@ class Jp2pHandler extends DefaultHandler{
 			}
 			if( factoryClass != null  ){
 				try {
-					//Constructor<IComponentFactory<?>> constructor = (Constructor<IComponentFactory<?>>) factoryClass.getDeclaredConstructor(IJp2pPropertySource.class );
-					//factory = constructor.newInstance( node.getData().getPropertySource() );
+					Constructor<IComponentFactory<?>> constructor = (Constructor<IComponentFactory<?>>) factoryClass.getDeclaredConstructor(IJp2pPropertySource.class );
+					factory = constructor.newInstance( node.getData().getPropertySource() );
 				} catch (Exception e) {
 					e.printStackTrace();
 					return;
@@ -190,7 +187,7 @@ class Jp2pHandler extends DefaultHandler{
 		if( Utils.isNull( contextName )){
 			contextName = AbstractJp2pPropertySource.findFirstAncestorDirective( parentSource, Directives.CONTEXT );
 		}
-		IJp2pContext context = getContext( contextName );;
+		IJp2pContext context = getContext( contexts, contextName );;
 		if( context == null )
 			context = this.contexts.getContextForComponent( contextName, componentName);
 		return context.getFactory( this.container, attributes, (IJp2pPropertySource<IJp2pProperties>) parentSource, componentName);
@@ -223,21 +220,6 @@ class Jp2pHandler extends DefaultHandler{
 			return new FactoryNode( factory );
 		else
 			return (FactoryNode) node.addChild(factory);	
-	}
-
-	/**
-	 * Get the context, or try to load it if none was found
-	 * @param source
-	 * @return
-	 */
-	protected IJp2pContext getContext( String contextName ){
-		if( Utils.isNull( contextName ))
-			return null;
-		IJp2pContext context = this.contexts.getContext(contextName);
-		if( context != null )
-			return context;
-		ContextService cs = Activator.getContextService();
-		return cs.getContext(contextName);
 	}
 	
 	/**
@@ -422,6 +404,42 @@ class Jp2pHandler extends DefaultHandler{
 		return Boolean.parseBoolean( attr );
 	}
 
+	/**
+	 * Get the context, or try to load it if none was found
+	 * @param source
+	 * @return
+	 */
+	private static IJp2pContext getContext( ContextLoader contexts, String contextName ){
+		if( Utils.isNull( contextName ))
+			return null;
+		IJp2pContext context = contexts.getContext(contextName);
+		if( context != null )
+			return context;
+		ContextService cs = Activator.getContextService();
+		int i = MAX_COUNT;
+		while(( context == null ) && ( i > 0 )){
+			context = cs.getContext(contextName);
+			if( context != null )
+				break;
+			try{
+				Thread.sleep( 200 );
+			}
+			catch( InterruptedException ex ){
+				
+			}
+			i--;
+		}
+		if( context == null )
+			return null;
+		contexts.addContext(context);
+		return context;
+	}
+
+	/**
+	 * The factory node is used to create a treemap of the property sources 
+	 * @author Kees
+	 *
+	 */
 	private class FactoryNode extends ComponentNode<IPropertySourceFactory<Object>>{
 
 		@SuppressWarnings("unchecked")

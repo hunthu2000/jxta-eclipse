@@ -12,13 +12,17 @@ import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.IPropertyConvertor;
 import net.jp2p.container.utils.Utils;
 import net.jp2p.container.xml.IJp2pHandler;
+import net.jp2p.endpoint.servlethttp.Activator;
+import net.jp2p.endpoint.servlethttp.osgi.ModuleFactoryRegistrator;
 import net.jp2p.jxta.network.configurator.partial.PartialNetworkConfigFactory;
 
 public class HttpContext implements IJp2pContext {
 
-	public static final String S_HTTP_CONTEXT = "HttpContext";
+	public static final String S_HTTP_CONTEXT = "http";
 	public static final String S_HTTP_SERVICE = "HttpService";
-	
+
+	private ModuleFactoryRegistrator mfr;
+
 	public HttpContext() {
 	}
 
@@ -27,6 +31,26 @@ public class HttpContext implements IJp2pContext {
 		return S_HTTP_CONTEXT;
 	}
 
+	public void activate()
+	{
+		mfr = new ModuleFactoryRegistrator();
+		try {
+			mfr.start( Activator.getBundleContext());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+	}
+	
+	public void deactivate(){
+		try {
+			mfr.stop( Activator.getBundleContext());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		mfr = null;
+
+	}
+	
 	/**
 	 * Returns true if the given component name is valid for this context
 	 * @param componentName

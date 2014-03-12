@@ -65,15 +65,6 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pContainer>{
 	@Override
 	public Jp2pContainer build() {
 		
-		//Object obj;
-		//try {
-		//	obj = this.getClass().getClassLoader().loadClass("net.osgi.jp2p.chaupal.jxta.factories.TestFactory");
-		//	System.out.println("URL found: " + ( obj != null ));
-		//} catch (ClassNotFoundException e1) {
-		//	// TODO Auto-generated catch block
-		//	e1.printStackTrace();
-		//}
-		
 		//First register all the discovered builders
 		ContainerBuilder containerBuilder = new ContainerBuilder();
 		this.contexts = new ContextLoader();

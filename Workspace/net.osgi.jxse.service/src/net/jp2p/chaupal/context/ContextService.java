@@ -5,8 +5,11 @@ import java.util.Collection;
 
 import net.jp2p.chaupal.Activator;
 import net.jp2p.container.context.IJp2pContext;
+import net.jxse.platform.IJxtaModuleFactory;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.log.LogService;
@@ -30,10 +33,11 @@ import org.osgi.service.log.LogService;
 public class ContextService {
 
 	private static final String S_ERR_NO_CONTEXT_PROVIDED = "No context is created. Please implement one";
-    private String filter = "(objectclass=" + IJp2pContext.class.getName() + ")";
+    private String filterBase = "(jp2p.context="; //in component.xml file you will use target="(jp2p.context=http)"
 	
-	BundleContext  bc;
+	private BundleContext  bc;
 	private Collection<IJp2pContext> container;
+	
 
 	public ContextService(BundleContext bc) {
 		this.bc = bc;
@@ -43,11 +47,40 @@ public class ContextService {
 	/**
 	 * Open the service
 	 */
-	protected IJp2pContext open( String contextName ) {
+	protected IJp2pContext open( final String contextName ) {
+		String filter = filterBase + contextName + ")";
+		ServiceListener sl = new ServiceListener() {
+			@SuppressWarnings("unchecked")
+			public void serviceChanged(ServiceEvent ev) {
+				ServiceReference<IJxtaModuleFactory> sr = (ServiceReference<IJxtaModuleFactory>) ev.getServiceReference();
+				switch(ev.getType()) {
+				case ServiceEvent.REGISTERED:
+					try {
+						register(sr, contextName);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					break;
+				case ServiceEvent.UNREGISTERING:
+					try {
+						unregister(sr);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					break;
+				default:
+					break;
+				}
+			}
+		};
 		try {
-			ServiceReference<?>[] srl = bc.getServiceReferences( contextName, filter);
+			bc.addServiceListener(sl, filter);
+			ServiceReference<?>[] srl = bc.getServiceReferences( IJp2pContext.class.getName(), filter);
+			if( srl == null ){
+				return null;
+			}
 			for(ServiceReference<?> sr: srl ) {
-				return register( sr );
+				return register( sr, contextName );
 			}
 			return null;
 		} catch (InvalidSyntaxException e) { 
@@ -56,6 +89,11 @@ public class ContextService {
 		}
 	}
 
+	/**
+	 * Get the context
+	 * @param contextName
+	 * @return
+	 */
 	public IJp2pContext getContext( String contextName ){
 		for( IJp2pContext context: container ){
 			if( context.getClass().getCanonicalName().equals( contextName ))
@@ -63,15 +101,18 @@ public class ContextService {
 		}
 		return open( contextName );
 	}
+	
 	/**
 	 * Register the service
 	 * @param sr
 	 */
-	private IJp2pContext register(ServiceReference<?> sr) {
+	private IJp2pContext register(ServiceReference<?> sr, String contextName ) {
 		try {
 			IJp2pContext context = (IJp2pContext) bc.getService( sr );
 			if( context == null )
 				throw new NullPointerException( S_ERR_NO_CONTEXT_PROVIDED);
+			if( !contextName.equals( context.getName() ))
+				return null;
 			container.add( context );
 			Activator.getLog().log( LogService.LOG_INFO,"Context " + context.getName() + " registered." );
 			return context;

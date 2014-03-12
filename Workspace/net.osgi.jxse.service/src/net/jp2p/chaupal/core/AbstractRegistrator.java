@@ -19,13 +19,23 @@ public abstract class AbstractRegistrator<T extends Object> implements BundleAct
 	}
 
 	protected abstract T createRegisteredObject();
-	
+
+	protected abstract void fillDictionary( Dictionary<String,Object> dictionary );
+
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	protected T getRegistered() {
+		return registered;
+	}
+
 	@Override
 	public void start(BundleContext context) throws Exception {
 		registered = this.createRegisteredObject();
-		Dictionary<String,String> dict = new Hashtable<String, String>();
-		dict.put( identifier, registered.getClass().getCanonicalName() );
-		context.registerService( registered.getClass().getCanonicalName(), registered, dict );
+		Dictionary<String,Object> dict = new Hashtable<String, Object>();
+		this.fillDictionary( dict );
+		context.registerService( identifier, registered, dict );
 	}
 
 	@SuppressWarnings("unchecked")

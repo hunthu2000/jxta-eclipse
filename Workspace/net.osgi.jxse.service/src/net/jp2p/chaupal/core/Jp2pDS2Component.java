@@ -34,7 +34,6 @@ public class Jp2pDS2Component extends AbstractAttendeeProviderComponent {
 	protected Jp2pDS2Component( String bundle_id, String introduction, String token) {
 		this.token = token;
 		this.introduction = introduction;
-		//this.setActivator( bundle_id );
 	}
 
 	protected IJp2pContainer<?> getContainer() {
@@ -44,12 +43,7 @@ public class Jp2pDS2Component extends AbstractAttendeeProviderComponent {
 	public final void setActivator( String bundle_id ) {
 		try{
 			XMLServiceBuilder builder = new XMLServiceBuilder( bundle_id, this.getClass() );
-			ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
-			//if( observer != null )
-			//	dispatcher.addServiceChangeListener(observer);
 			IJp2pContainer<?> container = builder.build();
-			//if( observer != null )
-			//	dispatcher.removeServiceChangeListener(observer);
 			String pass = (String) container.getPropertySource().getProperty( ContainerProperties.PASS_1);
 			if( !Utils.isNull( pass ))
 				this.introduction = pass;

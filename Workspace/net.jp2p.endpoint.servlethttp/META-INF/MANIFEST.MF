@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jxta Http Servlet Module
-Bundle-SymbolicName: net.jxta.endpoint.servlethttp
+Bundle-SymbolicName: net.jxta.endpoint.servlethttp;singleton:=true
 Bundle-Version: 1.0.0.v20140203
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: javax.servlet;version="2.6.0",
@@ -38,7 +38,7 @@ Import-Package: javax.servlet;version="2.6.0",
  net.jxta.protocol,
  org.eclipselabs.osgi.ds.broker.service,
  org.osgi.framework
-Service-Component: OSGI-INF/attendees.xml
+Service-Component: OSGI-INF/attendees.xml, OSGI-INF/context.xml
 Bundle-Vendor: Condast
 Bundle-Activator: net.jp2p.endpoint.servlethttp.Activator
 Bundle-ActivationPolicy: lazy
