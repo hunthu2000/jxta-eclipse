@@ -1,25 +1,26 @@
 package net.jp2p.endpoint.servlethttp;
 
+import net.jp2p.endpoint.servlethttp.osgi.ModuleFactoryRegistrator;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 
-	private static BundleContext bcontext;
+	private static ModuleFactoryRegistrator mfr;
 	
-
 	@Override
 	public void start(BundleContext context) throws Exception {
-		bcontext = context; 
+		mfr = new ModuleFactoryRegistrator(context);
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		bcontext = null;
+		mfr.unregister();
+		mfr = null;		
 	}
 
-	public static BundleContext getBundleContext(){
-		return bcontext;
+	public static ModuleFactoryRegistrator getModuleFactoryRegistrator(){
+		return mfr;
 	}
 }

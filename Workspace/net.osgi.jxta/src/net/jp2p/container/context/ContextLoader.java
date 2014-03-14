@@ -7,12 +7,25 @@ import net.jp2p.container.utils.Utils;
 
 public class ContextLoader {
 
+	private static final int DEFAULT_TIME = 200;
+	private static final int DEFAULT_COUNT = 50;
+
 	private Collection<IJp2pContext> contexts;
 	
-	public ContextLoader() {
+	private static ContextLoader contextLoader = new ContextLoader();
+	
+	private ContextLoader() {
 		contexts = new ArrayList<IJp2pContext>();
 	}
 
+	public static ContextLoader getInstance(){
+		return contextLoader;
+	}
+
+	public void clear(){
+		contexts.clear();
+	}
+	
 	public void addContext( IJp2pContext context ){
 		this.contexts.add( context );
 	}
@@ -50,5 +63,61 @@ public class ContextLoader {
 				return context;
 		}
 		return new Jp2pContext();
+	}
+
+	/**
+	 * Get the context for the given componentname
+	 * @param contextName
+	 * @return
+	 */
+	public boolean isLoadedComponent( String contextName, String componentName ){
+		if( Utils.isNull( componentName ))
+			return false;
+		
+		for( IJp2pContext context: this.contexts ){
+			if(context.isValidComponentName(contextName, componentName))
+				return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Load a context from the given directives
+	 * @param name
+	 * @param className
+	 * @return
+	*/
+	public static IJp2pContext loadContext( Object source, String className ){
+		if( Utils.isNull( className ))
+			return null;
+		Class<?> clss;
+		IJp2pContext context = null;
+		try {
+			clss = source.getClass().getClassLoader().loadClass( className );
+			context = (IJp2pContext) clss.newInstance();
+			System.out.println("URL found: " + ( clss != null ));
+		}
+		catch ( Exception e1) {
+			e1.printStackTrace();
+		}
+		return context;
+	}
+	
+	/**
+	 * Wait until the service is available
+	 * @param contextName
+	 * @param componentName
+	 */
+	public static IJp2pContext waitForService( String contextName, String componentName){
+		int counter = DEFAULT_COUNT;
+		while(( counter > 0 ) && !contextLoader.isLoadedComponent(contextName, componentName)){
+			try{
+				Thread.sleep( DEFAULT_TIME);
+			}
+			catch( InterruptedException ex ){
+				
+			}
+		}
+		return contextLoader.getContextForComponent(contextName, componentName);
 	}
 }

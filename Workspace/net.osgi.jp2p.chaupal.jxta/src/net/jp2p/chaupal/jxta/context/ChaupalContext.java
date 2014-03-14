@@ -34,6 +34,18 @@ public class ChaupalContext implements IJp2pContext {
 	}
 
 	/**
+	 * Get the supported services
+	 */
+	@Override
+	public String[] getSupportedServices() {
+		ChaupalComponents[] components = ChaupalComponents.values();
+		String[] names = new String[ components.length ];
+		for( int i=0; i<components.length; i++ )
+			names[i] = components[i].toString();
+		return names;
+	}
+
+	/**
 	 * Returns true if the given component name is valid for this context
 	 * @param componentName
 	 * @return

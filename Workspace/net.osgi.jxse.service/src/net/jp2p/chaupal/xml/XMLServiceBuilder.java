@@ -47,27 +47,12 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pContainer>{
 		this.listeners = new ArrayList<ICompositeBuilderListener<?>>();
 	}
 	
-	/**
-	 * Allow additional builders to extend the primary builder, by looking at resources with the
-	 * similar name and location, for instance provided by fragments
-	 * @param clss
-	 * @param containerBuilder
-	 * @throws IOException
-	 */
-	private void extendBuilders( Class<?> clss, IContainerBuilder containerBuilder ) throws IOException{
-		Enumeration<URL> enm = clss.getClassLoader().getResources( IFactoryBuilder.S_DEFAULT_LOCATION );
-		while( enm.hasMoreElements()){
-			URL url = enm.nextElement();
-			builders.add( new XMLFactoryBuilder( plugin_id, url, clss, containerBuilder, contexts ));
-		}
-	}
-	
 	@Override
 	public Jp2pContainer build() {
 		
 		//First register all the discovered builders
 		ContainerBuilder containerBuilder = new ContainerBuilder();
-		this.contexts = new ContextLoader();
+		this.contexts = ContextLoader.getInstance();
 		contexts.addContext( new Jp2pContext());
 
 		try {
@@ -93,6 +78,21 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pContainer>{
 		return factory.createComponent();
 	}
 
+	/**
+	 * Allow additional builders to extend the primary builder, by looking at resources with the
+	 * similar name and location, for instance provided by fragments
+	 * @param clss
+	 * @param containerBuilder
+	 * @throws IOException
+	 */
+	private void extendBuilders( Class<?> clss, IContainerBuilder containerBuilder ) throws IOException{
+		Enumeration<URL> enm = clss.getClassLoader().getResources( IFactoryBuilder.S_DEFAULT_LOCATION );
+		while( enm.hasMoreElements()){
+			URL url = enm.nextElement();
+			builders.add( new XMLFactoryBuilder( plugin_id, url, clss, containerBuilder, contexts ));
+		}
+	}
+	
 
 	@Override
 	public void addListener(ICompositeBuilderListener<?> listener) {

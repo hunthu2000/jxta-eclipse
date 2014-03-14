@@ -1,24 +1,24 @@
-package net.jp2p.chaupal.core;
+package net.jp2p.chaupal.context;
 
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-public abstract class AbstractRegistrator<T extends Object> implements BundleActivator {
+public abstract class AbstractRegistrator<T extends Object>{
 
 	private T registered;
+	private BundleContext context;
+	
 	private String identifier;
 	
-	protected AbstractRegistrator( String identifier ) {
+	protected AbstractRegistrator( String identifier, BundleContext context ) {
 		super();
+		this.context = context;
 		this.identifier = identifier;
 	}
-
-	protected abstract T createRegisteredObject();
 
 	protected abstract void fillDictionary( Dictionary<String,Object> dictionary );
 
@@ -30,17 +30,18 @@ public abstract class AbstractRegistrator<T extends Object> implements BundleAct
 		return registered;
 	}
 
-	@Override
-	public void start(BundleContext context) throws Exception {
-		registered = this.createRegisteredObject();
+	/**
+	 * Register the object
+	 */
+	public void register( T registered ){
+		this.registered = registered;
 		Dictionary<String,Object> dict = new Hashtable<String, Object>();
 		this.fillDictionary( dict );
 		context.registerService( identifier, registered, dict );
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
-	public void stop(BundleContext context) throws Exception {
+	public void unregister() throws Exception {
 		String filter = "(" + identifier + "=" + registered.getClass().getName() + ")";
 		Collection<?> references = context.getServiceReferences( registered.getClass(), filter );
 		for( Object obj: references ){

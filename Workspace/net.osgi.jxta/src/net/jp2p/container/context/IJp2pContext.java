@@ -44,6 +44,12 @@ public interface IJp2pContext {
 	public String getName();
 	
 	/**
+	 * Get the names of the services that are available
+	 * @return
+	 */
+	public String[] getSupportedServices();
+	
+	/**
 	 * Returns true if the given component name is valid for this context
 	 * @param componentName
 	 * @return

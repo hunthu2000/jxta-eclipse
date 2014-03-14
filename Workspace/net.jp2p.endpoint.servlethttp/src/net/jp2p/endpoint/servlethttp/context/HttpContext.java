@@ -12,16 +12,11 @@ import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.IPropertyConvertor;
 import net.jp2p.container.utils.Utils;
 import net.jp2p.container.xml.IJp2pHandler;
-import net.jp2p.endpoint.servlethttp.Activator;
-import net.jp2p.endpoint.servlethttp.osgi.ModuleFactoryRegistrator;
-import net.jp2p.jxta.network.configurator.partial.PartialNetworkConfigFactory;
+import net.jp2p.endpoint.servlethttp.factory.HttpServiceFactory;
 
 public class HttpContext implements IJp2pContext {
 
 	public static final String S_HTTP_CONTEXT = "http";
-	public static final String S_HTTP_SERVICE = "HttpService";
-
-	private ModuleFactoryRegistrator mfr;
 
 	public HttpContext() {
 	}
@@ -31,26 +26,13 @@ public class HttpContext implements IJp2pContext {
 		return S_HTTP_CONTEXT;
 	}
 
-	public void activate()
-	{
-		mfr = new ModuleFactoryRegistrator();
-		try {
-			mfr.start( Activator.getBundleContext());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}		
+	@Override
+	public String[] getSupportedServices() {
+		String[] names = new String[1];
+		names[0] = HttpServiceFactory.S_HTTP_SERVICE;
+		return names;
 	}
-	
-	public void deactivate(){
-		try {
-			mfr.stop( Activator.getBundleContext());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		mfr = null;
 
-	}
-	
 	/**
 	 * Returns true if the given component name is valid for this context
 	 * @param componentName
@@ -59,7 +41,11 @@ public class HttpContext implements IJp2pContext {
 	public boolean isValidComponentName( String contextName, String componentName ){
 		if( !Utils.isNull( contextName ) && !Jp2pContext.isContextNameEqual( S_HTTP_CONTEXT, contextName ))
 			return false;
-		return S_HTTP_SERVICE.equals( componentName );
+		for( String name: getSupportedServices() ){
+			if( name.equals( componentName ))
+				return true;
+		}
+		return false;
 	}
 
 	/**
@@ -71,7 +57,8 @@ public class HttpContext implements IJp2pContext {
 	public IPropertySourceFactory<?> getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
 		if( !isValidComponentName( S_HTTP_CONTEXT, componentName))
 			return null;
-		IPropertySourceFactory<?> factory = new PartialNetworkConfigFactory<Object>( builder, componentName, parentSource );
+		
+		IPropertySourceFactory<?> factory = new HttpServiceFactory( builder, parentSource );
 		return factory;
 	}
 
@@ -95,5 +82,4 @@ public class HttpContext implements IJp2pContext {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

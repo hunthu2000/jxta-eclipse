@@ -6,8 +6,6 @@ import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.jp2p.chaupal.Activator;
-import net.jp2p.chaupal.context.ContextService;
 import net.jp2p.container.ContainerFactory;
 import net.jp2p.container.Jp2pContainerPropertySource;
 import net.jp2p.container.builder.ComponentNode;
@@ -110,12 +108,17 @@ class Jp2pHandler extends DefaultHandler{
 		return root;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public void startElement(String uri, String localName, String qName, 
 			Attributes attributes) throws SAXException {
 		IPropertySourceFactory<?> factory = null;
 		IJp2pComponents current;
+		//First heck for groups
+		if( Groups.isGroup( qName )){
+			stack.push( qName );
+			return;
+		}
+		//The name is not a group. try the default JP2P components
 		if( Jp2pContext.Components.isComponent( qName )){
 			current = Jp2pContext.Components.valueOf( StringStyler.styleToEnum( qName ));
 			switch(( Jp2pContext.Components )current ){
@@ -127,7 +130,7 @@ class Jp2pHandler extends DefaultHandler{
 				break;
 			case CONTEXT:
 				String className = attributes.getValue( ContextDirectives.CLASS.toString().toLowerCase() );
-				IJp2pContext context = this.loadContext( className );
+				IJp2pContext context = ContextLoader.loadContext( this, className );
 				if( context != null )
 					contexts.addContext( context );
 				return;
@@ -136,40 +139,17 @@ class Jp2pHandler extends DefaultHandler{
 				break;
 			}
 		}
+		//Apparently the factory is avialable elsewhere
 		if( factory == null ){
-			factory = this.getFactory( qName, attributes, node.getData().getPropertySource());
-		}
-		if( factory != null ){
-			node = this.processFactory(attributes, node, factory);
-			this.stack.push( qName );
-			return;
-		}
-		if( attributes.getValue(Directives.CLASS.toString().toLowerCase()) != null ){
-			String className = attributes.getValue(Directives.CLASS.toString().toLowerCase());
-			Class<?> factoryClass = null;
-			try{
-				factoryClass = clss.getClassLoader().loadClass( className );
+			factory = this.getFactoryFromClass(qName, attributes, node.getData().getPropertySource());
+			if( factory == null ){
+				factory = this.getFactory( qName, attributes, node.getData().getPropertySource());
 			}
-			catch( ClassNotFoundException ex1 ){
-				try{
-					factoryClass = XMLFactoryBuilder.class.getClassLoader().loadClass( className );
-				}
-				catch( ClassNotFoundException ex2 ){ /* do nothing */ }
+			if( factory != null ){
+				node = this.processFactory(attributes, node, factory);
+				this.stack.push( qName );
+				return;
 			}
-			if( factoryClass != null  ){
-				try {
-					Constructor<IComponentFactory<?>> constructor = (Constructor<IComponentFactory<?>>) factoryClass.getDeclaredConstructor(IJp2pPropertySource.class );
-					factory = constructor.newInstance( node.getData().getPropertySource() );
-				} catch (Exception e) {
-					e.printStackTrace();
-					return;
-				}
-			}
-			return;
-		}
-		if( Groups.isGroup( qName )){
-			stack.push( qName );
-			return;
 		}else{
 			try{
 				this.property = this.createProperty(qName, attributes );
@@ -187,10 +167,43 @@ class Jp2pHandler extends DefaultHandler{
 		if( Utils.isNull( contextName )){
 			contextName = AbstractJp2pPropertySource.findFirstAncestorDirective( parentSource, Directives.CONTEXT );
 		}
-		IJp2pContext context = getContext( contexts, contextName );;
+		IJp2pContext context = getContext( contexts, contextName );
 		if( context == null )
 			context = this.contexts.getContextForComponent( contextName, componentName);
 		return context.getFactory( this.container, attributes, (IJp2pPropertySource<IJp2pProperties>) parentSource, componentName);
+	}
+
+	/**
+	 * Create a factory from a class definition
+	 * @param componentName
+	 * @param attributes
+	 * @param parentSource
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	protected IPropertySourceFactory<?> getFactoryFromClass( String componentName, Attributes attributes, IJp2pPropertySource<?> parentSource ){
+		if( attributes.getValue(Directives.CLASS.toString().toLowerCase()) == null )
+			return null;
+		String className = attributes.getValue(Directives.CLASS.toString().toLowerCase());
+		Class<?> factoryClass = null;
+		try{
+			factoryClass = clss.getClassLoader().loadClass( className );
+		}
+		catch( ClassNotFoundException ex1 ){
+			try{
+				factoryClass = XMLFactoryBuilder.class.getClassLoader().loadClass( className );
+			}
+			catch( ClassNotFoundException ex2 ){ /* do nothing */ }
+		}
+		if( factoryClass != null  ){
+			try {
+				Constructor<IComponentFactory<?>> constructor = (Constructor<IComponentFactory<?>>) factoryClass.getDeclaredConstructor(IJp2pPropertySource.class );
+				return constructor.newInstance( node.getData().getPropertySource() );
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -335,33 +348,11 @@ class Jp2pHandler extends DefaultHandler{
 		this.property.setValue(value);
 	}
 
-	/**
-	 * Load a context from the given directives
-	 * @param name
-	 * @param className
-	 * @return
-	 */
-	protected IJp2pContext loadContext( String className ){
-		if( Utils.isNull( className ))
-			return null;
-		Class<?> clss;
-		IJp2pContext context = null;
-		try {
-			clss = this.getClass().getClassLoader().loadClass( className );
-			context = (IJp2pContext) clss.newInstance();
-			System.out.println("URL found: " + ( clss != null ));
-		}
-		catch ( Exception e1) {
-			e1.printStackTrace();
-		}
-		return context;
-	}
 
 	@Override
 	public void error(SAXParseException e) throws SAXException {
 		print(e);
 		super.error(e);
-		//throw( e );
 	}
 
 	@Override
@@ -412,27 +403,7 @@ class Jp2pHandler extends DefaultHandler{
 	private static IJp2pContext getContext( ContextLoader contexts, String contextName ){
 		if( Utils.isNull( contextName ))
 			return null;
-		IJp2pContext context = contexts.getContext(contextName);
-		if( context != null )
-			return context;
-		ContextService cs = Activator.getContextService();
-		int i = MAX_COUNT;
-		while(( context == null ) && ( i > 0 )){
-			context = cs.getContext(contextName);
-			if( context != null )
-				break;
-			try{
-				Thread.sleep( 200 );
-			}
-			catch( InterruptedException ex ){
-				
-			}
-			i--;
-		}
-		if( context == null )
-			return null;
-		contexts.addContext(context);
-		return context;
+		return contexts.getContext(contextName);
 	}
 
 	/**
