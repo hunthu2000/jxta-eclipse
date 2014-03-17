@@ -29,7 +29,7 @@ import net.jp2p.container.utils.StringStyler;
 import net.jp2p.container.utils.Utils;
 
 public class AbstractJp2pContainer<T extends Object> extends AbstractActivator 
-implements	IJp2pContainer<T>{
+implements	IJp2pContainer{
 
 	public static enum ServiceChange{
 		CHILD_ADDED,

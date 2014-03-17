@@ -13,7 +13,6 @@ package net.jp2p.chaupal.activator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.log.Jp2pLevel;
 import net.jxse.platform.JxtaModuleContainer;
 import net.jxta.impl.peergroup.MultiLoader;
@@ -30,17 +29,17 @@ public abstract class AbstractJp2pBundleActivator<T extends Object> implements B
 	private static final String S_MSG_LOG = "Logging at JXSE LEVEL!!!!";
 	
 	private Jp2pActivator<T> jp2pActivator;
+
 	private ServiceTracker<BundleContext,LogService> logServiceTracker;
 	private LogService logService;
-		
-	/**
-	 * Create the context
-	 * @return
-	 */
-	protected abstract IJp2pContainer<T> createContainer();
 	
 	protected MultiLoader loader;
 	
+	/**
+	 * Create the container;
+	 */
+	protected abstract void createContainer();
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
@@ -67,11 +66,18 @@ public abstract class AbstractJp2pBundleActivator<T extends Object> implements B
 		if(logService != null)
 			logService.log(LogService.LOG_INFO, "Logging service started");
 
-		jp2pActivator = new Jp2pActivator<T>();
-		jp2pActivator.setJxtaContext( this.createContainer() );
+		jp2pActivator = new Jp2pActivator<T>( this );
 		jp2pActivator.start();
 	}
 
+	/**
+	 * Get the log service
+	 * @return
+	 */
+	public LogService getLog(){
+		return logService;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
@@ -88,9 +94,5 @@ public abstract class AbstractJp2pBundleActivator<T extends Object> implements B
 		// close the service tracker
 		logServiceTracker.close();
 		logServiceTracker = null;
-	}
-
-	public IJp2pContainer<?> getServiceContainer(){
-		return jp2pActivator.getServiceContext();
 	}
 }

@@ -211,7 +211,7 @@ public class PeerGroupFactory extends AbstractPeerGroupDependencyFactory<PeerGro
 	 * @param container
 	 * @return
 	 */
-	public static PeerGroupNode createPeerGroupTree( IJp2pContainer<?> container){
+	public static PeerGroupNode createPeerGroupTree( IJp2pContainer container){
 		Stack<PeerGroupNode> stack = new Stack<PeerGroupNode>();
 		findPeerGroups(container, stack);
 		for( PeerGroupNode node: stack ){

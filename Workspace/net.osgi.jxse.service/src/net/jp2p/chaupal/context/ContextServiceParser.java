@@ -24,7 +24,7 @@ import net.jp2p.container.context.ContextLoader;
 import net.jp2p.container.utils.IOUtils;
 import net.jp2p.container.utils.Utils;
 
-public class ContextServiceParser {
+public class ContextServiceParser{
 
 	protected static final String JAXP_SCHEMA_SOURCE =
 		    "http://java.sun.com/xml/jaxp/properties/schemaSource";
@@ -38,15 +38,14 @@ public class ContextServiceParser {
 	static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 	static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";	
 		
-	private boolean completed, failed;
+	private boolean failed;
 	private URL url;
-	private Collection<ServiceInfo> services;
+	private ContextLoader contexts;
 	
 	private Logger logger = Logger.getLogger( ContextServiceParser.class.getName() );
 	
-	public ContextServiceParser( Class<?> clss, ContextLoader contexts ) {
-		this( clss.getResource( IFactoryBuilder.S_DEFAULT_LOCATION ), clss, contexts );
-		services = new ArrayList<ServiceInfo>();
+	public ContextServiceParser( ContextLoader contexts, Class<?> clss ) {
+		this( contexts, clss.getResource( IFactoryBuilder.S_DEFAULT_LOCATION ), clss );
 	}
 
 	/**
@@ -56,10 +55,10 @@ public class ContextServiceParser {
 	 * @param location
 	 * @param builder
 	 */
-	public ContextServiceParser( URL url, Class<?> clss, ContextLoader contexts ) {
+	public ContextServiceParser(  ContextLoader contexts, URL url, Class<?> clss ) {
 		this.url = url;
-		this.completed = false;
 		this.failed = false;
+		this.contexts = contexts;
 	}
 
 	/**
@@ -81,7 +80,7 @@ public class ContextServiceParser {
 	/* (non-Javadoc)
 	 * @see net.osgi.jp2p.chaupal.xml.IFactoryBuilder#build()
 	 */
-	public void parse() {
+	public Collection<ServiceInfo> parse() {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		URL schema_in = ContextServiceParser.class.getResource( IFactoryBuilder.S_SCHEMA_LOCATION); 
 		if( schema_in == null )
@@ -93,11 +92,12 @@ public class ContextServiceParser {
 		// note that if your XML already declares the XSD to which it has to conform, then there's no need to create a validator from a Schema object
 		Source schemaFile = new StreamSource( ServiceHandler.class.getResourceAsStream( IFactoryBuilder.S_SCHEMA_LOCATION ));
 		InputStream in;
+		Collection<ServiceInfo> services = new ArrayList<ServiceInfo>();
 		try {
 			in = url.openStream();
 		} catch (IOException e1) {
 			e1.printStackTrace();
-			return;
+			return null;
 		}
 		
 		//First parse the XML file
@@ -112,8 +112,10 @@ public class ContextServiceParser {
 			
 			//saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA); 
 			//saxParser.setProperty(JAXP_SCHEMA_SOURCE, new File(JP2P_XSD_SCHEMA)); 
-			ServiceHandler handler = new ServiceHandler( services );
+			ServiceHandler handler = new ServiceHandler( contexts );
 			saxParser.parse( in, handler);
+			services = handler.getServices();
+			return services;
 		} catch( SAXNotRecognizedException e ){
 			failed = true;
 			e.printStackTrace();			
@@ -130,20 +132,7 @@ public class ContextServiceParser {
 		finally{
 			IOUtils.closeInputStream(in);
 		}
-		
-		this.completed = true;
-	}
-
-	public boolean complete() {
-		this.completed = true;
-		return completed;
-	}
-
-	/* (non-Javadoc)
-	 * @see net.osgi.jp2p.chaupal.xml.IFactoryBuilder#isCompleted()
-	 */
-	public boolean isCompleted() {
-		return completed;
+		return null;
 	}
 
 	public boolean hasFailed() {

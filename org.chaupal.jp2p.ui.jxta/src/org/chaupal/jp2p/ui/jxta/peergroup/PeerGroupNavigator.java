@@ -90,13 +90,12 @@ public class PeerGroupNavigator extends CommonNavigator{
 	/**
 	 * Shows the given selection in this view.
 	 */
-	@SuppressWarnings("unchecked")
 	void showSelection(IWorkbenchPart sourcepart, ISelection selection) {
 		IStructuredSelection ss = (IStructuredSelection) selection;
 		Object element = ss.getFirstElement();
-		if(!( element instanceof IJp2pContainer<?>))
+		if(!( element instanceof IJp2pContainer))
 			return;
-		IJp2pContainer<?> container = (net.jp2p.container.IJp2pContainer<Object>)element;
+		IJp2pContainer container = (IJp2pContainer)element;
 		SimpleNode<PeerGroup, PeerGroup> node = PeerGroupFactory.createPeerGroupTree( container );
 		if( node != null ){
 			viewer.setInput( node );

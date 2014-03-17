@@ -10,59 +10,43 @@
  *******************************************************************************/
 package net.jp2p.chaupal.activator;
 
-import net.jp2p.container.IJp2pContainer;
-import net.jp2p.container.activator.ISimpleActivator;
-import net.jp2p.container.activator.Jp2pContainerStarter;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class Jp2pActivator<T extends Object> implements ISimpleActivator {
+public class Jp2pActivator<T extends Object> implements Runnable {
 
-	private IJp2pContainer<T> container;
-	private Jp2pContainerStarter<IJp2pContainer<T>> starter;
+	private AbstractJp2pBundleActivator<T> activator;
 	
-	private boolean active;
+	private ExecutorService executor;
 		
-	public Jp2pActivator() {
-		active = false;
-	}
-
-	public void setJxtaContext( IJp2pContainer<T> jxtaContext) {
-		this.container = jxtaContext;
+	public Jp2pActivator( AbstractJp2pBundleActivator<T> activator ) {
+		this.activator = activator;
+		executor = Executors.newSingleThreadExecutor();
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
-	@Override
-	public boolean start(){
-		try{
-			starter = new Jp2pContainerStarter<IJp2pContainer<T>>( container );
-			starter.createContext();
-			this.active = true;
-		}
-		catch( Exception ex ){
-			ex.printStackTrace();
-		}
-		return this.active;
+	public void start(){
+		executor.execute(this);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
-	@Override
 	public void stop(){
-		this.active = false;
-		container.stop();
-		starter.removeContext();
-	}
-
-	public IJp2pContainer<?> getServiceContext(){
-		return container;
+		executor.shutdown();
 	}
 
 	@Override
-	public boolean isActive() {
-		return active;
+	public void run() {
+		try{
+			activator.createContainer();
+		}
+		catch( Exception ex ){
+			ex.printStackTrace();
+		}
 	}
 }

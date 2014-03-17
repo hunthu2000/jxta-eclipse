@@ -31,7 +31,7 @@ import net.jp2p.container.factory.ComponentBuilderEvent;
 import net.jp2p.container.factory.IComponentFactory;
 import net.jp2p.container.factory.IPropertySourceFactory;
 
-public class XMLServiceBuilder implements ICompositeBuilder<Jp2pContainer>{
+public class XMLContainerBuilder implements ICompositeBuilder<Jp2pContainer>{
 
 	private String plugin_id;
 	private Class<?> clss;
@@ -40,9 +40,10 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pContainer>{
 	
 	private Collection<ICompositeBuilderListener<?>> listeners;
 	
-	public XMLServiceBuilder( String plugin_id, Class<?> clss) {
+	public XMLContainerBuilder( String plugin_id, Class<?> clss, ContextLoader contexts) {
 		this.plugin_id = plugin_id;
 		this.clss = clss;	
+		this.contexts = contexts;
 		builders = new ArrayList<ICompositeBuilder<ContainerFactory>>();
 		this.listeners = new ArrayList<ICompositeBuilderListener<?>>();
 	}
@@ -52,9 +53,6 @@ public class XMLServiceBuilder implements ICompositeBuilder<Jp2pContainer>{
 		
 		//First register all the discovered builders
 		ContainerBuilder containerBuilder = new ContainerBuilder();
-		this.contexts = ContextLoader.getInstance();
-		contexts.addContext( new Jp2pContext());
-
 		try {
 			this.extendBuilders( XMLFactoryBuilder.class, containerBuilder);
 			this.extendBuilders(clss, containerBuilder);

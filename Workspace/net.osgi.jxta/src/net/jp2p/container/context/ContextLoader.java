@@ -3,6 +3,7 @@ package net.jp2p.container.context;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import net.jp2p.container.context.ContextLoaderEvent.LoaderEvent;
 import net.jp2p.container.utils.Utils;
 
 public class ContextLoader {
@@ -13,9 +14,12 @@ public class ContextLoader {
 	private Collection<IJp2pContext> contexts;
 	
 	private static ContextLoader contextLoader = new ContextLoader();
+
+	private Collection<IContextLoaderListener> listeners;
 	
 	private ContextLoader() {
 		contexts = new ArrayList<IJp2pContext>();
+		this.listeners = new ArrayList<IContextLoaderListener>();
 	}
 
 	public static ContextLoader getInstance(){
@@ -25,15 +29,30 @@ public class ContextLoader {
 	public void clear(){
 		contexts.clear();
 	}
-	
+
+	public void addContextLoaderListener( IContextLoaderListener listener ){
+		this.listeners.add( listener );
+	}
+
+	public void removeContextLoaderListener( IContextLoaderListener listener ){
+		this.listeners.remove( listener );
+	}
+
+	private final void notifyContextChanged( ContextLoaderEvent event ){
+		for( IContextLoaderListener listener: listeners)
+			listener.notifyRegisterContext(event);
+	}
+
 	public void addContext( IJp2pContext context ){
 		this.contexts.add( context );
+		notifyContextChanged( new ContextLoaderEvent( this, LoaderEvent.REGISTERED, context ));		
 	}
 
 	public void removeContext( IJp2pContext context ){
 		this.contexts.remove( context );
+		notifyContextChanged( new ContextLoaderEvent( this, LoaderEvent.UNREGISTERED, context ));		
 	}
-
+	
 	/**
 	 * Get the context for the given name
 	 * @param contextName

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package net.jp2p.chaupal.core;
 
-import net.jp2p.chaupal.activator.AbstractJp2pBundleActivator;
+import net.jp2p.chaupal.activator.ContainerBuilderEvent;
+import net.jp2p.chaupal.activator.IContainerBuilderListener;
+import net.jp2p.chaupal.activator.Jp2pBundleActivator;
 import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.IJp2pContainer.ContainerProperties;
 import net.jp2p.container.utils.Utils;
@@ -28,34 +30,42 @@ public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
 	private Jp2pContainerProvider provider;
 	private String introduction;
 	private String token;
+	private Jp2pBundleActivator activator;
+	private IContainerBuilderListener listener;
 
-	protected Jp2pDSComponent() {}
-
-	protected Jp2pDSComponent( AbstractJp2pBundleActivator<?> activator ) {
+	protected Jp2pDSComponent( Jp2pBundleActivator activator ) {
 		this( S_IJP2P_CONTAINER_PACKAGE_ID, S_IP2P_TOKEN, activator);
 	}
 
-	protected Jp2pDSComponent( String introduction, String token, AbstractJp2pBundleActivator<?> activator ) {
+	protected Jp2pDSComponent( String introduction, String token, Jp2pBundleActivator activator ) {
 		this.token = token;
 		this.introduction = introduction;
-		this.setActivator(activator);
+		this.activator = activator;
+		this.setActivator();
 	}
 
-	protected IJp2pContainer<?> getContainer() {
+	protected IJp2pContainer getContainer() {
 		return provider.getContainer();
 	}
 
-	private final void setActivator(AbstractJp2pBundleActivator<?> activator) {
+	private final void setActivator() {
 		try{
-			IJp2pContainer<?> container = (IJp2pContainer<?>) activator.getServiceContainer();
-			String pass = (String) container.getPropertySource().getProperty( ContainerProperties.PASS_1);
-			if( !Utils.isNull( pass ))
-				this.introduction = pass;
-			pass = (String) container.getPropertySource().getProperty( ContainerProperties.PASS_2);
-			if( !Utils.isNull( pass ))
-				this.token = pass;
-			provider = new Jp2pContainerProvider( introduction, token );
-			this.provider.setContainer( container );
+			listener = new IContainerBuilderListener() {
+				
+				@Override
+				public void notifyContainerBuilt(ContainerBuilderEvent event) {
+					IJp2pContainer container = (IJp2pContainer) event.getContainer();
+					String pass = (String) container.getPropertySource().getProperty( ContainerProperties.PASS_1);
+					if( !Utils.isNull( pass ))
+						introduction = pass;
+					pass = (String) container.getPropertySource().getProperty( ContainerProperties.PASS_2);
+					if( !Utils.isNull( pass ))
+						token = pass;
+					provider = new Jp2pContainerProvider( introduction, token );
+					provider.setContainer( container );
+				}
+			};
+			activator.addContainerBuilderListener(listener);
 		}
 		catch( Exception ex ){
 			ex.printStackTrace();
@@ -66,6 +76,16 @@ public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
 	protected void initialise() {
 		super.addAttendee( this.provider );
 	}
+
+	@Override
+	protected void finalise() {
+		activator.removeContainerBuilderListener(listener);
+		listener = null;
+		activator = null;
+		super.finalise();
+	}
+
+
 }
 
 /**
@@ -73,9 +93,9 @@ public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
  * @author Kees
  *
  */
-class Jp2pContainerProvider extends AbstractProvider<String, Object, IJp2pContainer<?>> {
+class Jp2pContainerProvider extends AbstractProvider<String, Object, IJp2pContainer> {
 
-	private IJp2pContainer<?>  container;
+	private IJp2pContainer  container;
 	
 	Jp2pContainerProvider() {
 		super( new Palaver());
@@ -89,7 +109,7 @@ class Jp2pContainerProvider extends AbstractProvider<String, Object, IJp2pContai
 	 * Get the container
 	 * @return
 	 */
-	IJp2pContainer<?> getContainer() {
+	IJp2pContainer getContainer() {
 		return container;
 	}
 
@@ -97,7 +117,7 @@ class Jp2pContainerProvider extends AbstractProvider<String, Object, IJp2pContai
 	 * Add a container and 
 	 * @param container
 	 */
-	public void setContainer( IJp2pContainer<?>  container) {
+	public void setContainer( IJp2pContainer  container) {
 		if( container == null )
 			throw new NullPointerException();
 		this.container = container;

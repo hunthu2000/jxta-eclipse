@@ -53,32 +53,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-class Jp2pHandler extends DefaultHandler{
+class Jp2pHandler extends DefaultHandler implements IContextEntities{
 
-	public static final int MAX_COUNT = 200;
-	
-	public enum Groups{
-		PROPERTIES,
-		DIRECTIVES,
-		SEED_LIST;
-
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString() );
-		}
-
-		public static boolean isGroup( String str ){
-			str = StringStyler.styleToEnum(str);
-			if(( str == null ) || ( str.length() == 0 ))
-				return false;
-			for( Groups comp: values()){
-				if( comp.name().equals( str.toUpperCase() ))
-					return true;
-			}
-			return false;
-		}
-	}
-	
+	public static final int MAX_COUNT = 200;	
 
 	private ManagedProperty<IJp2pProperties,Object> property;
 
@@ -112,7 +89,6 @@ class Jp2pHandler extends DefaultHandler{
 	public void startElement(String uri, String localName, String qName, 
 			Attributes attributes) throws SAXException {
 		IPropertySourceFactory<?> factory = null;
-		IJp2pComponents current;
 		//First heck for groups
 		if( Groups.isGroup( qName )){
 			stack.push( qName );
@@ -120,7 +96,7 @@ class Jp2pHandler extends DefaultHandler{
 		}
 		//The name is not a group. try the default JP2P components
 		if( Jp2pContext.Components.isComponent( qName )){
-			current = Jp2pContext.Components.valueOf( StringStyler.styleToEnum( qName ));
+			IJp2pComponents current = Jp2pContext.Components.valueOf( StringStyler.styleToEnum( qName ));
 			switch(( Jp2pContext.Components )current ){
 			case JP2P_CONTAINER:
 				factory = container.getFactory( Jp2pContext.Components.JP2P_CONTAINER.toString() );
@@ -139,7 +115,7 @@ class Jp2pHandler extends DefaultHandler{
 				break;
 			}
 		}
-		//Apparently the factory is avialable elsewhere
+		//Apparently the factory is available elsewhere
 		if( factory == null ){
 			factory = this.getFactoryFromClass(qName, attributes, node.getData().getPropertySource());
 			if( factory == null ){

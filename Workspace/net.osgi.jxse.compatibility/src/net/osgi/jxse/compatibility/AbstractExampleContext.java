@@ -81,7 +81,7 @@ public abstract class AbstractExampleContext extends AbstractJp2pContainer<Netwo
 	 * @param container
 	 * @param module
 	 */
-	protected static void addModule( IJp2pContainer<?> container, Object module ){
+	protected static void addModule( IJp2pContainer container, Object module ){
 		IJp2pComponent<?> component = getComponent( container, module );
 		if( module instanceof NetworkManager){
 			NetworkManager manager = (NetworkManager) module;
@@ -94,7 +94,7 @@ public abstract class AbstractExampleContext extends AbstractJp2pContainer<Netwo
 		container.addChild(component);
 	}
 	
-	protected static IJp2pComponent<?> getComponent( IJp2pContainer<?> container, Object module ){
+	protected static IJp2pComponent<?> getComponent( IJp2pContainer container, Object module ){
 		IJp2pPropertySource<IJp2pProperties> properties = null;
 		String bundleId = Jp2pContainerPropertySource.getBundleId( container.getPropertySource() );
 		if( module instanceof NetworkManager ){

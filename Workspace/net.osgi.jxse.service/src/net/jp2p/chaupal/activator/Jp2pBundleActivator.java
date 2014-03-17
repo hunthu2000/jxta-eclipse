@@ -10,11 +10,16 @@
  *******************************************************************************/
 package net.jp2p.chaupal.activator;
 
-import net.jp2p.chaupal.xml.XMLServiceBuilder;
-import net.jp2p.container.IJp2pContainer;
-import net.jp2p.container.Jp2pContainer;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.osgi.framework.BundleContext;
+
+import net.jp2p.chaupal.context.Jp2pContextService;
 import net.jp2p.container.component.ComponentEventDispatcher;
 import net.jp2p.container.component.IComponentChangedListener;
+import net.jp2p.container.context.ContextLoader;
+import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.startup.Jp2pStartupService;
 
 public class Jp2pBundleActivator extends AbstractJp2pBundleActivator<Jp2pStartupService> {
@@ -22,9 +27,20 @@ public class Jp2pBundleActivator extends AbstractJp2pBundleActivator<Jp2pStartup
 	private String bundle_id;
 	private IComponentChangedListener observer;
 	
+	private BundleContext bundleContext;
 	
+	private static Jp2pContextService contextService; 
+	private ContextLoader contextLoader;
+	
+	private Collection<IContainerBuilderListener> listeners;
+
 	public Jp2pBundleActivator(String bundle_id) {
 		this.bundle_id = bundle_id;
+		listeners = new ArrayList<IContainerBuilderListener>();
+	}
+
+	public String getBundleId() {
+		return bundle_id;
 	}
 
 	public IComponentChangedListener getObserver() {
@@ -35,15 +51,50 @@ public class Jp2pBundleActivator extends AbstractJp2pBundleActivator<Jp2pStartup
 		this.observer = observer;
 	}
 
+	public void addContainerBuilderListener( IContainerBuilderListener listener ){
+		listeners.add( listener );
+	}
+
+	public void removeContainerBuilderListener( IContainerBuilderListener listener ){
+		listeners.remove( listener );
+	}
+
 	@Override
-	protected IJp2pContainer<Jp2pStartupService> createContainer() {
-		XMLServiceBuilder builder = new XMLServiceBuilder( bundle_id, this.getClass() );
+	public void start(BundleContext bundleContext) throws Exception {
+		this.bundleContext = bundleContext;
+		super.start(bundleContext);
+	}
+
+	@Override
+	public void stop(BundleContext bundleContext) throws Exception {
+		contextService.close();
+		contextService = null;
+		contextLoader.clear();
+		contextLoader = null;
+
+		ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
+		if( observer != null )
+			dispatcher.removeServiceChangeListener(observer);
+
+		super.stop(bundleContext);
+	}
+
+	@Override
+	protected void createContainer() {
+		
+		contextLoader = ContextLoader.getInstance();
+		contextService = new Jp2pContextService( contextLoader, bundleContext );
+		Jp2pContainerBuilderHelper helper = new Jp2pContainerBuilderHelper( this, contextLoader );
+		for( IContainerBuilderListener listener: listeners )
+			helper.addContainerBuilderListener(listener);
+		helper.open();
+
 		ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 		if( observer != null )
 			dispatcher.addServiceChangeListener(observer);
-		Jp2pContainer container = builder.build();
-		if( observer != null )
-			dispatcher.removeServiceChangeListener(observer);
-		return container;
+		
+		//Add contexts, both default as the ones provided through DS
+		contextLoader.addContext( new Jp2pContext());
+		contextService.open();				
 	}
 }

@@ -6,6 +6,12 @@ import java.util.Collection;
 import java.util.Stack;
 import java.util.logging.Logger;
 
+import net.jp2p.chaupal.xml.IContextEntities;
+import net.jp2p.container.context.ContextLoader;
+import net.jp2p.container.context.IJp2pContext;
+import net.jp2p.container.context.Jp2pContext;
+import net.jp2p.container.context.IJp2pContext.ContextDirectives;
+import net.jp2p.container.factory.IJp2pComponents;
 import net.jp2p.container.properties.ManagedProperty;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jp2p.container.utils.StringStyler;
@@ -16,40 +22,21 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-class ServiceHandler extends DefaultHandler{
+class ServiceHandler extends DefaultHandler implements IContextEntities{
 
 	public static final int MAX_COUNT = 200;
-	
-	public enum Groups{
-		PROPERTIES,
-		DIRECTIVES,
-		SEED_LIST;
-
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString() );
-		}
-
-		public static boolean isGroup( String str ){
-			str = StringStyler.styleToEnum(str);
-			if(( str == null ) || ( str.length() == 0 ))
-				return false;
-			for( Groups comp: values()){
-				if( comp.name().equals( str.toUpperCase() ))
-					return true;
-			}
-			return false;
-		}
-	}
-	
+		
 	private Stack<String> stack;
 	private Collection<ServiceInfo> services;
+	private ContextLoader contexts;
+	
 	private boolean skip;
 
-	public ServiceHandler( Collection<ServiceInfo> services ) {
-		this.services = new ArrayList<ServiceInfo>();
+	public ServiceHandler( ContextLoader contexts ) {
 		this.skip = false;
+		this.contexts = contexts;
 		this.stack = new Stack<String>();
+		this.services = new ArrayList<ServiceInfo>();
 	}
 
 	/**
@@ -66,16 +53,29 @@ class ServiceHandler extends DefaultHandler{
 		if(skip)
 			return;
 		
-		//First heck for groups
+		//First check for groups
 		if( Groups.isGroup( qName )){
 			stack.push( qName );
 			skip = true;
 			return;
 		}
-		ServiceInfo info = new ServiceInfo();
-		info.context = attributes.getValue(Directives.CONTEXT.toString().toLowerCase());
-		info.name = qName;
+		if( Jp2pContext.Components.isComponent( qName )){
+			IJp2pComponents current = Jp2pContext.Components.valueOf( StringStyler.styleToEnum( qName ));
+			switch(( Jp2pContext.Components )current ){
+			case CONTEXT:
+				String className = attributes.getValue( ContextDirectives.CLASS.toString().toLowerCase() );
+				IJp2pContext context = ContextLoader.loadContext( this, className );
+				if( context != null )
+					contexts.addContext( context );
+				return;
+			default:
+				break;
+			}
+		}
+		String serviceName = StringStyler.styleToEnum(qName);
+		ServiceInfo info = new ServiceInfo( StringStyler.prettyString( serviceName ), attributes.getValue(Directives.CONTEXT.toString().toLowerCase()));
 		services.add( info );
+		stack.push( qName );
 	}
 		
 	@Override
@@ -135,10 +135,4 @@ class ServiceHandler extends DefaultHandler{
 			return false;
 		return Boolean.parseBoolean( attr );
 	}
-}
-
-class ServiceInfo{
-	String name;
-	String context;
-	boolean foud;
 }

@@ -46,7 +46,7 @@ public class Jp2pAdapterFactory implements IAdapterFactory {
 	 * @param adaptableObject
 	 * @return
 	 */
-	protected IPropertySource getPropertySource( IJp2pContainer<?> component ){
+	protected IPropertySource getPropertySource( IJp2pContainer component ){
 		Object module = component.getModule();  
 		return this.getPropertySource( module );			
 	}

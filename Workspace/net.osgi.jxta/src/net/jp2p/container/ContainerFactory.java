@@ -19,9 +19,8 @@ import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
-import net.jp2p.container.startup.Jp2pStartupService;
 
-public class ContainerFactory extends AbstractComponentFactory<Jp2pStartupService>
+public class ContainerFactory extends AbstractComponentFactory<Object>
 {
 	private String bundleId;
 	
