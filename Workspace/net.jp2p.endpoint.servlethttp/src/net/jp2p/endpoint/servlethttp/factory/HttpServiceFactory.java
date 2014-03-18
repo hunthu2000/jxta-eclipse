@@ -22,8 +22,7 @@ import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.endpoint.servlethttp.Activator;
 import net.jp2p.endpoint.servlethttp.osgi.ModuleFactory;
-import net.jxse.platform.JxtaModuleContainer;
-import net.jxta.impl.peergroup.MultiLoader;
+import net.jxta.protocol.ModuleImplAdvertisement;
 
 public class HttpServiceFactory extends AbstractFilterFactory<ModuleFactory>{
 		
@@ -55,8 +54,16 @@ public class HttpServiceFactory extends AbstractFilterFactory<ModuleFactory>{
 
 class HttpComponent extends Jp2pComponent<ModuleFactory>{
 	
+	private ModuleImplAdvertisement impladv;
+	
 	public HttpComponent(IJp2pPropertySource<IJp2pProperties> source) {
-		super( source, new ModuleFactory());
+		super( source, new ModuleFactory( HttpPropertySource.S_HTTP_SERVICE ));
 		Activator.getModuleFactoryRegistrator().register( super.getModule());
 	}
+
+	ModuleImplAdvertisement getImplAdvertisement() {
+		return impladv;
+	}
+	
+	 
 }

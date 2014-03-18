@@ -6,7 +6,6 @@ import java.util.Dictionary;
 import org.osgi.framework.BundleContext;
 
 import net.jp2p.chaupal.context.AbstractRegistrator;
-import net.jp2p.endpoint.servlethttp.osgi.ModuleFactory;
 import net.jxse.platform.IJxtaModuleFactory;
 
 public class ModuleFactoryRegistrator extends AbstractRegistrator<IJxtaModuleFactory> {
@@ -15,7 +14,7 @@ public class ModuleFactoryRegistrator extends AbstractRegistrator<IJxtaModuleFac
 
 
 	public ModuleFactoryRegistrator( BundleContext context ) {
-		super( ModuleFactory.class.getName(), context );
+		super( IJxtaModuleFactory.class.getName(), context );
 	}
 
 	@Override

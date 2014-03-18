@@ -4,10 +4,8 @@ import java.util.Collection;
 
 import net.jp2p.chaupal.Activator;
 import net.jxse.module.IModuleFactory;
-import net.jxse.platform.IJxtaModuleLoader;
 import net.jxse.platform.IJxtaModuleFactory;
-import net.jxse.platform.JxtaModuleContainer;
-import net.jxta.impl.peergroup.MultiLoader;
+import net.jxta.compatibility.impl.loader.DynamicJxtaLoader;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceListener;
@@ -38,8 +36,7 @@ public class ModuleFactoryService {
     private String filter = "(objectclass=" + IJxtaModuleFactory.class.getName() + ")";
 	
 	private BundleContext  bc;
-	private IJxtaModuleLoader container = JxtaModuleContainer.getInstance();
-	private MultiLoader loader;
+	private DynamicJxtaLoader loader = (DynamicJxtaLoader) DynamicJxtaLoader.getInstance();
 	
 	public ModuleFactoryService(BundleContext bc) {
 		this.bc = bc;
@@ -94,11 +91,7 @@ public class ModuleFactoryService {
 			IJxtaModuleFactory factory = bc.getService( sr );
 			if( factory == null )
 				throw new NullPointerException( S_ERR_NO_FACTORY_PROVIDED);
-			if( loader == null ){
-				loader = MultiLoader.getInstance();
-				loader.addLoader( JxtaModuleContainer.getInstance());
-			}
-			container.addFactory( factory );
+			loader.defineClass( factory.getModuleImplAdvertisement() );
 			Activator.getLog().log( LogService.LOG_INFO,"Module Factory " + factory.getComponentName() + " registered." );
 		} catch (Exception e) {
 			Activator.getLog().log( LogService.LOG_WARNING,"Failed to register resource", e);
@@ -114,7 +107,6 @@ public class ModuleFactoryService {
 			IJxtaModuleFactory factory = bc.getService( sr );
 			if( factory == null )
 				throw new NullPointerException( S_ERR_NO_FACTORY_PROVIDED);
-			container.removeFactory( factory );
 			Activator.getLog().log( LogService.LOG_INFO,"Module Factory " + factory.getComponentName() + " unregistered." );
 		} catch (Exception e) {
 			Activator.getLog().log( LogService.LOG_WARNING,"Failed to unregister resource", e);
@@ -128,7 +120,6 @@ public class ModuleFactoryService {
 			Collection<ServiceReference<IJxtaModuleFactory>> srl = bc.getServiceReferences( IJxtaModuleFactory.class, filter);
 			for(ServiceReference<IJxtaModuleFactory> sr: srl ) {
 				unregister( sr );
-				container.removeFactory( bc.getService( sr ));
 			}
 		} catch (InvalidSyntaxException e) { 
 			e.printStackTrace(); 
