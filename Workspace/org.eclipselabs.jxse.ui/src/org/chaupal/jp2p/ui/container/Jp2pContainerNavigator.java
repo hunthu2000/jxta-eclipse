@@ -1,8 +1,8 @@
 package org.chaupal.jp2p.ui.container;
 
-import net.jp2p.chaupal.IServiceChangedListener;
-import net.jp2p.chaupal.ServiceChangedEvent;
-import net.jp2p.chaupal.ServiceEventDispatcher;
+import net.jp2p.chaupal.dispatcher.IServiceChangedListener;
+import net.jp2p.chaupal.dispatcher.ServiceChangedEvent;
+import net.jp2p.chaupal.dispatcher.ServiceEventDispatcher;
 import net.jp2p.chaupal.utils.Utils;
 import net.jp2p.container.component.IJp2pComponent;
 

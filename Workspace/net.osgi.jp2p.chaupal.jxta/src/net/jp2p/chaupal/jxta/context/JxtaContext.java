@@ -1,7 +1,5 @@
 package net.jp2p.chaupal.jxta.context;
 
-import java.net.URL;
-
 import org.xml.sax.Attributes;
 
 import net.jp2p.chaupal.jxta.advertisement.ChaupalAdvertisementFactory;
@@ -26,31 +24,10 @@ import net.jp2p.jxta.factory.JxtaFactoryUtils;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jp2p.jxta.network.NetworkManagerPreferences;
 import net.jp2p.jxta.peergroup.PeerGroupPreferences;
-import net.jxta.document.Element;
-import net.jxta.impl.loader.RefJxtaLoader;
-import net.jxta.impl.peergroup.CompatibilityEquater;
-import net.jxta.impl.peergroup.CompatibilityUtils;
-import net.jxta.impl.peergroup.MultiLoader;
-import net.jxta.platform.IJxtaLoader;
 
 public class JxtaContext implements IJp2pContext {
 
-    /**
-     * Default compatibility equater instance.
-     */
-    private static final CompatibilityEquater COMP_EQ =
-    	new CompatibilityEquater() {
-        @SuppressWarnings("rawtypes")
-		public boolean compatible(Element test) {
-            return CompatibilityUtils.isCompatible(test);
-        }
-    };
-
-	private static MultiLoader loader = MultiLoader.getInstance();
-	
 	public JxtaContext() {
-		IJxtaLoader jxtaLoader = new RefJxtaLoader( new URL[0], COMP_EQ );
-		loader.addLoader(jxtaLoader);
 	}
 
 	@Override
@@ -100,7 +77,7 @@ public class JxtaContext implements IJp2pContext {
 	 * @return
 	 */
 	@Override
-	public IPropertySourceFactory<?> getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+	public IPropertySourceFactory getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
 		JxtaComponents component = JxtaComponents.valueOf( StringStyler.styleToEnum(componentName));
 		String[] attrs;
 		switch( component ){
@@ -112,7 +89,7 @@ public class JxtaContext implements IJp2pContext {
 		default:
 			attrs = new String[0];
 		}
-		IPropertySourceFactory<?> factory = JxtaFactoryUtils.getDefaultFactory(builder, attrs, parentSource, componentName);
+		IPropertySourceFactory factory = JxtaFactoryUtils.getDefaultFactory(builder, attrs, parentSource, componentName);
 		return factory;
 	}
 

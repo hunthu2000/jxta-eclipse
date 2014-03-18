@@ -79,8 +79,8 @@ public class ChaupalContext implements IJp2pContext {
 	 * @return
 	 */
 	@Override
-	public IPropertySourceFactory<?> getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
-		IPropertySourceFactory<?> factory = null;
+	public IPropertySourceFactory getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+		IPropertySourceFactory factory = null;
 		String str = StringStyler.styleToEnum( componentName );
 		if(ChaupalComponents.isComponent(str)){
 			ChaupalComponents comp = ChaupalComponents.valueOf(str );

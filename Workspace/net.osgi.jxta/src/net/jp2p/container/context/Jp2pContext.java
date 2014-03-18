@@ -92,8 +92,8 @@ public class Jp2pContext implements IJp2pContext {
 	 * @return
 	 */
 	@Override
-	public IPropertySourceFactory<?> getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
-		IPropertySourceFactory<?> factory = getDefaultFactory( builder, parentSource, componentName);
+	public IPropertySourceFactory getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+		IPropertySourceFactory factory = getDefaultFactory( builder, parentSource, componentName);
 		return factory;
 	}
 
@@ -159,14 +159,14 @@ public class Jp2pContext implements IJp2pContext {
 	/* (non-Javadoc)
 	 * @see net.osgi.jp2p.builder.IContainerBuilder#getDefaultFactory(net.osgi.jp2p.properties.IJp2pPropertySource, java.lang.String)
 	*/
-	public static IPropertySourceFactory<?> getDefaultFactory( IContainerBuilder builder, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+	public static IPropertySourceFactory getDefaultFactory( IContainerBuilder builder, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
 		if( Utils.isNull(componentName))
 			return null;
 		String comp = StringStyler.styleToEnum(componentName);
 		if( !Components.isComponent( comp ))
 			return null;
 		Components component = Components.valueOf(comp);
-		IPropertySourceFactory<?> factory = null;
+		IPropertySourceFactory factory = null;
 		switch( component ){
 		case STARTUP_SERVICE:
 			factory = new StartupServiceFactory( builder, parentSource );

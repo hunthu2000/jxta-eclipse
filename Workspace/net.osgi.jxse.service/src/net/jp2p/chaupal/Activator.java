@@ -1,7 +1,6 @@
 package net.jp2p.chaupal;
 
 import net.jp2p.chaupal.module.IServiceListenerContainer;
-import net.jp2p.chaupal.module.ModuleFactoryService;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -15,17 +14,12 @@ public class Activator implements BundleActivator {
 	private static Activator plugin;
 	private static Jp2pLogService logService;
 	
-	private static ModuleFactoryService moduleService; 
-	
 	@Override
 	public void start(BundleContext context) throws Exception {
 		plugin = this;
 		
 		logService = new Jp2pLogService( context );
 		logService.open();
-
-		moduleService = new ModuleFactoryService( context );
-		moduleService.open();			
 	}
 
 	@Override
@@ -33,18 +27,11 @@ public class Activator implements BundleActivator {
 		ServiceReference<?> reference = context.getServiceReference(IServiceListenerContainer.class);
 		context.ungetService(reference); 
 		
-		moduleService.close();
-		moduleService = null;
-
 		logService.close();
 		logService = null;
 		plugin = null;
 	}	
 	
-	protected ModuleFactoryService getModuleService() {
-		return moduleService;
-	}
-
 	public static LogService getLog(){
 		return logService.getLogService();
 	}

@@ -14,7 +14,6 @@ import net.jp2p.container.context.ContextLoader;
 import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.context.Jp2pContainerPreferences;
 import net.jp2p.container.context.Jp2pContext;
-import net.jp2p.container.context.IJp2pContext.ContextDirectives;
 import net.jp2p.container.factory.IComponentFactory;
 import net.jp2p.container.factory.IJp2pComponents;
 import net.jp2p.container.factory.IPropertySourceFactory;
@@ -88,8 +87,8 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 	@Override
 	public void startElement(String uri, String localName, String qName, 
 			Attributes attributes) throws SAXException {
-		IPropertySourceFactory<?> factory = null;
-		//First heck for groups
+		IPropertySourceFactory factory = null;
+		//First check for groups
 		if( Groups.isGroup( qName )){
 			stack.push( qName );
 			return;
@@ -105,11 +104,7 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 				this.root = (ContainerFactory) factory;
 				break;
 			case CONTEXT:
-				String className = attributes.getValue( ContextDirectives.CLASS.toString().toLowerCase() );
-				IJp2pContext context = ContextLoader.loadContext( this, className );
-				if( context != null )
-					contexts.addContext( context );
-				return;
+				return;//skip, the contexts were parsed in the first round
 			default:
 				factory = this.getFactory( qName, attributes, node.getData().getPropertySource());
 				break;
@@ -121,11 +116,11 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 			if( factory == null ){
 				factory = this.getFactory( qName, attributes, node.getData().getPropertySource());
 			}
-			if( factory != null ){
-				node = this.processFactory(attributes, node, factory);
-				this.stack.push( qName );
-				return;
-			}
+		}
+		if( factory != null ){
+			node = this.processFactory(attributes, node, factory);
+			this.stack.push( qName );
+			return;
 		}else{
 			try{
 				this.property = this.createProperty(qName, attributes );
@@ -138,7 +133,7 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 	}
 
 	@SuppressWarnings("unchecked")
-	protected IPropertySourceFactory<?> getFactory( String componentName, Attributes attributes, IJp2pPropertySource<?> parentSource ){
+	protected IPropertySourceFactory getFactory( String componentName, Attributes attributes, IJp2pPropertySource<?> parentSource ){
 		String contextName = attributes.getValue(Directives.CONTEXT.toString().toLowerCase());
 		if( Utils.isNull( contextName )){
 			contextName = AbstractJp2pPropertySource.findFirstAncestorDirective( parentSource, Directives.CONTEXT );
@@ -157,7 +152,7 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	protected IPropertySourceFactory<?> getFactoryFromClass( String componentName, Attributes attributes, IJp2pPropertySource<?> parentSource ){
+	protected IPropertySourceFactory getFactoryFromClass( String componentName, Attributes attributes, IJp2pPropertySource<?> parentSource ){
 		if( attributes.getValue(Directives.CLASS.toString().toLowerCase()) == null )
 			return null;
 		String className = attributes.getValue(Directives.CLASS.toString().toLowerCase());
@@ -189,7 +184,7 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 	 * @param factory
 	 * @return
 	 */
-	protected FactoryNode processFactory( Attributes attributes, FactoryNode parent, IPropertySourceFactory<?> factory ){
+	protected FactoryNode processFactory( Attributes attributes, FactoryNode parent, IPropertySourceFactory factory ){
 		IJp2pWritePropertySource<?> source = (IJp2pWritePropertySource<?>) factory.createPropertySource();
 		if( parent != null )
 			parent.getData().getPropertySource().addChild( source);
@@ -387,22 +382,19 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 	 * @author Kees
 	 *
 	 */
-	private class FactoryNode extends ComponentNode<IPropertySourceFactory<Object>>{
+	private class FactoryNode extends ComponentNode<IPropertySourceFactory>{
 
-		@SuppressWarnings("unchecked")
-		protected FactoryNode(IPropertySourceFactory<?> data, FactoryNode parent) {
-			super((IPropertySourceFactory<Object>) data, parent);
+		protected FactoryNode(IPropertySourceFactory data, FactoryNode parent) {
+			super((IPropertySourceFactory) data, parent);
 		}
 
-		@SuppressWarnings("unchecked")
-		public FactoryNode(IPropertySourceFactory<?> data) {
-			super((IPropertySourceFactory<Object>) data);
+		public FactoryNode(IPropertySourceFactory data) {
+			super((IPropertySourceFactory) data);
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public ComponentNode<?> addChild(Object data) {
-			FactoryNode child = new FactoryNode( (IPropertySourceFactory<Object>) data, this );
+			FactoryNode child = new FactoryNode( (IPropertySourceFactory) data, this );
 			super.getChildrenAsCollection().add(child);
 			return child;
 		}	

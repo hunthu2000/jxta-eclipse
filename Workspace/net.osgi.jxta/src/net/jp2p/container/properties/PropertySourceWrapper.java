@@ -39,6 +39,11 @@ public class PropertySourceWrapper< T extends Object> implements IJp2pPropertySo
 	}
 
 	@Override
+	public boolean isEnabled() {
+		return source.isEnabled();
+	}
+
+	@Override
 	public String getComponentName() {
 		return source.getComponentName();
 	}

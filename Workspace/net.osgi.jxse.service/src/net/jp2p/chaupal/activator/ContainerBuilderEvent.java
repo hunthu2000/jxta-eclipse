@@ -11,6 +11,7 @@ public class ContainerBuilderEvent extends EventObject {
 	
 	public ContainerBuilderEvent(Object source, IJp2pContainer container) {
 		super(source);
+		this.container = container;
 	}
 
 	public IJp2pContainer getContainer() {

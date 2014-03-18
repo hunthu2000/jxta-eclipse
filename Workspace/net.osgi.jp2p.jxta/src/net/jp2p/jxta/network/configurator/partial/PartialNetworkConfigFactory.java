@@ -5,7 +5,7 @@ import net.jp2p.container.factory.AbstractPropertySourceFactory;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 
-public class PartialNetworkConfigFactory<T extends Object> extends AbstractPropertySourceFactory<T> {
+public class PartialNetworkConfigFactory<T extends Object> extends AbstractPropertySourceFactory {
 
 	private String componentName;
 	

@@ -21,7 +21,7 @@ import net.jp2p.container.seeds.SeedInfo;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jxta.compatibility.platform.NetworkConfigurator;
 
-public class SeedListFactory extends AbstractPropertySourceFactory<String>{
+public class SeedListFactory extends AbstractPropertySourceFactory{
 
 	public SeedListFactory( IContainerBuilder container,  IJp2pPropertySource<IJp2pProperties> parent ) {
 		super( (ContainerBuilder) container, parent);

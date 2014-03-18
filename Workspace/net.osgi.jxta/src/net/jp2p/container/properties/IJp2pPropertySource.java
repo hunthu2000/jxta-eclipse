@@ -50,6 +50,12 @@ public interface IJp2pPropertySource< T extends Object> extends IDescendant<T, I
 	 * @return
 	 */
 	public String getId();
+	
+	/**
+	 * If the enabled boolean is true, the factroy will create the component
+	 * @return
+	 */
+	public boolean isEnabled();
 
 	/**
 	 * Get the depth of the component (root = 0)

@@ -6,8 +6,7 @@ public interface IContextEntities {
 
 	public enum Groups{
 		PROPERTIES,
-		DIRECTIVES,
-		SEED_LIST;
+		DIRECTIVES;
 
 		@Override
 		public String toString() {

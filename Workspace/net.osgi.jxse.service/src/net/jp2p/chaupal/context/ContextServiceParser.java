@@ -18,7 +18,6 @@ import javax.xml.validation.SchemaFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 
-import net.jp2p.container.ContainerFactory;
 import net.jp2p.container.builder.IFactoryBuilder;
 import net.jp2p.container.context.ContextLoader;
 import net.jp2p.container.utils.IOUtils;
@@ -101,7 +100,6 @@ public class ContextServiceParser{
 		}
 		
 		//First parse the XML file
-		ContainerFactory root = null;
 		try {
 			//Schema schema = schemaFactory.newSchema(schemaFile);
 			//factory.setSchema(schema);//saxParser.

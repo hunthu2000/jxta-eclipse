@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.Jp2pComponent;
-import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.AbstractDependencyFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
 import net.jp2p.container.factory.IComponentFactory;

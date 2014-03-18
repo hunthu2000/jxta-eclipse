@@ -8,24 +8,23 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.jp2p.chaupal;
+package net.jp2p.chaupal.dispatcher;
 
-import net.jp2p.container.utils.StringStyler;
+import java.util.EventObject;
 
-public interface IServiceChangedListener {
+import net.jp2p.chaupal.dispatcher.IServiceChangedListener.ServiceChange;
 
-	public enum ServiceChange{
-		CHILD_ADDED,
-		CHILD_REMOVED,
-		STATUS_CHANGE,
-		COMPONENT_EVENT,
-		REFRESH;
+public class ServiceChangedEvent extends EventObject {
+	private static final long serialVersionUID = 1L;
 
-		@Override
-		public String toString() {
-			return StringStyler.prettyString( super.toString() );
-		}
-	}
+	private ServiceChange change;
 	
-	public void notifyServiceChanged( ServiceChangedEvent event );
+	public ServiceChangedEvent(Object arg0, ServiceChange change ) {
+		super(arg0);
+		this.change = change;
+	}
+
+	public ServiceChange getChange() {
+		return change;
+	}
 }

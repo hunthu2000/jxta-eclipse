@@ -31,7 +31,7 @@ public class ContainerBuilder implements IContainerBuilder{
 	 */
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public boolean addFactory( IPropertySourceFactory<?> factory ){
+	public boolean addFactory( IPropertySourceFactory factory ){
 		boolean retval = this.factories.add( factory );
 		Collections.sort(this.factories, new FactoryComparator());
 		return retval;
@@ -41,12 +41,11 @@ public class ContainerBuilder implements IContainerBuilder{
 	 * @see net.osgi.jp2p.builder.IContainerBuilder#removeFactory(net.osgi.jp2p.factory.IComponentFactory)
 	 */
 	@Override
-	public boolean removeFactory( IPropertySourceFactory<Object> factory ){
+	public boolean removeFactory( IPropertySourceFactory factory ){
 		return this.factories.remove( factory );
 	}
 	
-	@SuppressWarnings("unchecked")
-	public IPropertySourceFactory<Object>[] getFactories(){
+	public IPropertySourceFactory[] getFactories(){
 		return this.factories.toArray( new IPropertySourceFactory[0] );
 	}
 	
@@ -54,9 +53,9 @@ public class ContainerBuilder implements IContainerBuilder{
 	 * @see net.osgi.jp2p.builder.IContainerBuilder#getFactory(java.lang.String)
 	 */
 	@Override
-	public IPropertySourceFactory<?> getFactory( String name ){
+	public IPropertySourceFactory getFactory( String name ){
 		for( ICompositeBuilderListener<?> listener: factories ){
-			IPropertySourceFactory<?> factory = (IPropertySourceFactory<?>) listener;
+			IPropertySourceFactory factory = (IPropertySourceFactory) listener;
 			if( factory.getComponentName().equals(name ))
 					return factory;
 		}
@@ -67,9 +66,9 @@ public class ContainerBuilder implements IContainerBuilder{
 	 * @see net.osgi.jp2p.builder.IContainerBuilder#getFactory(net.osgi.jp2p.properties.IJp2pPropertySource)
 	 */
 	@Override
-	public IPropertySourceFactory<?> getFactory( IJp2pPropertySource<?> source ){
+	public IPropertySourceFactory getFactory( IJp2pPropertySource<?> source ){
 		for( ICompositeBuilderListener<?> listener: factories ){
-			IPropertySourceFactory<?> factory = (IPropertySourceFactory<?>) listener;
+			IPropertySourceFactory factory = (IPropertySourceFactory) listener;
 			if( factory.getPropertySource().equals( source ))
 					return factory;
 		}
@@ -82,7 +81,7 @@ public class ContainerBuilder implements IContainerBuilder{
 	@Override
 	public boolean isCompleted(){
 		for( ICompositeBuilderListener<?> listener: factories ){
-			IPropertySourceFactory<?> factory = (IPropertySourceFactory<?>) listener;
+			IPropertySourceFactory factory = (IPropertySourceFactory) listener;
 			if(( factory instanceof IComponentFactory<?> ) && !((ContainerBuilder) factory).isCompleted())
 				return false;
 		}
@@ -113,7 +112,7 @@ public class ContainerBuilder implements IContainerBuilder{
 	public synchronized void updateRequest(ComponentBuilderEvent<?> event) {
 		for( ICompositeBuilderListener<?> listener: this.factories ){
 			if( !listener.equals( event.getFactory())){
-				IPropertySourceFactory<Object> factory = (IPropertySourceFactory<Object>) listener;
+				IPropertySourceFactory factory = (IPropertySourceFactory) listener;
 				factory.notifyChange( (ComponentBuilderEvent<Object>) event);
 			}
 		}
@@ -125,12 +124,12 @@ public class ContainerBuilder implements IContainerBuilder{
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public IPropertySourceFactory<?> addFactoryToContainer( String componentName, IJp2pPropertySource<IJp2pProperties> parentSource, boolean createSource, boolean blockCreation) {
+	public IPropertySourceFactory addFactoryToContainer( String componentName, IJp2pPropertySource<IJp2pProperties> parentSource, boolean createSource, boolean blockCreation) {
 		String str = StringStyler.styleToEnum(componentName);
 		IJp2pWritePropertySource<IJp2pProperties> ncp = (IJp2pWritePropertySource<IJp2pProperties>) parentSource.getChild( str );
 		if( ncp != null )
 			return null;
-		IPropertySourceFactory<?> ncf = Jp2pContext.getDefaultFactory( this, parentSource, componentName );
+		IPropertySourceFactory ncf = Jp2pContext.getDefaultFactory( this, parentSource, componentName );
 		addFactory(ncf);
 		if(!createSource )
 			return ncf;
@@ -144,7 +143,7 @@ public class ContainerBuilder implements IContainerBuilder{
 	 * @see net.osgi.jp2p.builder.IContainerBuilder#getOrCreateChildFactory(net.osgi.jp2p.properties.IJp2pPropertySource, java.lang.String, boolean, boolean)
 	 */
 	@Override
-	public IPropertySourceFactory<?> getOrCreateChildFactory( IJp2pPropertySource<IJp2pProperties> source, String componentName, boolean createSource, boolean blockCreation ){
+	public IPropertySourceFactory getOrCreateChildFactory( IJp2pPropertySource<IJp2pProperties> source, String componentName, boolean createSource, boolean blockCreation ){
 		IJp2pPropertySource<?> child = source.getChild( componentName ); 
 		if( child != null )
 			return this.getFactory(child );

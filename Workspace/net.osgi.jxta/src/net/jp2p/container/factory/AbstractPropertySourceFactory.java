@@ -18,7 +18,7 @@ import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.ManagedProperty;
 
-public abstract class AbstractPropertySourceFactory<T extends Object> implements IPropertySourceFactory<IJp2pComponent<T>>{
+public abstract class AbstractPropertySourceFactory implements IPropertySourceFactory{
 
 	public static final String S_FACTORY = "Factory:";
 	
@@ -130,7 +130,7 @@ public abstract class AbstractPropertySourceFactory<T extends Object> implements
 	 */
 	public synchronized void updateState( BuilderEvents event ){
 		try{
-			this.container.updateRequest( new ComponentBuilderEvent<IJp2pComponent<T>>( this, event ));
+			this.container.updateRequest( new ComponentBuilderEvent<IJp2pComponent<Object>>( this, event ));
 		}
 		catch( Exception ex ){
 			ex.printStackTrace();
@@ -150,7 +150,7 @@ public abstract class AbstractPropertySourceFactory<T extends Object> implements
 	 * @param factory
 	 * @return
 	 */
-	protected boolean isChildFactory( IPropertySourceFactory<?> factory ){
+	protected boolean isChildFactory( IPropertySourceFactory factory ){
 		if( factory == null )
 			return false;
 		IJp2pPropertySource<IJp2pProperties> source = factory.getPropertySource();
@@ -170,7 +170,7 @@ public abstract class AbstractPropertySourceFactory<T extends Object> implements
 	 * @param factory
 	 * @return
 	 */
-	public static boolean isPropertySourceFactory( IJp2pComponents component, IPropertySourceFactory<?> factory ){
+	public static boolean isPropertySourceFactory( IJp2pComponents component, IPropertySourceFactory factory ){
 		if( component == null )
 			return false;
 		return component.toString().equals(factory.getComponentName() );

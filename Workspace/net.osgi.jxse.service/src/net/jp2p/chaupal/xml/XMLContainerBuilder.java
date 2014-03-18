@@ -54,7 +54,6 @@ public class XMLContainerBuilder implements ICompositeBuilder<Jp2pContainer>{
 		//First register all the discovered builders
 		ContainerBuilder containerBuilder = new ContainerBuilder();
 		try {
-			this.extendBuilders( XMLFactoryBuilder.class, containerBuilder);
 			this.extendBuilders(clss, containerBuilder);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -133,15 +132,15 @@ public class XMLContainerBuilder implements ICompositeBuilder<Jp2pContainer>{
 	 * @param node
 	 */
 	private void extendContainer( ContainerBuilder containerBuilder){
-		IPropertySourceFactory<?>[] factories = containerBuilder.getFactories();
-		for( IPropertySourceFactory<?> factory: factories ){
+		IPropertySourceFactory[] factories = containerBuilder.getFactories();
+		for( IPropertySourceFactory factory: factories ){
 			if( factory instanceof IComponentFactory<?>)
 				((AbstractComponentFactory<?>) factory).earlyStart();
 		}
-		for( IPropertySourceFactory<?> factory: factories ){
+		for( IPropertySourceFactory factory: factories ){
 			factory.extendContainer();
 		}
-		for( IPropertySourceFactory<?> factory: factories ){
+		for( IPropertySourceFactory factory: factories ){
 			factory.parseProperties();
 		}
 	}
@@ -151,10 +150,9 @@ public class XMLContainerBuilder implements ICompositeBuilder<Jp2pContainer>{
 	 * file. This allows for more fine-grained tuning of the property sources
 	 * @param node
 	 */
-	@SuppressWarnings({ "unchecked" })
 	private void notifyPropertyCreated( ContainerBuilder containerBuilder){
-		for( IPropertySourceFactory<?> factory: containerBuilder.getFactories() ){
-			containerBuilder.updateRequest( new ComponentBuilderEvent<Object>((IPropertySourceFactory<Object>) factory, BuilderEvents.PROPERTY_SOURCE_CREATED));
+		for( IPropertySourceFactory factory: containerBuilder.getFactories() ){
+			containerBuilder.updateRequest( new ComponentBuilderEvent<Object>((IPropertySourceFactory) factory, BuilderEvents.PROPERTY_SOURCE_CREATED));
 		}
 	}
 

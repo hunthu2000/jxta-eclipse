@@ -16,6 +16,8 @@ import java.util.Collection;
 import org.osgi.framework.BundleContext;
 
 import net.jp2p.chaupal.context.Jp2pContextService;
+import net.jp2p.chaupal.module.ModuleFactoryService;
+import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.component.ComponentEventDispatcher;
 import net.jp2p.container.component.IComponentChangedListener;
 import net.jp2p.container.context.ContextLoader;
@@ -31,6 +33,12 @@ public class Jp2pBundleActivator extends AbstractJp2pBundleActivator<Jp2pStartup
 	
 	private static Jp2pContextService contextService; 
 	private ContextLoader contextLoader;
+	private static ModuleFactoryService moduleService; 
+	
+	
+	private Jp2pContainerBuilder builder;
+	private IJp2pContainer container;
+	private IContainerBuilderListener listener;
 	
 	private Collection<IContainerBuilderListener> listeners;
 
@@ -41,6 +49,11 @@ public class Jp2pBundleActivator extends AbstractJp2pBundleActivator<Jp2pStartup
 
 	public String getBundleId() {
 		return bundle_id;
+	}
+
+	
+	public IJp2pContainer getContainer() {
+		return container;
 	}
 
 	public IComponentChangedListener getObserver() {
@@ -62,11 +75,21 @@ public class Jp2pBundleActivator extends AbstractJp2pBundleActivator<Jp2pStartup
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		this.bundleContext = bundleContext;
+		moduleService = new ModuleFactoryService( bundleContext );
+		moduleService.open();			
 		super.start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
+		if(( builder != null ) && ( listener != null )){
+			builder.removeContainerBuilderListener(listener);
+			listener = null;
+		}
+
+		moduleService.close();
+		moduleService = null;
+
 		contextService.close();
 		contextService = null;
 		contextLoader.clear();
@@ -79,15 +102,28 @@ public class Jp2pBundleActivator extends AbstractJp2pBundleActivator<Jp2pStartup
 		super.stop(bundleContext);
 	}
 
+	private void notifyListeners( ContainerBuilderEvent event ){
+		for( IContainerBuilderListener listener: listeners )
+			listener.notifyContainerBuilt(event);		
+	}
+	
 	@Override
 	protected void createContainer() {
 		
 		contextLoader = ContextLoader.getInstance();
 		contextService = new Jp2pContextService( contextLoader, bundleContext );
-		Jp2pContainerBuilderHelper helper = new Jp2pContainerBuilderHelper( this, contextLoader );
-		for( IContainerBuilderListener listener: listeners )
-			helper.addContainerBuilderListener(listener);
-		helper.open();
+		builder = new Jp2pContainerBuilder( this, contextLoader );
+		listener = new IContainerBuilderListener(){
+
+			@Override
+			public void notifyContainerBuilt(ContainerBuilderEvent event) {
+				container = builder.getContainer();
+				notifyListeners(event);
+			}	
+		};
+		builder.addContainerBuilderListener(listener);
+		
+		builder.build();
 
 		ComponentEventDispatcher dispatcher = ComponentEventDispatcher.getInstance();
 		if( observer != null )

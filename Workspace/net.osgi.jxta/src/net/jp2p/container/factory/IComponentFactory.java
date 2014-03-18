@@ -10,7 +10,7 @@
  *******************************************************************************/
 package net.jp2p.container.factory;
 
-public interface IComponentFactory<T extends Object> extends IPropertySourceFactory<T>{
+public interface IComponentFactory<T extends Object> extends IPropertySourceFactory{
 	
 	/**
 	 * Some services need to start prior to the creation of properties. This can be performed here.

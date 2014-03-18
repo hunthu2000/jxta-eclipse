@@ -7,20 +7,20 @@ import net.jp2p.container.properties.IJp2pPropertySource;
 
 public interface IContainerBuilder {
 
-	public abstract boolean addFactory( IPropertySourceFactory<?> factory);
+	public abstract boolean addFactory( IPropertySourceFactory factory);
 
-	public abstract boolean removeFactory(IPropertySourceFactory<Object> factory);
+	public abstract boolean removeFactory(IPropertySourceFactory factory);
 
-	public abstract IPropertySourceFactory<?> getFactory(String name);
+	public abstract IPropertySourceFactory getFactory(String name);
 
-	public IPropertySourceFactory<Object>[] getFactories();
+	public IPropertySourceFactory[] getFactories();
 	
 	/**
 	 * Returns the factory who'se source matched the given one
 	 * @param source
 	 * @return
 	 */
-	public abstract IPropertySourceFactory<?> getFactory(
+	public abstract IPropertySourceFactory getFactory(
 			IJp2pPropertySource<?> source);
 
 	/**
@@ -50,7 +50,7 @@ public interface IContainerBuilder {
 	 * @param blockCreation
 	 * @return
 	 */
-	public abstract IPropertySourceFactory<?> addFactoryToContainer(
+	public abstract IPropertySourceFactory addFactoryToContainer(
 			String componentName,
 			IJp2pPropertySource<IJp2pProperties> parentSource,
 			boolean createSource, boolean blockCreation);
@@ -63,7 +63,7 @@ public interface IContainerBuilder {
 	 * @param blockCreation: do not allow the builder to create the component
 	 * @return
 	 */
-	public abstract IPropertySourceFactory<?> getOrCreateChildFactory(
+	public abstract IPropertySourceFactory getOrCreateChildFactory(
 			IJp2pPropertySource<IJp2pProperties> source, String componentName,
 			boolean createSource, boolean blockCreation);
 

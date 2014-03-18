@@ -48,28 +48,30 @@ public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
 		return provider.getContainer();
 	}
 
-	private final void setActivator() {
+	private void provideContainer( IJp2pContainer container ){
 		try{
-			listener = new IContainerBuilderListener() {
-				
-				@Override
-				public void notifyContainerBuilt(ContainerBuilderEvent event) {
-					IJp2pContainer container = (IJp2pContainer) event.getContainer();
-					String pass = (String) container.getPropertySource().getProperty( ContainerProperties.PASS_1);
-					if( !Utils.isNull( pass ))
-						introduction = pass;
-					pass = (String) container.getPropertySource().getProperty( ContainerProperties.PASS_2);
-					if( !Utils.isNull( pass ))
-						token = pass;
-					provider = new Jp2pContainerProvider( introduction, token );
-					provider.setContainer( container );
-				}
-			};
-			activator.addContainerBuilderListener(listener);
+			provider.setContainer( container );		
 		}
 		catch( Exception ex ){
 			ex.printStackTrace();
 		}
+	}
+
+	private final void setActivator() {
+		provider = new Jp2pContainerProvider( introduction, token );
+		if( activator.getContainer() != null ){
+			provideContainer( activator.getContainer() );
+			return;
+		}
+		listener = new IContainerBuilderListener() {
+
+			@Override
+			public void notifyContainerBuilt(ContainerBuilderEvent event) {
+				IJp2pContainer container = (IJp2pContainer) event.getContainer();
+				provideContainer( container );
+			}
+		};
+		activator.addContainerBuilderListener(listener);
 	}
 
 	@Override
@@ -117,7 +119,7 @@ class Jp2pContainerProvider extends AbstractProvider<String, Object, IJp2pContai
 	 * Add a container and 
 	 * @param container
 	 */
-	public void setContainer( IJp2pContainer  container) {
+	void setContainer( IJp2pContainer  container) {
 		if( container == null )
 			throw new NullPointerException();
 		this.container = container;

@@ -8,9 +8,6 @@ import net.jp2p.container.utils.Utils;
 
 public class ContextLoader {
 
-	private static final int DEFAULT_TIME = 200;
-	private static final int DEFAULT_COUNT = 50;
-
 	private Collection<IJp2pContext> contexts;
 	
 	private static ContextLoader contextLoader = new ContextLoader();
@@ -120,23 +117,5 @@ public class ContextLoader {
 			e1.printStackTrace();
 		}
 		return context;
-	}
-	
-	/**
-	 * Wait until the service is available
-	 * @param contextName
-	 * @param componentName
-	 */
-	public static IJp2pContext waitForService( String contextName, String componentName){
-		int counter = DEFAULT_COUNT;
-		while(( counter > 0 ) && !contextLoader.isLoadedComponent(contextName, componentName)){
-			try{
-				Thread.sleep( DEFAULT_TIME);
-			}
-			catch( InterruptedException ex ){
-				
-			}
-		}
-		return contextLoader.getContextForComponent(contextName, componentName);
 	}
 }

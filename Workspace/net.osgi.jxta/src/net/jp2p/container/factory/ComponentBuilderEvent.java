@@ -19,14 +19,13 @@ public class ComponentBuilderEvent<T extends Object> extends EventObject {
 
 	private BuilderEvents builderEvent;
 	
-	public ComponentBuilderEvent(IPropertySourceFactory<T> factory, BuilderEvents factoryEvent ){
+	public ComponentBuilderEvent(IPropertySourceFactory factory, BuilderEvents factoryEvent ){
 		super(factory);
 		this.builderEvent = factoryEvent;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public IPropertySourceFactory<T> getFactory() {
-		return (IPropertySourceFactory<T>) super.source;
+	public IPropertySourceFactory getFactory() {
+		return (IPropertySourceFactory) super.source;
 	}
 
 	public BuilderEvents getBuilderEvent() {

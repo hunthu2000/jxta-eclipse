@@ -57,7 +57,7 @@ public interface IJp2pContext {
 	public boolean isValidComponentName( String contextName, String componentName );
 	
 	//Get the factory that is created
-	public IPropertySourceFactory<?> getFactory(IContainerBuilder builder,
+	public IPropertySourceFactory getFactory(IContainerBuilder builder,
 			Attributes attributes,
 			IJp2pPropertySource<IJp2pProperties> parentSource,
 			String componentName);

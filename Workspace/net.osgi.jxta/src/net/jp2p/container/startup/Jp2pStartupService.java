@@ -63,7 +63,7 @@ public class Jp2pStartupService extends AbstractActivator implements IJp2pServic
 	 * Start a module
 	 * @param module
 	 */
-	protected void stopModule( IPropertySourceFactory<Object> factory ){
+	protected void stopModule( IPropertySourceFactory factory ){
 		if(!( factory instanceof IComponentFactory<?> ))
 			return;
 		if( ((IComponentFactory<?>) factory).getComponent() instanceof IActivator ){
@@ -107,7 +107,7 @@ public class Jp2pStartupService extends AbstractActivator implements IJp2pServic
 	@Override
 	public void deactivate() {
 		this.listeners.remove(this.container);
-		for( IPropertySourceFactory<?> factory: container.getFactories()){
+		for( IPropertySourceFactory factory: container.getFactories()){
 			this.stopModule( (IComponentFactory<Object>) factory );
 		}
 	}

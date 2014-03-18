@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.jp2p.chaupal;
+package net.jp2p.chaupal.context;
 
 import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.factory.IComponentFactory;

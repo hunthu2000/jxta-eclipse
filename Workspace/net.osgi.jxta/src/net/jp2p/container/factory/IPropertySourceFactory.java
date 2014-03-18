@@ -14,7 +14,7 @@ import net.jp2p.container.builder.ICompositeBuilderListener;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 
-public interface IPropertySourceFactory<T extends Object> extends ICompositeBuilderListener<Object>{
+public interface IPropertySourceFactory extends ICompositeBuilderListener<Object>{
 
 	/**
 	 * Get the component name that will be created

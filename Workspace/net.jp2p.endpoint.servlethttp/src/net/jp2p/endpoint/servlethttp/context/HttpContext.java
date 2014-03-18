@@ -10,8 +10,10 @@ import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.IPropertyConvertor;
+import net.jp2p.container.utils.StringStyler;
 import net.jp2p.container.utils.Utils;
 import net.jp2p.container.xml.IJp2pHandler;
+import net.jp2p.endpoint.servlethttp.factory.HttpPropertySource;
 import net.jp2p.endpoint.servlethttp.factory.HttpServiceFactory;
 
 public class HttpContext implements IJp2pContext {
@@ -29,7 +31,7 @@ public class HttpContext implements IJp2pContext {
 	@Override
 	public String[] getSupportedServices() {
 		String[] names = new String[1];
-		names[0] = HttpServiceFactory.S_HTTP_SERVICE;
+		names[0] = HttpPropertySource.S_HTTP_SERVICE;
 		return names;
 	}
 
@@ -41,8 +43,10 @@ public class HttpContext implements IJp2pContext {
 	public boolean isValidComponentName( String contextName, String componentName ){
 		if( !Utils.isNull( contextName ) && !Jp2pContext.isContextNameEqual( S_HTTP_CONTEXT, contextName ))
 			return false;
+		String compName = StringStyler.styleToEnum( componentName );
+		compName = StringStyler.prettyString( compName );
 		for( String name: getSupportedServices() ){
-			if( name.equals( componentName ))
+			if( name.equals( compName ))
 				return true;
 		}
 		return false;
@@ -54,11 +58,11 @@ public class HttpContext implements IJp2pContext {
 	 * @return
 	 */
 	@Override
-	public IPropertySourceFactory<?> getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+	public IPropertySourceFactory getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
 		if( !isValidComponentName( S_HTTP_CONTEXT, componentName))
 			return null;
 		
-		IPropertySourceFactory<?> factory = new HttpServiceFactory( builder, parentSource );
+		IPropertySourceFactory factory = new HttpServiceFactory( builder, parentSource );
 		return factory;
 	}
 

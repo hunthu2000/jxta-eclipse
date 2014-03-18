@@ -1,7 +1,5 @@
 package net.jp2p.chaupal.context;
 
-import net.jp2p.container.utils.Utils;
-
 public class ServiceInfo {
 
 	String name;
@@ -12,7 +10,7 @@ public class ServiceInfo {
 		super();
 		this.name = name;
 		this.context = context;
-		this.found = !Utils.isNull( name );
+		this.found = false;
 	}
 
 	public String getName() {
@@ -37,5 +35,10 @@ public class ServiceInfo {
 
 	public void setFound(boolean found) {
 		this.found = found;
+	}
+
+	@Override
+	public String toString() {
+		return this.context + ":" + this.name;
 	}
 }

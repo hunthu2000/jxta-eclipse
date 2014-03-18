@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.jp2p.chaupal;
+package net.jp2p.chaupal.dispatcher;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -74,22 +74,21 @@ public class ContainerFactory extends AbstractComponentFactory<Object>
 		if( autostart)
 			return true;
 		String comp = Jp2pContext.Components.STARTUP_SERVICE.toString();
-		IPropertySourceFactory<?> startup = container.getFactory( comp );
+		IPropertySourceFactory startup = container.getFactory( comp );
 		return (( startup != null ) &&  Jp2pContainerPropertySource.isAutoStart(startup.getPropertySource() ));
 	}
 
-	@SuppressWarnings("unchecked")
 	private void onPropertySourceCreated(){
 		IContainerBuilder builder = super.getBuilder();
 		boolean autostart = Jp2pContainerPropertySource.isAutoStart(this.getPropertySource());
 		String comp = Jp2pContext.Components.STARTUP_SERVICE.toString();
-		IPropertySourceFactory<?> startup = builder.getFactory( comp );
+		IPropertySourceFactory startup = builder.getFactory( comp );
 		if( !autostart || ( startup != null ))
 			return;
 		
 		startup = Jp2pContext.getDefaultFactory( builder, this.getPropertySource(), comp);
 		IJp2pWritePropertySource<IJp2pProperties> props = (IJp2pWritePropertySource<IJp2pProperties>) startup.createPropertySource();
 		props.setDirective( Directives.AUTO_START, Boolean.TRUE.toString());
-		builder.addFactory((IPropertySourceFactory<Object>) startup);
+		builder.addFactory((IPropertySourceFactory) startup);
 	}
 }

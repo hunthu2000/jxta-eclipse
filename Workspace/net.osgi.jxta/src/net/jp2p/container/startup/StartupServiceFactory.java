@@ -22,7 +22,7 @@ import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
 
-public class StartupServiceFactory extends AbstractPropertySourceFactory<IContainerBuilder>
+public class StartupServiceFactory extends AbstractPropertySourceFactory
 {
 	public StartupServiceFactory( IContainerBuilder builder,IJp2pPropertySource<IJp2pProperties> parent) {
 		super( builder, parent );
@@ -43,7 +43,7 @@ public class StartupServiceFactory extends AbstractPropertySourceFactory<IContai
 	@Override
 	public void extendContainer() {
 		IContainerBuilder builder = super.getBuilder();
-		IPropertySourceFactory<?> factory = builder.getFactory( Jp2pContext.Components.JP2P_CONTAINER.toString() );
+		IPropertySourceFactory factory = builder.getFactory( Jp2pContext.Components.JP2P_CONTAINER.toString() );
 		ContainerFactory cf = (ContainerFactory) factory;
 		if( !cf.isAutoStart() )
 			return;

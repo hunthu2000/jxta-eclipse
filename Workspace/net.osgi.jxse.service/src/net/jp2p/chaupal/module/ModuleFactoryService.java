@@ -7,6 +7,7 @@ import net.jxse.module.IModuleFactory;
 import net.jxse.platform.IJxtaModuleLoader;
 import net.jxse.platform.IJxtaModuleFactory;
 import net.jxse.platform.JxtaModuleContainer;
+import net.jxta.impl.peergroup.MultiLoader;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceListener;
@@ -36,9 +37,10 @@ public class ModuleFactoryService {
 	private static final String S_ERR_NO_FACTORY_PROVIDED = "No factory is created. Please implement one";
     private String filter = "(objectclass=" + IJxtaModuleFactory.class.getName() + ")";
 	
-	BundleContext  bc;
+	private BundleContext  bc;
 	private IJxtaModuleLoader container = JxtaModuleContainer.getInstance();
-
+	private MultiLoader loader;
+	
 	public ModuleFactoryService(BundleContext bc) {
 		this.bc = bc;
 	}
@@ -92,6 +94,10 @@ public class ModuleFactoryService {
 			IJxtaModuleFactory factory = bc.getService( sr );
 			if( factory == null )
 				throw new NullPointerException( S_ERR_NO_FACTORY_PROVIDED);
+			if( loader == null ){
+				loader = MultiLoader.getInstance();
+				loader.addLoader( JxtaModuleContainer.getInstance());
+			}
 			container.addFactory( factory );
 			Activator.getLog().log( LogService.LOG_INFO,"Module Factory " + factory.getComponentName() + " registered." );
 		} catch (Exception e) {

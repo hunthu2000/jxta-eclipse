@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.Stack;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 import net.jp2p.container.activator.IActivator;
 import net.jp2p.container.activator.IActivator.Status;
@@ -30,10 +31,12 @@ import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jp2p.container.properties.IJp2pProperties.Jp2pProperties;
 
-public abstract class AbstractComponentFactory<T extends Object> extends AbstractPropertySourceFactory<T> implements IComponentFactory<IJp2pComponent<T>>{
+public abstract class AbstractComponentFactory<T extends Object> extends AbstractPropertySourceFactory implements IComponentFactory<IJp2pComponent<T>>{
 
 	public static final String S_FACTORY = "Factory:";
 	public static final String S_ERR_CREATION_EXCEPTION = "The factory cannot be created, because it is not ready yet";
+	public static final String S_WRN_NOT_ENABLED = "The component is not enabled: ";
+	public static final String S_WRN_BLOCK_CREATION = "The creation of the component is blocked: ";
 	
 	private IJp2pComponent<T> component;
 	
@@ -121,9 +124,17 @@ public abstract class AbstractComponentFactory<T extends Object> extends Abstrac
 	 * @return
 	 */
 	protected synchronized IJp2pComponent<T> createComponent() {
-		boolean blockCreation = AbstractJp2pPropertySource.getBoolean( super.getPropertySource(), Directives.BLOCK_CREATION );
-		if( blockCreation )
+		Logger logger = Logger.getLogger( this.getClass().getName() );
+		boolean enabled = AbstractJp2pPropertySource.getBoolean( super.getPropertySource(), Directives.ENABLED );
+		if( !enabled ){
+			logger.warning( S_WRN_NOT_ENABLED + this.getComponentName());
 			return null;
+		}
+		boolean blockCreation = AbstractJp2pPropertySource.getBoolean( super.getPropertySource(), Directives.BLOCK_CREATION );
+		if( blockCreation ){
+			logger.warning( S_WRN_BLOCK_CREATION + this.getComponentName());
+			return null;
+		}
 		
 		if( this.completed )
 			return component;
@@ -237,7 +248,7 @@ public abstract class AbstractComponentFactory<T extends Object> extends Abstrac
 	 * @param factory
 	 * @return
 	 */
-	public static boolean isComponentFactory( IJp2pComponents component, IPropertySourceFactory<?> factory ){
+	public static boolean isComponentFactory( IJp2pComponents component, IPropertySourceFactory factory ){
 		if( component == null )
 			return false;
 		return component.toString().equals(factory.getComponentName() );

@@ -21,6 +21,7 @@ public interface IJp2pDirectives{
 		AUTO_START,
 		CLEAR,
 		VERSION,
+		ENABLED,
 		BLOCK_CREATION;
 
 		@Override

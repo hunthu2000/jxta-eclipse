@@ -12,7 +12,7 @@ package net.jp2p.chaupal.jxta.network;
 
 import java.util.logging.Logger;
 
-import net.jp2p.chaupal.ServiceEventDispatcher;
+import net.jp2p.chaupal.dispatcher.ServiceEventDispatcher;
 import net.jp2p.container.component.AbstractJp2pService;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.Jp2pComponent;

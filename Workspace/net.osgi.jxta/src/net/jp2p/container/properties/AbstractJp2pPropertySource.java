@@ -53,6 +53,7 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 		this.properties.put( Jp2pProperties.BUNDLE_ID, new ManagedProperty<IJp2pProperties,Object>( this, Jp2pProperties.BUNDLE_ID, bundleId, S_JP2P ));
 		this.directives = new TreeMap<IJp2pDirectives,String>(new SimpleComparator<IJp2pDirectives>());
 		this.directives.put( IJp2pDirectives.Directives.ID, bundleId + "." + componentName.toLowerCase() );
+		this.directives.put( IJp2pDirectives.Directives.ENABLED, Boolean.TRUE.toString() );
 		this.componentName = componentName;
 		this.children = new ArrayList<IJp2pPropertySource<?>>();
 		this.listeners = new ArrayList<IManagedPropertyListener<IJp2pProperties, Object>>();
@@ -95,6 +96,11 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 	@Override
 	public String getId() {
 		return (String) this.directives.get( IJp2pDirectives.Directives.ID );
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return Boolean.getBoolean( this.directives.get( IJp2pDirectives.Directives.ENABLED ));
 	}
 
 	@Override
