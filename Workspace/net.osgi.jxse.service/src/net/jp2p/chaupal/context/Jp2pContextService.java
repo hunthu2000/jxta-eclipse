@@ -2,7 +2,7 @@ package net.jp2p.chaupal.context;
 
 import net.jp2p.container.context.ContextLoader;
 import net.jp2p.container.context.IJp2pContext;
-import net.jxse.platform.IJxtaModuleFactory;
+import net.jxse.module.IModuleService;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
@@ -46,7 +46,7 @@ public class Jp2pContextService {
 		ServiceListener sl = new ServiceListener() {
 			@SuppressWarnings("unchecked")
 			public void serviceChanged(ServiceEvent ev) {
-				ServiceReference<IJxtaModuleFactory> sr = (ServiceReference<IJxtaModuleFactory>) ev.getServiceReference();
+				ServiceReference<IModuleService> sr = (ServiceReference<IModuleService>) ev.getServiceReference();
 				switch(ev.getType()) {
 				case ServiceEvent.REGISTERED:
 					try {

@@ -10,18 +10,14 @@
  *******************************************************************************/
 package net.jp2p.chaupal.jxta.network.http;
 
-import net.jp2p.chaupal.Activator;
-import net.jp2p.chaupal.jxta.IChaupalComponents.ChaupalComponents;
-import net.jp2p.chaupal.module.IServiceListenerContainer;
 import net.jp2p.container.component.AbstractJp2pService;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
-import net.jxse.osgi.module.IJp2pServiceListener;
 import net.jxta.platform.Module;
 
 public class HttpService extends AbstractJp2pService<Module>{
 	
-	private IJp2pServiceListener listener;
+	private Object listener;
 
 	public HttpService( HttpServiceFactory factory ) {
 		super(( IJp2pWritePropertySource<IJp2pProperties> ) factory.getPropertySource(), null );

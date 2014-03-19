@@ -1,10 +1,7 @@
 package net.jp2p.chaupal;
 
-import net.jp2p.chaupal.module.IServiceListenerContainer;
-
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
 
 public class Activator implements BundleActivator {
@@ -23,10 +20,7 @@ public class Activator implements BundleActivator {
 	}
 
 	@Override
-	public void stop(BundleContext context) throws Exception {
-		ServiceReference<?> reference = context.getServiceReference(IServiceListenerContainer.class);
-		context.ungetService(reference); 
-		
+	public void stop(BundleContext context) throws Exception {		
 		logService.close();
 		logService = null;
 		plugin = null;

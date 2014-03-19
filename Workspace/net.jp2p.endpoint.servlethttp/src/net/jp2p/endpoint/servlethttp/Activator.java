@@ -1,6 +1,6 @@
 package net.jp2p.endpoint.servlethttp;
 
-import net.jp2p.endpoint.servlethttp.osgi.ModuleFactoryRegistrator;
+import net.jp2p.chaupal.module.ModuleFactoryRegistrator;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

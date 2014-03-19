@@ -61,7 +61,7 @@ public class Jp2pComponentNode<T extends Object> extends Jp2pComponent<T> implem
 		if( module instanceof IJp2pComponent )
 			component = (IJp2pComponent<Object>) module;
 		else
-			component = new Jp2pComponent( node, module );
+			component = new Jp2pComponent( module );
 
 		node.addChild( component );
 		return component;
@@ -77,5 +77,11 @@ public class Jp2pComponentNode<T extends Object> extends Jp2pComponent<T> implem
 			if( component.getModule().equals( module ))
 				node.removeChild(component);
 		}
+	}
+
+	@Override
+	public boolean isRoot() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

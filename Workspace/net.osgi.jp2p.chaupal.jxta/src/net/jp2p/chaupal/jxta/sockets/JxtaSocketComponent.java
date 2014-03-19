@@ -35,20 +35,15 @@ public class JxtaSocketComponent extends Jp2pComponent<JxtaSocket> {
 	
 	public JxtaSocketComponent( IJp2pComponent<NetworkManager> manager, IJp2pComponent<PipeAdvertisement> pipeAd, 
 			Properties properties ) {
-		super( manager, null );
+		super( null, null );
 		this.pipeAd = pipeAd;
-	}
-
-	@Override
-	public boolean isRoot() {
-		return false;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public JxtaSocket getModule() {
 		JxtaSocket socket = null;
-		 IJp2pComponent<NetworkManager> manager = (IJp2pComponent<NetworkManager> )super.getParent();
+		 IJp2pComponent<NetworkManager> manager = null;//(IJp2pComponent<NetworkManager> )super.getParent();
 		try {
 			return new JxtaSocket( manager.getModule().getNetPeerGroup(), null, pipeAd.getModule(), ( int )super.getPropertySource().getProperty( SocketFactory.Properties.TIME_OUT ));
 		} catch (Exception e) {

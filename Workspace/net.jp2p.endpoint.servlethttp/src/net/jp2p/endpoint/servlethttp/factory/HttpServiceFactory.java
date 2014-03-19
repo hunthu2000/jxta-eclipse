@@ -13,18 +13,16 @@ package net.jp2p.endpoint.servlethttp.factory;
 import net.jp2p.container.ContainerFactory;
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
-import net.jp2p.container.component.Jp2pComponent;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.AbstractFilterFactory;
 import net.jp2p.container.factory.filter.ComponentCreateFilter;
 import net.jp2p.container.factory.filter.IComponentFactoryFilter;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
-import net.jp2p.endpoint.servlethttp.Activator;
-import net.jp2p.endpoint.servlethttp.osgi.ModuleFactory;
-import net.jxta.protocol.ModuleImplAdvertisement;
+import net.jp2p.endpoint.servlethttp.osgi.HttpModuleService;
+import net.jxta.platform.Module;
 
-public class HttpServiceFactory extends AbstractFilterFactory<ModuleFactory>{
+public class HttpServiceFactory extends AbstractFilterFactory<Module>{
 		
 	public HttpServiceFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
 		super( container, parentSource );
@@ -43,27 +41,11 @@ public class HttpServiceFactory extends AbstractFilterFactory<ModuleFactory>{
 
 	@Override
 	protected IComponentFactoryFilter createFilter() {
-		return new ComponentCreateFilter<IJp2pComponent<ModuleFactory>, ContainerFactory>( BuilderEvents.COMPONENT_CREATED, Jp2pContext.Components.JP2P_CONTAINER.toString(), this );
+		return new ComponentCreateFilter<IJp2pComponent<Module>, ContainerFactory>( BuilderEvents.COMPONENT_CREATED, Jp2pContext.Components.JP2P_CONTAINER.toString(), this );
 	}
 
 	@Override
-	protected HttpComponent onCreateComponent(IJp2pPropertySource<IJp2pProperties> source ) {
-		return new HttpComponent( source );
-	}
-}
-
-class HttpComponent extends Jp2pComponent<ModuleFactory>{
-	
-	private ModuleImplAdvertisement impladv;
-	
-	public HttpComponent(IJp2pPropertySource<IJp2pProperties> source) {
-		super( source, new ModuleFactory( HttpPropertySource.S_HTTP_SERVICE ));
-		Activator.getModuleFactoryRegistrator().register( super.getModule());
-	}
-
-	ModuleImplAdvertisement getImplAdvertisement() {
-		return impladv;
-	}
-	
-	 
+	protected HttpModuleService onCreateComponent(IJp2pPropertySource<IJp2pProperties> source ) {
+		return new HttpModuleService( (HttpPropertySource) source );
+	}	 
 }
