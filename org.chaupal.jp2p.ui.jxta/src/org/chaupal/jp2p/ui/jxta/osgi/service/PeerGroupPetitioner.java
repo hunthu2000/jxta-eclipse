@@ -8,7 +8,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import net.jp2p.chaupal.core.Jp2pDSComponent;
+import net.jp2p.chaupal.activator.IJp2pDSComponent;
 import net.jp2p.chaupal.dispatcher.ServiceChangedEvent;
 import net.jp2p.chaupal.dispatcher.ServiceEventDispatcher;
 import net.jp2p.chaupal.dispatcher.IServiceChangedListener.ServiceChange;
@@ -104,7 +104,7 @@ public class PeerGroupPetitioner extends AbstractPetitioner<String, String, Jp2p
 
 		private static final String[] getProvidedInfo(){
 			Class<?> clss = ResourcePalaver.class;
-			String[] info = { Jp2pDSComponent.S_IJP2P_CONTAINER_PACKAGE_ID, Jp2pDSComponent.S_IP2P_TOKEN} ;
+			String[] info = { IJp2pDSComponent.S_IJP2P_CONTAINER_PACKAGE_ID, IJp2pDSComponent.S_IP2P_TOKEN} ;
 			URL url = clss.getResource(S_JP2P_INF );
 			if( url == null )
 				return info;
@@ -132,7 +132,7 @@ public class PeerGroupPetitioner extends AbstractPetitioner<String, String, Jp2p
 		@Override
 		public String giveToken() {
 			if( this.providedToken == null )
-				return  Jp2pDSComponent.S_IP2P_TOKEN;
+				return  IJp2pDSComponent.S_IP2P_TOKEN;
 			return this.providedToken;	
 		}
 
@@ -140,7 +140,7 @@ public class PeerGroupPetitioner extends AbstractPetitioner<String, String, Jp2p
 		public boolean confirm(Object token) {
 			if( token == null )
 				return false;
-			boolean retval = token.equals( Jp2pDSComponent.S_IP2P_TOKEN ); 
+			boolean retval = token.equals( IJp2pDSComponent.S_IP2P_TOKEN ); 
 			if( retval )
 				return ( retval );
 			return token.equals(this.providedToken );

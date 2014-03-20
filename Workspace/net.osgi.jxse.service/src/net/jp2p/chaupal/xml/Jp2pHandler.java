@@ -7,17 +7,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jp2p.container.ContainerFactory;
-import net.jp2p.container.Jp2pContainerPropertySource;
 import net.jp2p.container.builder.ComponentNode;
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.context.ContextLoader;
 import net.jp2p.container.context.IJp2pContext;
-import net.jp2p.container.context.Jp2pContainerPreferences;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.IComponentFactory;
 import net.jp2p.container.factory.IJp2pComponents;
 import net.jp2p.container.factory.IPropertySourceFactory;
-import net.jp2p.container.partial.PartialPropertySource;
 import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pDirectives;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -26,26 +23,9 @@ import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.IPropertyConvertor;
 import net.jp2p.container.properties.ManagedProperty;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
-import net.jp2p.container.seeds.SeedInfo;
 import net.jp2p.container.utils.StringDirective;
 import net.jp2p.container.utils.StringStyler;
 import net.jp2p.container.utils.Utils;
-import net.jp2p.jxta.advertisement.AdvertisementPreferences;
-import net.jp2p.jxta.advertisement.AdvertisementPropertySource;
-import net.jp2p.jxta.discovery.DiscoveryPreferences;
-import net.jp2p.jxta.discovery.DiscoveryPropertySource;
-import net.jp2p.jxta.network.INetworkPreferences;
-import net.jp2p.jxta.network.NetworkManagerPreferences;
-import net.jp2p.jxta.network.NetworkManagerPropertySource;
-import net.jp2p.jxta.network.NetworkManagerPropertySource.NetworkManagerProperties;
-import net.jp2p.jxta.network.configurator.NetworkConfigurationFactory;
-import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource;
-import net.jp2p.jxta.network.configurator.OverviewPreferences;
-import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
-import net.jp2p.jxta.peergroup.PeerGroupPropertySource;
-import net.jp2p.jxta.pipe.PipePropertySource;
-import net.jp2p.jxta.registration.RegistrationPropertySource;
-import net.jp2p.jxta.seeds.SeedListPropertySource;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -216,12 +196,6 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 		String id = StringStyler.styleToEnum( qName );
 		Object value = null;
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) node.getData().getPropertySource();
-		if( isCreated(attributes)){
-			if( source instanceof NetworkConfigurationPropertySource ){
-				OverviewPreferences preferences = new OverviewPreferences( source );
-				value = preferences.createDefaultValue((NetworkConfiguratorProperties) source.getIdFromString( id ));
-			}
-		}
 		ManagedProperty<IJp2pProperties,Object> prop = source.getOrCreateManagedProperty( source.getIdFromString( id ), value, false);
 		for( int i=0; i<attributes.getLength(); i++  ){
 			if( !Utils.isNull( attributes.getLocalName(i)))
@@ -259,64 +233,14 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 
 		if(( property == null ) || ( property.getKey() == null ))
 			return;
-		IJp2pProperties id = property.getKey();
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) node.getData().getPropertySource();
 		String contextName = source.getDirective( Directives.CONTEXT );
 		IJp2pContext context = contexts.getContext(contextName);
-		if( source instanceof Jp2pContainerPropertySource ){
-			Jp2pContainerPreferences preferences = new Jp2pContainerPreferences( (Jp2pContainerPropertySource) source );
-			preferences.setPropertyFromConverion( property.getKey(), value);
-			return;
-		}
-		if( source instanceof NetworkManagerPropertySource ){
-			NetworkManagerPreferences preferences = new NetworkManagerPreferences( source );
-			preferences.setPropertyFromConverion( (NetworkManagerProperties) property.getKey(), value);
-			return;
-		}
-		if( source instanceof NetworkConfigurationPropertySource ){
-			OverviewPreferences preferences = new OverviewPreferences( source );
-			preferences.setPropertyFromConverion( (NetworkConfiguratorProperties) property.getKey(), value);
-			return;
-		}
-		if( source instanceof DiscoveryPropertySource ){
-			DiscoveryPreferences preferences = new DiscoveryPreferences( source );
-			preferences.setPropertyFromConverion( id, value);
-			return;
-		}
-		if( source instanceof PipePropertySource ){
-			PipePropertySource pps = ( PipePropertySource )source ;
-			pps.setProperty( id, value);
-			return;
-		}
-		if( source instanceof PeerGroupPropertySource ){
-			IPropertyConvertor<String, Object> convertor = context.getConvertor(source);
-			property.setValue( convertor.convertTo(property.getKey(), value));
-			return;
-		}
-		if( source instanceof RegistrationPropertySource ){
-			//RegistrationPreferences preferences = new RegistrationPreferences( source );
-			//preferences.setPropertyFromString(( RegistrationProperties) property.getKey(), value);
-			return;
-		}
-		
-		if( source instanceof AdvertisementPropertySource ){
-			AdvertisementPreferences preferences = new AdvertisementPreferences( source );
-			preferences.setPropertyFromConverion( id, value);
-			return;
-		}
-		if( source instanceof PartialPropertySource ){
-			INetworkPreferences preferences = NetworkConfigurationFactory.getPreferences((PartialPropertySource) source);
-			if( preferences != null )
-				preferences.convertTo( (NetworkConfiguratorProperties) property.getKey(), value);
-			return;
-		}
-		if( source instanceof SeedListPropertySource ){
-			SeedListPropertySource slps = (SeedListPropertySource) source;
-			SeedInfo seedInfo = new SeedInfo((( IJp2pProperties )property.getKey()).name(), ( String )value );
-			slps.setProperty( (IJp2pProperties) property.getKey(), seedInfo );
-			return;
-		}
-		this.property.setValue(value);
+		IPropertyConvertor<String, Object> convertor = context.getConvertor(source);
+		if( convertor != null )
+			convertor.setPropertyFromConverion( property.getKey(), value);
+		else
+			this.property.setValue(value);
 	}
 
 

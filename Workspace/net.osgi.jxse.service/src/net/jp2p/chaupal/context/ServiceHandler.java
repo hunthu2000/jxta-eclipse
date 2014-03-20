@@ -62,12 +62,6 @@ class ServiceHandler extends DefaultHandler implements IContextEntities{
 		if( Jp2pContext.Components.isComponent( qName )){
 			IJp2pComponents current = Jp2pContext.Components.valueOf( StringStyler.styleToEnum( qName ));
 			switch(( Jp2pContext.Components )current ){
-			case CONTEXT:
-				String className = attributes.getValue( ContextDirectives.CLASS.toString().toLowerCase() );
-				IJp2pContext context = ContextLoader.loadContext( this, className );
-				if( context != null )
-					contexts.addContext( context );
-				return;
 			default:
 				break;
 			}

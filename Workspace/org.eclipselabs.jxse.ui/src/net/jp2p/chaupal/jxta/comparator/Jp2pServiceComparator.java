@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.jp2p.chaupal.comparator;
+package net.jp2p.chaupal.jxta.comparator;
 
 import java.util.Comparator;
 import java.util.Date;

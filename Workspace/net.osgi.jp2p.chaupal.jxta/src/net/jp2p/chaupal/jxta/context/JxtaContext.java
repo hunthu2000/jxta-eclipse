@@ -18,12 +18,15 @@ import net.jp2p.container.properties.IJp2pDirectives.Contexts;
 import net.jp2p.container.utils.StringStyler;
 import net.jp2p.container.utils.Utils;
 import net.jp2p.container.xml.IJp2pHandler;
+import net.jp2p.jxta.advertisement.AdvertisementPreferences;
 import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.jp2p.jxta.discovery.DiscoveryPreferences;
 import net.jp2p.jxta.factory.JxtaFactoryUtils;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jp2p.jxta.network.NetworkManagerPreferences;
+import net.jp2p.jxta.network.configurator.OverviewPreferences;
 import net.jp2p.jxta.peergroup.PeerGroupPreferences;
+import net.jp2p.jxta.seeds.SeedListPropertySource;
 
 public class JxtaContext implements IJp2pContext {
 
@@ -111,9 +114,17 @@ public class JxtaContext implements IJp2pContext {
 		JxtaComponents component = JxtaComponents.valueOf(comp);
 		IPropertyConvertor<String, Object> convertor = null;
 		switch( component ){
+		case ADVERTISEMENT:
+			convertor = new AdvertisementPreferences( source );
+			break;
 		case NETWORK_MANAGER:
 			convertor = new NetworkManagerPreferences( source );
 			break;			
+		case NETWORK_CONFIGURATOR:
+			convertor = new OverviewPreferences( source );
+			break;
+		case PIPE_SERVICE:
+			break;
 		case NET_PEERGROUP_SERVICE:
 			convertor = new NetworkManagerPreferences( source );
 			break;			
@@ -123,6 +134,13 @@ public class JxtaContext implements IJp2pContext {
 		case PEERGROUP_SERVICE:
 			convertor = new PeerGroupPreferences( source );
 			break;			
+		case REGISTRATION_SERVICE:
+			break;
+		case SEED_LIST:
+			SeedListPropertySource slps = (SeedListPropertySource) source;
+			//SeedInfo seedInfo = new SeedInfo((( IJp2pProperties )source.getKey()).name(), ( String )value );
+			//slps.setProperty( (IJp2pProperties) property.getKey(), seedInfo );
+			break;
 		default:
 			break;
 		}

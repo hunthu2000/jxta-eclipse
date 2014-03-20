@@ -8,25 +8,20 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.jp2p.chaupal.core;
+package net.jp2p.chaupal.jxta.activator;
 
 import net.jp2p.chaupal.activator.ContainerBuilderEvent;
 import net.jp2p.chaupal.activator.IContainerBuilderListener;
-import net.jp2p.chaupal.activator.Jp2pBundleActivator;
+import net.jp2p.chaupal.activator.IJp2pDSComponent;
 import net.jp2p.container.IJp2pContainer;
-import net.jp2p.container.IJp2pContainer.ContainerProperties;
-import net.jp2p.container.utils.Utils;
 
 import org.eclipselabs.osgi.ds.broker.service.AbstractAttendeeProviderComponent;
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
 import org.eclipselabs.osgi.ds.broker.service.AbstractProvider;
 
 
-public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
+public class Jp2pDSComponent extends AbstractAttendeeProviderComponent implements IJp2pDSComponent {
 
-	public static final String S_IJP2P_CONTAINER_PACKAGE_ID = "org.osgi.jxse.service.core";
-	public static final String S_IP2P_TOKEN = "org.osgi.jxse.token";
-	
 	private Jp2pContainerProvider provider;
 	private String introduction;
 	private String token;
@@ -42,10 +37,6 @@ public class Jp2pDSComponent extends AbstractAttendeeProviderComponent {
 		this.introduction = introduction;
 		this.activator = activator;
 		this.setActivator();
-	}
-
-	protected IJp2pContainer getContainer() {
-		return provider.getContainer();
 	}
 
 	private void provideContainer( IJp2pContainer container ){
@@ -146,7 +137,7 @@ class Jp2pContainerProvider extends AbstractProvider<String, Object, IJp2pContai
 		private String providedToken;
 
 		protected Palaver() {
-			super( Jp2pDSComponent.S_IJP2P_CONTAINER_PACKAGE_ID);
+			super( IJp2pDSComponent.S_IJP2P_CONTAINER_PACKAGE_ID);
 		}
 
 		protected Palaver( String introduction, String token ) {
@@ -157,7 +148,7 @@ class Jp2pContainerProvider extends AbstractProvider<String, Object, IJp2pContai
 		@Override
 		public String giveToken() {
 			if( providedToken == null )
-				return Jp2pDSComponent.S_IP2P_TOKEN;
+				return IJp2pDSComponent.S_IP2P_TOKEN;
 			return providedToken;
 		}
 
@@ -165,7 +156,7 @@ class Jp2pContainerProvider extends AbstractProvider<String, Object, IJp2pContai
 		public boolean confirm(Object token) {
 			boolean retval = false;
 			if( providedToken == null )
-				retval = Jp2pDSComponent.S_IP2P_TOKEN .equals( token );
+				retval = IJp2pDSComponent.S_IP2P_TOKEN .equals( token );
 			else
 				retval = providedToken.equals(token);
 			return retval;

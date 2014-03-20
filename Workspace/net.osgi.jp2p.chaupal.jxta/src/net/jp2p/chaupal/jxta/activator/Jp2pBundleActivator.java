@@ -8,15 +8,18 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.jp2p.chaupal.activator;
+package net.jp2p.chaupal.jxta.activator;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import org.osgi.framework.BundleContext;
 
+import net.jp2p.chaupal.activator.AbstractJp2pBundleActivator;
+import net.jp2p.chaupal.activator.ContainerBuilderEvent;
+import net.jp2p.chaupal.activator.IContainerBuilderListener;
 import net.jp2p.chaupal.context.Jp2pContextService;
-import net.jp2p.chaupal.module.ModuleFactoryService;
+import net.jp2p.chaupal.jxta.module.ModuleFactoryService;
 import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.component.ComponentEventDispatcher;
 import net.jp2p.container.component.IComponentChangedListener;

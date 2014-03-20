@@ -5,8 +5,6 @@ import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.jp2p.container.properties.IJp2pProperties;
-import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.endpoint.servlethttp.factory.HttpPropertySource;
 import net.jp2p.jxta.module.AbstractModuleComponent;
 import net.jxta.compatibility.impl.peergroup.AutomaticConfigurator;

@@ -10,9 +10,11 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.103.0",
  javax.inject,
  org.eclipse.swt
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: net.jp2p.chaupal.comparator,
+Import-Package: net.jp2p.chaupal.activator,
  net.jp2p.chaupal.core,
  net.jp2p.chaupal.dispatcher,
+ net.jp2p.chaupal.jxta.activator,
+ net.jp2p.chaupal.jxta.comparator,
  net.jp2p.chaupal.utils,
  net.jp2p.container,
  net.jp2p.container.activator,

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.jp2p.chaupal.comparator.Jp2pServiceComparator;
+import net.jp2p.chaupal.jxta.comparator.Jp2pServiceComparator;
 import net.jp2p.container.activator.IJp2pService;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.IJp2pComponentNode;

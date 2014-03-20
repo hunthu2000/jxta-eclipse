@@ -2,6 +2,7 @@ package net.jp2p.container.context;
 
 import org.xml.sax.Attributes;
 
+import net.jp2p.container.Jp2pContainerPropertySource;
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.factory.IJp2pComponents;
@@ -138,6 +139,9 @@ public class Jp2pContext implements IJp2pContext {
 		Components component = Components.valueOf(comp);
 		IPropertyConvertor<String, Object> convertor = null;
 		switch( component ){
+		case JP2P_CONTAINER:
+			convertor = new Jp2pContainerPreferences( (Jp2pContainerPropertySource) source );
+			break;
 		default:
 			convertor = new SimplePropertyConvertor( source );
 			break;

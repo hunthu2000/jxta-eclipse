@@ -17,6 +17,7 @@ import net.jp2p.container.persistence.AbstractPreferences;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
+import net.jp2p.container.properties.IPropertyConvertor;
 import net.jp2p.container.properties.ManagedProperty;
 import net.jp2p.container.utils.StringStyler;
 import net.jp2p.container.utils.Utils;
@@ -29,7 +30,7 @@ import net.jp2p.jxta.pipe.PipePropertySource.PipeServiceProperties;
 import net.jxta.id.ID;
 import net.jxta.id.IDFactory;
 
-public class AdvertisementPreferences extends AbstractPreferences<String, Object>{
+public class AdvertisementPreferences extends AbstractPreferences<String, Object> implements IPropertyConvertor<String, Object>{
 
 	public AdvertisementPreferences( IJp2pWritePropertySource<IJp2pProperties> source ) {
 		super( source );

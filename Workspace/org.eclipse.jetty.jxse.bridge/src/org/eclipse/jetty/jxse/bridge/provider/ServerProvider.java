@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.jetty.jxse.bridge.provider;
 
-import net.jxse.service.IServerStarter;
+import net.jxse.osgi.service.IServerStarter;
 
 import org.eclipselabs.osgi.ds.broker.service.AbstractPalaver;
 import org.eclipselabs.osgi.ds.broker.service.AbstractProvider;

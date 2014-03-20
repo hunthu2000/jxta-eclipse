@@ -19,6 +19,7 @@ import net.jp2p.container.persistence.AbstractPreferences;
 import net.jp2p.container.properties.AbstractJp2pWritePropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
+import net.jp2p.container.properties.IPropertyConvertor;
 import net.jp2p.container.properties.ManagedProperty;
 import net.jp2p.jxta.network.INetworkPreferences;
 import net.jp2p.jxta.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
@@ -29,7 +30,7 @@ import net.jxta.peergroup.PeerGroupID;
 import net.jxta.compatibility.platform.NetworkConfigurator;
 import net.jxta.compatibility.platform.NetworkManager.ConfigMode;
 
-public class OverviewPreferences extends AbstractPreferences<String, Object> implements INetworkPreferences{
+public class OverviewPreferences extends AbstractPreferences<String, Object> implements INetworkPreferences, IPropertyConvertor<String, Object>{
 
 	public static final String S_OVERVIEW = "Overview";
 

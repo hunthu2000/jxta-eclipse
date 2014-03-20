@@ -1,4 +1,4 @@
-package net.jp2p.chaupal.activator;
+package net.jp2p.chaupal.jxta.activator;
 
 import java.io.IOException;
 import java.net.URL;
@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 
 import org.osgi.service.log.LogService;
 
+import net.jp2p.chaupal.activator.ContainerBuilderEvent;
+import net.jp2p.chaupal.activator.IContainerBuilderListener;
 import net.jp2p.chaupal.context.ContextServiceParser;
 import net.jp2p.chaupal.context.ServiceInfo;
 import net.jp2p.chaupal.xml.XMLContainerBuilder;

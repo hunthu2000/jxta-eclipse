@@ -1,9 +1,9 @@
-package net.jp2p.chaupal.module;
+package net.jp2p.chaupal.jxta.module;
 
 import java.util.Collection;
 
-import net.jp2p.chaupal.Activator;
-import net.jxse.module.IModuleService;
+import net.jp2p.chaupal.jxta.Activator;
+import net.jp2p.jxta.module.IJxtaModuleService;
 import net.jxta.impl.loader.DynamicJxtaLoader;
 
 import org.osgi.framework.BundleContext;
@@ -32,7 +32,7 @@ import org.osgi.service.log.LogService;
 public class ModuleFactoryService {
 
 	private static final String S_ERR_NO_FACTORY_PROVIDED = "No factory is created. Please implement one";
-    private String filter = "(objectclass=" + IModuleService.class.getName() + ")";
+    private String filter = "(objectclass=" + IJxtaModuleService.class.getName() + ")";
 	
 	private BundleContext  bc;
 	private DynamicJxtaLoader loader = (DynamicJxtaLoader) DynamicJxtaLoader.getInstance();
@@ -48,7 +48,7 @@ public class ModuleFactoryService {
 		ServiceListener sl = new ServiceListener() {
 			@SuppressWarnings("unchecked")
 			public void serviceChanged(ServiceEvent ev) {
-				ServiceReference<IModuleService> sr = (ServiceReference<IModuleService>) ev.getServiceReference();
+				ServiceReference<IJxtaModuleService> sr = (ServiceReference<IJxtaModuleService>) ev.getServiceReference();
 				switch(ev.getType()) {
 				case ServiceEvent.REGISTERED:
 					try {
@@ -72,8 +72,8 @@ public class ModuleFactoryService {
 
 		try {
 			bc.addServiceListener(sl, filter);
-			Collection<ServiceReference<IModuleService>> srl = bc.getServiceReferences( IModuleService.class, filter);
-			for(ServiceReference<IModuleService> sr: srl ) {
+			Collection<ServiceReference<IJxtaModuleService>> srl = bc.getServiceReferences( IJxtaModuleService.class, filter);
+			for(ServiceReference<IJxtaModuleService> sr: srl ) {
 				register( sr );
 			}
 		} catch (InvalidSyntaxException e) { 
@@ -85,9 +85,9 @@ public class ModuleFactoryService {
 	 * Register the service
 	 * @param sr
 	 */
-	private void register(ServiceReference<IModuleService> sr) {
+	private void register(ServiceReference<IJxtaModuleService> sr) {
 		try {
-			IModuleService module = bc.getService( sr );
+			IJxtaModuleService module = bc.getService( sr );
 			if( module == null )
 				throw new NullPointerException( S_ERR_NO_FACTORY_PROVIDED);
 			loader.defineClass( module.getModuleImplAdvertisement() );
@@ -101,9 +101,9 @@ public class ModuleFactoryService {
 	 * Register the service
 	 * @param sr
 	 */
-	private void unregister(ServiceReference<IModuleService> sr) {
+	private void unregister(ServiceReference<IJxtaModuleService> sr) {
 		try {
-			IModuleService module = bc.getService( sr );
+			IJxtaModuleService module = bc.getService( sr );
 			if( module == null )
 				throw new NullPointerException( S_ERR_NO_FACTORY_PROVIDED);
 			Activator.getLog().log( LogService.LOG_INFO,"Module Factory " + module.getIdentifier() + " unregistered." );
@@ -113,11 +113,11 @@ public class ModuleFactoryService {
 	}
 
 	public void close(){
-		String filter = "(objectclass=" + IModuleService.class.getName() + ")";
+		String filter = "(objectclass=" + IJxtaModuleService.class.getName() + ")";
 
 		try {
-			Collection<ServiceReference<IModuleService>> srl = bc.getServiceReferences( IModuleService.class, filter);
-			for(ServiceReference<IModuleService> sr: srl ) {
+			Collection<ServiceReference<IJxtaModuleService>> srl = bc.getServiceReferences( IJxtaModuleService.class, filter);
+			for(ServiceReference<IJxtaModuleService> sr: srl ) {
 				unregister( sr );
 			}
 		} catch (InvalidSyntaxException e) { 
