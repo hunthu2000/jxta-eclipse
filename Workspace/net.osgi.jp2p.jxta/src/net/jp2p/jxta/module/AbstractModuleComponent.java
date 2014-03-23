@@ -17,7 +17,7 @@ import net.jp2p.container.utils.Utils;
 import net.jxta.document.Advertisement;
 import net.jxta.impl.peergroup.CompatibilityUtils;
 import net.jxta.impl.protocol.PlatformConfig;
-import net.jxta.peergroup.PeerGroup;
+import net.jxta.peergroup.IModuleDefinitions;
 import net.jxta.platform.Module;
 import net.jxta.platform.ModuleClassID;
 import net.jxta.platform.ModuleSpecID;
@@ -52,7 +52,7 @@ public abstract class AbstractModuleComponent<T extends Module> extends Jp2pComp
 
 	@Override
 	public ModuleClassID getModuleClassID() {
-		return PeerGroup.httpProtoClassID;
+		return IModuleDefinitions.httpProtoClassID;
 	}
 
 	@Override
