@@ -36,8 +36,16 @@ public class ContextLoader {
 	}
 
 	private final void notifyContextChanged( ContextLoaderEvent event ){
-		for( IContextLoaderListener listener: listeners)
-			listener.notifyRegisterContext(event);
+		for( IContextLoaderListener listener: listeners){
+			switch( event.getType() ){
+			case REGISTERED:
+				listener.notifyRegisterContext(event);
+				break;
+			default:
+				listener.notifyUnregisterContext(event);
+				break;
+			}
+		}
 	}
 
 	public void addContext( IJp2pContext context ){

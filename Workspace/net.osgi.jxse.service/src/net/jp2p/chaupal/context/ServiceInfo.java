@@ -39,6 +39,6 @@ public class ServiceInfo {
 
 	@Override
 	public String toString() {
-		return this.context + ":" + this.name;
+		return this.context + ":" + this.name + "=" + found;
 	}
 }

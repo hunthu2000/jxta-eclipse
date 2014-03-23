@@ -24,7 +24,6 @@ import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.component.ComponentEventDispatcher;
 import net.jp2p.container.component.IComponentChangedListener;
 import net.jp2p.container.context.ContextLoader;
-import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.startup.Jp2pStartupService;
 
 public class Jp2pBundleActivator extends AbstractJp2pBundleActivator<Jp2pStartupService> {
@@ -113,7 +112,9 @@ public class Jp2pBundleActivator extends AbstractJp2pBundleActivator<Jp2pStartup
 	@Override
 	protected void createContainer() {
 		
+		//Add contexts, both default as the ones provided through DS
 		contextLoader = ContextLoader.getInstance();
+
 		contextService = new Jp2pContextService( contextLoader, bundleContext );
 		builder = new Jp2pContainerBuilder( this, contextLoader );
 		listener = new IContainerBuilderListener(){
@@ -132,8 +133,6 @@ public class Jp2pBundleActivator extends AbstractJp2pBundleActivator<Jp2pStartup
 		if( observer != null )
 			dispatcher.addServiceChangeListener(observer);
 		
-		//Add contexts, both default as the ones provided through DS
-		contextLoader.addContext( new Jp2pContext());
 		contextService.open();				
 	}
 }

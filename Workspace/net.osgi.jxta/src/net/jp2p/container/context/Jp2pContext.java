@@ -48,9 +48,6 @@ public class Jp2pContext implements IJp2pContext {
 		}
 	}
 
-	public Jp2pContext() {
-	}
-
 	@Override
 	public String getName() {
 		return Contexts.JP2P.toString();

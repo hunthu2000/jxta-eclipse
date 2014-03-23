@@ -8,9 +8,7 @@ import java.util.logging.Logger;
 
 import net.jp2p.chaupal.xml.IContextEntities;
 import net.jp2p.container.context.ContextLoader;
-import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.context.Jp2pContext;
-import net.jp2p.container.context.IJp2pContext.ContextDirectives;
 import net.jp2p.container.factory.IJp2pComponents;
 import net.jp2p.container.properties.ManagedProperty;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
@@ -62,6 +60,10 @@ class ServiceHandler extends DefaultHandler implements IContextEntities{
 		if( Jp2pContext.Components.isComponent( qName )){
 			IJp2pComponents current = Jp2pContext.Components.valueOf( StringStyler.styleToEnum( qName ));
 			switch(( Jp2pContext.Components )current ){
+			case CONTEXT:
+				stack.push( qName );
+				skip = true;
+				return;				
 			default:
 				break;
 			}

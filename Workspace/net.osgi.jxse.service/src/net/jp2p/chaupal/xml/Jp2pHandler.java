@@ -84,6 +84,7 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 				this.root = (ContainerFactory) factory;
 				break;
 			case CONTEXT:
+				stack.push( qName );
 				return;//skip, the contexts were parsed in the first round
 			default:
 				factory = this.getFactory( qName, attributes, node.getData().getPropertySource());
@@ -165,6 +166,7 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 	 * @return
 	 */
 	protected FactoryNode processFactory( Attributes attributes, FactoryNode parent, IPropertySourceFactory factory ){
+		logger.info( "Factory found for: " + factory.getComponentName() );
 		IJp2pWritePropertySource<?> source = (IJp2pWritePropertySource<?>) factory.createPropertySource();
 		if( parent != null )
 			parent.getData().getPropertySource().addChild( source);
@@ -235,7 +237,7 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 			return;
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) node.getData().getPropertySource();
 		String contextName = source.getDirective( Directives.CONTEXT );
-		IJp2pContext context = contexts.getContext(contextName);
+		IJp2pContext context = contexts.getContextForComponent(contextName, source.getComponentName());
 		IPropertyConvertor<String, Object> convertor = context.getConvertor(source);
 		if( convertor != null )
 			convertor.setPropertyFromConverion( property.getKey(), value);

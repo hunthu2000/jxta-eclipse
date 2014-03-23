@@ -20,7 +20,7 @@ import net.jp2p.container.context.ContextLoader;
 import net.jp2p.container.context.ContextLoaderEvent;
 import net.jp2p.container.context.IContextLoaderListener;
 
-public class Jp2pContainerBuilder implements IContextLoaderListener{
+public class Jp2pContainerBuilder{
 
 	public static final String S_ERR_CONTEXT_FOUND = "The following context was found and registered: ";
 	
@@ -31,6 +31,7 @@ public class Jp2pContainerBuilder implements IContextLoaderListener{
 	private Jp2pBundleActivator activator;
 	private Collection<ContextServiceParser> parsers;
 	private IJp2pContainer container;
+	private IContextLoaderListener listener;
 
 	protected Jp2pContainerBuilder( Jp2pBundleActivator activator, ContextLoader contextLoader ) {
 		this.contextLoader = contextLoader;
@@ -70,16 +71,52 @@ public class Jp2pContainerBuilder implements IContextLoaderListener{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//We listen until all the services are available
-		contextLoader.addContextLoaderListener(this);
+
+		//first we parse the xml files to determine which services we need 
 		for(ContextServiceParser parser: parsers ){
 			services.addAll( parser.parse() );
 		}
 
+		//We listen until all the services are available
+		listener = new IContextLoaderListener() {
+			
+			@Override
+			public void notifyRegisterContext(ContextLoaderEvent event) {
+				activator.getLog().log( LogService.LOG_INFO, S_ERR_CONTEXT_FOUND + event.getContext().getName() );
+				for( ServiceInfo info: services ){
+					for( String name: event.getContext().getSupportedServices() ){
+						if( !info.getName().equals(name))
+							continue;
+						String context = event.getContext().getName().toLowerCase();
+						if(( info.getContext() == null ) || ( context.equals( info.getContext() ))){
+							info.setContext( event.getContext().getName());
+							info.setFound( true );
+							if( buildContainer() )
+								return;
+						}
+					}
+				}		
+			}
+			
+			@Override
+			public void notifyUnregisterContext(ContextLoaderEvent event) {
+				for( String name: event.getContext().getSupportedServices() ){
+					for( ServiceInfo info: services ){
+						if( !info.getName().equals(name))
+							continue;
+						if(( info.getContext() != null ) || ( event.getContext().getName().equals( info.getContext() )))
+							info.setFound( false );
+					}
+				}
+			}
+		};
+		
+		contextLoader.addContextLoaderListener(listener);		
 	}
 
 	public void close(){
-		contextLoader.removeContextLoaderListener(this);		
+		contextLoader.removeContextLoaderListener(listener);
+		listener = null;
 	}
 	
 	/* (non-Javadoc)
@@ -123,35 +160,4 @@ public class Jp2pContainerBuilder implements IContextLoaderListener{
 			parsers.add( new ContextServiceParser( contextLoader, url, clss ));
 		}
 	}
-	
-	@Override
-	public void notifyRegisterContext(ContextLoaderEvent event) {
-		activator.getLog().log( LogService.LOG_INFO, S_ERR_CONTEXT_FOUND + event.getContext().getName() );
-		for( ServiceInfo info: services ){
-			for( String name: event.getContext().getSupportedServices() ){
-				if( !info.getName().equals(name))
-					continue;
-				String context = event.getContext().getName().toLowerCase();
-				if(( info.getContext() == null ) || ( context.equals( info.getContext() ))){
-					info.setContext( event.getContext().getName());
-					info.setFound( true );
-					if( buildContainer() )
-						return;
-				}
-			}
-		}		
-	}
-
-	@Override
-	public void notifyUnregisterContext(ContextLoaderEvent event) {
-		for( String name: event.getContext().getSupportedServices() ){
-			for( ServiceInfo info: services ){
-				if( !info.getName().equals(name))
-					continue;
-				if(( info.getContext() != null ) || ( event.getContext().getName().equals( info.getContext() )))
-					info.setFound( false );
-			}
-		}
-	}
-
 }

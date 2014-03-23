@@ -5,6 +5,7 @@ Bundle-SymbolicName: net.jp2p.chaupal;singleton:=true
 Bundle-Version: 1.0.0.v20140129
 Bundle-Vendor: Condast
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Service-Component: OSGI-INF/jp2pcontext.xml
 Export-Package: net.jp2p.chaupal,
  net.jp2p.chaupal.activator,
  net.jp2p.chaupal.context,
