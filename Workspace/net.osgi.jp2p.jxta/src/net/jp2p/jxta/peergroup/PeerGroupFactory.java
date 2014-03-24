@@ -34,7 +34,6 @@ import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementType
 import net.jp2p.jxta.discovery.DiscoveryPropertySource;
 import net.jp2p.jxta.factory.AbstractPeerGroupDependencyFactory;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
-import net.jp2p.jxta.network.NetworkManagerPropertySource;
 import net.jp2p.jxta.peergroup.PeerGroupFactory;
 import net.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.jp2p.jxta.peergroup.PeerGroupPropertySource.PeerGroupDirectives;
@@ -73,7 +72,7 @@ public class PeerGroupFactory extends AbstractPeerGroupDependencyFactory<PeerGro
 		PeerGroupProperties id = (PeerGroupProperties) property.getKey();
 		switch( id ){
 		case PEERGROUP_ID:
-			String name = NetworkManagerPropertySource.getIdentifier( super.getPropertySource() );
+			String name = PeerGroupPropertySource.getIdentifier( super.getPropertySource() );
 			PeerID peerid = IDFactory.newPeerID( PeerGroupID.defaultNetPeerGroupID, name.getBytes() );
 			property.setValue( peerid, PropertyEvents.DEFAULT_VALUE_SET );
 			property.reset();

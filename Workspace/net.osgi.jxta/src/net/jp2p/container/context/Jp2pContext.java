@@ -129,7 +129,7 @@ public class Jp2pContext implements IJp2pContext {
 	 * @param componentName
 	 * @return
 	 */
-	public IPropertyConvertor<String, Object> getConvertor( IJp2pWritePropertySource<IJp2pProperties> source ){
+	public IPropertyConvertor<String, Object> getConvertor( IJp2pPropertySource<IJp2pProperties> source ){
 		String comp = StringStyler.styleToEnum( source.getComponentName());
 		if( !Components.isComponent( comp ))
 			return getConvertor(source);
@@ -140,7 +140,7 @@ public class Jp2pContext implements IJp2pContext {
 			convertor = new Jp2pContainerPreferences( (Jp2pContainerPropertySource) source );
 			break;
 		default:
-			convertor = new SimplePropertyConvertor( source );
+			convertor = new SimplePropertyConvertor( (IJp2pWritePropertySource<IJp2pProperties>) source );
 			break;
 		}
 		return convertor;

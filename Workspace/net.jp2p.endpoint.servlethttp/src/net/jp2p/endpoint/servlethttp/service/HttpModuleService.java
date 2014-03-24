@@ -1,11 +1,10 @@
-package net.jp2p.endpoint.servlethttp.osgi;
+package net.jp2p.endpoint.servlethttp.service;
 
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.jp2p.endpoint.servlethttp.factory.HttpPropertySource;
 import net.jp2p.jxta.module.AbstractModuleComponent;
 import net.jxta.compatibility.impl.peergroup.AutomaticConfigurator;
 import net.jxta.document.Advertisement;
@@ -19,6 +18,8 @@ import net.jxta.impl.endpoint.servlethttp.ServletHttpTransport;
 import net.jxta.impl.protocol.HTTPAdv;
 import net.jxta.impl.protocol.PlatformConfig;
 import net.jxta.logging.Logging;
+import net.jxta.peergroup.IModuleDefinitions;
+import net.jxta.platform.ModuleClassID;
 import net.jxta.protocol.ModuleImplAdvertisement;
 import net.jxta.protocol.TransportAdvertisement;
 
@@ -33,6 +34,12 @@ public class HttpModuleService extends AbstractModuleComponent<ServletHttpTransp
 	}
 
     
+	@Override
+	public ModuleClassID getModuleClassID() {
+		return IModuleDefinitions.httpProtoClassID;
+	}
+
+
 	@Override
 	protected ModuleImplAdvertisement onCreateAdvertisement() {
 		URL url = HttpModuleService.class.getResource( S_RESOURCE_LOCATION );

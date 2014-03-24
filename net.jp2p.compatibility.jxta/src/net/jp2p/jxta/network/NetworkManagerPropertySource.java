@@ -12,7 +12,7 @@ import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jp2p.container.utils.ProjectFolderUtils;
 import net.jp2p.container.utils.StringStyler;
 import net.jp2p.container.utils.Utils;
-import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
+import net.jp2p.jxta.factory.IJxtaComponents.JxtaCompatComponents;
 
 public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySource
 	implements IJp2pWritePropertySource<IJp2pProperties>
@@ -82,7 +82,7 @@ public class NetworkManagerPropertySource extends AbstractJp2pWritePropertySourc
 
 	@Override
 	public String getComponentName() {
-		return JxtaComponents.NETWORK_MANAGER.toString();
+		return JxtaCompatComponents.NETWORK_MANAGER.toString();
 	}
 
 	private void fill( Jp2pContainerPropertySource parent ){

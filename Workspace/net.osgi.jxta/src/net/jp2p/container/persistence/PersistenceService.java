@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import net.jp2p.container.component.AbstractJp2pService;
-import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.IManagedPropertyListener;
@@ -15,26 +14,24 @@ import net.jp2p.container.properties.ManagedPropertyEvent;
 
 public class PersistenceService<T,U extends Object> extends AbstractJp2pService<IManagedPropertyListener<IJp2pProperties, Object>> {
 
-	private IPersistedProperties<T> properties;
+	private IPersistedProperties<T,U> properties;
 	private IManagedPropertyListener<IJp2pProperties, Object> listener;
 	
 	private Collection<IPropertyEventDispatcher> dispatchers;
 	
-	public PersistenceService(final IJp2pWritePropertySource<IJp2pProperties> source, IPersistedProperties<T> props, final IJp2pContext context ){
+	public PersistenceService(final IJp2pWritePropertySource<IJp2pProperties> source, IPersistedProperties<T,U> props, final IPropertyConvertor<T, U> convertor ){
 		super(source, null );
 		this.properties = props;
 		dispatchers = new ArrayList<IPropertyEventDispatcher>();
 		listener = new IManagedPropertyListener<IJp2pProperties, Object>(){
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public void notifyValueChanged(
 					ManagedPropertyEvent<IJp2pProperties, Object> event) {
 				ManagedProperty<IJp2pProperties, Object> mp = event.getProperty();
 				if( !ManagedProperty.isPersisted( mp ))
 					return;
-				IPropertyConvertor<T,U> convertor = (IPropertyConvertor<T, U>) context.getConvertor( (IJp2pWritePropertySource<IJp2pProperties>) mp.getSource());
-				properties.setContext(context);
+				properties.setConvertor(convertor);
 				switch( event.getEvent() ){
 				case DEFAULT_VALUE_SET:
 					Object value = convertor.convertTo( mp.getKey(), properties.getProperty( mp.getSource(), mp.getKey() )); 

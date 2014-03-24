@@ -3,6 +3,7 @@ package org.chaupal.jp2p.ui.jxta.provider;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.utils.StringStyler;
+import net.jp2p.jxta.factory.IJxtaComponents.JxtaCompatComponents;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.compatibility.platform.NetworkConfigurator;
@@ -34,19 +35,26 @@ public class JxtaPropertySourceProvider implements
 		if(!JxtaComponents.isComponent( this.getComponentName()))
 			return null;
 		JxtaComponents jxtacomps = JxtaComponents.valueOf( StringStyler.styleToEnum( this.getComponentName() ));
-		if( jxtacomps == null )
-			return null;
-		switch( jxtacomps ){
-		case ADVERTISEMENT:
-			break;
-		case NETWORK_MANAGER:
-			return new NetworkManagerPropertySource( (IJp2pComponent<NetworkManager>) component );
-		case NETWORK_CONFIGURATOR:
-			  return new NetworkConfiguratorPropertySource((IJp2pComponent<NetworkConfigurator>) component );
-		case PEERGROUP_SERVICE:
-			  return new PeerGroupPropertySource( (IJp2pComponent<PeerGroup> )component );
-		default:
-			break;
+		if( jxtacomps != null ){
+			switch( jxtacomps ){
+			case ADVERTISEMENT:
+				break;
+			case PEERGROUP_SERVICE:
+				return new PeerGroupPropertySource( (IJp2pComponent<PeerGroup> )component );
+			default:
+				break;
+			}
+		}
+		JxtaCompatComponents jxtaccomps = JxtaCompatComponents.valueOf( StringStyler.styleToEnum( this.getComponentName() ));
+		if( jxtaccomps != null ){
+			switch( jxtaccomps ){
+			case NETWORK_MANAGER:
+				return new NetworkManagerPropertySource( (IJp2pComponent<NetworkManager>) component );
+			case NETWORK_CONFIGURATOR:
+				return new NetworkConfiguratorPropertySource((IJp2pComponent<NetworkConfigurator>) component );
+			default:
+				break;
+			}
 		}
 		return null;
 	}

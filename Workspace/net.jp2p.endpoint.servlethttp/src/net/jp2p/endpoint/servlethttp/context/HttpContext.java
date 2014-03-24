@@ -13,8 +13,8 @@ import net.jp2p.container.properties.IPropertyConvertor;
 import net.jp2p.container.utils.StringStyler;
 import net.jp2p.container.utils.Utils;
 import net.jp2p.container.xml.IJp2pHandler;
-import net.jp2p.endpoint.servlethttp.factory.HttpPropertySource;
-import net.jp2p.endpoint.servlethttp.factory.HttpServiceFactory;
+import net.jp2p.endpoint.servlethttp.service.HttpPropertySource;
+import net.jp2p.endpoint.servlethttp.service.HttpServiceFactory;
 
 public class HttpContext implements IJp2pContext {
 
@@ -83,6 +83,13 @@ public class HttpContext implements IJp2pContext {
 
 	@Override
 	public IJp2pHandler getHandler() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IPropertyConvertor<String, Object> getConvertor(
+			IJp2pPropertySource<IJp2pProperties> source) {
 		// TODO Auto-generated method stub
 		return null;
 	}

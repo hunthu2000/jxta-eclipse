@@ -1,4 +1,4 @@
-package net.jp2p.compatibility.jxta;
+package net.jp2p.network.jxta;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 

@@ -16,9 +16,9 @@ import net.jp2p.container.utils.StringStyler;
 public interface IJxtaComponents{
 
 	public enum JxtaComponents implements IJp2pComponents{
-		NETWORK_MANAGER,
-		NETWORK_CONFIGURATOR,
-		SEED_LIST,
+		//NETWORK_MANAGER,
+		//NETWORK_CONFIGURATOR,
+		//SEED_LIST,
 		SECURITY,
 		TCP,
 		HTTP,
@@ -50,4 +50,32 @@ public interface IJxtaComponents{
 			return false;
 		}
 	}
+
+	public enum JxtaCompatComponents implements IJp2pComponents{
+		NETWORK_MANAGER,
+		NETWORK_CONFIGURATOR,
+		SEED_LIST,
+		SECURITY,
+		TCP,
+		HTTP,
+		HTTP2,
+		MULTICAST;
+
+		@Override
+		public String toString() {
+			return StringStyler.prettyString( super.toString() );
+		}	
+		
+		public static boolean isComponent( String str ){
+			str = StringStyler.styleToEnum(str);
+			if(( str == null ) || ( str.length() == 0 ))
+				return false;
+			for( JxtaCompatComponents comp: values()){
+				if( comp.name().equals( str.toUpperCase() ))
+					return true;
+			}
+			return false;
+		}
+	}
+
 }

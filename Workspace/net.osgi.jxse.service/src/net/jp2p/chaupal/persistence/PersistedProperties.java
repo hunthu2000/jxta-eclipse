@@ -6,7 +6,6 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
-import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.persistence.AbstractPersistedProperty;
 import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -15,18 +14,18 @@ import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.IPropertyConvertor;
 import net.jp2p.container.properties.ManagedProperty;
 
-public class PersistedProperties extends AbstractPersistedProperty<String>{
+public class PersistedProperties extends AbstractPersistedProperty<String,Object>{
 
 	private IScopeContext scope;
-	private IJp2pContext context;
+	private IPropertyConvertor<String,Object> convertor;
 	
 	public PersistedProperties( IJp2pWritePropertySource<IJp2pProperties> source, IScopeContext scope ) {
 		super( source );
 		this.scope = scope;
 	}
 
-	public void setContext(IJp2pContext context) {
-		this.context = context;
+	public void setConvertor( IPropertyConvertor<String,Object> convertor) {
+		this.convertor = convertor;
 	}
 
 	/**
@@ -51,7 +50,6 @@ public class PersistedProperties extends AbstractPersistedProperty<String>{
 		IPreferencesService service = Platform.getPreferencesService();
 		Preferences pref1 = scope.getNode( AbstractJp2pPropertySource.getBundleId(source) + "." + AbstractJp2pPropertySource.getIdentifier(source));
 		Preferences[] nodes = new Preferences[] {pref1};
-		IPropertyConvertor<String, Object> convertor = context.getConvertor((IJp2pWritePropertySource<IJp2pProperties>) source);
 		String defaultValue = convertor.convertFrom( id );
 		String value = service.get( id.toString(), defaultValue, nodes );
 		return value;

@@ -1,4 +1,4 @@
-package net.jp2p.endpoint.servlethttp.factory;
+package net.jp2p.endpoint.servlethttp.service;
 
 import net.jp2p.container.properties.AbstractJp2pWritePropertySource;
 import net.jp2p.container.properties.IJp2pProperties;

@@ -36,6 +36,7 @@ import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jp2p.container.properties.IManagedPropertyListener.PropertyEvents;
 import net.jp2p.container.properties.ManagedProperty;
+import net.jp2p.jxta.factory.IJxtaComponents.JxtaCompatComponents;
 import net.jp2p.jxta.factory.JxtaFactoryUtils;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jp2p.jxta.network.NetworkManagerPreferences;
@@ -58,7 +59,7 @@ public class NetworkManagerFactory extends AbstractFilterFactory<NetworkManager>
 
 	@Override
 	public String getComponentName() {
-		return JxtaComponents.NETWORK_MANAGER.toString();
+		return JxtaCompatComponents.NETWORK_MANAGER.toString();
 	}
 	
 	@Override
@@ -76,7 +77,7 @@ public class NetworkManagerFactory extends AbstractFilterFactory<NetworkManager>
 	@Override
 	public void extendContainer() {
 		IContainerBuilder builder = super.getBuilder();
-		JxtaFactoryUtils.getOrCreateChildFactory( builder, new String[0], super.getPropertySource(), JxtaComponents.NETWORK_CONFIGURATOR.toString(), true );
+		JxtaFactoryUtils.getOrCreateChildFactory( builder, new String[0], super.getPropertySource(), JxtaCompatComponents.NETWORK_CONFIGURATOR.toString(), true );
 		PeerGroupPropertySource npps = (PeerGroupPropertySource) JxtaFactoryUtils.getOrCreateChildFactory( builder, new String[0], super.getParentSource(), JxtaComponents.NET_PEERGROUP_SERVICE.toString(), true ).getPropertySource();
 		npps.setDirective( Directives.AUTO_START, this.getPropertySource().getDirective( Directives.AUTO_START ));
 		super.extendContainer();

@@ -9,16 +9,16 @@ import java.util.Calendar;
 import java.util.Properties;
 
 import net.jp2p.container.Jp2pContainerPropertySource;
-import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
+import net.jp2p.container.properties.IPropertyConvertor;
 import net.jp2p.container.utils.IOUtils;
 import net.jp2p.container.utils.ProjectFolderUtils;
 
 public class PersistedProperties extends
-		AbstractPersistedProperty<String> {
+		AbstractPersistedProperty<String,Object> {
 
 	public static final String S_PROPERTIES = "properties.txt";
 	
@@ -27,7 +27,7 @@ public class PersistedProperties extends
 	}
 	
 	@Override
-	public void setContext(IJp2pContext context) {
+	public void setConvertor( IPropertyConvertor<String,Object> convertor ) {
 		// TODO Auto-generated method stub		
 	}
 

@@ -15,6 +15,7 @@ import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.IComponentFactory;
 import net.jp2p.container.factory.IJp2pComponents;
 import net.jp2p.container.factory.IPropertySourceFactory;
+import net.jp2p.container.persistence.IContextFactory;
 import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pDirectives;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -86,6 +87,15 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 			case CONTEXT:
 				stack.push( qName );
 				return;//skip, the contexts were parsed in the first round
+			case PERSISTENCE_SERVICE:
+				factory = this.getFactory( qName, attributes, node.getData().getPropertySource());
+				if( factory instanceof IContextFactory ){
+					IContextFactory cf = (IContextFactory) factory;
+					cf.setLoader(contexts);
+				}
+					
+				break;
+				
 			default:
 				factory = this.getFactory( qName, attributes, node.getData().getPropertySource());
 				break;

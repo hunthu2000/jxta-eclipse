@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import net.jp2p.container.context.ContextLoaderEvent.LoaderEvent;
+import net.jp2p.container.properties.IJp2pProperties;
+import net.jp2p.container.properties.IJp2pPropertySource;
+import net.jp2p.container.properties.IPropertyConvertor;
 import net.jp2p.container.utils.Utils;
 
 public class ContextLoader {
@@ -87,6 +90,20 @@ public class ContextLoader {
 				return context;
 		}
 		return new Jp2pContext();
+	}
+
+	/**
+	 * Get the convertor for the given property source
+	 * @param contextName
+	 * @return
+	 */
+	public IPropertyConvertor<String,Object> getConvertor( IJp2pPropertySource<IJp2pProperties> source ){
+		for( IJp2pContext context: this.contexts ){
+			IPropertyConvertor<String,Object> convertor = context.getConvertor( source);
+			if(convertor != null )
+				return convertor;
+		}
+		return null;
 	}
 
 	/**

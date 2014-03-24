@@ -4,8 +4,8 @@ import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 
-public abstract class AbstractPersistedProperty<T extends Object> implements
-		IPersistedProperties<T> {
+public abstract class AbstractPersistedProperty<T,U extends Object> implements
+		IPersistedProperties<T,U> {
 
 	private  IJp2pPropertySource<IJp2pProperties> source;
 

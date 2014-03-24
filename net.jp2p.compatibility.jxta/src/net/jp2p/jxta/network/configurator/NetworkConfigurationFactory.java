@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
-import net.jp2p.container.component.Jp2pComponent;
 import net.jp2p.container.factory.AbstractDependencyFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
 import net.jp2p.container.factory.IComponentFactory;
@@ -29,6 +28,7 @@ import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.utils.StringStyler;
+import net.jp2p.jxta.factory.IJxtaComponents.JxtaCompatComponents;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jp2p.jxta.network.INetworkPreferences;
 import net.jp2p.jxta.network.NetworkManagerPropertySource;
@@ -44,8 +44,9 @@ import net.jp2p.jxta.seeds.SeedListFactory;
 import net.jp2p.jxta.seeds.SeedListPropertySource;
 import net.jxta.compatibility.platform.NetworkConfigurator;
 import net.jxta.compatibility.platform.NetworkManager;
+import net.jxta.platform.Module;
 
-public class NetworkConfigurationFactory extends AbstractDependencyFactory<NetworkConfigurator, IJp2pComponent<NetworkManager>> {
+public class NetworkConfigurationFactory extends AbstractDependencyFactory<Module, IJp2pComponent<NetworkManager>> {
 
 	private Collection<SeedListPropertySource> seedlists;
 	
@@ -55,7 +56,7 @@ public class NetworkConfigurationFactory extends AbstractDependencyFactory<Netwo
 
 	@Override
 	public String getComponentName() {
-		return JxtaComponents.NETWORK_CONFIGURATOR.toString();
+		return JxtaCompatComponents.NETWORK_CONFIGURATOR.toString();
 	}
 	
 	@Override
@@ -83,7 +84,7 @@ public class NetworkConfigurationFactory extends AbstractDependencyFactory<Netwo
 			return;
 		switch( event.getBuilderEvent() ){
 		case PROPERTY_SOURCE_CREATED:
-			if( !isComponentFactory( JxtaComponents.SEED_LIST, event.getFactory() ))
+			if( !isComponentFactory( JxtaCompatComponents.SEED_LIST, event.getFactory() ))
 				return;
 			if( !NetworkConfigurationPropertySource.isChild(super.getPropertySource(), event.getFactory().getPropertySource()))
 				return;
@@ -96,7 +97,7 @@ public class NetworkConfigurationFactory extends AbstractDependencyFactory<Netwo
 	}
 
 	@Override
-	protected IJp2pComponent<NetworkConfigurator> onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties) {
+	protected IJp2pComponent<Module> onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties) {
 		NetworkConfigurator configurator = null;
 		try {
 			NetworkManager manager = super.getDependency().getModule();
@@ -116,7 +117,7 @@ public class NetworkConfigurationFactory extends AbstractDependencyFactory<Netwo
 			e.printStackTrace();
 			return null;
 		}
-		return new Jp2pComponent<NetworkConfigurator>( super.getPropertySource(), configurator );
+		return new NetworkConfiguratorService( (NetworkConfigurationPropertySource) super.getPropertySource(), configurator );
 	}
 	
 	protected void fillConfigurator( NetworkConfigurator configurator ) throws IOException{

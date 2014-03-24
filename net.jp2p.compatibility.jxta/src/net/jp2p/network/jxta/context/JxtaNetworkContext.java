@@ -1,4 +1,4 @@
-package net.jp2p.compatibility.jxta.context;
+package net.jp2p.network.jxta.context;
 
 import org.xml.sax.Attributes;
 
@@ -14,15 +14,15 @@ import net.jp2p.container.properties.IJp2pDirectives.Contexts;
 import net.jp2p.container.utils.StringStyler;
 import net.jp2p.container.utils.Utils;
 import net.jp2p.container.xml.IJp2pHandler;
+import net.jp2p.jxta.factory.IJxtaComponents.JxtaCompatComponents;
 import net.jp2p.jxta.factory.JxtaFactoryUtils;
-import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jp2p.jxta.network.NetworkManagerPreferences;
 import net.jp2p.jxta.network.configurator.OverviewPreferences;
 import net.jp2p.jxta.seeds.SeedListPropertySource;
 
-public class JxtaContext implements IJp2pContext {
+public class JxtaNetworkContext implements IJp2pContext {
 
-	public JxtaContext() {
+	public JxtaNetworkContext() {
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class JxtaContext implements IJp2pContext {
 	 */
 	@Override
 	public String[] getSupportedServices() {
-		JxtaComponents[] components = JxtaComponents.values();
+		JxtaCompatComponents[] components = JxtaCompatComponents.values();
 		String[] names = new String[ components.length ];
 		for( int i=0; i<components.length; i++ )
 			names[i] = components[i].toString();
@@ -50,7 +50,7 @@ public class JxtaContext implements IJp2pContext {
 	public boolean isValidComponentName( String contextName, String componentName ){
 		if( !Utils.isNull( contextName ) && !Jp2pContext.isContextNameEqual(Contexts.JXTA.toString(), contextName ))
 			return false;
-		return JxtaComponents.isComponent( componentName );
+		return JxtaCompatComponents.isComponent( componentName );
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class JxtaContext implements IJp2pContext {
 	 */
 	@Override
 	public IPropertySourceFactory getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
-		JxtaComponents component = JxtaComponents.valueOf( StringStyler.styleToEnum(componentName));
+		JxtaCompatComponents component = JxtaCompatComponents.valueOf( StringStyler.styleToEnum(componentName));
 		String[] attrs;
 		switch( component ){
 		default:
@@ -81,18 +81,19 @@ public class JxtaContext implements IJp2pContext {
 	 * @param componentName
 	 * @return
 	 */
-	public IPropertyConvertor<String, Object> getConvertor( IJp2pWritePropertySource<IJp2pProperties> source ){
+	@Override
+	public IPropertyConvertor<String, Object> getConvertor( IJp2pPropertySource<IJp2pProperties> source ){
 		String comp = StringStyler.styleToEnum( source.getComponentName());
-		if( !JxtaComponents.isComponent( comp ))
+		if( !JxtaCompatComponents.isComponent( comp ))
 			return null;
-		JxtaComponents component = JxtaComponents.valueOf(comp);
+		JxtaCompatComponents component = JxtaCompatComponents.valueOf(comp);
 		IPropertyConvertor<String, Object> convertor = null;
 		switch( component ){
 		case NETWORK_MANAGER:
-			convertor = new NetworkManagerPreferences( source );
+			convertor = new NetworkManagerPreferences( (IJp2pWritePropertySource<IJp2pProperties>) source );
 			break;			
 		case NETWORK_CONFIGURATOR:
-			convertor = new OverviewPreferences( source );
+			convertor = new OverviewPreferences( (IJp2pWritePropertySource<IJp2pProperties>) source );
 			break;
 		case SEED_LIST:
 			SeedListPropertySource slps = (SeedListPropertySource) source;
@@ -110,5 +111,4 @@ public class JxtaContext implements IJp2pContext {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

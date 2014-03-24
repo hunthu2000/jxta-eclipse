@@ -18,7 +18,7 @@ import net.jp2p.container.factory.AbstractPropertySourceFactory;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.seeds.SeedInfo;
-import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
+import net.jp2p.jxta.factory.IJxtaComponents.JxtaCompatComponents;
 import net.jxta.compatibility.platform.NetworkConfigurator;
 
 public class SeedListFactory extends AbstractPropertySourceFactory{
@@ -29,7 +29,7 @@ public class SeedListFactory extends AbstractPropertySourceFactory{
 
 	@Override
 	public String getComponentName() {
-		return JxtaComponents.SEED_LIST.toString();
+		return JxtaCompatComponents.SEED_LIST.toString();
 	}
 	
 	@Override

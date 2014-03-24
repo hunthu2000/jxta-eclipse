@@ -5,8 +5,7 @@ import java.util.Stack;
 
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
-import net.jp2p.container.context.IJp2pContext;
-import net.jp2p.container.context.Jp2pContext;
+import net.jp2p.container.context.ContextLoader;
 import net.jp2p.container.factory.AbstractComponentFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
 import net.jp2p.container.factory.filter.BuilderEventFilter;
@@ -20,18 +19,32 @@ import net.jp2p.container.properties.IPropertyEventDispatcher;
 import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jp2p.container.properties.ManagedProperty;
 
-public class SimplePersistenceFactory extends AbstractComponentFactory<IManagedPropertyListener<IJp2pProperties, Object>> {
+public class SimplePersistenceFactory extends AbstractComponentFactory<IManagedPropertyListener<IJp2pProperties, Object>> implements IContextFactory {
 
 	private Stack<IPropertyEventDispatcher> stack;
+	private ContextLoader loader;
 	
 	private IComponentFactoryFilter filter = new BuilderEventFilter<IJp2pComponent<IManagedPropertyListener<IJp2pProperties, Object>>>( BuilderEvents.PROPERTY_SOURCE_PREPARED, this );
 
 	
 	public SimplePersistenceFactory(IContainerBuilder builder,
-			IJp2pPropertySource<IJp2pProperties> parentSource ) {
+			IJp2pPropertySource<IJp2pProperties> parentSource) {
 		super(builder, parentSource);
 		stack = new Stack<IPropertyEventDispatcher>();
 	}
+
+	protected ContextLoader getLoader() {
+		return loader;
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jp2p.container.persistence.IContextFactory#setLoader(net.jp2p.container.context.ContextLoader)
+	 */
+	@Override
+	public void setLoader(ContextLoader loader) {
+		this.loader = loader;
+	}
+
 
 	@Override
 	protected IJp2pPropertySource<IJp2pProperties> onCreatePropertySource() {
@@ -72,8 +85,8 @@ public class SimplePersistenceFactory extends AbstractComponentFactory<IManagedP
 			ManagedProperty<IJp2pProperties,Object> mp = source.getManagedProperty( id );
 			if(!ManagedProperty.isPersisted( mp ))
 				continue;
-			IPersistedProperties<String> properties = new PersistedProperties( (IJp2pWritePropertySource<IJp2pProperties>) source );
-			IPropertyConvertor<String, Object> convertor = new Jp2pContext().getConvertor((IJp2pWritePropertySource<IJp2pProperties>) source); 
+			IPersistedProperties<String,Object> properties = new PersistedProperties( (IJp2pWritePropertySource<IJp2pProperties>) source );
+			IPropertyConvertor<String, Object> convertor = loader.getConvertor( source); 
 			properties.setProperty( source, id, convertor.convertFrom( id ));	
 		}
 	}
@@ -86,9 +99,9 @@ public class SimplePersistenceFactory extends AbstractComponentFactory<IManagedP
 	@Override
 	protected IJp2pComponent<IManagedPropertyListener<IJp2pProperties, Object>> onCreateComponent(
 			IJp2pPropertySource<IJp2pProperties> source) {
-		IPersistedProperties<String> properties = new PersistedProperties( (IJp2pWritePropertySource<IJp2pProperties>) source );
-		IJp2pContext context = new Jp2pContext(); 
-		PersistenceService<String,Object> service = new PersistenceService<String,Object>( (IJp2pWritePropertySource<IJp2pProperties>) source, properties, context );
+		IPersistedProperties<String,Object> properties = new PersistedProperties( (IJp2pWritePropertySource<IJp2pProperties>) source );
+		IPropertyConvertor<String, Object> convertor = loader.getConvertor( source); 
+		PersistenceService<String,Object> service = new PersistenceService<String,Object>( (IJp2pWritePropertySource<IJp2pProperties>) source, properties, convertor );
 		while( stack.size() > 0)
 			service.addDispatcher( stack.pop() );
 		service.start();

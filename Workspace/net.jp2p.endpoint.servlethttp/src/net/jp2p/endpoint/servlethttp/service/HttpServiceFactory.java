@@ -8,7 +8,7 @@
  * Contributors:
  *     Kees Pieters - initial API and implementation
  *******************************************************************************/
-package net.jp2p.endpoint.servlethttp.factory;
+package net.jp2p.endpoint.servlethttp.service;
 
 import net.jp2p.container.ContainerFactory;
 import net.jp2p.container.builder.IContainerBuilder;
@@ -19,7 +19,6 @@ import net.jp2p.container.factory.filter.ComponentCreateFilter;
 import net.jp2p.container.factory.filter.IComponentFactoryFilter;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
-import net.jp2p.endpoint.servlethttp.osgi.HttpModuleService;
 import net.jxta.platform.Module;
 
 public class HttpServiceFactory extends AbstractFilterFactory<Module>{

@@ -105,7 +105,7 @@ public class JxtaContext implements IJp2pContext {
 	 * @param componentName
 	 * @return
 	 */
-	public IPropertyConvertor<String, Object> getConvertor( IJp2pWritePropertySource<IJp2pProperties> source ){
+	public IPropertyConvertor<String, Object> getConvertor( IJp2pPropertySource<IJp2pProperties> source ){
 		String comp = StringStyler.styleToEnum( source.getComponentName());
 		if( !JxtaComponents.isComponent( comp ))
 			return null;
@@ -113,18 +113,18 @@ public class JxtaContext implements IJp2pContext {
 		IPropertyConvertor<String, Object> convertor = null;
 		switch( component ){
 		case ADVERTISEMENT:
-			convertor = new AdvertisementPreferences( source );
+			convertor = new AdvertisementPreferences( (IJp2pWritePropertySource<IJp2pProperties>) source );
 			break;
 		case PIPE_SERVICE:
 			break;
 		case NET_PEERGROUP_SERVICE:
-			convertor = new NetworkManagerPreferences( source );
+			convertor = new NetworkManagerPreferences( (IJp2pWritePropertySource<IJp2pProperties>) source );
 			break;			
 		case DISCOVERY_SERVICE:
-			convertor = new DiscoveryPreferences( source );
+			convertor = new DiscoveryPreferences( (IJp2pWritePropertySource<IJp2pProperties>) source );
 			break;			
 		case PEERGROUP_SERVICE:
-			convertor = new PeerGroupPreferences( source );
+			convertor = new PeerGroupPreferences( (IJp2pWritePropertySource<IJp2pProperties>) source );
 			break;			
 		case REGISTRATION_SERVICE:
 			break;

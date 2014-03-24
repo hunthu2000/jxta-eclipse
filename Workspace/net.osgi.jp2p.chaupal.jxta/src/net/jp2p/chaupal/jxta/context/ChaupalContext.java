@@ -129,7 +129,7 @@ public class ChaupalContext implements IJp2pContext {
 	 * @param componentName
 	 * @return
 	 */
-	public IPropertyConvertor<String, Object> getConvertor( IJp2pWritePropertySource<IJp2pProperties> source ){
+	public IPropertyConvertor<String, Object> getConvertor( IJp2pPropertySource<IJp2pProperties> source ){
 		String comp = StringStyler.styleToEnum( source.getComponentName());
 		if( !ChaupalComponents.isComponent( comp ))
 			return new JxtaContext().getConvertor(source);
@@ -137,13 +137,13 @@ public class ChaupalContext implements IJp2pContext {
 		IPropertyConvertor<String, Object> convertor = null;
 		switch( component ){
 			case NET_PEERGROUP_SERVICE:
-			convertor = new NetworkManagerPreferences( source );
+			convertor = new NetworkManagerPreferences( (IJp2pWritePropertySource<IJp2pProperties>) source );
 			break;			
 		case DISCOVERY_SERVICE:
-			convertor = new DiscoveryPreferences( source );
+			convertor = new DiscoveryPreferences( (IJp2pWritePropertySource<IJp2pProperties>) source );
 			break;			
 		case PEERGROUP_SERVICE:
-			convertor = new PeerGroupPreferences( source );
+			convertor = new PeerGroupPreferences( (IJp2pWritePropertySource<IJp2pProperties>) source );
 			break;			
 		case ADVERTISEMENT_SERVICE:
 			//factory = new Jp2pAdvertisementFactory<Advertisement>( builder, parentSource );
