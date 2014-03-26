@@ -17,6 +17,7 @@ import net.jp2p.container.component.AbstractJp2pServiceNode;
 import net.jp2p.container.component.ComponentChangedEvent;
 import net.jp2p.container.component.ComponentEventDispatcher;
 import net.jp2p.container.component.IComponentChangedListener;
+import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jxta.document.Advertisement;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.protocol.PeerGroupAdvertisement;
@@ -94,7 +95,7 @@ public class PeerGroupService extends AbstractJp2pServiceNode<PeerGroup>{
 	protected PeerGroup createComponent( PeerGroupAdvertisement advertisement) {
 		String name = (String) super.getPropertySource().getProperty( PeerGroupProperties.NAME );
 		String description = (String) super.getPropertySource().getProperty( PeerGroupProperties.DESCRIPTION );
-		boolean publish = PeerGroupPropertySource.getBoolean(super.getPropertySource(), PeerGroupDirectives.PUBLISH );
+		boolean publish = AbstractJp2pPropertySource.getBoolean(super.getPropertySource(), PeerGroupDirectives.PUBLISH );
 
 		try {
 			PeerGroup peergroup = parent.newGroup(advertisement);

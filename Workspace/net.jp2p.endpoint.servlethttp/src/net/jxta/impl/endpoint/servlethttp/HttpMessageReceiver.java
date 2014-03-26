@@ -198,21 +198,24 @@ class HttpMessageReceiver implements MessageReceiver {
     /**
      * {@inheritDoc}
      */
-    public Iterator<EndpointAddress> getPublicAddresses() {
+    @Override
+	public Iterator<EndpointAddress> getPublicAddresses() {
         return Collections.unmodifiableList(publicAddresses).iterator();
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getProtocolName() {
+    @Override
+	public String getProtocolName() {
         return servletHttpTransport.HTTP_PROTOCOL_NAME;
     }
 
     /**
      * {@inheritDoc}
      */
-    public EndpointService getEndpointService() {
+    @Override
+	public EndpointService getEndpointService() {
         return servletHttpTransport.getEndpointService();
     }
 

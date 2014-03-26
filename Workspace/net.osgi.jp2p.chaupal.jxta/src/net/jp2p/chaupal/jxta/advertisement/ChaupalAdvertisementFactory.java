@@ -22,6 +22,7 @@ import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.factory.filter.AbstractComponentFactoryFilter;
 import net.jp2p.container.factory.filter.IComponentFactoryFilter;
 import net.jp2p.container.filter.FilterChain;
+import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
@@ -48,7 +49,7 @@ public abstract class ChaupalAdvertisementFactory<T extends Object, U extends Ad
 
 	@Override
 	protected AdvertisementPropertySource onCreatePropertySource() {
-		AdvertisementPropertySource source = (AdvertisementPropertySource) super.onCreatePropertySource();
+		AdvertisementPropertySource source = super.onCreatePropertySource();
 		source.setDirective( Directives.BLOCK_CREATION, Boolean.FALSE.toString());
 		return source;
 	}
@@ -83,6 +84,7 @@ public abstract class ChaupalAdvertisementFactory<T extends Object, U extends Ad
 
 	
 
+	@Override
 	@SuppressWarnings("unchecked")
 	protected IComponentFactoryFilter createFilter(){
 		FilterChain<U> bf = (FilterChain<U>) super.createFilter();
@@ -136,9 +138,9 @@ public abstract class ChaupalAdvertisementFactory<T extends Object, U extends Ad
 	 * @return
 	 */
 	protected boolean isChild( IJp2pPropertySource<?> source ){
-		if(  AdvertisementPropertySource.isChild( this.getPropertySource(), source ))
+		if(  AbstractJp2pPropertySource.isChild( this.getPropertySource(), source ))
 			return true;
-		return AdvertisementPropertySource.isChild( this.getPropertySource().getParent(), source );
+		return AbstractJp2pPropertySource.isChild( this.getPropertySource().getParent(), source );
 	}
 
 	@Override

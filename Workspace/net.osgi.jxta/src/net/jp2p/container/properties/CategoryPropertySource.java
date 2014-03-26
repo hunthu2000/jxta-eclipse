@@ -32,6 +32,7 @@ public class CategoryPropertySource extends AbstractJp2pWritePropertySource impl
 		this.id = parent.getId() + "." + category;
 	}
 
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -84,7 +85,7 @@ public class CategoryPropertySource extends AbstractJp2pWritePropertySource impl
 		for( IJp2pPropertySource<?> ps: source.getChildren() ){
 			String name = ps.getComponentName();
 			if( name.equals(split[0])){
-				CategoryPropertySource child = findCategoryPropertySource( split[2],(IJp2pPropertySource<?>)ps);
+				CategoryPropertySource child = findCategoryPropertySource( split[2],ps);
 				if( child == null )
 					return (CategoryPropertySource) ps;
 			}

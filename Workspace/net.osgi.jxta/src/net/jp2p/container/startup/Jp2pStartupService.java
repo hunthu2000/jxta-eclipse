@@ -56,7 +56,7 @@ public class Jp2pStartupService extends AbstractActivator implements IJp2pServic
 	 * @return
 	 */
 	protected boolean isAutoStart(){
-		return Boolean.parseBoolean( (String) this.source.getDirective( IJp2pDirectives.Directives.AUTO_START ));		
+		return Boolean.parseBoolean( this.source.getDirective( IJp2pDirectives.Directives.AUTO_START ));		
 	}
 
 	/**
@@ -76,6 +76,7 @@ public class Jp2pStartupService extends AbstractActivator implements IJp2pServic
 	/**
 	 * Perform the activation
 	 */
+	@Override
 	public synchronized void activate() {
 		if(!this.isAutoStart() )
 			return;
@@ -103,12 +104,11 @@ public class Jp2pStartupService extends AbstractActivator implements IJp2pServic
 	}
 	
 	//Make public
-	@SuppressWarnings("unchecked")
 	@Override
 	public void deactivate() {
 		this.listeners.remove(this.container);
 		for( IPropertySourceFactory factory: container.getFactories()){
-			this.stopModule( (IComponentFactory<Object>) factory );
+			this.stopModule( factory );
 		}
 	}
 
@@ -133,6 +133,7 @@ public class Jp2pStartupService extends AbstractActivator implements IJp2pServic
 	 * is not meant to identify the component;
 	 * @return
 	 */
+	@Override
 	public String getComponentLabel(){
 		return this.source.getComponentName();
 	}

@@ -27,6 +27,7 @@ public interface IJp2pWritePropertySource< T extends Object> extends IJp2pProper
 	 * @param child
 	 * @return
 	 */
+	@Override
 	public boolean addChild( IJp2pPropertySource<?> child );
 	
 	boolean setDirective(IJp2pDirectives id, String value); 

@@ -152,7 +152,7 @@ public class XMLContainerBuilder implements ICompositeBuilder<Jp2pContainer>{
 	 */
 	private void notifyPropertyCreated( ContainerBuilder containerBuilder){
 		for( IPropertySourceFactory factory: containerBuilder.getFactories() ){
-			containerBuilder.updateRequest( new ComponentBuilderEvent<Object>((IPropertySourceFactory) factory, BuilderEvents.PROPERTY_SOURCE_CREATED));
+			containerBuilder.updateRequest( new ComponentBuilderEvent<Object>(factory, BuilderEvents.PROPERTY_SOURCE_CREATED));
 		}
 	}
 

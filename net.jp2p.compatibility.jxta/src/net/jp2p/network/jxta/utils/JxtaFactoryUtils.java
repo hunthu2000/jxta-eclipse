@@ -1,15 +1,15 @@
 package net.jp2p.network.jxta.utils;
 
+import net.jp2p.chaupal.jxta.network.NetworkManagerFactory;
+import net.jp2p.chaupal.jxta.network.configurator.NetworkConfigurationFactory;
+import net.jp2p.chaupal.jxta.network.configurator.partial.PartialNetworkConfigFactory;
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.utils.StringStyler;
 import net.jp2p.container.utils.Utils;
-import net.jp2p.jxta.factory.IJxtaComponents.JxtaCompatComponents;
-import net.jp2p.jxta.network.NetworkManagerFactory;
-import net.jp2p.jxta.network.configurator.NetworkConfigurationFactory;
-import net.jp2p.jxta.network.configurator.partial.PartialNetworkConfigFactory;
+import net.jp2p.jxta.factory.IJxtaComponents.JxtaNetworkComponents;
 import net.jp2p.jxta.seeds.SeedListFactory;
 
 public class JxtaFactoryUtils {
@@ -24,9 +24,9 @@ public class JxtaFactoryUtils {
 		if( Utils.isNull(componentName))
 			return null;
 		String comp = StringStyler.styleToEnum(componentName);
-		if( !JxtaCompatComponents.isComponent( comp ))
+		if( !JxtaNetworkComponents.isComponent( comp ))
 			return null;
-		JxtaCompatComponents component = JxtaCompatComponents.valueOf(comp);
+		JxtaNetworkComponents component = JxtaNetworkComponents.valueOf(comp);
 		IPropertySourceFactory factory = null;
 		switch( component ){
 		case NETWORK_MANAGER:

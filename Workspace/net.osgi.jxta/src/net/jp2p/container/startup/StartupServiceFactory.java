@@ -17,6 +17,7 @@ import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.context.Jp2pContext.Components;
 import net.jp2p.container.factory.AbstractPropertySourceFactory;
 import net.jp2p.container.factory.IPropertySourceFactory;
+import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
@@ -49,7 +50,7 @@ public class StartupServiceFactory extends AbstractPropertySourceFactory
 			return;
 		IJp2pWritePropertySource<IJp2pProperties> props = (IJp2pWritePropertySource<IJp2pProperties>) factory.getPropertySource();
 		props.setDirective( Directives.AUTO_START, Boolean.TRUE.toString());
-		Jp2pStartupPropertySource.setParentDirective(Directives.AUTO_START, super.getPropertySource());
+		AbstractJp2pPropertySource.setParentDirective(Directives.AUTO_START, super.getPropertySource());
 		factory = builder.getFactory( Jp2pContext.Components.PERSISTENCE_SERVICE.toString() );
 		if( factory == null ){
 			builder.addFactoryToContainer( Components.PERSISTENCE_SERVICE.toString(), super.getParentSource(), true, false);

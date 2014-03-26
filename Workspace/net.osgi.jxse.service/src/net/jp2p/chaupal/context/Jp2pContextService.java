@@ -44,6 +44,7 @@ public class Jp2pContextService {
 	public void open( ) {
 		String filter = filterBase + "*" + ")";
 		ServiceListener sl = new ServiceListener() {
+			@Override
 			@SuppressWarnings("unchecked")
 			public void serviceChanged(ServiceEvent ev) {
 				ServiceReference<IModuleService<?>> sr = (ServiceReference<IModuleService<?>>) ev.getServiceReference();

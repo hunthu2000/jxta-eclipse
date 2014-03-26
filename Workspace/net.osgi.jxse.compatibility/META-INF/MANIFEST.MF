@@ -6,7 +6,9 @@ Bundle-Version: 1.0.1.v20140129
 Bundle-Activator: net.osgi.jxse.compatibility.Activator
 Bundle-Vendor: Condast
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: net.jp2p.container,
+Import-Package: net.jp2p.chaupal.jxta.root.network,
+ net.jp2p.chaupal.jxta.root.network.configurator,
+ net.jp2p.container,
  net.jp2p.container.activator,
  net.jp2p.container.component,
  net.jp2p.container.factory,
@@ -14,8 +16,6 @@ Import-Package: net.jp2p.container,
  net.jp2p.container.startup,
  net.jp2p.container.utils,
  net.jp2p.jxta.factory,
- net.jp2p.jxta.network,
- net.jp2p.jxta.network.configurator,
  net.jp2p.jxta.peergroup,
  net.jxta.compatibility.platform,
  net.jxta.document,

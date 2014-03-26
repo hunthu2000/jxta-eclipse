@@ -70,6 +70,7 @@ public class Jp2pContext implements IJp2pContext {
 	 * @param componentName
 	 * @return
 	 */
+	@Override
 	public boolean isValidComponentName( String contextName, String componentName ){
 		if( !Utils.isNull( contextName ) && !isContextNameEqual(Contexts.JP2P.toString(), contextName ))
 			return false;
@@ -80,6 +81,7 @@ public class Jp2pContext implements IJp2pContext {
 	 * Get the handler for this context
 	 * @return
 	 */
+	@Override
 	public IJp2pHandler getHandler(){
 		return null;
 	}
@@ -129,6 +131,7 @@ public class Jp2pContext implements IJp2pContext {
 	 * @param componentName
 	 * @return
 	 */
+	@Override
 	public IPropertyConvertor<String, Object> getConvertor( IJp2pPropertySource<IJp2pProperties> source ){
 		String comp = StringStyler.styleToEnum( source.getComponentName());
 		if( !Components.isComponent( comp ))

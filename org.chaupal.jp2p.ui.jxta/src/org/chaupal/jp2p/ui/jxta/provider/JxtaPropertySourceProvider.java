@@ -3,7 +3,7 @@ package org.chaupal.jp2p.ui.jxta.provider;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.utils.StringStyler;
-import net.jp2p.jxta.factory.IJxtaComponents.JxtaCompatComponents;
+import net.jp2p.jxta.factory.IJxtaComponents.JxtaNetworkComponents;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.compatibility.platform.NetworkConfigurator;
@@ -45,7 +45,7 @@ public class JxtaPropertySourceProvider implements
 				break;
 			}
 		}
-		JxtaCompatComponents jxtaccomps = JxtaCompatComponents.valueOf( StringStyler.styleToEnum( this.getComponentName() ));
+		JxtaNetworkComponents jxtaccomps = JxtaNetworkComponents.valueOf( StringStyler.styleToEnum( this.getComponentName() ));
 		if( jxtaccomps != null ){
 			switch( jxtaccomps ){
 			case NETWORK_MANAGER:

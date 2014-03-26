@@ -107,6 +107,7 @@ public class AdvertisementServicePropertySource extends AdvertisementPropertySou
 		this.fillDefaultValues( parent);
 	}
 
+	@Override
 	protected void fillDefaultValues( IJp2pPropertySource<IJp2pProperties> parent ){
 		super.setDirective(Directives.BLOCK_CREATION, Boolean.FALSE.toString());
 		super.setDirective(AdvertisementDirectives.TYPE, parent.getDirective( AdvertisementDirectives.TYPE ));

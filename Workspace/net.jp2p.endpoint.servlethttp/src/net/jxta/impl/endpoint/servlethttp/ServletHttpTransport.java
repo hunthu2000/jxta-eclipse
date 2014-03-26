@@ -187,7 +187,8 @@ public final class ServletHttpTransport implements Module {
 	/**
      * {@inheritDoc}
      */
-    public synchronized void init(PeerGroup group, ID assignedID, Advertisement impl) throws PeerGroupException {
+    @Override
+	public synchronized void init(PeerGroup group, ID assignedID, Advertisement impl) throws PeerGroupException {
         this.group = group;
         this.assignedID = assignedID;
         implAdvertisement = (ModuleImplAdvertisement) impl;
@@ -316,7 +317,8 @@ public final class ServletHttpTransport implements Module {
     /**
      * {@inheritDoc}
      */
-    public synchronized int startApp(String[] args) {
+    @Override
+	public synchronized int startApp(String[] args) {
 
         endpoint = group.getEndpointService();
 
@@ -377,7 +379,8 @@ public final class ServletHttpTransport implements Module {
     /**
      * {@inheritDoc}
      */
-    public synchronized void stopApp() {
+    @Override
+	public synchronized void stopApp() {
         if (receiver != null) {
             receiver.stop();
         }
@@ -439,7 +442,8 @@ public final class ServletHttpTransport implements Module {
             // the result of IPUtils.getAllLocalAddresses() is not known
             // to be sorted.
             Collections.sort(wildAddrs, new Comparator<EndpointAddress>() {
-                public int compare(EndpointAddress one, EndpointAddress two) {
+                @Override
+				public int compare(EndpointAddress one, EndpointAddress two) {
                     return one.toString().compareTo(two.toString());
                 }
 

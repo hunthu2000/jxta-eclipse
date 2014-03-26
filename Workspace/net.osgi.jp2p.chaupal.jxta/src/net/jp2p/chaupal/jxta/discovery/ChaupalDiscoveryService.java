@@ -130,7 +130,7 @@ public class ChaupalDiscoveryService extends AbstractJp2pServiceNode<DiscoverySe
 	
 	@Override
 	public synchronized boolean start() {
-		boolean clear = DiscoveryPropertySource.getBoolean( super.getPropertySource(), Directives.CLEAR );
+		boolean clear = AbstractJp2pPropertySource.getBoolean( super.getPropertySource(), Directives.CLEAR );
 		final IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getPropertySource();
 		if( !clear ){
 			Advertisement[] advertisements = this.getAdvertisements();

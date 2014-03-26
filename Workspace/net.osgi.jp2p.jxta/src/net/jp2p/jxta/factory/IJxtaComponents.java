@@ -19,11 +19,11 @@ public interface IJxtaComponents{
 		//NETWORK_MANAGER,
 		//NETWORK_CONFIGURATOR,
 		//SEED_LIST,
-		SECURITY,
-		TCP,
-		HTTP,
-		HTTP2,
-		MULTICAST,
+		//SECURITY,
+		//TCP,
+		//HTTP,
+		//HTTP2,
+		//MULTICAST,
 		NET_PEERGROUP_SERVICE,
 		DISCOVERY_SERVICE,
 		PEERGROUP_SERVICE,
@@ -51,7 +51,7 @@ public interface IJxtaComponents{
 		}
 	}
 
-	public enum JxtaCompatComponents implements IJp2pComponents{
+	public enum JxtaNetworkComponents implements IJp2pComponents{
 		NETWORK_MANAGER,
 		NETWORK_CONFIGURATOR,
 		SEED_LIST,
@@ -70,7 +70,7 @@ public interface IJxtaComponents{
 			str = StringStyler.styleToEnum(str);
 			if(( str == null ) || ( str.length() == 0 ))
 				return false;
-			for( JxtaCompatComponents comp: values()){
+			for( JxtaNetworkComponents comp: values()){
 				if( comp.name().equals( str.toUpperCase() ))
 					return true;
 			}

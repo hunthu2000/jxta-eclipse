@@ -22,7 +22,7 @@ import net.jp2p.jxta.discovery.DiscoveryServiceFactory;
 public class ChaupalDiscoveryServiceFactory extends DiscoveryServiceFactory {
 
 	public ChaupalDiscoveryServiceFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
-		super( container, (IJp2pPropertySource<IJp2pProperties>) parentSource );
+		super( container, parentSource );
 	}	
 	
 	@Override

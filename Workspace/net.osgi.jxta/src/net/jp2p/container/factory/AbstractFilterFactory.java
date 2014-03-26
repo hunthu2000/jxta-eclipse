@@ -37,11 +37,10 @@ public abstract class AbstractFilterFactory<T extends Object> extends
 		return filter;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		if( filter != null ){
-			if( filter.accept((ComponentBuilderEvent<T>) event)){
+			if( filter.accept(event)){
 				setCanCreate( true );
 				startComponent();
 			}

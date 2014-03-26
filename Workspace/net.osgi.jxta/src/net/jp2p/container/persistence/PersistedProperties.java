@@ -40,7 +40,7 @@ public class PersistedProperties extends
 	@Override
 	public String getProperty(IJp2pPropertySource<IJp2pProperties> source, IJp2pProperties id) {
 		Properties properties = loadProperties( super.getSource() );
-		return (String) properties.getProperty( id.toString() );
+		return properties.getProperty( id.toString() );
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class PersistedProperties extends
 	 * @return
 	 */
 	protected static final File getPropertyFile( IJp2pPropertySource<IJp2pProperties> source ){
-		String bundle_id = (String) AbstractJp2pPropertySource.getBundleId( source );
+		String bundle_id = AbstractJp2pPropertySource.getBundleId( source );
 		String str = ProjectFolderUtils.getParsedUserDir( Jp2pContainerPropertySource.DEF_HOME_FOLDER + File.separator + S_PROPERTIES, bundle_id ).getPath();
 		return new File( str );
 	}

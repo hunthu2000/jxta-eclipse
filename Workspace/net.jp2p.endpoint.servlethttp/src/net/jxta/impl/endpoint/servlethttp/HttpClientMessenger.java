@@ -235,7 +235,8 @@ final class HttpClientMessenger extends BlockingMessenger {
      *  A simple implementation for debugging. <b>Do not parse the String
      *  returned. All of the information is available in other (simpler) ways.</b>
      */
-    public String toString() {
+    @Override
+	public String toString() {
         StringBuilder result = new StringBuilder(super.toString());
         result.append(" {");
         result.append(getDestinationAddress());
@@ -630,7 +631,8 @@ final class HttpClientMessenger extends BlockingMessenger {
          *
          *  <p/>Connects to the http server and waits for messages to be received and processes them.
          */
-        public void run() {
+        @Override
+		public void run() {
 
             try {
 
@@ -885,7 +887,8 @@ final class HttpClientMessenger extends BlockingMessenger {
             this.msg = msg;
         }
 
-        public void run() {
+        @Override
+		public void run() {
 
             Logging.logCheckedFine(LOG, "Demuxing ", msg, " from ", senderURL);
             servletHttpTransport.getEndpointService().processIncomingMessage(msg);

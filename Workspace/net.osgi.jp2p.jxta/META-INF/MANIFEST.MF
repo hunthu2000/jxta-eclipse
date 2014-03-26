@@ -5,7 +5,8 @@ Bundle-SymbolicName: net.jp2p.jxta;singleton:=true
 Bundle-Version: 1.0.0.v20140101
 Bundle-Vendor: Condast
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: net.jp2p.container,
+Import-Package: net.jp2p.chaupal.context,
+ net.jp2p.container,
  net.jp2p.container.activator,
  net.jp2p.container.builder,
  net.jp2p.container.component,

@@ -609,7 +609,7 @@ public class HttpMessageServlet extends HttpServlet {
         }
 
         for (Enumeration<String> headers = req.getHeaderNames(); headers.hasMoreElements();) {
-            String header = (String) headers.nextElement();
+            String header = headers.nextElement();
             builder.append("  HEADER[").append(header).append("]: ").append(req.getHeader(header)).append(nl);
         }
 
@@ -627,7 +627,7 @@ public class HttpMessageServlet extends HttpServlet {
         builder.append("  isSessionIdValid: ").append(req.isRequestedSessionIdValid()).append(nl);
 
         for (Enumeration<String> attributes = req.getAttributeNames(); attributes.hasMoreElements();) {
-            String attribute = (String) attributes.nextElement();
+            String attribute = attributes.nextElement();
             builder.append("  ATTRIBUTE[").append(attribute).append("]: ").append(req.getAttribute(attribute)).append(nl);
         }
 
@@ -637,7 +637,7 @@ public class HttpMessageServlet extends HttpServlet {
         builder.append("  LOCALE: ").append(req.getLocale().toString()).append(nl);
 
         for (Enumeration<String> parameters = req.getParameterNames(); parameters.hasMoreElements();) {
-            String parameter = (String) parameters.nextElement();
+            String parameter = parameters.nextElement();
             builder.append("  PARAMETER[").append(parameter).append("]: ").append(req.getParameter(parameter)).append(nl);
         }
 

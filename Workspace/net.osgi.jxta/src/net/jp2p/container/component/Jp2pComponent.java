@@ -34,7 +34,7 @@ public class Jp2pComponent<T extends Object> implements IJp2pComponent<T>, Compa
 
 	@Override
 	public String getId() {
-		return ( String )this.source.getDirective( Directives.ID );
+		return this.source.getDirective( Directives.ID );
 	}
 
 	/**
@@ -42,6 +42,7 @@ public class Jp2pComponent<T extends Object> implements IJp2pComponent<T>, Compa
 	 * is not meant to identify the component;
 	 * @return
 	 */
+	@Override
 	public String getComponentLabel(){
 		return this.source.getComponentName();
 	}
@@ -50,6 +51,7 @@ public class Jp2pComponent<T extends Object> implements IJp2pComponent<T>, Compa
 	 * Get the property source of this component
 	 * @return
 	 */
+	@Override
 	public IJp2pPropertySource<IJp2pProperties> getPropertySource(){
 		return source;
 	}

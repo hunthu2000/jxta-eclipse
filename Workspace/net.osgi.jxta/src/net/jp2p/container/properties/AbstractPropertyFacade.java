@@ -47,7 +47,7 @@ public abstract class AbstractPropertyFacade<T extends Object> extends AbstractJ
 
 	@Override
 	public ManagedProperty<IJp2pProperties, Object> getManagedProperty( IJp2pProperties id) {
-		return new ManagedProperty<IJp2pProperties, Object>( this, (IJp2pProperties) id );
+		return new ManagedProperty<IJp2pProperties, Object>( this, id );
 	}
 }
 

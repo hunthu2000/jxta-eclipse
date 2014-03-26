@@ -27,6 +27,7 @@ public abstract class AbstractPropertyConvertor<T,U extends Object> implements
 		return source;
 	}
 
+	@Override
 	public boolean setPropertyFromConverion(IJp2pProperties id, T value) {
 		source.getOrCreateManagedProperty(id, this.convertTo(id, value), false);
 		return false;

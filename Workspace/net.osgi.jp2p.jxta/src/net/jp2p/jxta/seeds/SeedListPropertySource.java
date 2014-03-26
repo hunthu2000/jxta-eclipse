@@ -22,7 +22,7 @@ import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.seeds.SeedInfo;
 import net.jp2p.container.utils.IOUtils;
 import net.jp2p.container.utils.StringProperty;
-import net.jp2p.jxta.factory.IJxtaComponents.JxtaCompatComponents;
+import net.jp2p.jxta.factory.IJxtaComponents.JxtaNetworkComponents;
 
 public class SeedListPropertySource extends AbstractJp2pWritePropertySource {
 
@@ -32,7 +32,7 @@ public class SeedListPropertySource extends AbstractJp2pWritePropertySource {
 	private Class<?> clss;
 	
 	public SeedListPropertySource( IJp2pPropertySource<IJp2pProperties> parent ) {
-		super( JxtaCompatComponents.SEED_LIST.toString(), parent );
+		super( JxtaNetworkComponents.SEED_LIST.toString(), parent );
 	}
 
 	public SeedListPropertySource( IJp2pPropertySource<IJp2pProperties> parent, Class<?> clss ) {

@@ -72,6 +72,7 @@ public abstract class AbstractPropertySourceFactory implements IPropertySourceFa
 	/**
 	 * Parse the properties
 	 */
+	@Override
 	public void parseProperties(){
 		Iterator<IJp2pProperties> iterator = source.propertyIterator();
 		while( iterator.hasNext()){
@@ -92,6 +93,7 @@ public abstract class AbstractPropertySourceFactory implements IPropertySourceFa
 	 * Get the weight of the factory. By default, the context factory is zero, startup service is one
 	 * @return
 	 */
+	@Override
 	public int getWeight(){
 		return weight;
 	}

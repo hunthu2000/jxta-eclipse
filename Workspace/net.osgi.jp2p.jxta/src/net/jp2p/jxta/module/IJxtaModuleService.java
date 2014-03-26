@@ -8,7 +8,7 @@ import net.jxta.platform.ModuleClassID;
 import net.jxta.platform.ModuleSpecID;
 import net.jxta.protocol.ModuleImplAdvertisement;
 
-public interface IJxtaModuleService extends IModuleService<Module>{
+public interface IJxtaModuleService<T extends Module> extends IModuleService<T>{
 
 	/**
 	 * Get a module spec ID

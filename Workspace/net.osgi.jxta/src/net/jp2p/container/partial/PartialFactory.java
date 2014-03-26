@@ -21,6 +21,6 @@ public class PartialFactory<T extends Object> extends AbstractPropertySourceFact
 
 	@Override
 	protected PartialPropertySource onCreatePropertySource() {
-		return new PartialPropertySource( this.componentName, (IJp2pPropertySource<IJp2pProperties>) super.getParentSource() );
+		return new PartialPropertySource( this.componentName, super.getParentSource() );
 	}
 }

@@ -14,6 +14,8 @@ import java.io.IOException;
 
 import org.eclipse.core.runtime.Platform;
 
+import net.jp2p.chaupal.jxta.root.network.NetworkManagerPropertyFacade;
+import net.jp2p.chaupal.jxta.root.network.configurator.NetworkConfiguratorPropertyFacade;
 import net.jp2p.container.AbstractJp2pContainer;
 import net.jp2p.container.IJp2pContainer;
 import net.jp2p.container.Jp2pContainerPropertySource;
@@ -24,8 +26,6 @@ import net.jp2p.container.properties.DefaultPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.utils.Utils;
-import net.jp2p.jxta.network.NetworkManagerPropertyFacade;
-import net.jp2p.jxta.network.configurator.NetworkConfiguratorPropertyFacade;
 import net.jp2p.jxta.peergroup.PeerGroupPropertyFacade;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.compatibility.platform.NetworkConfigurator;

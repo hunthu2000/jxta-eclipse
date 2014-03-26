@@ -63,7 +63,7 @@ public class Jp2pContainerPropertySource extends AbstractJp2pWritePropertySource
 			File file = new File( str );
 			return file.toURI();
 		case BUNDLE_ID:
-			return (String) super.getProperty( ContainerProperties.BUNDLE_ID );
+			return super.getProperty( ContainerProperties.BUNDLE_ID );
 		default:
 			break;
 		}

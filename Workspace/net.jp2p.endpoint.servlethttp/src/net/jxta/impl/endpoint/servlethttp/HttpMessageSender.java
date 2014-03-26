@@ -115,21 +115,24 @@ class HttpMessageSender implements MessageSender {
     /**
      * {@inheritDoc}
      */
-    public EndpointAddress getPublicAddress() {
+    @Override
+	public EndpointAddress getPublicAddress() {
         return publicAddress;
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean isConnectionOriented() {
+    @Override
+	public boolean isConnectionOriented() {
         return true;
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean allowsRouting() {
+    @Override
+	public boolean allowsRouting() {
         return true;
     }
 
@@ -167,7 +170,8 @@ class HttpMessageSender implements MessageSender {
     /**
      * {@inheritDoc}
      */
-    public Messenger getMessenger(EndpointAddress destAddr) {
+    @Override
+	public Messenger getMessenger(EndpointAddress destAddr) {
 //    public Messenger getMessenger(EndpointAddress destAddr, Object hintIgnored) {
 
         Logging.logCheckedFine(LOG, "getMessenger for : ", destAddr);
@@ -214,14 +218,16 @@ class HttpMessageSender implements MessageSender {
     /**
      *  {@inheritDoc}
      */
-    public String getProtocolName() {
+    @Override
+	public String getProtocolName() {
         return servletHttpTransport.HTTP_PROTOCOL_NAME;
     }
 
     /**
      *  {@inheritDoc}
      */
-    public EndpointService getEndpointService() {
+    @Override
+	public EndpointService getEndpointService() {
 
         return servletHttpTransport.getEndpointService();
 

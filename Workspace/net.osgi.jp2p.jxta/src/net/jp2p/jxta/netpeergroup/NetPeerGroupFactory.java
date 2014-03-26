@@ -17,7 +17,7 @@ import net.jp2p.container.factory.filter.ComponentCreateFilter;
 import net.jp2p.container.factory.filter.IComponentFactoryFilter;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
-import net.jp2p.jxta.factory.IJxtaComponents.JxtaCompatComponents;
+import net.jp2p.jxta.factory.IJxtaComponents.JxtaNetworkComponents;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jp2p.jxta.netpeergroup.NetPeerGroupService;
 import net.jp2p.jxta.peergroup.PeerGroupPropertySource;
@@ -38,7 +38,7 @@ public class NetPeerGroupFactory extends AbstractComponentDependencyFactory<Peer
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	protected IComponentFactoryFilter createFilter() {
-		return new ComponentCreateFilter( BuilderEvents.FACTORY_COMPLETED, JxtaCompatComponents.NETWORK_MANAGER.toString(), this );
+		return new ComponentCreateFilter( BuilderEvents.FACTORY_COMPLETED, JxtaNetworkComponents.NETWORK_MANAGER.toString(), this );
 	}
 
 	@Override

@@ -58,7 +58,7 @@ public class Jp2pDSComponent extends AbstractAttendeeProviderComponent implement
 
 			@Override
 			public void notifyContainerBuilt(ContainerBuilderEvent event) {
-				IJp2pContainer container = (IJp2pContainer) event.getContainer();
+				IJp2pContainer container = event.getContainer();
 				provideContainer( container );
 			}
 		};

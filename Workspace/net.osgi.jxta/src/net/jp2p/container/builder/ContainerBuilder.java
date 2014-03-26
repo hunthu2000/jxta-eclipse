@@ -45,6 +45,7 @@ public class ContainerBuilder implements IContainerBuilder{
 		return this.factories.remove( factory );
 	}
 	
+	@Override
 	public IPropertySourceFactory[] getFactories(){
 		return this.factories.toArray( new IPropertySourceFactory[0] );
 	}

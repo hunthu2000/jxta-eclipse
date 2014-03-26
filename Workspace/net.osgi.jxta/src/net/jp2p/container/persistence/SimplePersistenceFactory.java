@@ -10,6 +10,7 @@ import net.jp2p.container.factory.AbstractComponentFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
 import net.jp2p.container.factory.filter.BuilderEventFilter;
 import net.jp2p.container.factory.filter.IComponentFactoryFilter;
+import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
@@ -57,7 +58,7 @@ public class SimplePersistenceFactory extends AbstractComponentFactory<IManagedP
 	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		if( !filter.accept(event))
 			return;
-		boolean autostart = PersistencePropertySource.getBoolean(super.getPropertySource(), Directives.AUTO_START );
+		boolean autostart = AbstractJp2pPropertySource.getBoolean(super.getPropertySource(), Directives.AUTO_START );
 		if(!autostart )
 			return;
 		this.setPersistedProperty(event);

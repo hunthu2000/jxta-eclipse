@@ -11,8 +11,10 @@
 package net.jp2p.chaupal.jxta.peergroup;
 
 import net.jp2p.chaupal.jxta.advertisement.ChaupalAdvertisementFactory;
+import net.jp2p.chaupal.jxta.root.network.NetworkManagerPropertySource;
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
+import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.ManagedProperty;
@@ -29,7 +31,6 @@ import net.jp2p.jxta.advertisement.ModuleClassAdvertisementPropertySource;
 import net.jp2p.jxta.advertisement.ModuleSpecAdvertisementPropertySource;
 import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
-import net.jp2p.jxta.network.NetworkManagerPropertySource;
 import net.jp2p.jxta.peergroup.PeerGroupAdvertisementPropertySource;
 import net.jp2p.jxta.peergroup.PeerGroupFactory;
 import net.jp2p.jxta.peergroup.PeerGroupPropertySource;
@@ -56,7 +57,7 @@ public class ChaupalPeerGroupFactory extends ChaupalAdvertisementFactory<PeerGro
 		PeerGroupProperties id = (PeerGroupProperties) property.getKey();
 		switch( id ){
 		case PEERGROUP_ID:
-			String name = NetworkManagerPropertySource.getIdentifier( super.getPropertySource() );
+			String name = AbstractJp2pPropertySource.getIdentifier( super.getPropertySource() );
 			PeerGroupID pgid = IDFactory.newPeerGroupID( PeerGroupID.defaultNetPeerGroupID, name.getBytes() );
 			property.setValue( pgid, PropertyEvents.DEFAULT_VALUE_SET );
 			property.reset();

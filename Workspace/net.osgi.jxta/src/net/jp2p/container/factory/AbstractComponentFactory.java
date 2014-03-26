@@ -64,6 +64,7 @@ public abstract class AbstractComponentFactory<T extends Object> extends Abstrac
 	/**
 	 * Some services need to start prior to the creation of properties. This can be performed here.
 	 */
+	@Override
 	public void earlyStart(){ /* DO NOTHING */};
 
 	/**
@@ -164,6 +165,7 @@ public abstract class AbstractComponentFactory<T extends Object> extends Abstrac
 	 * be called separately;
 	 * @return
 	 */
+	@Override
 	public boolean complete(){
 		this.setCompleted( true );
 		return this.completed;

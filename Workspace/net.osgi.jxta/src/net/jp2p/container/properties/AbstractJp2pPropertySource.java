@@ -95,12 +95,13 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 
 	@Override
 	public String getId() {
-		return (String) this.directives.get( IJp2pDirectives.Directives.ID );
+		return this.directives.get( IJp2pDirectives.Directives.ID );
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return Boolean.getBoolean( this.directives.get( IJp2pDirectives.Directives.ENABLED ));
+		String str = this.directives.get( IJp2pDirectives.Directives.ENABLED );
+		return Boolean.parseBoolean(str);
 	}
 
 	@Override
@@ -126,6 +127,7 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 	 * @param key
 	 * @return
 	 */
+	@Override
 	public String getCategory( IJp2pProperties id ){
 		ManagedProperty<IJp2pProperties,Object> select = this.getManagedProperty(id);
 		return select.getCategory();
@@ -199,6 +201,7 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 		this.children.remove( child );
 	}
 
+	@Override
 	public IJp2pPropertySource<?> getChild( String componentName ){
 		for( IJp2pPropertySource<?> child: this.children ){
 			if( child.getComponentName().equals(componentName ))
@@ -222,6 +225,7 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 		return this.children.toArray(new IJp2pPropertySource[children.size()]);
 	}
 	
+	@Override
 	public boolean isEmpty(){
 		return this.properties.isEmpty();
 	}
@@ -246,7 +250,7 @@ public abstract class AbstractJp2pPropertySource implements IJp2pPropertySource<
 	 * @return
 	 */
 	public static boolean isAutoStart( IJp2pPropertySource<?> source ){
-		return Boolean.parseBoolean( (String) source.getDirective( IJp2pDirectives.Directives.AUTO_START ));		
+		return Boolean.parseBoolean( source.getDirective( IJp2pDirectives.Directives.AUTO_START ));		
 	}
 
 	/**

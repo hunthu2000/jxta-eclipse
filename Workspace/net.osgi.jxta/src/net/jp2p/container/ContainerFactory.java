@@ -15,6 +15,7 @@ import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.AbstractComponentFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
 import net.jp2p.container.factory.IPropertySourceFactory;
+import net.jp2p.container.properties.AbstractJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
@@ -70,17 +71,17 @@ public class ContainerFactory extends AbstractComponentFactory<Object>
 	 */
 	public boolean isAutoStart(){
 		IContainerBuilder container = super.getBuilder();
-		boolean autostart = Jp2pContainerPropertySource.isAutoStart(this.getPropertySource());
+		boolean autostart = AbstractJp2pPropertySource.isAutoStart(this.getPropertySource());
 		if( autostart)
 			return true;
 		String comp = Jp2pContext.Components.STARTUP_SERVICE.toString();
 		IPropertySourceFactory startup = container.getFactory( comp );
-		return (( startup != null ) &&  Jp2pContainerPropertySource.isAutoStart(startup.getPropertySource() ));
+		return (( startup != null ) &&  AbstractJp2pPropertySource.isAutoStart(startup.getPropertySource() ));
 	}
 
 	private void onPropertySourceCreated(){
 		IContainerBuilder builder = super.getBuilder();
-		boolean autostart = Jp2pContainerPropertySource.isAutoStart(this.getPropertySource());
+		boolean autostart = AbstractJp2pPropertySource.isAutoStart(this.getPropertySource());
 		String comp = Jp2pContext.Components.STARTUP_SERVICE.toString();
 		IPropertySourceFactory startup = builder.getFactory( comp );
 		if( !autostart || ( startup != null ))
@@ -89,6 +90,6 @@ public class ContainerFactory extends AbstractComponentFactory<Object>
 		startup = Jp2pContext.getDefaultFactory( builder, this.getPropertySource(), comp);
 		IJp2pWritePropertySource<IJp2pProperties> props = (IJp2pWritePropertySource<IJp2pProperties>) startup.createPropertySource();
 		props.setDirective( Directives.AUTO_START, Boolean.TRUE.toString());
-		builder.addFactory((IPropertySourceFactory) startup);
+		builder.addFactory(startup);
 	}
 }

@@ -137,7 +137,8 @@ final class HttpServletMessenger extends BlockingMessenger {
         /**
          *  {@inheritDoc}
          */
-        public void cancel() {
+        @Override
+		public void cancel() {
             // It is important we clear the messenger because Timer doesn't
             // remove cancelled TimerTasks from it's queue until they fire. This
             // means that the Messenger would not be GCed until the TimerTask

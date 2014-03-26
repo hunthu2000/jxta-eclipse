@@ -59,7 +59,7 @@ implements  IJp2pWritePropertySource<IJp2pProperties>{
 	 */
 	private static final IJp2pPropertySource<?> selectParent( IJp2pPropertySource<?> parent ){
 		if( parent instanceof PartialPropertySource)
-			return (IJp2pPropertySource<?>) parent.getParent();
+			return parent.getParent();
 		return parent;
 	}
 
@@ -84,7 +84,7 @@ implements  IJp2pWritePropertySource<IJp2pProperties>{
 	public IJp2pProperties getIdFromString(String key) {
 		String cat = this.getCategory().toLowerCase();
 		String id = StringStyler.styleToEnum( cat + "." + key.toLowerCase() );
-		return (IJp2pProperties) super.getSource().getIdFromString( id );
+		return super.getSource().getIdFromString( id );
 	}
 
 	@Override
@@ -184,7 +184,7 @@ implements  IJp2pWritePropertySource<IJp2pProperties>{
 			return parent;
 		PartialPropertySource root = new PartialPropertySource( parent );
 		expand( parent, root );
-		return (IJp2pPropertySource<IJp2pProperties>) root;
+		return root;
 	}
 
 	protected static void expand( IJp2pPropertySource<IJp2pProperties> parent, PartialPropertySource current ){
@@ -264,10 +264,12 @@ implements  IJp2pWritePropertySource<IJp2pProperties>{
 		return source.setDirective(id, value);
 	}
 
+	@Override
 	public boolean addChild( IJp2pPropertySource<?> child ){
 		return this.children.add( child );
 	}
 
+	@Override
 	public void removeChild( IJp2pPropertySource<?> child ){
 		this.children.remove( child );
 	}

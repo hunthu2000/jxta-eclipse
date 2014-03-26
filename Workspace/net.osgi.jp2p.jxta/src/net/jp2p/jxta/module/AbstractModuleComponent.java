@@ -22,10 +22,12 @@ import net.jxta.platform.ModuleClassID;
 import net.jxta.platform.ModuleSpecID;
 import net.jxta.protocol.ModuleImplAdvertisement;
 
-public abstract class AbstractModuleComponent<T extends Module> extends Jp2pComponent<Module> implements IJxtaModuleService {
+public abstract class AbstractModuleComponent<T extends Module> extends Jp2pComponent<T> implements IJxtaModuleService<T> {
 
 	public static final String S_UTF_8 = "UTF-8";
 	public static final String S_HASH = "#";
+
+	public static final String S_RESOURCE_LOCATION = "/services/net.jxta.platform.Module";
 
     private ModuleImplAdvertisement implAdv;
      

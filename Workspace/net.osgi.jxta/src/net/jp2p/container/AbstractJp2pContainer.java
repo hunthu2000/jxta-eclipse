@@ -56,7 +56,7 @@ implements	IJp2pContainer{
 	private T module;
 	
 	protected AbstractJp2pContainer( String bundleId, String identifier) {
-		this( (IJp2pPropertySource<IJp2pProperties>) new Jp2pContainerPropertySource( bundleId ));
+		this( new Jp2pContainerPropertySource( bundleId ));
 	}
 
 	protected AbstractJp2pContainer( IJp2pPropertySource<IJp2pProperties> source ) {
@@ -72,7 +72,7 @@ implements	IJp2pContainer{
 
 	@Override
 	public String getId() {
-		return (String) this.source.getDirective( Directives.ID );
+		return this.source.getDirective( Directives.ID );
 	}
 
 	/**
@@ -80,6 +80,7 @@ implements	IJp2pContainer{
 	 * is not meant to identify the component;
 	 * @return
 	 */
+	@Override
 	public String getComponentLabel(){
 		return this.source.getComponentName();
 	}
@@ -88,6 +89,7 @@ implements	IJp2pContainer{
 	 * Get the dispatcher for this container
 	 * @return
 	 */
+	@Override
 	public ComponentEventDispatcher getDispatcher(){
 		return dispatcher;
 	}

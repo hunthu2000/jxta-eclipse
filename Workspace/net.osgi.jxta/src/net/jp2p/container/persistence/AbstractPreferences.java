@@ -45,6 +45,7 @@ public abstract class AbstractPreferences<T,U extends Object> implements IProper
 	 * @return
 	 * @throws URISyntaxException
 	 */
+	@Override
 	public boolean setPropertyFromConverion( IJp2pProperties id, T value ){
 		ManagedProperty<IJp2pProperties,Object> property = this.source.getManagedProperty(id);
 		Object converted = this.convertTo( id, value);

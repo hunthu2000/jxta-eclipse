@@ -132,7 +132,8 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 		IJp2pContext context = getContext( contexts, contextName );
 		if( context == null )
 			context = this.contexts.getContextForComponent( contextName, componentName);
-		return context.getFactory( this.container, attributes, (IJp2pPropertySource<IJp2pProperties>) parentSource, componentName);
+		IPropertySourceFactory factory = context.getFactory( this.container, attributes, (IJp2pPropertySource<IJp2pProperties>) parentSource, componentName);
+		return factory;
 	}
 
 	/**
@@ -186,7 +187,7 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 			source = (IJp2pWritePropertySource<?>) factory.getPropertySource();
 			for( int i=0; i<attributes.getLength(); i++  ){
 				if( !Utils.isNull( attributes.getLocalName(i))){
-					IJp2pDirectives directive = new StringDirective( StringStyler.styleToEnum( attributes.getLocalName(i))); 
+					IJp2pDirectives directive = new StringDirective( StringStyler.styleToEnum( attributes.getLocalName( i ))); 
 					source.setDirective( directive, attributes.getValue(i));
 				}
 			}
@@ -321,11 +322,11 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 	private class FactoryNode extends ComponentNode<IPropertySourceFactory>{
 
 		protected FactoryNode(IPropertySourceFactory data, FactoryNode parent) {
-			super((IPropertySourceFactory) data, parent);
+			super(data, parent);
 		}
 
 		public FactoryNode(IPropertySourceFactory data) {
-			super((IPropertySourceFactory) data);
+			super(data);
 		}
 
 		@Override

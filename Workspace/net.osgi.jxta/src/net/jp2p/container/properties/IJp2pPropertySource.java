@@ -115,18 +115,21 @@ public interface IJp2pPropertySource< T extends Object> extends IDescendant<T, I
 	 * @param child
 	 * @return
 	 */
+	@Override
 	public boolean addChild( IJp2pPropertySource<?> child );
 
 	/**
 	 * Remove a child from the property source
 	 * @param child
 	 */
+	@Override
 	public void removeChild( IJp2pPropertySource<?> child );
 
 	/**
 	 * Get the children of the property source
 	 * @return
 	 */
+	@Override
 	public IJp2pPropertySource<?>[] getChildren();
 	
 	/**

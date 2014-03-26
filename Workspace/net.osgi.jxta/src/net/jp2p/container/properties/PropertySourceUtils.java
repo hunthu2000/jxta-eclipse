@@ -28,7 +28,7 @@ public class PropertySourceUtils {
 		buffer.append( offset + "[" + source.getComponentName() + "]\n");
 		if( expand ){
 			buffer.append( offset + "\t{properties}\n");
-			Iterator<Object> iterator = (Iterator<Object>) source.propertyIterator();
+			Iterator<Object> iterator = source.propertyIterator();
 			while( iterator.hasNext() ){
 				Object key = iterator.next(); 
 				buffer.append( offset + "\t\t" + key.toString() + "=" + source.getProperty(key) + "\n");

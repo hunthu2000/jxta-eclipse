@@ -47,8 +47,9 @@ public class DefaultJxseComponent<T extends Object> implements IJp2pComponent<T>
 	/**
 	 * Get the id
 	 */
+	@Override
 	public String getId(){
-		return (String) this.source.getId();
+		return this.source.getId();
 	}
 
 	/**
@@ -56,6 +57,7 @@ public class DefaultJxseComponent<T extends Object> implements IJp2pComponent<T>
 	 * is not meant to identify the component;
 	 * @return
 	 */
+	@Override
 	public String getComponentLabel(){
 		return this.source.getComponentName();
 	}

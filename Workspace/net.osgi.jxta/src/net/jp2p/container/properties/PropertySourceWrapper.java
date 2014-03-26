@@ -34,6 +34,7 @@ public class PropertySourceWrapper< T extends Object> implements IJp2pPropertySo
 		return source;
 	}
 	
+	@Override
 	public String getId() {
 		return source.getId();
 	}

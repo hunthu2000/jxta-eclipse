@@ -5,6 +5,7 @@ import java.util.Collection;
 import net.jp2p.chaupal.jxta.Activator;
 import net.jp2p.jxta.module.IJxtaModuleService;
 import net.jxta.impl.loader.DynamicJxtaLoader;
+import net.jxta.platform.IJxtaLoader;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceListener;
@@ -35,7 +36,7 @@ public class ModuleFactoryService {
     private String filter = "(objectclass=" + IJxtaModuleService.class.getName() + ")";
 	
 	private BundleContext  bc;
-	private DynamicJxtaLoader loader = (DynamicJxtaLoader) DynamicJxtaLoader.getInstance();
+	private IJxtaLoader loader = DynamicJxtaLoader.getInstance();
 	
 	public ModuleFactoryService(BundleContext bc) {
 		this.bc = bc;
@@ -44,8 +45,10 @@ public class ModuleFactoryService {
 	/**
 	 * Open the service
 	 */
+	@SuppressWarnings("rawtypes")
 	public void open() {
 		ServiceListener sl = new ServiceListener() {
+			@Override
 			@SuppressWarnings("unchecked")
 			public void serviceChanged(ServiceEvent ev) {
 				ServiceReference<IJxtaModuleService> sr = (ServiceReference<IJxtaModuleService>) ev.getServiceReference();
@@ -85,6 +88,7 @@ public class ModuleFactoryService {
 	 * Register the service
 	 * @param sr
 	 */
+	@SuppressWarnings("rawtypes")
 	private void register(ServiceReference<IJxtaModuleService> sr) {
 		try {
 			IJxtaModuleService module = bc.getService( sr );
@@ -101,6 +105,7 @@ public class ModuleFactoryService {
 	 * Register the service
 	 * @param sr
 	 */
+	@SuppressWarnings("rawtypes")
 	private void unregister(ServiceReference<IJxtaModuleService> sr) {
 		try {
 			IJxtaModuleService module = bc.getService( sr );
@@ -112,6 +117,7 @@ public class ModuleFactoryService {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void close(){
 		String filter = "(objectclass=" + IJxtaModuleService.class.getName() + ")";
 

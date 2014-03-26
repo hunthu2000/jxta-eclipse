@@ -5,6 +5,7 @@ import org.xml.sax.Attributes;
 import net.jp2p.chaupal.jxta.advertisement.ChaupalAdvertisementFactory;
 import net.jp2p.chaupal.jxta.discovery.ChaupalDiscoveryServiceFactory;
 import net.jp2p.chaupal.jxta.pipe.ChaupalPipeFactory;
+import net.jp2p.chaupal.jxta.root.network.NetworkManagerPreferences;
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.context.Jp2pContext;
@@ -23,7 +24,6 @@ import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDire
 import net.jp2p.jxta.discovery.DiscoveryPreferences;
 import net.jp2p.jxta.factory.JxtaFactoryUtils;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
-import net.jp2p.jxta.network.NetworkManagerPreferences;
 import net.jp2p.jxta.peergroup.PeerGroupPreferences;
 
 public class JxtaContext implements IJp2pContext {
@@ -53,6 +53,7 @@ public class JxtaContext implements IJp2pContext {
 	 * @param componentName
 	 * @return
 	 */
+	@Override
 	public boolean isValidComponentName( String contextName, String componentName ){
 		if( !Utils.isNull( contextName ) && !Jp2pContext.isContextNameEqual(Contexts.JXTA.toString(), contextName ))
 			return false;
@@ -105,6 +106,7 @@ public class JxtaContext implements IJp2pContext {
 	 * @param componentName
 	 * @return
 	 */
+	@Override
 	public IPropertyConvertor<String, Object> getConvertor( IJp2pPropertySource<IJp2pProperties> source ){
 		String comp = StringStyler.styleToEnum( source.getComponentName());
 		if( !JxtaComponents.isComponent( comp ))

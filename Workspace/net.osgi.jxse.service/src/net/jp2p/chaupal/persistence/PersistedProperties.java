@@ -24,6 +24,7 @@ public class PersistedProperties extends AbstractPersistedProperty<String,Object
 		this.scope = scope;
 	}
 
+	@Override
 	public void setConvertor( IPropertyConvertor<String,Object> convertor) {
 		this.convertor = convertor;
 	}
@@ -32,6 +33,7 @@ public class PersistedProperties extends AbstractPersistedProperty<String,Object
 	 * Clear the property
 	 * @param source
 	 */
+	@Override
 	public void clear( IJp2pPropertySource<IJp2pProperties> source ){
 		Preferences pref1 = scope.getNode( AbstractJp2pPropertySource.getBundleId(source) + "." + AbstractJp2pPropertySource.getIdentifier(source));
 		try {
@@ -46,6 +48,7 @@ public class PersistedProperties extends AbstractPersistedProperty<String,Object
 	 * @param id
 	 * @return
 	 */
+	@Override
 	public String getProperty( IJp2pPropertySource<IJp2pProperties> source, IJp2pProperties id ){
 		IPreferencesService service = Platform.getPreferencesService();
 		Preferences pref1 = scope.getNode( AbstractJp2pPropertySource.getBundleId(source) + "." + AbstractJp2pPropertySource.getIdentifier(source));
@@ -61,6 +64,7 @@ public class PersistedProperties extends AbstractPersistedProperty<String,Object
 	 * @param value
 	 * @return
 	 */
+	@Override
 	public boolean setProperty( IJp2pPropertySource<IJp2pProperties> source, IJp2pProperties id, String value ){
 		ManagedProperty<IJp2pProperties, Object> mp = source.getManagedProperty(id);
 		if( !ManagedProperty.isPersisted(mp))
