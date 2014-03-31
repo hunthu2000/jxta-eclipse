@@ -6,7 +6,7 @@ import net.jp2p.chaupal.jxta.module.AbstractModuleFactory;
 import net.jp2p.chaupal.jxta.network.Activator;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
-import net.jp2p.jxta.module.IJxtaModuleService;
+import net.jxse.module.IJxtaModuleService;
 import net.jxta.compatibility.platform.NetworkConfigurator;
 import net.jxta.platform.Module;
 
@@ -21,9 +21,10 @@ public class NetworkModuleFactory extends AbstractModuleFactory<Module> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected void addModules(
-			Collection<IJxtaModuleService<Module>> modules) {
+	protected void addModules( Collection<IJxtaModuleService<Module>> modules ) {
 		IJxtaModuleService<? extends Module> service = new PlatformModule( super.getSource(), configurator);
+		modules.add( (IJxtaModuleService<Module>) service );
+		service = new ShadowPeerGroupModule( super.getSource(), configurator );
 		modules.add( (IJxtaModuleService<Module>) service );
 	}
 }

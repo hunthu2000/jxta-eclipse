@@ -1,6 +1,6 @@
 package net.jp2p.chaupal.jxta.module;
 
-import net.jp2p.jxta.module.IJxtaModuleService;
+import net.jxse.module.IJxtaModuleService;
 import net.jxta.platform.Module;
 
 public interface IModuleFactory<U extends Module>{

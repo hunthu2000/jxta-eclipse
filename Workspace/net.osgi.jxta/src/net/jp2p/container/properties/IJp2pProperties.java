@@ -10,7 +10,7 @@ public interface IJp2pProperties{
 	 *
 	 */
 	public enum Jp2pProperties implements IJp2pProperties{
-		VERSION,
+		ENABLED,
 		STATUS,
 		BUNDLE_ID,
 		CREATE_DATE;

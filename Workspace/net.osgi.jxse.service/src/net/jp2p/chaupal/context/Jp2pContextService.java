@@ -1,8 +1,8 @@
 package net.jp2p.chaupal.context;
 
-import net.jp2p.container.component.IModuleService;
 import net.jp2p.container.context.ContextLoader;
 import net.jp2p.container.context.IJp2pContext;
+import net.jxse.module.IModuleService;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
@@ -28,11 +28,11 @@ import org.osgi.framework.InvalidSyntaxException;
  */
 public class Jp2pContextService {
 
-   private String filterBase = "(jp2p.context="; //in component.xml file you will use target="(jp2p.context=http)"
+   private String filterBase = "(jp2p.context="; //in component.xml file you will use target="(jp2p.context=contextName)"
 	
 	private BundleContext  bc;
 	private ContextLoader loader;
-	
+
 	public Jp2pContextService(ContextLoader loader, BundleContext bc) {
 		this.bc = bc;
 		this.loader = loader;

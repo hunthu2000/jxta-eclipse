@@ -79,7 +79,7 @@ public class PeerGroupPropertySource extends AdvertisementPropertySource
 
 	protected void fillDefaultValues() {
 		setDirectiveFromParent( Directives.AUTO_START, this );
-		super.setDirective( Directives.BLOCK_CREATION, Boolean.FALSE.toString() );
+		super.setDirective( Directives.CREATE, Boolean.TRUE.toString() );
 		IJp2pWritePropertySource<IJp2pProperties> parent = (IJp2pWritePropertySource<IJp2pProperties>) super.getParent();
 		this.setDirective( Directives.NAME, parent.getDirective( Directives.NAME ));
 		String name = (String) super.getProperty( PeerGroupProperties.NAME );

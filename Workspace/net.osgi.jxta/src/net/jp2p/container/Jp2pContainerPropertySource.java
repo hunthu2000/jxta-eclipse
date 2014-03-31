@@ -24,9 +24,6 @@ import net.jp2p.container.validator.ClassValidator;
 public class Jp2pContainerPropertySource extends AbstractJp2pWritePropertySource{
 
 	public static final String DEF_HOME_FOLDER = "${user.home}/.jxse/${bundle-id}";
-	public static final int DEF_MIN_PORT = 1000;
-	public static final int DEF_MAX_PORT = 9999;
-	public static final int DEF_PORT = 9715;
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Jp2pContainerPropertySource( String bundleId) {

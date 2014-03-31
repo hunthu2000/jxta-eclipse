@@ -62,6 +62,14 @@ public class ContextLoader {
 	}
 	
 	/**
+	 * get the contexts
+	 * @return
+	 */
+	public IJp2pContext[] getContexts(){
+		return this.contexts.toArray( new IJp2pContext[ this.contexts.size() ]);
+	}
+	
+	/**
 	 * Get the context for the given name
 	 * @param contextName
 	 * @return

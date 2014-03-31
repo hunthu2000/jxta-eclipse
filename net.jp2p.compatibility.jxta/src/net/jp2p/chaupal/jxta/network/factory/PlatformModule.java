@@ -1,7 +1,6 @@
 package net.jp2p.chaupal.jxta.network.factory;
 
 import java.net.URI;
-import java.net.URL;
 
 import net.jp2p.chaupal.jxta.root.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -27,8 +26,7 @@ public class PlatformModule extends AbstractModuleComponent<Platform> {
 
 	@Override
 	protected ModuleImplAdvertisement onCreateAdvertisement() {
-		URL url = PlatformModule.class.getResource( S_RESOURCE_LOCATION );
-		return getAdvertisementFromResource(url);
+		return Platform.getDefaultModuleImplAdvertisement();
 	}
 
 	@Override

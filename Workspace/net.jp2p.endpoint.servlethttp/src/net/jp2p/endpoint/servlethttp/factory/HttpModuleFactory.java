@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import net.jp2p.chaupal.jxta.module.AbstractModuleFactory;
 import net.jp2p.endpoint.servlethttp.Activator;
-import net.jp2p.jxta.module.IJxtaModuleService;
+import net.jxse.module.IJxtaModuleService;
 import net.jxta.impl.endpoint.servlethttp.ServletHttpTransport;
 
 public class HttpModuleFactory extends AbstractModuleFactory<ServletHttpTransport> {

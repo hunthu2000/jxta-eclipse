@@ -53,7 +53,7 @@ public class StartupServiceFactory extends AbstractPropertySourceFactory
 		AbstractJp2pPropertySource.setParentDirective(Directives.AUTO_START, super.getPropertySource());
 		factory = builder.getFactory( Jp2pContext.Components.PERSISTENCE_SERVICE.toString() );
 		if( factory == null ){
-			builder.addFactoryToContainer( Components.PERSISTENCE_SERVICE.toString(), super.getParentSource(), true, false);
+			builder.addFactoryToContainer( Components.PERSISTENCE_SERVICE.toString(), super.getParentSource(), true, true);
 		}
 			
 	}

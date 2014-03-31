@@ -1,4 +1,4 @@
-package net.jp2p.chaupal.context;
+package net.jp2p.chaupal.activator;
 
 import java.util.Collection;
 import java.util.Dictionary;

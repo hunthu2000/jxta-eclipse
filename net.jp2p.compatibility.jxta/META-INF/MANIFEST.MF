@@ -5,10 +5,10 @@ Bundle-SymbolicName: net.jp2p.chaupal.jxta.network
 Bundle-Version: 1.0.0.v20140323
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Chaupal
-Bundle-ActivationPolicy: lazy
 Bundle-Activator: net.jp2p.chaupal.jxta.network.Activator
-Service-Component: OSGI-INF/context.xml
 Import-Package: net.jp2p.chaupal,
+ net.jp2p.chaupal.activator,
+ net.jp2p.chaupal.context,
  net.jp2p.chaupal.jxta.module,
  net.jp2p.chaupal.jxta.root.network,
  net.jp2p.chaupal.jxta.root.network.configurator,
@@ -21,12 +21,15 @@ Import-Package: net.jp2p.chaupal,
  net.jp2p.container.partial,
  net.jp2p.container.persistence,
  net.jp2p.container.properties,
+ net.jp2p.container.service,
  net.jp2p.container.utils,
  net.jp2p.container.xml,
+ net.jp2p.jxta.context,
  net.jp2p.jxta.factory,
  net.jp2p.jxta.module,
  net.jp2p.jxta.peergroup,
  net.jp2p.jxta.seeds,
+ net.jxse.module,
  net.jxta.compatibility.impl.peergroup,
  net.jxta.compatibility.peergroup,
  net.jxta.compatibility.platform,
@@ -47,3 +50,4 @@ Export-Package: net.jp2p.chaupal.jxta.network.configurator.partial,
  net.jp2p.chaupal.jxta.network.security,
  net.jp2p.chaupal.jxta.network.tcp
 Require-Bundle: net.jxta.compatibility
+Bundle-ActivationPolicy: lazy

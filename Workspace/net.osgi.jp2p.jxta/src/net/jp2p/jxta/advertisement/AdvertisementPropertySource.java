@@ -204,7 +204,7 @@ public class AdvertisementPropertySource extends AbstractJp2pWritePropertySource
 	}
 
 	protected void fillDefaultValues( IJp2pPropertySource<IJp2pProperties> parent ){
-		super.setDirective(Directives.BLOCK_CREATION, Boolean.TRUE.toString());
+		super.setDirective(Directives.CREATE, Boolean.FALSE.toString());
 		super.setDirective( AdvertisementDirectives.TYPE, type.toString() );
 }	
 

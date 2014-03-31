@@ -25,7 +25,6 @@ import net.jp2p.chaupal.jxta.root.network.NetworkManagerPreferences;
 import net.jp2p.chaupal.jxta.root.network.NetworkManagerPropertySource;
 import net.jp2p.chaupal.jxta.root.network.NetworkManagerPropertySource.NetworkManagerDirectives;
 import net.jp2p.chaupal.jxta.root.network.NetworkManagerPropertySource.NetworkManagerProperties;
-import net.jp2p.chaupal.jxta.root.network.configurator.NetworkConfigurationPropertySource;
 import net.jp2p.container.ContainerFactory;
 import net.jp2p.container.Jp2pContainerPropertySource;
 import net.jp2p.container.builder.IContainerBuilder;

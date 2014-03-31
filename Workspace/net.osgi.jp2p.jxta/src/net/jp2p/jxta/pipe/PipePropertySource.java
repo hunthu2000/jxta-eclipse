@@ -70,7 +70,7 @@ public class PipePropertySource extends AdvertisementPropertySource{
 	public PipePropertySource( IJp2pPropertySource<IJp2pProperties> parent) {
 		super( JxtaComponents.PIPE_SERVICE.toString(), parent);
 		super.setProperty( PipeServiceProperties.TIME_OUT, DEFAULT_OUTPUT_PIPE_TIME_OUT);
-		super.setDirective( Directives.BLOCK_CREATION, Boolean.FALSE.toString() );
+		super.setDirective( Directives.CREATE, Boolean.TRUE.toString() );
 	}
 
 	@Override

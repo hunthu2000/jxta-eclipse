@@ -3,7 +3,6 @@ package net.jp2p.endpoint.servlethttp.context;
 import org.xml.sax.Attributes;
 
 import net.jp2p.container.builder.IContainerBuilder;
-import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -15,8 +14,11 @@ import net.jp2p.container.utils.Utils;
 import net.jp2p.container.xml.IJp2pHandler;
 import net.jp2p.endpoint.servlethttp.factory.HttpPropertySource;
 import net.jp2p.endpoint.servlethttp.factory.HttpServiceFactory;
+import net.jp2p.jxta.context.IJxtaContext;
+import net.jxta.peergroup.IModuleDefinitions.DefaultModules;
+import net.jxta.platform.ModuleClassID;
 
-public class HttpContext implements IJp2pContext {
+public class HttpContext implements IJxtaContext {
 
 	public static final String S_HTTP_CONTEXT = "http";
 
@@ -33,6 +35,14 @@ public class HttpContext implements IJp2pContext {
 		String[] names = new String[1];
 		names[0] = HttpPropertySource.S_HTTP_SERVICE;
 		return names;
+	}
+
+	
+	@Override
+	public ModuleClassID[] getSupportedModuleClassIDs() {
+		ModuleClassID[] ids = new ModuleClassID[ 1];
+		ids[0] = DefaultModules.getModuleClassID( DefaultModules.HTTP );
+		return ids;
 	}
 
 	/**

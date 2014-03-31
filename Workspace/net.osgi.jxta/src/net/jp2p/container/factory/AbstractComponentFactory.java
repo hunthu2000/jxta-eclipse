@@ -126,13 +126,12 @@ public abstract class AbstractComponentFactory<T extends Object> extends Abstrac
 	 */
 	protected synchronized IJp2pComponent<T> createComponent() {
 		Logger logger = Logger.getLogger( this.getClass().getName() );
-		boolean enabled = AbstractJp2pPropertySource.getBoolean( super.getPropertySource(), Directives.ENABLED );
+		boolean enabled = super.getPropertySource().isEnabled();
 		if( !enabled ){
 			logger.warning( S_WRN_NOT_ENABLED + this.getComponentName());
-			return null;
 		}
-		boolean blockCreation = AbstractJp2pPropertySource.getBoolean( super.getPropertySource(), Directives.BLOCK_CREATION );
-		if( blockCreation ){
+		boolean create = AbstractJp2pPropertySource.getBoolean( super.getPropertySource(), Directives.CREATE );
+		if( !create ){
 			logger.warning( S_WRN_BLOCK_CREATION + this.getComponentName());
 			return null;
 		}

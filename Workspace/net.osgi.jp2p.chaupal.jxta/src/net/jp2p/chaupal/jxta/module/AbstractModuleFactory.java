@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
-import net.jp2p.jxta.module.IJxtaModuleService;
+import net.jxse.module.IJxtaModuleService;
 import net.jxta.platform.Module;
 
 public abstract class AbstractModuleFactory<T extends Module> implements IModuleFactory<T> {

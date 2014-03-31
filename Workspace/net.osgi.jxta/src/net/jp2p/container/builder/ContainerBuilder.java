@@ -125,7 +125,7 @@ public class ContainerBuilder implements IContainerBuilder{
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public IPropertySourceFactory addFactoryToContainer( String componentName, IJp2pPropertySource<IJp2pProperties> parentSource, boolean createSource, boolean blockCreation) {
+	public IPropertySourceFactory addFactoryToContainer( String componentName, IJp2pPropertySource<IJp2pProperties> parentSource, boolean createSource, boolean create) {
 		String str = StringStyler.styleToEnum(componentName);
 		IJp2pWritePropertySource<IJp2pProperties> ncp = (IJp2pWritePropertySource<IJp2pProperties>) parentSource.getChild( str );
 		if( ncp != null )
@@ -135,7 +135,7 @@ public class ContainerBuilder implements IContainerBuilder{
 		if(!createSource )
 			return ncf;
 		IJp2pWritePropertySource<IJp2pProperties> props = (IJp2pWritePropertySource<IJp2pProperties>) ncf.createPropertySource();
-		props.setDirective( Directives.BLOCK_CREATION, Boolean.valueOf( blockCreation ).toString());
+		props.setDirective( Directives.CREATE, Boolean.valueOf( create ).toString());
 		parentSource.addChild(props);
 		return ncf; 
 	}
@@ -144,11 +144,11 @@ public class ContainerBuilder implements IContainerBuilder{
 	 * @see net.osgi.jp2p.builder.IContainerBuilder#getOrCreateChildFactory(net.osgi.jp2p.properties.IJp2pPropertySource, java.lang.String, boolean, boolean)
 	 */
 	@Override
-	public IPropertySourceFactory getOrCreateChildFactory( IJp2pPropertySource<IJp2pProperties> source, String componentName, boolean createSource, boolean blockCreation ){
+	public IPropertySourceFactory getOrCreateChildFactory( IJp2pPropertySource<IJp2pProperties> source, String componentName, boolean createSource, boolean create ){
 		IJp2pPropertySource<?> child = source.getChild( componentName ); 
 		if( child != null )
 			return this.getFactory(child );
-		return addFactoryToContainer(componentName, source, createSource, blockCreation);
+		return addFactoryToContainer(componentName, source, createSource, create);
 	}
 }
 

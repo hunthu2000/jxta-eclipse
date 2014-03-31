@@ -109,7 +109,7 @@ public class AdvertisementServicePropertySource extends AdvertisementPropertySou
 
 	@Override
 	protected void fillDefaultValues( IJp2pPropertySource<IJp2pProperties> parent ){
-		super.setDirective(Directives.BLOCK_CREATION, Boolean.FALSE.toString());
+		super.setDirective(Directives.CREATE, Boolean.TRUE.toString());
 		super.setDirective(AdvertisementDirectives.TYPE, parent.getDirective( AdvertisementDirectives.TYPE ));
 		super.setDirective(AdvertisementDirectives.PEERGROUP, parent.getDirective( AdvertisementDirectives.PEERGROUP ));
 		super.setManagedProperty( new ManagedProperty<IJp2pProperties, Object>( this, AdvertisementServiceProperties.LIFE_TIME, PeerGroup.DEFAULT_LIFETIME ));

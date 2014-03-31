@@ -40,7 +40,7 @@ public class SeedListPropertySource extends AbstractJp2pWritePropertySource {
 		this.hasSeeds = false;
 		this.clss = clss;
 		this.fillProperties( clss );
-		super.setDirective( Directives.BLOCK_CREATION, Boolean.FALSE.toString());
+		super.setDirective( Directives.CREATE, Boolean.TRUE.toString());
 	}
 	
 	protected void fillProperties( Class<?> clss ){

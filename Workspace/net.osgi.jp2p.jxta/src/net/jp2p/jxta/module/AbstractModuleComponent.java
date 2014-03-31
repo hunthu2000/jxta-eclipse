@@ -14,7 +14,10 @@ import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.utils.IOUtils;
 import net.jp2p.container.utils.Utils;
+import net.jxse.module.IJxtaModuleService;
 import net.jxta.document.Advertisement;
+import net.jxta.document.MimeMediaType;
+import net.jxta.document.XMLElement;
 import net.jxta.impl.peergroup.CompatibilityUtils;
 import net.jxta.impl.protocol.PlatformConfig;
 import net.jxta.platform.Module;
@@ -131,6 +134,8 @@ public abstract class AbstractModuleComponent<T extends Module> extends Jp2pComp
         				if (mAdv == null) {
         					mAdv = CompatibilityUtils.createModuleImplAdvertisement(msid, code, description);
         				}
+        		        XMLElement<?> paramElement = (XMLElement<?>) mAdv.getDocument(MimeMediaType.XMLUTF8);
+        		        mAdv.setParam(paramElement);
         			} else {
         				logger.severe( "Failed to register: " + provider );
         			}

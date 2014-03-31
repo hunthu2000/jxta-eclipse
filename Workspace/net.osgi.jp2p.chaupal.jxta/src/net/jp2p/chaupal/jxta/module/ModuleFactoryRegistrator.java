@@ -5,8 +5,8 @@ import java.util.Dictionary;
 
 import org.osgi.framework.BundleContext;
 
-import net.jp2p.chaupal.context.AbstractRegistrator;
-import net.jp2p.jxta.module.IJxtaModuleService;
+import net.jp2p.chaupal.activator.AbstractRegistrator;
+import net.jxse.module.IJxtaModuleService;
 
 public class ModuleFactoryRegistrator extends AbstractRegistrator<IJxtaModuleService<?>> {
 	

@@ -57,7 +57,7 @@ public class HttpServicePropertySource extends AbstractJp2pWritePropertySource
 
 	private void fill(){
 		super.setProperty( TransportProperties.ENABLED, true );
-		super.setDirective( Directives.BLOCK_CREATION, Boolean.FALSE.toString());
+		super.setDirective( Directives.CREATE, Boolean.TRUE.toString());
 		super.setDirective( Directives.CONTEXT, Contexts.CHAUPAL.toString() );
 	}
 

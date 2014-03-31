@@ -50,7 +50,7 @@ public abstract class ChaupalAdvertisementFactory<T extends Object, U extends Ad
 	@Override
 	protected AdvertisementPropertySource onCreatePropertySource() {
 		AdvertisementPropertySource source = super.onCreatePropertySource();
-		source.setDirective( Directives.BLOCK_CREATION, Boolean.FALSE.toString());
+		source.setDirective( Directives.CREATE, Boolean.TRUE.toString());
 		return source;
 	}
 

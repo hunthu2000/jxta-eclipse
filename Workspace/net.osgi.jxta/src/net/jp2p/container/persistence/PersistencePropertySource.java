@@ -10,7 +10,7 @@ public class PersistencePropertySource extends AbstractJp2pWritePropertySource {
 
 	public PersistencePropertySource( IJp2pPropertySource<IJp2pProperties> parent) {
 		super( Jp2pContext.Components.PERSISTENCE_SERVICE.toString(), parent);
-		super.setDirective( Directives.BLOCK_CREATION, Boolean.FALSE.toString());
+		super.setDirective( Directives.CREATE, Boolean.TRUE.toString());
 		super.setDirective( Directives.AUTO_START, Boolean.TRUE.toString());
 	}
 }

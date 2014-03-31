@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jp2p.chaupal.jxta.network.INetworkPreferences;
-import net.jp2p.chaupal.jxta.network.factory.NetworkModuleFactory;
 import net.jp2p.chaupal.jxta.network.http.Http2Preferences;
 import net.jp2p.chaupal.jxta.network.http.HttpPreferences;
 import net.jp2p.chaupal.jxta.network.multicast.MulticastPreferences;
