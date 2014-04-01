@@ -30,6 +30,7 @@ import net.jp2p.container.Jp2pContainerPropertySource;
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.Jp2pComponentNode;
+import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.AbstractFilterFactory;
 import net.jp2p.container.factory.filter.ComponentCreateFilter;
@@ -55,10 +56,6 @@ public class NetworkManagerFactory extends AbstractFilterFactory<NetworkManager>
 		
 	public static final String S_WRN_NO_CONFIGURATOR = "Could not add network configurator";
 	
-	public NetworkManagerFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
-		super( container, parentSource );
-	}
-
 	@Override
 	public String getComponentName() {
 		return JxtaNetworkComponents.NETWORK_MANAGER.toString();
@@ -129,6 +126,9 @@ public class NetworkManagerFactory extends AbstractFilterFactory<NetworkManager>
 					return null;
 				}
 			}
+			
+			//Load the http module
+			//IJp2pContext context = Activator.getLoader().
 			File file = path.toFile();
 			NetworkManager manager = new NetworkManager( preferences.getConfigMode(), name, file.toURI());
 			NetworkModuleFactory factory = new NetworkModuleFactory( properties, manager.getConfigurator() );

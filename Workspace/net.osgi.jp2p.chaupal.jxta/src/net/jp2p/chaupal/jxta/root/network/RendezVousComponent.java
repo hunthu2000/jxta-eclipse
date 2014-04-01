@@ -105,11 +105,6 @@ class RendezvousServiceFactory extends AbstractComponentFactory<RendezVousServic
 
 	private NetPeerGroupService parent;
 	
-	public RendezvousServiceFactory( NetPeerGroupService parent ) {
-		super( null );//Components.RENDEZVOUS_SERVICE );
-		this.parent = parent;
-	}
-
 	@Override
 	public IJp2pComponent<RendezVousService> createComponent() {
 		return new Jp2pComponent<RendezVousService>( null, null );//parent.getModule().getRendezVousService();

@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.Jp2pComponent;
 import net.jp2p.container.factory.AbstractComponentFactory;
@@ -34,10 +33,10 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 	private NetworkManager manager;
 	private PipeAdvertisementFactory pipeFactory;
 
-	public ServerSocketFactory( IContainerBuilder container, NetworkManager manager ) {
-		super( container );
-		this.manager = manager;
-		this.fillDefaultValues();
+	public ServerSocketFactory() {
+		//super( container );
+		//this.manager = manager;
+		//this.fillDefaultValues();
 	}
 
 	protected void fillDefaultValues() {
@@ -53,7 +52,7 @@ public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSock
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	protected IJp2pComponent<JxtaServerSocket> onCreateComponent(IJp2pPropertySource<IJp2pProperties> properties) {
-		this.pipeFactory = new SocketPipeAdvertisementFactory(super.getBuilder());
+		this.pipeFactory = new SocketPipeAdvertisementFactory();
 		JxtaServerSocket socket = this.createSocket();
 		super.setCompleted(true);
 		return new Jp2pComponent(  super.getPropertySource(),socket );

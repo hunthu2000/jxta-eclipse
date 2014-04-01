@@ -18,7 +18,7 @@ import net.jxse.module.IJxtaModuleService;
 import net.jxta.document.Advertisement;
 import net.jxta.document.MimeMediaType;
 import net.jxta.document.XMLElement;
-import net.jxta.impl.peergroup.CompatibilityUtils;
+import net.jxta.impl.loader.CompatibilityUtils;
 import net.jxta.impl.protocol.PlatformConfig;
 import net.jxta.platform.Module;
 import net.jxta.platform.ModuleClassID;

@@ -3,7 +3,6 @@ package net.jp2p.container.persistence;
 import java.util.Iterator;
 import java.util.Stack;
 
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.context.ContextLoader;
 import net.jp2p.container.factory.AbstractComponentFactory;
@@ -27,10 +26,7 @@ public class SimplePersistenceFactory extends AbstractComponentFactory<IManagedP
 	
 	private IComponentFactoryFilter filter = new BuilderEventFilter<IJp2pComponent<IManagedPropertyListener<IJp2pProperties, Object>>>( BuilderEvents.PROPERTY_SOURCE_PREPARED, this );
 
-	
-	public SimplePersistenceFactory(IContainerBuilder builder,
-			IJp2pPropertySource<IJp2pProperties> parentSource) {
-		super(builder, parentSource);
+	public SimplePersistenceFactory() {
 		stack = new Stack<IPropertyEventDispatcher>();
 	}
 

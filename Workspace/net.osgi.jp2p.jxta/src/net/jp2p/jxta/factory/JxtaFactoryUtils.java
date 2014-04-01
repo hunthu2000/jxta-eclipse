@@ -6,7 +6,6 @@ import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.utils.StringStyler;
 import net.jp2p.container.utils.Utils;
-import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.jp2p.jxta.advertisement.service.SimpleJxtaAdvertisementFactory;
 import net.jp2p.jxta.discovery.DiscoveryServiceFactory;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
@@ -23,7 +22,7 @@ public class JxtaFactoryUtils {
 	 * @param componentName
 	 * @return
 	 */
-	public static IPropertySourceFactory getDefaultFactory( IContainerBuilder builder, String[] attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+	public static IPropertySourceFactory getDefaultFactory( String componentName ){
 		if( Utils.isNull(componentName))
 			return null;
 		String comp = StringStyler.styleToEnum(componentName);
@@ -33,23 +32,22 @@ public class JxtaFactoryUtils {
 		IPropertySourceFactory factory = null;
 		switch( component ){
 		case NET_PEERGROUP_SERVICE:
-			factory = new NetPeerGroupFactory( builder, parentSource );
+			factory = new NetPeerGroupFactory();
 			break;			
 		case PIPE_SERVICE:
-			factory = new PipeServiceFactory( builder, parentSource );
+			factory = new PipeServiceFactory();
 			break;			
 		case REGISTRATION_SERVICE:
-			factory = new RegistrationServiceFactory( builder, parentSource );
+			factory = new RegistrationServiceFactory();
 			break;
 		case DISCOVERY_SERVICE:
-			factory = new DiscoveryServiceFactory( builder, parentSource );
+			factory = new DiscoveryServiceFactory();
 			break;			
 		case PEERGROUP_SERVICE:
-			factory = new PeerGroupFactory( builder, parentSource );
+			factory = new PeerGroupFactory();
 			break;			
 		case ADVERTISEMENT:
-			AdvertisementTypes type = AdvertisementTypes.convertFrom(attributes[0]);
-			factory = new SimpleJxtaAdvertisementFactory( builder, type, parentSource );
+			factory = new SimpleJxtaAdvertisementFactory();
 			break;
 		default:
 			break;
@@ -64,11 +62,12 @@ public class JxtaFactoryUtils {
 	 * @param createSource: create the property source immediately
 	 * @return
 	 */
-	public static IPropertySourceFactory getOrCreateChildFactory( IContainerBuilder builder, String[] attributes, IJp2pPropertySource<IJp2pProperties> source, String componentName, boolean createSource ){
-		IJp2pPropertySource<?> child = source.getChild( componentName ); 
+	public static IPropertySourceFactory getOrCreateChildFactory( IContainerBuilder builder, String[] attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName, boolean createSource ){
+		IJp2pPropertySource<?> child = parentSource.getChild( componentName ); 
 		if( child != null )
 			return builder.getFactory(child );
-		IPropertySourceFactory factory = getDefaultFactory(builder, attributes, source, componentName );
+		IPropertySourceFactory factory = getDefaultFactory(componentName );
+		factory.prepare(componentName, parentSource, builder, attributes);
 		if( createSource )
 			factory.createPropertySource();
 		builder.addFactory( factory );

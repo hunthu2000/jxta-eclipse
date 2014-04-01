@@ -1,8 +1,5 @@
 package net.jp2p.container.context;
 
-import org.xml.sax.Attributes;
-
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.properties.IJp2pDirectives;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -54,12 +51,9 @@ public interface IJp2pContext {
 	 * @return
 	 */
 	public boolean isValidComponentName( String contextName, String componentName );
-	
+
 	//Get the factory that is created
-	public IPropertySourceFactory getFactory(IContainerBuilder builder,
-			Attributes attributes,
-			IJp2pPropertySource<IJp2pProperties> parentSource,
-			String componentName);
+	public IPropertySourceFactory getFactory( String componentName);
 	
 	/**
 	 * Get the handler for this context

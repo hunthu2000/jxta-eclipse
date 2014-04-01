@@ -36,10 +36,14 @@ public class PipeAdvertisementFactory extends AbstractComponentFactory<PipeAdver
 	public final static String SOCKETIDSTR = "urn:jxta:uuid-59616261646162614E5047205032503393B5C2F6CA7A41FBB0F890173088E79404";
 	public final static String DEFAULT_SOCKET_NAME = "Default Socket Server";
 
-	public PipeAdvertisementFactory( IContainerBuilder container) {
-		super( container );
+	@Override
+	public void prepare(String componentName,
+			IJp2pPropertySource<IJp2pProperties> parentSource,
+			IContainerBuilder builder, String[] attributes) {
+		super.prepare(componentName, parentSource, builder, attributes);
 		this.fillDefaultValues();
 	}
+
 
 	protected void fillDefaultValues() {
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getPropertySource();

@@ -11,7 +11,6 @@
 package net.jp2p.endpoint.netty.factory.tcp;
 
 import net.jp2p.container.ContainerFactory;
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.AbstractFilterFactory;
@@ -26,10 +25,6 @@ public class TcpServiceFactory extends AbstractFilterFactory<NettyTransport>{
 
 	public static final String S_TCP_SERVICE = "TcpService";
 	public static final String S_TCP_PROTOCOL = "tcp";
-
-	public TcpServiceFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
-		super( container, parentSource );
-	}
 
 	@Override
 	public String getComponentName() {

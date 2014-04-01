@@ -130,14 +130,15 @@ public class ContainerBuilder implements IContainerBuilder{
 		IJp2pWritePropertySource<IJp2pProperties> ncp = (IJp2pWritePropertySource<IJp2pProperties>) parentSource.getChild( str );
 		if( ncp != null )
 			return null;
-		IPropertySourceFactory ncf = Jp2pContext.getDefaultFactory( this, parentSource, componentName );
-		addFactory(ncf);
+		IPropertySourceFactory factory = Jp2pContext.getDefaultFactory( componentName );
+		factory.prepare(componentName, parentSource, this, null);
+		addFactory(factory);
 		if(!createSource )
-			return ncf;
-		IJp2pWritePropertySource<IJp2pProperties> props = (IJp2pWritePropertySource<IJp2pProperties>) ncf.createPropertySource();
+			return factory;
+		IJp2pWritePropertySource<IJp2pProperties> props = (IJp2pWritePropertySource<IJp2pProperties>) factory.createPropertySource();
 		props.setDirective( Directives.CREATE, Boolean.valueOf( create ).toString());
 		parentSource.addChild(props);
-		return ncf; 
+		return factory; 
 	}
 
 	/* (non-Javadoc)

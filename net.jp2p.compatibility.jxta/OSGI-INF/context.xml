@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="true" name="net.jp2p.network.jxta.context">
-   <implementation class="net.jp2p.network.jxta.context.JxtaNetworkContext"/>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="true" name="net.jp2pchaupal.jxta.network.context">
+   <implementation class="net.jp2p.chaupal.jxta.network.context.JxtaNetworkContext"/>
    <service>
       <provide interface="net.jp2p.container.context.IJp2pContext"/>
    </service>

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package net.jp2p.jxta.pipe;
 
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.Jp2pComponentNode;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -21,10 +20,6 @@ import net.jxta.pipe.PipeService;
 
 public class PipeServiceFactory extends
 		AbstractPeerGroupDependencyFactory<PipeService> {
-
-	public PipeServiceFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
-		super( container, parent );
-	}
 
 	@Override
 	protected PipePropertySource onCreatePropertySource() {

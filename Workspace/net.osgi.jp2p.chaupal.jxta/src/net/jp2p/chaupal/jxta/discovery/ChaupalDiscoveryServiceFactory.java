@@ -10,7 +10,6 @@
  *******************************************************************************/
 package net.jp2p.chaupal.jxta.discovery;
 
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.factory.ComponentBuilderEvent;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -21,10 +20,6 @@ import net.jp2p.jxta.discovery.DiscoveryServiceFactory;
 
 public class ChaupalDiscoveryServiceFactory extends DiscoveryServiceFactory {
 
-	public ChaupalDiscoveryServiceFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
-		super( container, parentSource );
-	}	
-	
 	@Override
 	public void notifyChange(ComponentBuilderEvent<Object> event) {
 		System.out.println( event.toString());

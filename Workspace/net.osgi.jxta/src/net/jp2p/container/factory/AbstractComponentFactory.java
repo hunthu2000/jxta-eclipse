@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 
 import net.jp2p.container.activator.IActivator;
 import net.jp2p.container.activator.IActivator.Status;
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.IJp2pComponentNode;
 import net.jp2p.container.component.Jp2pComponentNode;
@@ -45,12 +44,7 @@ public abstract class AbstractComponentFactory<T extends Object> extends Abstrac
 	
 	private Stack<Object> stack;
 
-	protected AbstractComponentFactory( IContainerBuilder container ) {
-		this( container, null );
-	}
-
-	protected AbstractComponentFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
-		super( container, parentSource );
+	protected AbstractComponentFactory() {
 		this.completed = false;
 		this.failed = false;
 		stack = new Stack<Object>();

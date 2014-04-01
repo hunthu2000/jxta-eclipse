@@ -11,7 +11,6 @@
 package net.jp2p.chaupal.jxta.peergroup;
 
 import net.jp2p.chaupal.jxta.advertisement.ChaupalAdvertisementFactory;
-import net.jp2p.chaupal.jxta.root.network.NetworkManagerPropertySource;
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.properties.AbstractJp2pPropertySource;
@@ -39,9 +38,15 @@ import net.jp2p.jxta.pipe.PipeAdvertisementPropertySource;
 
 public class ChaupalPeerGroupFactory extends ChaupalAdvertisementFactory<PeerGroup, PeerGroupAdvertisement>{
 
-	public ChaupalPeerGroupFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
-		super( container,  AdvertisementTypes.PEERGROUP, parentSource );
+	@Override
+	public void prepare(String componentName,
+			IJp2pPropertySource<IJp2pProperties> parentSource,
+			IContainerBuilder builder, String[] attributes) {
+		String[] attr = new String[1];
+		attr[0] = AdvertisementTypes.PEERGROUP.toString();
+		super.prepare(componentName, parentSource, builder, attr);
 	}
+
 
 	@Override
 	protected AdvertisementPropertySource onCreatePropertySource() {

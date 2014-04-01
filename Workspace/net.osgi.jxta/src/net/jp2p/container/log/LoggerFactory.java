@@ -12,7 +12,6 @@ package net.jp2p.container.log;
 
 import java.util.logging.Logger;
 
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.AbstractComponentFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
@@ -25,8 +24,7 @@ public class LoggerFactory extends
 	private Logger logger = Logger.getLogger(LoggerFactory.class.getName());
 
 	
-	public LoggerFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
-		super( container, parent );
+	public LoggerFactory() {
 		super.setCanCreate(true);
 	}
 

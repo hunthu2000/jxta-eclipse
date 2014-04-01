@@ -12,20 +12,13 @@ package net.jp2p.jxta.seeds;
 
 import java.util.Iterator;
 
-import net.jp2p.container.builder.ContainerBuilder;
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.factory.AbstractPropertySourceFactory;
 import net.jp2p.container.properties.IJp2pProperties;
-import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.seeds.SeedInfo;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaNetworkComponents;
 import net.jxta.compatibility.platform.NetworkConfigurator;
 
 public class SeedListFactory extends AbstractPropertySourceFactory{
-
-	public SeedListFactory( IContainerBuilder container,  IJp2pPropertySource<IJp2pProperties> parent ) {
-		super( (ContainerBuilder) container, parent);
-	}
 
 	@Override
 	public String getComponentName() {

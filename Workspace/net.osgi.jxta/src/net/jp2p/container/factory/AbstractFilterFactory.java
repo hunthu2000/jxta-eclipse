@@ -10,20 +10,16 @@
  *******************************************************************************/
 package net.jp2p.container.factory;
 
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.factory.AbstractComponentFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
 import net.jp2p.container.factory.filter.IComponentFactoryFilter;
-import net.jp2p.container.properties.IJp2pProperties;
-import net.jp2p.container.properties.IJp2pPropertySource;
 
 public abstract class AbstractFilterFactory<T extends Object> extends
 		AbstractComponentFactory<T> {
 
 	private IComponentFactoryFilter filter;
 
-	public AbstractFilterFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
-		super( container, parent );
+	public AbstractFilterFactory() {
 		filter = this.createFilter();
 	}
 

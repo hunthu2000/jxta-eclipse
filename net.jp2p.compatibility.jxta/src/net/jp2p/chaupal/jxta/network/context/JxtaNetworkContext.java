@@ -1,4 +1,4 @@
-package net.jp2p.network.jxta.context;
+package net.jp2p.chaupal.jxta.network.context;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +11,7 @@ import net.jp2p.chaupal.jxta.network.http.HttpPreferences;
 import net.jp2p.chaupal.jxta.network.multicast.MulticastPreferences;
 import net.jp2p.chaupal.jxta.network.security.SecurityPreferences;
 import net.jp2p.chaupal.jxta.network.tcp.TcpPreferences;
+import net.jp2p.chaupal.jxta.network.utils.JxtaFactoryUtils;
 import net.jp2p.chaupal.jxta.root.network.NetworkManagerPreferences;
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.context.Jp2pContext;
@@ -27,7 +28,6 @@ import net.jp2p.container.xml.IJp2pHandler;
 import net.jp2p.jxta.context.IJxtaContext;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaNetworkComponents;
 import net.jp2p.jxta.seeds.SeedListPropertySource;
-import net.jp2p.network.jxta.utils.JxtaFactoryUtils;
 import net.jxta.peergroup.IModuleDefinitions.DefaultModules;
 import net.jxta.platform.ModuleClassID;
 
@@ -88,14 +88,14 @@ public class JxtaNetworkContext implements IJxtaContext {
 	 * @return
 	 */
 	@Override
-	public IPropertySourceFactory getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+	public IPropertySourceFactory getFactory( String componentName ){
 		JxtaNetworkComponents component = JxtaNetworkComponents.valueOf( StringStyler.styleToEnum(componentName));
 		String[] attrs;
 		switch( component ){
 		default:
 			attrs = new String[0];
 		}
-		IPropertySourceFactory factory = JxtaFactoryUtils.getDefaultFactory(builder, attrs, parentSource, componentName);
+		IPropertySourceFactory factory = JxtaFactoryUtils.getDefaultFactory(componentName);
 		return factory;
 	}
 

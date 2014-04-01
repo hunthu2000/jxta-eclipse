@@ -15,7 +15,6 @@ import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.Jp2pComponent;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -44,11 +43,6 @@ public class SocketPipeAdvertisementFactory extends PipeAdvertisementFactory {
 		}
 	}
 	
-	public SocketPipeAdvertisementFactory( IContainerBuilder container) {
-		super( container);
-		this.fillDefaultValues();
-	}
-
 	@Override
 	protected void fillDefaultValues() {
 		IJp2pWritePropertySource<IJp2pProperties> source = (IJp2pWritePropertySource<IJp2pProperties>) super.getPropertySource();		

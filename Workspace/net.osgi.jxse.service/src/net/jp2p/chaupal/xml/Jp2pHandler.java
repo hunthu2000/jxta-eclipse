@@ -39,7 +39,7 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 
 	private ManagedProperty<IJp2pProperties,Object> property;
 
-	private IContainerBuilder container;
+	private IContainerBuilder builder;
 	private ContextLoader contexts;
 	private ContainerFactory root;
 	private FactoryNode node;
@@ -49,9 +49,9 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 
 	private static Logger logger = Logger.getLogger( XMLFactoryBuilder.class.getName() );
 
-	public Jp2pHandler( IContainerBuilder container, ContextLoader contexts, String bundleId, Class<?> clss ) {
+	public Jp2pHandler( IContainerBuilder builder, ContextLoader contexts, String bundleId, Class<?> clss ) {
 		this.bundleId = bundleId;
-		this.container = container;
+		this.builder = builder;
 		this.contexts = contexts;
 		this.clss = clss;
 		this.stack = new Stack<String>();
@@ -79,9 +79,11 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 			IJp2pComponents current = Jp2pContext.Components.valueOf( StringStyler.styleToEnum( qName ));
 			switch(( Jp2pContext.Components )current ){
 			case JP2P_CONTAINER:
-				factory = container.getFactory( Jp2pContext.Components.JP2P_CONTAINER.toString() );
-				if( factory == null )
-					factory = new ContainerFactory( container, bundleId );
+				factory = builder.getFactory( Jp2pContext.Components.JP2P_CONTAINER.toString() );
+				if( factory == null ){
+					factory = new ContainerFactory( bundleId );
+				}
+				factory.prepare( Jp2pContext.Components.JP2P_CONTAINER.toString(), node.getData().getPropertySource(), builder, new String[0]);
 				this.root = (ContainerFactory) factory;
 				break;
 			case CONTEXT:
@@ -132,7 +134,8 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 		IJp2pContext context = getContext( contexts, contextName );
 		if( context == null )
 			context = this.contexts.getContextForComponent( contextName, componentName);
-		IPropertySourceFactory factory = context.getFactory( this.container, attributes, (IJp2pPropertySource<IJp2pProperties>) parentSource, componentName);
+		IPropertySourceFactory factory = context.getFactory(componentName);
+		factory.prepare(componentName, (IJp2pPropertySource<IJp2pProperties>) parentSource, builder, new String[0]/*attributes*/);
 		return factory;
 	}
 
@@ -192,7 +195,7 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 				}
 			}
 		}		
-		container.addFactory( factory );
+		builder.addFactory( factory );
 		if( node == null )
 			return new FactoryNode( factory );
 		else

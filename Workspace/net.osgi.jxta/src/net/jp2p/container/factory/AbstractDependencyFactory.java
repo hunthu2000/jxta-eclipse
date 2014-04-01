@@ -10,21 +10,14 @@
  *******************************************************************************/
 package net.jp2p.container.factory;
 
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.factory.AbstractComponentFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
 import net.jp2p.container.factory.IComponentFactory;
-import net.jp2p.container.properties.IJp2pProperties;
-import net.jp2p.container.properties.IJp2pPropertySource;
 
 public abstract class AbstractDependencyFactory<T extends Object, U extends Object> extends
 		AbstractComponentFactory<T> {
 
 	private U dependency;
-
-	public AbstractDependencyFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
-		super( container, parent );
-	}
 
 	/**
 	 * Get the dependency that must be provided in order to allow creation of the cpomponent

@@ -11,7 +11,6 @@
 package net.jp2p.jxta.discovery;
 
 import net.jp2p.container.Jp2pContainerPropertySource;
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.Jp2pComponent;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -27,10 +26,6 @@ import net.jxta.discovery.DiscoveryService;
 public class DiscoveryServiceFactory extends
 		AbstractPeerGroupDependencyFactory<DiscoveryService> {
 
-	public DiscoveryServiceFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent) {
-		super( container, parent );
-	}
-
 	@Override
 	public String getComponentName() {
 		return JxtaComponents.DISCOVERY_SERVICE.toString();
@@ -41,6 +36,7 @@ public class DiscoveryServiceFactory extends
 		return new DiscoveryPropertySource( super.getParentSource() );
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void extendContainer() {
 		
@@ -52,9 +48,10 @@ public class DiscoveryServiceFactory extends
 		if( factory != null )
 			return;
 		Jp2pContainerPropertySource root = (Jp2pContainerPropertySource) DiscoveryPropertySource.findRootPropertySource(this.getPropertySource() );
-		IJp2pPropertySource<?> source = PeerGroupPropertySource.findPropertySource( root, JxtaComponents.NET_PEERGROUP_SERVICE.toString() );
+		IJp2pPropertySource<IJp2pProperties> source = (IJp2pPropertySource<IJp2pProperties>) PeerGroupPropertySource.findPropertySource( root, JxtaComponents.NET_PEERGROUP_SERVICE.toString() );
 		if( source == null ){
-			factory =  new NetPeerGroupFactory( super.getBuilder(), root );
+			factory =  new NetPeerGroupFactory();
+			factory.prepare(JxtaComponents.NET_PEERGROUP_SERVICE.toString() , (IJp2pPropertySource<IJp2pProperties>) source, super.getBuilder(), null);
 			super.getBuilder().addFactory( factory );
 			factory.createPropertySource();
 		}

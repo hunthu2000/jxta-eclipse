@@ -9,10 +9,14 @@ public class PartialNetworkConfigFactory<T extends Object> extends AbstractPrope
 
 	private String componentName;
 	
-	public PartialNetworkConfigFactory( IContainerBuilder container, String componentName, IJp2pPropertySource<IJp2pProperties> parentSource ){
-		super( container, parentSource);
+	@Override
+	public void prepare(String componentName,
+			IJp2pPropertySource<IJp2pProperties> parentSource,
+			IContainerBuilder builder, String[] attributes) {
+		super.prepare(componentName, parentSource, builder, attributes);
 		this.componentName = componentName;
 	}
+
 
 	@Override
 	public String getComponentName() {

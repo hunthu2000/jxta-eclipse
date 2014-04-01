@@ -4,7 +4,6 @@ import org.xml.sax.Attributes;
 
 import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.context.AbstractJp2pContext;
-import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
@@ -12,15 +11,13 @@ import net.jp2p.container.properties.IPropertyConvertor;
 import net.jp2p.container.xml.IJp2pHandler;import net.jp2p.endpoint.netty.factory.http.HttpServiceFactory;
 import net.jp2p.endpoint.netty.factory.tcp.TcpServiceFactory;
 import net.jp2p.jxta.context.IJxtaContext;
+import net.jxta.peergroup.IModuleDefinitions;
 import net.jxta.peergroup.IModuleDefinitions.DefaultModules;
 import net.jxta.platform.ModuleClassID;
 
 public class NettyContext extends AbstractJp2pContext implements IJxtaContext {
 
 	public static final String S_NETTY_CONTEXT = "netty";
-
-	public NettyContext() {
-	}
 
 	@Override
 	public String getName() {
@@ -37,9 +34,10 @@ public class NettyContext extends AbstractJp2pContext implements IJxtaContext {
 
 	@Override
 	public ModuleClassID[] getSupportedModuleClassIDs() {
-		ModuleClassID[] ids = new ModuleClassID[2];
+		ModuleClassID[] ids = new ModuleClassID[3];
 		ids[0] = DefaultModules.getModuleClassID( DefaultModules.TCP );
 		ids[1] = DefaultModules.getModuleClassID( DefaultModules.HTTP );
+		ids[2] = IModuleDefinitions.http2ProtoClassID;
 		return ids;
 	}
 
@@ -49,12 +47,17 @@ public class NettyContext extends AbstractJp2pContext implements IJxtaContext {
 	 * @return
 	 */
 	@Override
-	public IPropertySourceFactory getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+	public IPropertySourceFactory getFactory( String componentName ){
 		if( !isValidComponentName( S_NETTY_CONTEXT, componentName))
 			return null;
 		
-		IPropertySourceFactory factory = new HttpServiceFactory( builder, parentSource );
-		return factory;
+		if( TcpServiceFactory.S_TCP_SERVICE.equals( componentName )){
+			return new TcpServiceFactory( );
+		}
+		if( HttpServiceFactory.S_HTTP_SERVICE.equals( componentName )){
+			return new HttpServiceFactory( );
+		}
+		return null;
 	}
 
 	@Override

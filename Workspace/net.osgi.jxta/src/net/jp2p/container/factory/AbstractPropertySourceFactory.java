@@ -26,18 +26,22 @@ public abstract class AbstractPropertySourceFactory implements IPropertySourceFa
 	private IJp2pPropertySource<IJp2pProperties> source;
 	
 	private boolean canCreate;
-	private IContainerBuilder container;
+	private IContainerBuilder builder;
 	private int weight;
 	
-	protected AbstractPropertySourceFactory( IContainerBuilder container ) {
-		this( container, null );
-	}
-
-	protected AbstractPropertySourceFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
+	/**
+	 * Prepare the factory, by providing the necessary objects to embed the factory in the application
+	 * @param componentName
+	 * @param parentSource
+	 * @param builder
+	 * @param attributes
+	 */
+	public void prepare( String componentName, IJp2pPropertySource<IJp2pProperties> parentSource, IContainerBuilder builder, String[] attributes ){
 		this.canCreate = false;
 		this.parentSource = parentSource;
-		this.container = container;
+		this.builder = builder;
 		this.weight = Integer.MAX_VALUE;
+		
 	}
 
 	protected IJp2pPropertySource<IJp2pProperties> getParentSource() {
@@ -86,7 +90,7 @@ public abstract class AbstractPropertySourceFactory implements IPropertySourceFa
 	 * @return
 	 */
 	protected IContainerBuilder getBuilder() {
-		return container;
+		return builder;
 	}
 
 	/**
@@ -132,7 +136,7 @@ public abstract class AbstractPropertySourceFactory implements IPropertySourceFa
 	 */
 	public synchronized void updateState( BuilderEvents event ){
 		try{
-			this.container.updateRequest( new ComponentBuilderEvent<IJp2pComponent<Object>>( this, event ));
+			this.builder.updateRequest( new ComponentBuilderEvent<IJp2pComponent<Object>>( this, event ));
 		}
 		catch( Exception ex ){
 			ex.printStackTrace();

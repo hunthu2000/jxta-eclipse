@@ -1,9 +1,6 @@
 package net.jp2p.container.context;
 
-import org.xml.sax.Attributes;
-
 import net.jp2p.container.Jp2pContainerPropertySource;
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.factory.IJp2pComponents;
 import net.jp2p.container.factory.IPropertySourceFactory;
@@ -92,8 +89,8 @@ public class Jp2pContext implements IJp2pContext {
 	 * @return
 	 */
 	@Override
-	public IPropertySourceFactory getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
-		IPropertySourceFactory factory = getDefaultFactory( builder, parentSource, componentName);
+	public IPropertySourceFactory getFactory( String componentName ){
+		IPropertySourceFactory factory = getDefaultFactory(componentName);
 		return factory;
 	}
 
@@ -163,7 +160,7 @@ public class Jp2pContext implements IJp2pContext {
 	/* (non-Javadoc)
 	 * @see net.osgi.jp2p.builder.IContainerBuilder#getDefaultFactory(net.osgi.jp2p.properties.IJp2pPropertySource, java.lang.String)
 	*/
-	public static IPropertySourceFactory getDefaultFactory( IContainerBuilder builder, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+	public static IPropertySourceFactory getDefaultFactory( String componentName ){
 		if( Utils.isNull(componentName))
 			return null;
 		String comp = StringStyler.styleToEnum(componentName);
@@ -173,13 +170,13 @@ public class Jp2pContext implements IJp2pContext {
 		IPropertySourceFactory factory = null;
 		switch( component ){
 		case STARTUP_SERVICE:
-			factory = new StartupServiceFactory( builder, parentSource );
+			factory = new StartupServiceFactory();
 			break;
 		case PERSISTENCE_SERVICE:
-			factory = new SimplePersistenceFactory(builder, parentSource);
+			factory = new SimplePersistenceFactory();
 			break;
 		case LOGGER_SERVICE:
-			factory = new LoggerFactory( builder, parentSource );
+			factory = new LoggerFactory();
 			break;
 		default:
 			break;

@@ -1,8 +1,5 @@
 package net.jp2p.endpoint.servlethttp.context;
 
-import org.xml.sax.Attributes;
-
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.properties.IJp2pProperties;
@@ -69,11 +66,11 @@ public class HttpContext implements IJxtaContext {
 	 * @return
 	 */
 	@Override
-	public IPropertySourceFactory getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+	public IPropertySourceFactory getFactory( String componentName ){
 		if( !isValidComponentName( S_HTTP_CONTEXT, componentName))
 			return null;
 		
-		IPropertySourceFactory factory = new HttpServiceFactory( builder, parentSource );
+		IPropertySourceFactory factory = new HttpServiceFactory();
 		return factory;
 	}
 

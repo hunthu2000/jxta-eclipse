@@ -1,12 +1,9 @@
 package net.jp2p.chaupal.jxta.context;
 
-import org.xml.sax.Attributes;
-
 import net.jp2p.chaupal.jxta.advertisement.ChaupalAdvertisementFactory;
 import net.jp2p.chaupal.jxta.discovery.ChaupalDiscoveryServiceFactory;
 import net.jp2p.chaupal.jxta.pipe.ChaupalPipeFactory;
 import net.jp2p.chaupal.jxta.root.network.NetworkManagerPreferences;
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.IComponentFactory;
@@ -20,7 +17,6 @@ import net.jp2p.container.utils.StringStyler;
 import net.jp2p.container.utils.Utils;
 import net.jp2p.container.xml.IJp2pHandler;
 import net.jp2p.jxta.advertisement.AdvertisementPreferences;
-import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementDirectives;
 import net.jp2p.jxta.discovery.DiscoveryPreferences;
 import net.jp2p.jxta.factory.JxtaFactoryUtils;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
@@ -79,19 +75,19 @@ public class JxtaContext implements IJp2pContext {
 	 * @return
 	 */
 	@Override
-	public IPropertySourceFactory getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+	public IPropertySourceFactory getFactory( String componentName ){
 		JxtaComponents component = JxtaComponents.valueOf( StringStyler.styleToEnum(componentName));
 		String[] attrs;
 		switch( component ){
 		case ADVERTISEMENT:
-			String adType = attributes.getValue( AdvertisementDirectives.TYPE.toString().toLowerCase() );
+			String adType = null;//TODO CP: attributes.getValue( AdvertisementDirectives.TYPE.toString().toLowerCase() );
 			attrs = new String[1];
 			attrs[0] = adType;
 			break;
 		default:
 			attrs = new String[0];
 		}
-		IPropertySourceFactory factory = JxtaFactoryUtils.getDefaultFactory(builder, attrs, parentSource, componentName);
+		IPropertySourceFactory factory = JxtaFactoryUtils.getDefaultFactory( componentName);
 		return factory;
 	}
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package net.jp2p.jxta.netpeergroup;
 
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.factory.AbstractComponentDependencyFactory;
 import net.jp2p.container.factory.filter.ComponentCreateFilter;
@@ -25,10 +24,6 @@ import net.jxta.peergroup.PeerGroup;
 import net.jxta.compatibility.platform.NetworkManager;
 
 public class NetPeerGroupFactory extends AbstractComponentDependencyFactory<PeerGroup, IJp2pComponent<NetworkManager>>{
-
-	public NetPeerGroupFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
-		super( container, parent );
-	}
 
 	@Override
 	public String getComponentName() {

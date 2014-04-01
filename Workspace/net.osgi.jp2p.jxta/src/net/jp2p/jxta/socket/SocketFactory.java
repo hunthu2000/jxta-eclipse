@@ -10,7 +10,6 @@
  *******************************************************************************/
 package net.jp2p.jxta.socket;
 
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.Jp2pComponent;
 import net.jp2p.container.factory.AbstractComponentFactory;
@@ -31,10 +30,10 @@ public class SocketFactory extends AbstractComponentFactory<JxtaSocket> implemen
 	private NetworkManager manager;
 	private PipeAdvertisementFactory pipeFactory;
 
-	public SocketFactory( IContainerBuilder container, NetworkManager manager ) {
-		super( container );
-		this.manager = manager;
-		this.fillDefaultValues();
+	public SocketFactory() {
+		super();
+		//this.manager = manager;
+		//this.fillDefaultValues();
 	}
 	
 	@Override
@@ -70,7 +69,7 @@ public class SocketFactory extends AbstractComponentFactory<JxtaSocket> implemen
 	@SuppressWarnings("unchecked")
 	@Override
 	protected IJp2pComponent<JxtaSocket> onCreateComponent( IJp2pPropertySource<IJp2pProperties> properties) {
-		this.pipeFactory = new SocketPipeAdvertisementFactory( super.getBuilder());
+		this.pipeFactory = new SocketPipeAdvertisementFactory();
 		JxtaSocket socket = this.createSocket();
 		//super.setCompleted(true);
 		return new Jp2pComponent(  super.getPropertySource(), socket );

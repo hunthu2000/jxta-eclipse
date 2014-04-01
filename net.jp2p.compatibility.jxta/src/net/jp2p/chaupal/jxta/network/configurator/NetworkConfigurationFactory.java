@@ -27,7 +27,6 @@ import net.jp2p.chaupal.jxta.network.tcp.TcpPreferences;
 import net.jp2p.chaupal.jxta.root.network.NetworkManagerPropertySource;
 import net.jp2p.chaupal.jxta.root.network.configurator.NetworkConfigurationPropertySource;
 import net.jp2p.chaupal.jxta.root.network.configurator.NetworkConfigurationPropertySource.NetworkConfiguratorProperties;
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.Jp2pComponent;
 import net.jp2p.container.factory.AbstractDependencyFactory;
@@ -49,10 +48,6 @@ public class NetworkConfigurationFactory extends AbstractDependencyFactory<Netwo
 
 	private Collection<SeedListPropertySource> seedlists;
 	
-	public NetworkConfigurationFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource) {
-		super( container, parentSource );
-	}
-
 	@Override
 	public String getComponentName() {
 		return JxtaNetworkComponents.NETWORK_CONFIGURATOR.toString();

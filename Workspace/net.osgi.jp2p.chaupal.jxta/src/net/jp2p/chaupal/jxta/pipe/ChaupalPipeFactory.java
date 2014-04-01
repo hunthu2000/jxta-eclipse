@@ -29,8 +29,13 @@ import net.jp2p.jxta.pipe.PipePropertySource;
 
 public class ChaupalPipeFactory extends ChaupalAdvertisementFactory<PipeService, PipeAdvertisement>{
 
-	public ChaupalPipeFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
-		super( container,  AdvertisementTypes.PIPE, parentSource );
+	@Override
+	public void prepare(String componentName,
+			IJp2pPropertySource<IJp2pProperties> parentSource,
+			IContainerBuilder builder, String[] attributes) {
+		String[] attr = new String[1];
+		attr[0] = AdvertisementTypes.PIPE.toString();
+		super.prepare(componentName, parentSource, builder, attr);
 	}
 
 	@Override

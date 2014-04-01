@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 
 import net.jp2p.jxta.module.AbstractModuleComponent;
 import net.jp2p.jxta.transport.TransportPropertySource;
-import net.jxta.compatibility.impl.peergroup.AutomaticConfigurator;
 import net.jxta.document.Advertisement;
 import net.jxta.document.AdvertisementFactory;
 import net.jxta.document.MimeMediaType;
@@ -16,6 +15,7 @@ import net.jxta.document.StructuredDocumentUtils;
 import net.jxta.document.XMLDocument;
 import net.jxta.document.XMLElement;
 import net.jxta.impl.endpoint.netty.http.NettyHttpTunnelTransport;
+import net.jxta.impl.peergroup.AutomaticConfigurator;
 import net.jxta.impl.protocol.HTTPAdv;
 import net.jxta.impl.protocol.PlatformConfig;
 import net.jxta.logging.Logging;
@@ -25,8 +25,6 @@ import net.jxta.protocol.ModuleImplAdvertisement;
 import net.jxta.protocol.TransportAdvertisement;
 
 class HttpModule extends AbstractModuleComponent<NettyHttpTunnelTransport> {
-
-	public static final String S_RESOURCE_LOCATION = "/services/net.jxta.platform.Module";
 
     private final static transient Logger logger = Logger.getLogger( HttpModule.class.getName());
     

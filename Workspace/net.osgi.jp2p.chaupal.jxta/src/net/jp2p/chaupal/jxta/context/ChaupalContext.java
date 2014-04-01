@@ -1,7 +1,5 @@
 package net.jp2p.chaupal.jxta.context;
 
-import org.xml.sax.Attributes;
-
 import net.jp2p.chaupal.jxta.IChaupalComponents.ChaupalComponents;
 import net.jp2p.chaupal.jxta.advertisement.ChaupalAdvertisementFactory;
 import net.jp2p.chaupal.jxta.discovery.ChaupalDiscoveryServiceFactory;
@@ -10,7 +8,6 @@ import net.jp2p.chaupal.jxta.persistence.OsgiPersistenceFactory;
 import net.jp2p.chaupal.jxta.pipe.ChaupalPipeFactory;
 import net.jp2p.chaupal.jxta.root.network.NetworkManagerPreferences;
 import net.jp2p.chaupal.jxta.root.network.http.HttpServiceFactory;
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.IComponentFactory;
@@ -79,7 +76,7 @@ public class ChaupalContext implements IJp2pContext {
 	 * @return
 	 */
 	@Override
-	public IPropertySourceFactory getFactory( IContainerBuilder builder, Attributes attributes, IJp2pPropertySource<IJp2pProperties> parentSource, String componentName ){
+	public IPropertySourceFactory getFactory( String componentName ){
 		IPropertySourceFactory factory = null;
 		String str = StringStyler.styleToEnum( componentName );
 		if(ChaupalComponents.isComponent(str)){
@@ -91,19 +88,19 @@ public class ChaupalContext implements IJp2pContext {
 				//TODO removefactory = new ChaupalAdvertisementFactory<Advertisement>( builder, adType, parentSource );
 				break;
 			case DISCOVERY_SERVICE:
-				factory = new ChaupalDiscoveryServiceFactory( builder, parentSource );
+				factory = new ChaupalDiscoveryServiceFactory();
 				break;
 			case PIPE_SERVICE:
-				factory = new ChaupalPipeFactory( builder, parentSource );
+				factory = new ChaupalPipeFactory();
 				break;
 			case PEERGROUP_SERVICE:
-				factory = new ChaupalPeerGroupFactory( builder, parentSource );
+				factory = new ChaupalPeerGroupFactory( );
 				break;
 			case PERSISTENCE_SERVICE:
-				factory = new OsgiPersistenceFactory( builder, parentSource );
+				factory = new OsgiPersistenceFactory();
 				break;
 			case HTTP_SERVICE:
-				factory = new HttpServiceFactory( builder, parentSource );
+				factory = new HttpServiceFactory();
 				break;
 			default:
 				break;
@@ -113,7 +110,7 @@ public class ChaupalContext implements IJp2pContext {
 			return factory;
 		JxtaContext jc = new JxtaContext();
 		if( jc.isValidComponentName( Contexts.JXTA.toString(), componentName))
-			factory = jc.getFactory(builder, attributes, parentSource, componentName);
+			factory = jc.getFactory( componentName);
 		return factory;
 
 	}

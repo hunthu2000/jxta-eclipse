@@ -11,7 +11,6 @@
 package net.jp2p.chaupal.jxta.root.network.http;
 
 import net.jp2p.container.IJp2pContainer;
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.factory.AbstractFilterFactory;
 import net.jp2p.container.factory.ComponentBuilderEvent;
@@ -24,10 +23,6 @@ import net.jxta.platform.Module;
 
 public class HttpServiceFactory extends AbstractFilterFactory<Module> {
 
-	public HttpServiceFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parentSource ) {
-		super( container, parentSource );
-	}	
-	
 	@Override
 	protected IJp2pPropertySource<IJp2pProperties> onCreatePropertySource() {
 		IJp2pPropertySource<IJp2pProperties> source = new HttpServicePropertySource( super.getParentSource());

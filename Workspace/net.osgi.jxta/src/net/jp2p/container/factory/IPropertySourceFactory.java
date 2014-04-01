@@ -11,11 +11,21 @@
 package net.jp2p.container.factory;
 
 import net.jp2p.container.builder.ICompositeBuilderListener;
+import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
 
 public interface IPropertySourceFactory extends ICompositeBuilderListener<Object>{
 
+	/**
+	 * Prepare the factory, by providing the necessary objects to embed the factory in the application
+	 * @param componentName
+	 * @param parentSource
+	 * @param builder
+	 * @param attributes
+	 */
+	public void prepare( String componentName, IJp2pPropertySource<IJp2pProperties> parentSource, IContainerBuilder builder, String[] attributes );
+	
 	/**
 	 * Get the component name that will be created
 	 * @return

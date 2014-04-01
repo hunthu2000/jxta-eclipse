@@ -1,16 +1,12 @@
 package net.jp2p.container.partial;
 
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.factory.AbstractPropertySourceFactory;
-import net.jp2p.container.properties.IJp2pProperties;
-import net.jp2p.container.properties.IJp2pPropertySource;
 
 public class PartialFactory<T extends Object> extends AbstractPropertySourceFactory {
 
 	private String componentName;
 	
-	public PartialFactory( IContainerBuilder container, String componentName, IJp2pPropertySource<IJp2pProperties> parentSource ){
-		super( container, parentSource);
+	public PartialFactory( String componentName ){
 		this.componentName = componentName;
 	}
 

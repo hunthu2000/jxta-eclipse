@@ -47,12 +47,14 @@ public abstract class AbstractJxtaAdvertisementFactory<T extends Object, U exten
 	private AdvertisementTypes type;
 	private PeerGroup peergroup;
 	
-	public AbstractJxtaAdvertisementFactory( IContainerBuilder container, AdvertisementTypes type, IJp2pPropertySource<IJp2pProperties> parentSource) {
-		super( container, parentSource );
-		this.type = type;
+	@Override
+	public void prepare(String componentName,
+			IJp2pPropertySource<IJp2pProperties> parentSource,
+			IContainerBuilder builder, String[] attributes) {
+		this.type =	AdvertisementTypes.convertFrom(attributes[0]);
+		super.prepare(componentName, parentSource, builder, attributes);
 	}
 
-	
 	protected PeerGroup getPeerGroup() {
 		return peergroup;
 	}

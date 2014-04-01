@@ -18,5 +18,6 @@ public class HttpModuleFactory extends AbstractModuleFactory<NettyHttpTunnelTran
 	protected void addModules(
 			Collection<IJxtaModuleService<NettyHttpTunnelTransport>> modules) {
 		modules.add( new HttpModule( (TransportPropertySource) super.getSource() ));
+		modules.add( new Http2Module( (TransportPropertySource) super.getSource() ));
 	}
 }

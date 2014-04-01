@@ -3,7 +3,6 @@ package net.jp2p.chaupal.jxta.persistence;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 
 import net.jp2p.chaupal.persistence.PersistedProperties;
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.context.Jp2pContext.Components;
 import net.jp2p.container.persistence.IPersistedProperties;
@@ -16,11 +15,6 @@ import net.jp2p.container.properties.IManagedPropertyListener;
 
 public class OsgiPersistenceFactory extends SimplePersistenceFactory{
 	
-	public OsgiPersistenceFactory(IContainerBuilder container,
-			IJp2pPropertySource<IJp2pProperties> parentSource ) {
-		super(container, parentSource);
-	}
-
 	@Override
 	public String getComponentName() {
 		return Components.PERSISTENCE_SERVICE.toString();

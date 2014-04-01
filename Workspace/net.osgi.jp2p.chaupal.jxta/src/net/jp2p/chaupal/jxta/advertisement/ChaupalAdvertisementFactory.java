@@ -30,7 +30,6 @@ import net.jp2p.container.properties.IJp2pDirectives.Directives;
 import net.jp2p.container.utils.Utils;
 import net.jxta.document.Advertisement;
 import net.jp2p.jxta.advertisement.AdvertisementPropertySource;
-import net.jp2p.jxta.advertisement.AdvertisementPropertySource.AdvertisementTypes;
 import net.jp2p.jxta.advertisement.service.AbstractJxtaAdvertisementFactory;
 import net.jp2p.jxta.discovery.DiscoveryPropertySource;
 import net.jp2p.jxta.discovery.DiscoveryPropertySource.DiscoveryProperties;
@@ -43,10 +42,6 @@ public abstract class ChaupalAdvertisementFactory<T extends Object, U extends Ad
 	private Jp2pAdvertisementService<U> jas;
 	private U advertisement;
 	
-	public ChaupalAdvertisementFactory( IContainerBuilder builder, AdvertisementTypes type, IJp2pPropertySource<IJp2pProperties> parent ) {
-		super( builder, type, parent );
-	}
-
 	@Override
 	protected AdvertisementPropertySource onCreatePropertySource() {
 		AdvertisementPropertySource source = super.onCreatePropertySource();
@@ -57,9 +52,11 @@ public abstract class ChaupalAdvertisementFactory<T extends Object, U extends Ad
 	@Override
 	public void extendContainer() {
 		IContainerBuilder builder = super.getBuilder();
-		IPropertySourceFactory df = builder.getFactory(ChaupalComponents.DISCOVERY_SERVICE.toString());
+		String componentName = ChaupalComponents.DISCOVERY_SERVICE.toString();
+		IPropertySourceFactory df = builder.getFactory( componentName);
 		if( df == null ){
-			df = JxtaFactoryUtils.getDefaultFactory(builder, new String[0], super.getPropertySource(), ChaupalComponents.DISCOVERY_SERVICE.toString());
+			df = JxtaFactoryUtils.getDefaultFactory(  componentName );
+			df.prepare(componentName, super.getPropertySource(), builder, new String[0]);
 			df.createPropertySource();
 			builder.addFactory( df ); 
 		}

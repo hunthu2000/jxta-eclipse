@@ -14,7 +14,6 @@ import java.net.URI;
 import java.util.Stack;
 
 import net.jp2p.container.IJp2pContainer;
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.IJp2pComponentNode;
 import net.jp2p.container.component.Jp2pComponent;
@@ -51,10 +50,6 @@ import net.jxta.protocol.PipeAdvertisement;
 
 public class PeerGroupFactory extends AbstractPeerGroupDependencyFactory<PeerGroup> 
 {
-	public PeerGroupFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent) {
-		super( container, parent );
-	}
-
 	@Override
 	public String getComponentName() {
 		return JxtaComponents.PEERGROUP_SERVICE.toString();

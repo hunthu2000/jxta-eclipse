@@ -6,11 +6,11 @@ import java.util.HashSet;
 import org.osgi.framework.BundleContext;
 
 import net.jp2p.chaupal.context.ContextRegistrator;
+import net.jp2p.chaupal.jxta.network.context.JxtaNetworkContext;
 import net.jp2p.chaupal.module.AbstractService;
 import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.jxta.context.IJxtaContext;
 import net.jp2p.jxta.context.JxtaContextUtils;
-import net.jp2p.network.jxta.context.JxtaNetworkContext;
 import net.jxta.peergroup.IModuleDefinitions.DefaultModules;
 import net.jxta.platform.ModuleClassID;
 

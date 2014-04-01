@@ -10,7 +10,6 @@
  *******************************************************************************/
 package net.jp2p.jxta.registration;
 
-import net.jp2p.container.builder.IContainerBuilder;
 import net.jp2p.container.factory.AbstractComponentFactory;
 import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pPropertySource;
@@ -21,10 +20,6 @@ import net.jp2p.jxta.registration.RegistrationService;
 
 public class RegistrationServiceFactory extends
 		AbstractComponentFactory<RegistrationService> {
-
-	public RegistrationServiceFactory( IContainerBuilder container, IJp2pPropertySource<IJp2pProperties> parent ) {
-		super( container, parent );
-	}
 
 	@Override
 	public String getComponentName() {
