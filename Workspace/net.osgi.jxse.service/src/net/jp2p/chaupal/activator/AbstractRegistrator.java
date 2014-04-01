@@ -5,6 +5,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 public abstract class AbstractRegistrator<T extends Object>{
@@ -41,7 +42,7 @@ public abstract class AbstractRegistrator<T extends Object>{
 	}
 
 	@SuppressWarnings("unchecked")
-	public void unregister() throws Exception {
+	public void unregister() throws InvalidSyntaxException {
 		String filter = "(" + identifier + "=" + registered.getClass().getName() + ")";
 		Collection<?> references = context.getServiceReferences( registered.getClass(), filter );
 		for( Object obj: references ){

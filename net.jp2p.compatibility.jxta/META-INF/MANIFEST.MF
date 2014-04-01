@@ -12,6 +12,7 @@ Import-Package: net.jp2p.chaupal,
  net.jp2p.chaupal.jxta.module,
  net.jp2p.chaupal.jxta.root.network,
  net.jp2p.chaupal.jxta.root.network.configurator,
+ net.jp2p.chaupal.module,
  net.jp2p.container,
  net.jp2p.container.builder,
  net.jp2p.container.component,
@@ -51,3 +52,4 @@ Export-Package: net.jp2p.chaupal.jxta.network.configurator.partial,
  net.jp2p.chaupal.jxta.network.tcp
 Require-Bundle: net.jxta.compatibility
 Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/context.xml

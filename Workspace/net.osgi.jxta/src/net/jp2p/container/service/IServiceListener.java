@@ -4,7 +4,7 @@ public interface IServiceListener<T extends Object> {
 
 	public enum ServiceRegistrationEvents{
 		REGISTERED,
-		UNRGEISTERED;
+		UNREGISTERED;
 	}
 	
 	/**

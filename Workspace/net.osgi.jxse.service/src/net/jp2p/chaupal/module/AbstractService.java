@@ -1,12 +1,8 @@
-package net.jp2p.chaupal.jxta.module;
+package net.jp2p.chaupal.module;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
-import net.jp2p.chaupal.jxta.Activator;
-import net.jp2p.container.service.IServiceListener;
-import net.jp2p.container.service.ServiceListenerEvent;
-import net.jp2p.container.service.IServiceListener.ServiceRegistrationEvents;
+import net.jp2p.chaupal.Activator;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceListener;
@@ -33,10 +29,9 @@ import org.osgi.service.log.LogService;
  */
 public abstract class AbstractService<T extends Object> {
 
-	private static final String S_ERR_NO_FACTORY_PROVIDED = "No factory is created. Please implement one";
-	
+	private static final String S_ERR_NO_DATA_PROVIDED = "No data has been included with the service";
+
 	private BundleContext  bc;
-	private Collection<IServiceListener<T>> listeners;
 	
 	private String filter;
 	private Class<T> clss;
@@ -46,22 +41,12 @@ public abstract class AbstractService<T extends Object> {
 		this.bc = bc;
 		this.clss = (Class<T>) clss;
 		this.filter = filter;
-		listeners = new ArrayList<IServiceListener<T>>();
 	}
 
-	public void addServiceEventListeners( IServiceListener<T> listener ){
-		this.listeners.add( listener);
-	}
+	protected abstract void onDataRegistered( T data );
 	
-	public void removeServiceEventListeners( IServiceListener<T> listener ){
-		this.listeners.remove( listener);
-	}
+	protected abstract void onDataUnRegistered( T data );
 
-	protected void notifyServiceEvent( ServiceListenerEvent<T> event ){
-		for( IServiceListener<T> listener: this.listeners )
-			listener.notifyModuleServiceChanged(event);
-	}
-	
 	/**
 	 * Open the service
 	 */
@@ -107,13 +92,12 @@ public abstract class AbstractService<T extends Object> {
 	 * Register the service
 	 * @param sr
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void register(ServiceReference<T> sr) {
 		try {
 			T service = bc.getService( sr );
 			if( service == null )
-				throw new NullPointerException( S_ERR_NO_FACTORY_PROVIDED);
-			this.notifyServiceEvent( new ServiceListenerEvent(this, ServiceRegistrationEvents.REGISTERED, service));
+				throw new NullPointerException( S_ERR_NO_DATA_PROVIDED);
+			this.onDataRegistered( service );
 		} catch (Exception e) {
 			Activator.getLog().log( LogService.LOG_WARNING,"Failed to register resource", e);
 		}
@@ -127,7 +111,8 @@ public abstract class AbstractService<T extends Object> {
 		try {
 			T service = bc.getService( sr );
 			if( service == null )
-				throw new NullPointerException( S_ERR_NO_FACTORY_PROVIDED);
+				throw new NullPointerException( S_ERR_NO_DATA_PROVIDED);
+			this.onDataUnRegistered( service);			
 		} catch (Exception e) {
 			Activator.getLog().log( LogService.LOG_WARNING,"Failed to unregister resource", e);
 		}

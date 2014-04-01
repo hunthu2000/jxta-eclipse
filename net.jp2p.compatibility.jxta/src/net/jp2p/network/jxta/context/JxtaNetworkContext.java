@@ -1,5 +1,8 @@
 package net.jp2p.network.jxta.context;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.xml.sax.Attributes;
 
 import net.jp2p.chaupal.jxta.network.configurator.OverviewPreferences;
@@ -10,7 +13,6 @@ import net.jp2p.chaupal.jxta.network.security.SecurityPreferences;
 import net.jp2p.chaupal.jxta.network.tcp.TcpPreferences;
 import net.jp2p.chaupal.jxta.root.network.NetworkManagerPreferences;
 import net.jp2p.container.builder.IContainerBuilder;
-import net.jp2p.container.context.IJp2pContext;
 import net.jp2p.container.context.Jp2pContext;
 import net.jp2p.container.factory.IPropertySourceFactory;
 import net.jp2p.container.partial.PartialPropertySource;
@@ -22,11 +24,14 @@ import net.jp2p.container.properties.IJp2pDirectives.Contexts;
 import net.jp2p.container.utils.StringStyler;
 import net.jp2p.container.utils.Utils;
 import net.jp2p.container.xml.IJp2pHandler;
+import net.jp2p.jxta.context.IJxtaContext;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaNetworkComponents;
 import net.jp2p.jxta.seeds.SeedListPropertySource;
 import net.jp2p.network.jxta.utils.JxtaFactoryUtils;
+import net.jxta.peergroup.IModuleDefinitions.DefaultModules;
+import net.jxta.platform.ModuleClassID;
 
-public class JxtaNetworkContext implements IJp2pContext {
+public class JxtaNetworkContext implements IJxtaContext {
 
 	public JxtaNetworkContext() {
 	}
@@ -46,6 +51,23 @@ public class JxtaNetworkContext implements IJp2pContext {
 		for( int i=0; i<components.length; i++ )
 			names[i] = components[i].toString();
 		return names;
+	}
+
+	
+	@Override
+	public ModuleClassID[] getSupportedModuleClassIDs() {
+		Collection<ModuleClassID> ids = new ArrayList<ModuleClassID>();
+		for( DefaultModules dm: DefaultModules.values()){
+			switch( dm ){
+			case HTTP:
+			case TCP:
+				break;
+			default:
+				ids.add( DefaultModules.getModuleClassID(dm));
+				break;
+			}
+		}		
+		return ids.toArray( new ModuleClassID[ ids.size() ]);
 	}
 
 	/**

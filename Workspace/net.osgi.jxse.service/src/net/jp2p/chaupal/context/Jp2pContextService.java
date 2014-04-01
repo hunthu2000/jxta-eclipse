@@ -1,14 +1,10 @@
 package net.jp2p.chaupal.context;
 
+import org.osgi.framework.BundleContext;
+
+import net.jp2p.chaupal.module.AbstractService;
 import net.jp2p.container.context.ContextLoader;
 import net.jp2p.container.context.IJp2pContext;
-import net.jxse.module.IModuleService;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * <p>
@@ -26,79 +22,35 @@ import org.osgi.framework.InvalidSyntaxException;
  * PROP_DIR service property.
  * </p>
  */
-public class Jp2pContextService {
+public class Jp2pContextService extends AbstractService<IJp2pContext>{
 
-   private String filterBase = "(jp2p.context="; //in component.xml file you will use target="(jp2p.context=contextName)"
-	
-	private BundleContext  bc;
+	//in the component.xml file you will use target="(jp2p.context=contextName)"
+   private static String filter = "(jp2p.context=*)"; 
+
 	private ContextLoader loader;
-
+	
 	public Jp2pContextService(ContextLoader loader, BundleContext bc) {
-		this.bc = bc;
+		super( bc, IJp2pContext.class, filter );
 		this.loader = loader;
 	}
-
-	/**
-	 * Open the service
-	 */
-	public void open( ) {
-		String filter = filterBase + "*" + ")";
-		ServiceListener sl = new ServiceListener() {
-			@Override
-			@SuppressWarnings("unchecked")
-			public void serviceChanged(ServiceEvent ev) {
-				ServiceReference<IModuleService<?>> sr = (ServiceReference<IModuleService<?>>) ev.getServiceReference();
-				switch(ev.getType()) {
-				case ServiceEvent.REGISTERED:
-					try {
-						register(sr);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					break;
-				case ServiceEvent.UNREGISTERING:
-					try {
-						unregister(sr);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					break;
-				default:
-					break;
-				}
-			}
-		};
-		try {
-			bc.addServiceListener(sl, filter);
-			ServiceReference<?>[] srl = bc.getServiceReferences( IJp2pContext.class.getName(), filter);
-			if(( srl == null ) ||( srl.length == 0 ))
-				return;
-			for( ServiceReference<?> sr: srl )
-				register( sr );
-		} catch (InvalidSyntaxException e) { 
-			e.printStackTrace(); 
-		}
-	}
-
-	public void close(){
-		
-	}
 	
-	/**
-	 * Register the service with the given context name
-	 * @param sr
-	 */
-	private void register(ServiceReference<?> sr ) {
-		IJp2pContext context = (IJp2pContext) bc.getService( sr );
+	@Override
+	public void open() {
+		super.open();
+	}
+
+	@Override
+	protected void onDataRegistered(IJp2pContext context) {
 		loader.addContext(context);
 	}
 
-	/**
-	 * Register the service
-	 * @param sr
-	 */
-	private void unregister(ServiceReference<?> sr) {
-		IJp2pContext context = (IJp2pContext) bc.getService( sr );
+	@Override
+	protected void onDataUnRegistered(IJp2pContext context) {
 		loader.removeContext(context);
+	}
+
+	@Override
+	public void close() {
+		super.close();
 	}
 }

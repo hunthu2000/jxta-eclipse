@@ -4,6 +4,7 @@ package net.jp2p.chaupal.context;
 import java.util.Dictionary;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 
 import net.jp2p.chaupal.activator.AbstractRegistrator;
 import net.jp2p.container.context.IJp2pContext;
@@ -23,7 +24,11 @@ public class ContextRegistrator extends AbstractRegistrator<IJp2pContext> {
 	}
 
 	@Override
-	public void unregister() throws Exception {
-		super.unregister();
+	public void unregister() {
+		try {
+			super.unregister();
+		} catch (InvalidSyntaxException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -1,19 +1,12 @@
 package net.jp2p.chaupal.jxta.module;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import net.jp2p.chaupal.jxta.Activator;
-import net.jp2p.container.service.IServiceListener;
+import net.jp2p.chaupal.module.AbstractService;
 import net.jxse.module.IJxtaModuleService;
 import net.jxta.impl.loader.DynamicJxtaLoader;
 import net.jxta.platform.Module;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceEvent;
 import org.osgi.service.log.LogService;
 
 /**
@@ -32,116 +25,36 @@ import org.osgi.service.log.LogService;
  * PROP_DIR service property.
  * </p>
  */
-public class ModuleFactoryService {
+public class ModuleFactoryService extends AbstractService<IJxtaModuleService<Module>> {
 
-	private static final String S_ERR_NO_FACTORY_PROVIDED = "No factory is created. Please implement one";
-    private String filter = "(objectclass=" + IJxtaModuleService.class.getName() + ")";
-	
-	private BundleContext  bc;
+    private static String filter = "(objectclass=" + IJxtaModuleService.class.getName() + ")";
+
 	private DynamicJxtaLoader loader = DynamicJxtaLoader.getInstance();
 	
-	private Collection<IServiceListener<Module>> listeners;
-	
 	public ModuleFactoryService(BundleContext bc) {
-		this.bc = bc;
-		listeners = new ArrayList<IServiceListener<Module>>();
+		super( bc, IJxtaModuleService.class, filter );
 	}
 
-	public void addServiceEventListeners( IServiceListener<Module> listener ){
-		this.listeners.add( listener);
-	}
-	
-	public void removeServiceEventListeners( IServiceListener<Module> listener ){
-		this.listeners.remove( listener);
-	}
-
-	/**
-	 * Open the service
-	 */
-	@SuppressWarnings("rawtypes")
+	@Override
 	public void open() {
-		ServiceListener sl = new ServiceListener() {
-			@Override
-			@SuppressWarnings("unchecked")
-			public void serviceChanged(ServiceEvent ev) {
-				ServiceReference<IJxtaModuleService> sr = (ServiceReference<IJxtaModuleService>) ev.getServiceReference();
-				switch(ev.getType()) {
-				case ServiceEvent.REGISTERED:
-					try {
-						register(sr);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					break;
-				case ServiceEvent.UNREGISTERING:
-					try {
-						unregister(sr);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					break;
-				default:
-					break;
-				}
-			}
-		};
-
-		try {
-			bc.addServiceListener(sl, filter);
-			Collection<ServiceReference<IJxtaModuleService>> srl = bc.getServiceReferences( IJxtaModuleService.class, filter);
-			for(ServiceReference<IJxtaModuleService> sr: srl ) {
-				register( sr );
-			}
-		} catch (InvalidSyntaxException e) { 
-			e.printStackTrace(); 
-		}
+		super.open();
 	}
+
+	@Override
+	public void close() {
+		super.close();
+	}
+
 	
-	/**
-	 * Register the service
-	 * @param sr
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void register(ServiceReference<IJxtaModuleService> sr) {
-		try {
-			IJxtaModuleService<Module> module = bc.getService( sr );
-			if( module == null )
-				throw new NullPointerException( S_ERR_NO_FACTORY_PROVIDED);
-			loader.addModuleService( module );
-			Activator.getLog().log( LogService.LOG_INFO,"Module Factory " + module.getIdentifier() + " registered." );
-		} catch (Exception e) {
-			Activator.getLog().log( LogService.LOG_WARNING,"Failed to register resource", e);
-		}
+	@Override
+	protected void onDataRegistered(IJxtaModuleService<Module> module) {
+		loader.addModuleService( module );
+		Activator.getLog().log( LogService.LOG_INFO,"Module Factory " + module.getIdentifier() + " registered." );
 	}
 
-	/**
-	 * Register the service
-	 * @param sr
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void unregister(ServiceReference<IJxtaModuleService> sr) {
-		try {
-			IJxtaModuleService<Module> module = bc.getService( sr );
-			if( module == null )
-				throw new NullPointerException( S_ERR_NO_FACTORY_PROVIDED);
-			loader.removeModuleService(module);
-			Activator.getLog().log( LogService.LOG_INFO,"Module Factory " + module.getIdentifier() + " unregistered." );
-		} catch (Exception e) {
-			Activator.getLog().log( LogService.LOG_WARNING,"Failed to unregister resource", e);
-		}
-	}
-
-	@SuppressWarnings("rawtypes")
-	public void close(){
-		String filter = "(objectclass=" + IJxtaModuleService.class.getName() + ")";
-
-		try {
-			Collection<ServiceReference<IJxtaModuleService>> srl = bc.getServiceReferences( IJxtaModuleService.class, filter);
-			for(ServiceReference<IJxtaModuleService> sr: srl ) {
-				unregister( sr );
-			}
-		} catch (InvalidSyntaxException e) { 
-			e.printStackTrace(); 
-		}		
+	@Override
+	protected void onDataUnRegistered(IJxtaModuleService<Module> module) {
+		loader.removeModuleService(module);
+		Activator.getLog().log( LogService.LOG_INFO,"Module Factory " + module.getIdentifier() + " unregistered." );
 	}
 }

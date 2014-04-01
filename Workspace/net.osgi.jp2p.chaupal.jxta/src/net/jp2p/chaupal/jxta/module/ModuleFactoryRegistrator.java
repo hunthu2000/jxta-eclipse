@@ -4,6 +4,7 @@ package net.jp2p.chaupal.jxta.module;
 import java.util.Dictionary;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 
 import net.jp2p.chaupal.activator.AbstractRegistrator;
 import net.jxse.module.IJxtaModuleService;
@@ -23,7 +24,12 @@ public class ModuleFactoryRegistrator extends AbstractRegistrator<IJxtaModuleSer
 	}
 
 	@Override
-	public void unregister() throws Exception {
-		super.unregister();
+	public void unregister() {
+		try {
+			super.unregister();
+		} catch (InvalidSyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
