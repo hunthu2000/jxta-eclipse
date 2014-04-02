@@ -72,6 +72,12 @@ public abstract class AbstractModuleComponent<T extends Module> extends Jp2pComp
 		return implAdv.getDescription();
 	}
 
+	
+	@Override
+	public String getRepresentedClassName() {
+		return implAdv.getCode();
+	}
+
 	/**
 	 * Get the XML document that describes the module
 	 * @return
@@ -201,10 +207,15 @@ public abstract class AbstractModuleComponent<T extends Module> extends Jp2pComp
      * @param url
      * @return
      */
-    public static ModuleImplAdvertisement getAdvertisementFromResource( URL url ){
+    public static ModuleImplAdvertisement getAdvertisementFromResource( URL url, ModuleClassID id  ){
 		Collection<ModuleImplAdvertisement> advs = locateModuleImplementations( url );
 		if(( advs == null ) || ( advs.isEmpty() ))
 			return null;
-		return advs.iterator().next();   	
+		
+		for( ModuleImplAdvertisement adv: advs ){
+			if( adv.getModuleSpecID().isOfSameBaseClass( id ))
+				return adv;
+		}
+		return null;   	
     }
 }

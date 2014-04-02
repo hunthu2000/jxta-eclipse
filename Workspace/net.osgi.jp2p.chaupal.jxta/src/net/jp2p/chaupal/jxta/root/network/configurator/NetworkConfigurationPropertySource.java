@@ -9,7 +9,7 @@ import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.properties.IJp2pWritePropertySource;
 import net.jp2p.container.utils.StringStyler;
 import net.jp2p.jxta.factory.IJxtaComponents.JxtaNetworkComponents;
-import net.jxta.compatibility.platform.NetworkManager.ConfigMode;
+import net.jxta.refplatform.platform.NetworkManager.ConfigMode;
 
 public class NetworkConfigurationPropertySource extends AbstractJp2pWritePropertySource
 	implements IJp2pWritePropertySource<IJp2pProperties>

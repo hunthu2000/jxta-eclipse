@@ -23,7 +23,7 @@ import net.jp2p.container.properties.ManagedProperty;
 import net.jxta.id.IDFactory;
 import net.jxta.peer.PeerID;
 import net.jxta.peergroup.PeerGroupID;
-import net.jxta.compatibility.platform.NetworkManager.ConfigMode;
+import net.jxta.refplatform.platform.NetworkManager.ConfigMode;
 
 public class NetworkManagerPreferences extends AbstractPreferences<String, Object>{
 	public NetworkManagerPreferences( IJp2pWritePropertySource<IJp2pProperties> source )

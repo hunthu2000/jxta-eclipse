@@ -53,6 +53,10 @@ public class TransportPropertySource extends AbstractJp2pWritePropertySource
 		}
 	}
 
+	protected TransportPropertySource( String bundleID, String transport ) {
+		super( bundleID, transport );
+	}
+
 	public TransportPropertySource( String transport, IJp2pPropertySource<IJp2pProperties> parent ) {
 		super( transport, parent );
 	}

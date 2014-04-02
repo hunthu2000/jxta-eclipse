@@ -83,7 +83,7 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 				if( factory == null ){
 					factory = new ContainerFactory( bundleId );
 				}
-				factory.prepare( Jp2pContext.Components.JP2P_CONTAINER.toString(), node.getData().getPropertySource(), builder, new String[0]);
+				factory.prepare( Jp2pContext.Components.JP2P_CONTAINER.toString(), null, builder, new String[0]);
 				this.root = (ContainerFactory) factory;
 				break;
 			case CONTEXT:
@@ -135,7 +135,8 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 		if( context == null )
 			context = this.contexts.getContextForComponent( contextName, componentName);
 		IPropertySourceFactory factory = context.getFactory(componentName);
-		factory.prepare(componentName, (IJp2pPropertySource<IJp2pProperties>) parentSource, builder, new String[0]/*attributes*/);
+		if( factory != null )
+			factory.prepare(componentName, (IJp2pPropertySource<IJp2pProperties>) parentSource, builder, new String[0]/*attributes*/);
 		return factory;
 	}
 
@@ -242,7 +243,7 @@ class Jp2pHandler extends DefaultHandler implements IContextEntities{
 	 * @param length
 	 * @throws SAXException
 	 */
-	protected void parseProperties(char ch[], int start, int length) throws SAXException {
+	protected synchronized void parseProperties(char ch[], int start, int length) throws SAXException {
 		String value = new String(ch, start, length);
 		if( Utils.isNull( value  ))
 			return;

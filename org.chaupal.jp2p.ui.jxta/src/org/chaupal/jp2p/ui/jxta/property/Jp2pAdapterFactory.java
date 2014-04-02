@@ -4,8 +4,8 @@ import net.jp2p.container.IJp2pContainer;
 import net.jxta.configuration.JxtaConfiguration;
 import net.jxta.document.Advertisement;
 import net.jxta.peergroup.PeerGroup;
-import net.jxta.compatibility.platform.NetworkConfigurator;
-import net.jxta.compatibility.platform.NetworkManager;
+import net.jxta.refplatform.platform.NetworkConfigurator;
+import net.jxta.refplatform.platform.NetworkManager;
 
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.views.properties.IPropertySource;

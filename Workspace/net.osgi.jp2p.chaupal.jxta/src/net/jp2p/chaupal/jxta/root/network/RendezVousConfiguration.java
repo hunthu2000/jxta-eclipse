@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.jp2p.container.component.IJp2pComponent;
-import net.jxta.compatibility.platform.NetworkConfigurator;
+import net.jxta.refplatform.platform.NetworkConfigurator;
 
 public class RendezVousConfiguration {
 

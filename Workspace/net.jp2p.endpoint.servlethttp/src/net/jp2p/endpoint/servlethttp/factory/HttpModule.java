@@ -43,7 +43,7 @@ class HttpModule extends AbstractModuleComponent<ServletHttpTransport> {
 	@Override
 	protected ModuleImplAdvertisement onCreateAdvertisement() {
 		URL url = HttpModule.class.getResource( S_RESOURCE_LOCATION );
-		return getAdvertisementFromResource(url);
+		return getAdvertisementFromResource(url, this.getModuleClassID());
 	}
 
 	/**

@@ -36,7 +36,7 @@ Import-Package: net.jp2p.chaupal.jxta.module,
  net.jxta.protocol,
  org.osgi.framework;version="1.3.0"
 Bundle-ActivationPolicy: lazy
-Service-Component: OSGI-INF/context.xml
+Service-Component: OSGI-INF/context.xml, OSGI-INF/moduleloaderservice.xml
 Export-Package: net.jxta.impl.endpoint.netty,
  net.jxta.impl.endpoint.netty.http
 Require-Bundle: org.jboss.netty;bundle-version="3.6.2",

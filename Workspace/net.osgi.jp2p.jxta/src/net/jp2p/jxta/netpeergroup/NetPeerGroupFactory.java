@@ -21,7 +21,7 @@ import net.jp2p.jxta.factory.IJxtaComponents.JxtaComponents;
 import net.jp2p.jxta.netpeergroup.NetPeerGroupService;
 import net.jp2p.jxta.peergroup.PeerGroupPropertySource;
 import net.jxta.peergroup.PeerGroup;
-import net.jxta.compatibility.platform.NetworkManager;
+import net.jxta.refplatform.platform.NetworkManager;
 
 public class NetPeerGroupFactory extends AbstractComponentDependencyFactory<PeerGroup, IJp2pComponent<NetworkManager>>{
 

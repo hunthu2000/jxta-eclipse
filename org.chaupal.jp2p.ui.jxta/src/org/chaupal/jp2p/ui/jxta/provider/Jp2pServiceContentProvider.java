@@ -10,7 +10,7 @@ import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.IJp2pComponentNode;
 import net.jp2p.container.component.Jp2pComponent;
 import net.jp2p.container.properties.DefaultPropertySource;
-import net.jxta.compatibility.platform.NetworkConfigurator;
+import net.jxta.refplatform.platform.NetworkConfigurator;
 
 import org.chaupal.jp2p.ui.jxta.Activator;
 import org.eclipse.jface.viewers.ITreeContentProvider;

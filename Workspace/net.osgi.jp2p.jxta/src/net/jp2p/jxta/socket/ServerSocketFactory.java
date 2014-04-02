@@ -22,8 +22,8 @@ import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.utils.IOUtils;
 import net.jp2p.jxta.socket.IServerSocketFactory;
 import net.jp2p.jxta.socket.SocketPipeAdvertisementFactory;
-import net.jxta.compatibility.platform.NetworkManager;
 import net.jxta.protocol.PipeAdvertisement;
+import net.jxta.refplatform.platform.NetworkManager;
 import net.jxta.socket.JxtaServerSocket;
 
 public class ServerSocketFactory extends AbstractComponentFactory<JxtaServerSocket> implements IServerSocketFactory {

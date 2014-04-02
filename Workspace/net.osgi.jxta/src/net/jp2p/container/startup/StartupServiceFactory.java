@@ -33,7 +33,6 @@ public class StartupServiceFactory extends AbstractPropertySourceFactory
 		super.setCanCreate( builder != null );
 	}
 
-
 	@Override
 	public String getComponentName() {
 		return Jp2pContext.Components.STARTUP_SERVICE.toString();

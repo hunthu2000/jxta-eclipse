@@ -99,6 +99,7 @@ public abstract class AbstractService<T extends Object> {
 				throw new NullPointerException( S_ERR_NO_DATA_PROVIDED);
 			this.onDataRegistered( service );
 		} catch (Exception e) {
+			e.printStackTrace();
 			Activator.getLog().log( LogService.LOG_WARNING,"Failed to register resource", e);
 		}
 	}
@@ -114,6 +115,7 @@ public abstract class AbstractService<T extends Object> {
 				throw new NullPointerException( S_ERR_NO_DATA_PROVIDED);
 			this.onDataUnRegistered( service);			
 		} catch (Exception e) {
+			e.printStackTrace();
 			Activator.getLog().log( LogService.LOG_WARNING,"Failed to unregister resource", e);
 		}
 	}

@@ -26,9 +26,17 @@ public class ContainerFactory extends AbstractComponentFactory<Object>
 	private String bundleId;
 	
 	public ContainerFactory( String bundleId) {
-		super.setCanCreate(true);
 		this.bundleId = bundleId;
 	}	
+	
+	@Override
+	public void prepare(String componentName,
+			IJp2pPropertySource<IJp2pProperties> parentSource,
+			IContainerBuilder builder, String[] attributes) {
+		super.prepare(componentName, parentSource, builder, attributes);
+		super.setCanCreate(true);
+	}
+
 
 	@Override
 	public String getComponentName() {

@@ -8,6 +8,8 @@ import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 
+	public static final String S_BUNDLE_ID = "net.jp2p.endpoint.netty";
+	
 	private static ModuleFactoryRegistrator mfr;
 	
 	@Override

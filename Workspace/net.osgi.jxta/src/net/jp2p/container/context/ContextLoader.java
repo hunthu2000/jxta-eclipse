@@ -89,7 +89,7 @@ public class ContextLoader {
 	 * @param contextName
 	 * @return
 	 */
-	public IJp2pContext getContextForComponent( String contextName, String componentName ){
+	public synchronized IJp2pContext getContextForComponent( String contextName, String componentName ){
 		if( Utils.isNull( componentName ))
 			return new Jp2pContext();
 		

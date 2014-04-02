@@ -3,8 +3,8 @@ package net.jp2p.chaupal.jxta.module;
 import net.jp2p.chaupal.jxta.Activator;
 import net.jp2p.chaupal.module.AbstractService;
 import net.jxse.module.IJxtaModuleService;
-import net.jxta.impl.loader.DynamicJxtaLoader;
 import net.jxta.platform.Module;
+import net.jxta.refplatform.impl.loader.DynamicJxtaLoader;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.log.LogService;

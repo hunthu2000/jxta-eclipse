@@ -54,7 +54,7 @@ import net.jxta.endpoint.Message;
 import net.jxta.endpoint.Message.ElementIterator;
 import net.jxta.endpoint.MessageElement;
 import net.jxta.peer.PeerID;
-import net.jxta.compatibility.platform.NetworkConfigurator;
+import net.jxta.refplatform.platform.NetworkConfigurator;
 import net.jxta.rendezvous.RendezVousService;
 import net.osgi.jxse.service.MessageBoxPetitioner;
 import net.osgi.jxse.service.MessageBoxPetitioner.MessageTypes;

@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jxta Compatibility package
-Bundle-SymbolicName: net.jp2p.chaupal.jxta.network
+Bundle-SymbolicName: net.jp2p.chaupal.jxta.platform
 Bundle-Version: 1.0.0.v20140323
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Chaupal
-Bundle-Activator: net.jp2p.chaupal.jxta.network.Activator
+Bundle-Activator: net.jp2p.chaupal.jxta.platform.Activator
 Import-Package: net.jp2p.chaupal,
  net.jp2p.chaupal.activator,
  net.jp2p.chaupal.context,
@@ -31,24 +31,27 @@ Import-Package: net.jp2p.chaupal,
  net.jp2p.jxta.peergroup,
  net.jp2p.jxta.seeds,
  net.jxse.module,
- net.jxta.compatibility.peergroup,
- net.jxta.compatibility.platform,
+ net.jxta.content,
  net.jxta.document,
  net.jxta.id,
+ net.jxta.impl.content,
  net.jxta.impl.peergroup,
  net.jxta.impl.protocol,
  net.jxta.peer,
  net.jxta.peergroup,
  net.jxta.platform,
  net.jxta.protocol,
+ net.jxta.refplatform.peergroup,
+ net.jxta.refplatform.platform,
+ net.jxta.service,
  org.osgi.framework,
  org.osgi.service.log;version="1.3.0",
  org.osgi.util.tracker;version="1.5.1"
-Export-Package: net.jp2p.chaupal.jxta.network.configurator.partial,
- net.jp2p.chaupal.jxta.network.multicast,
- net.jp2p.chaupal.jxta.network.rdvrel,
- net.jp2p.chaupal.jxta.network.security,
- net.jp2p.chaupal.jxta.network.tcp
-Require-Bundle: net.jxta.compatibility
+Export-Package: net.jp2p.chaupal.jxta.platform.configurator.partial,
+ net.jp2p.chaupal.jxta.platform.multicast,
+ net.jp2p.chaupal.jxta.platform.rdvrel,
+ net.jp2p.chaupal.jxta.platform.security,
+ net.jp2p.chaupal.jxta.platform.tcp
+Require-Bundle: net.jxta.refplatform
 Bundle-ActivationPolicy: lazy
-Service-Component: OSGI-INF/context.xml
+Service-Component: OSGI-INF/context.xml, OSGI-INF/moduleloader.xml 

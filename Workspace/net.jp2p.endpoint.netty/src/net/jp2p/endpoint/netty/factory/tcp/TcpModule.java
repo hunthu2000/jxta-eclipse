@@ -24,11 +24,11 @@ import net.jxta.platform.ModuleClassID;
 import net.jxta.protocol.ModuleImplAdvertisement;
 import net.jxta.protocol.TransportAdvertisement;
 
-class TcpModule extends AbstractModuleComponent<NettyTransport> {
+public class TcpModule extends AbstractModuleComponent<NettyTransport> {
 
     private final static transient Logger logger = Logger.getLogger( TcpModule.class.getName());
     
-    TcpModule( TransportPropertySource source ) {
+    public TcpModule( TransportPropertySource source ) {
 		super(source, new NettyTransport());
 	}
 
@@ -42,7 +42,7 @@ class TcpModule extends AbstractModuleComponent<NettyTransport> {
 	@Override
 	protected ModuleImplAdvertisement onCreateAdvertisement() {
 		URL url = TcpModule.class.getResource( S_RESOURCE_LOCATION );
-		return getAdvertisementFromResource(url);
+		return getAdvertisementFromResource(url, this.getModuleClassID());
 	}
 
 	/**

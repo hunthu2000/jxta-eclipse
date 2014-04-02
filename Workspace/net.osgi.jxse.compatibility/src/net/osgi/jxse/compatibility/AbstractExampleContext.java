@@ -28,8 +28,8 @@ import net.jp2p.container.properties.IJp2pPropertySource;
 import net.jp2p.container.utils.Utils;
 import net.jp2p.jxta.peergroup.PeerGroupPropertyFacade;
 import net.jxta.peergroup.PeerGroup;
-import net.jxta.compatibility.platform.NetworkConfigurator;
-import net.jxta.compatibility.platform.NetworkManager;
+import net.jxta.refplatform.platform.NetworkConfigurator;
+import net.jxta.refplatform.platform.NetworkManager;
 
 public abstract class AbstractExampleContext extends AbstractJp2pContainer<NetworkManager>{
 

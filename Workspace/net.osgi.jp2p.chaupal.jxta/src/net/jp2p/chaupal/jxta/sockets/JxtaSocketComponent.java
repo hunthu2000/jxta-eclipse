@@ -17,8 +17,8 @@ import java.util.logging.Logger;
 import net.jp2p.container.component.IJp2pComponent;
 import net.jp2p.container.component.Jp2pComponent;
 import net.jp2p.container.utils.IOUtils;
-import net.jxta.compatibility.platform.NetworkManager;
 import net.jxta.protocol.PipeAdvertisement;
+import net.jxta.refplatform.platform.NetworkManager;
 import net.jxta.socket.JxtaSocket;
 import net.jp2p.jxta.socket.SocketFactory;
 

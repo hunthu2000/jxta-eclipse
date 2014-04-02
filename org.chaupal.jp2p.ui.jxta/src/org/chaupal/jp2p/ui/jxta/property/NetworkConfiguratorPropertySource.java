@@ -24,8 +24,8 @@ import net.jp2p.container.properties.IJp2pProperties;
 import net.jp2p.container.utils.EnumUtils;
 import net.jxta.id.ID;
 import net.jxta.peer.PeerID;
-import net.jxta.compatibility.platform.NetworkConfigurator;
-import net.jxta.compatibility.platform.NetworkManager.ConfigMode;
+import net.jxta.refplatform.platform.NetworkConfigurator;
+import net.jxta.refplatform.platform.NetworkManager.ConfigMode;
 
 public class NetworkConfiguratorPropertySource extends AbstractJp2pUIPropertySource<NetworkConfigurator> {
 
