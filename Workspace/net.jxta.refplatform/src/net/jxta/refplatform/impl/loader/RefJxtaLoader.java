@@ -62,8 +62,8 @@ import net.jxta.document.StructuredDocumentFactory;
 import net.jxta.id.ID;
 import net.jxta.id.IDFactory;
 import net.jxta.impl.content.TransferAggregator;
-import net.jxta.impl.loader.CompatibilityEquater;
-import net.jxta.impl.loader.CompatibilityUtils;
+import net.jxta.impl.peergroup.CompatibilityEquater;
+import net.jxta.impl.peergroup.CompatibilityUtils;
 import net.jxta.logging.Logging;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.IJxtaLoader;
@@ -83,13 +83,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class is the reference implementation of the IJp2pModuleLoader.
+ * This class is the reference implementation of the JxtaLoader.
  */
 public class RefJxtaLoader extends JxtaLoader {
 
-   public static final String S_RESOURCE_LOCATION = "META-INF/services/net.jxta.platform.Module";
-
-   /**
+    /**
      * Logger
      */
     private final static transient Logger LOG =
@@ -287,7 +285,7 @@ public class RefJxtaLoader extends JxtaLoader {
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // IJp2pModuleLoader implementation:
+    // JxtaLoader implementation:
 
     /**
      * {@inheritDoc}
@@ -337,16 +335,16 @@ public class RefJxtaLoader extends JxtaLoader {
          * Here we replicate the logic of the standard
          * ClassLoader.loadClass(String,boolean) method, but this time we
          * do so for Modules.  The only main difference is that we only
-         * defer to our parent loader (since it is the only IJp2pModuleLoader).
+         * defer to our parent loader (since it is the only JxtaLoader).
          */
         Logging.logCheckedFinest(LOG, hashHex(), ": loadClass(MSID=", spec, ")");
 
-        // Try the parent IJp2pModuleLoader, if present
+        // Try the parent JxtaLoader, if present
         try {
 
             ClassLoader parentLoader = getParent();
 
-            if (parentLoader instanceof IJxtaLoader) {
+            if (parentLoader instanceof JxtaLoader) {
 
                 IJxtaLoader jxtaLoader = (IJxtaLoader) parentLoader;
                 Class<? extends Module> result = jxtaLoader.loadClass(spec);
@@ -366,7 +364,7 @@ public class RefJxtaLoader extends JxtaLoader {
             // Fall through
 
         }
-
+ 
         // Now try locally
         try {
 
@@ -440,7 +438,7 @@ public class RefJxtaLoader extends JxtaLoader {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings("rawtypes")
 	@Override
     public ModuleImplAdvertisement findModuleImplAdvertisement(Class clazz) {
         Class<? extends Module> modClass;
@@ -454,7 +452,7 @@ public class RefJxtaLoader extends JxtaLoader {
         Logging.logCheckedFinest(LOG, hashHex(), ": findModuleImplAdv(", clazz, ")");
 
         ClassLoader parentLoader = getParent();
-        if (parentLoader instanceof IJxtaLoader) {
+        if (parentLoader instanceof JxtaLoader) {
             IJxtaLoader jxtaLoader = (IJxtaLoader) parentLoader;
             ModuleImplAdvertisement result = jxtaLoader.findModuleImplAdvertisement(modClass);
             if (result != null) {
@@ -580,7 +578,7 @@ public class RefJxtaLoader extends JxtaLoader {
 
         try {
 
-            Enumeration<URL> allProviderLists = getResources( S_RESOURCE_LOCATION );
+            Enumeration<URL> allProviderLists = getResources("META-INF/services/net.jxta.platform.Module");
 
             for (URL providers : Collections.list(allProviderLists)) {
 
@@ -806,7 +804,7 @@ public class RefJxtaLoader extends JxtaLoader {
             throws ClassNotFoundException {
         if (group == null) {
             throw(new ClassNotFoundException(
-                    "Loading of ContentID is only possible when IJp2pModuleLoader "
+                    "Loading of ContentID is only possible when JxtaLoader "
                     + "is constructed with a PeerGroup reference"));
         }
 
@@ -1006,4 +1004,7 @@ public class RefJxtaLoader extends JxtaLoader {
         return Integer.toString(hashCode(), 16);
     }
 
+	public ClassLoader getClassLoader() {
+		return this;
+	}
 }

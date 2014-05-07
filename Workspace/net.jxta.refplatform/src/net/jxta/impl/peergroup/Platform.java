@@ -63,7 +63,6 @@ import net.jxta.exception.PeerGroupException;
 import net.jxta.exception.ServiceNotFoundException;
 import net.jxta.id.ID;
 import net.jxta.impl.endpoint.mcast.McastTransport;
-import net.jxta.impl.loader.CompatibilityUtils;
 import net.jxta.impl.membership.pse.PSEMembershipService;
 import net.jxta.impl.util.threads.TaskManager;
 import net.jxta.logging.Logging;
@@ -278,9 +277,9 @@ public class Platform extends StdPeerGroup {
     protected void checkServices() throws ServiceNotFoundException {
         super.checkServices();
         Service ignored;
-        ignored = lookupService(discoveryClassID);
-        ignored = lookupService(rendezvousClassID);
-        ignored = lookupService(peerinfoClassID);
+        ignored = lookupService(IModuleDefinitions.discoveryClassID);
+        ignored = lookupService(IModuleDefinitions.rendezvousClassID);
+        ignored = lookupService(IModuleDefinitions.peerinfoClassID);
     }
 
     @Override

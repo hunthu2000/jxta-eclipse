@@ -81,7 +81,6 @@ import net.jxta.impl.access.pse.PSEAccessService;
 import net.jxta.impl.cm.CacheManager;
 import net.jxta.impl.cm.Srdi;
 import net.jxta.impl.content.ContentServiceImpl;
-import net.jxta.impl.loader.CompatibilityUtils;
 import net.jxta.impl.membership.pse.DialogAuthenticator;
 import net.jxta.impl.membership.pse.EngineAuthenticator;
 import net.jxta.impl.membership.pse.PSEMembershipService;

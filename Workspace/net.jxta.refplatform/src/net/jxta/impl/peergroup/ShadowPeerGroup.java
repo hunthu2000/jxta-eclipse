@@ -61,7 +61,6 @@ import net.jxta.document.XMLElement;
 import net.jxta.exception.PeerGroupException;
 import net.jxta.id.ID;
 import net.jxta.impl.content.ContentServiceImpl;
-import net.jxta.impl.loader.CompatibilityUtils;
 //import net.jxta.impl.membership.none.NoneMembershipService;
 import net.jxta.impl.membership.pse.PSEMembershipService;
 import net.jxta.peergroup.IModuleDefinitions;
